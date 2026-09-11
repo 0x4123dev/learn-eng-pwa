@@ -579,6 +579,29 @@ function screenPlaybook() {
         return bank.length + ' items; a Không chuyên round opens with four segments';
       },
     },
+    grammarVocabScreen: {
+      title: 'Grammar & Vocabulary: bấm Practice, được lượt Không chuyên 15 câu, bốn phương án, nhiều dạng',
+      open: async (h) => { h.sandbox.switchScreen('grammarVocabScreen'); await settle(); },
+      prove: (h, el) => {
+        const bank = h.peek('GRAMMAR_VOCAB_ITEMS');
+        must(Array.isArray(bank) && bank.length >= 20, 'the grammar & vocabulary bank arrived (lazy)');
+        must(wiredTo(el, 'startGrammarVocabPractice').length === 1, 'one Practice button');
+        h.sandbox.startGrammarVocabPractice();
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'grammarvocab', 'Practice started a round in the grammarvocab set');
+        const st = h.peek('_examState');
+        must(/^gv-round-kc:/.test(st.examId), 'a fresh child is served a Không chuyên round');
+        const paper = h.sandbox.grammarVocabLookup(st.examId);
+        must(paper && paper.questions.length === h.peek('GRAMMAR_VOCAB_ROUND_SIZE'), 'the round holds ' + h.peek('GRAMMAR_VOCAB_ROUND_SIZE') + ' sentences');
+        must(new Set(paper.questions.map(q => q.section)).size >= 6, 'the round mixes at least six focuses, like the paper');
+        const opts = h.el('grammarVocabScreen').querySelectorAll('.grammar-option');
+        must(opts.length === 4, 'four options to choose from');
+        h.sandbox.answerExamChoice(0);
+        must(h.sandbox.isExamActive(), 'one answer does not end the round');
+        h.sandbox.abandonExam();
+        h.sandbox.renderGrammarVocabHome();
+        return bank.length + ' items; a Không chuyên round of ' + paper.questions.length + ' opens with four options';
+      },
+    },
     profileScreen: {
       title: 'Hồ sơ: điểm, chuỗi ngày, giao diện',
       open: async (h) => { h.sandbox.navigateToProfile(); },

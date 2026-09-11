@@ -1,0 +1,406 @@
+{
+  "file": "36",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-36-1",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the public outcry over the data leak that the company's chief executive resigned within a week.",
+      "options": [
+        "So was",
+        "Such was",
+        "Such a",
+        "So great"
+      ],
+      "correct": 1,
+      "answer": "Such was",
+      "vi": "Làn sóng phẫn nộ của công chúng về vụ rò rỉ dữ liệu lớn đến mức giám đốc điều hành của công ty đã từ chức trong vòng một tuần.",
+      "explanation": "Fronted <b>Such + be + noun phrase … that</b> inverts subject and verb: <b>Such was the outcry that</b>; <b>So</b> must be followed by an adjective (<b>So great was the outcry</b>), while <b>Such a</b> and <b>So great</b> leave the clause with no verb."
+    },
+    {
+      "id": "gv-ch-36-2",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Without access to the raw figures, critics can only ______ that the charity inflated its impact numbers.",
+      "options": [
+        "ascertain",
+        "verify",
+        "surmise",
+        "discern"
+      ],
+      "correct": 2,
+      "answer": "surmise",
+      "vi": "Không được xem số liệu gốc, giới phê bình chỉ có thể phỏng đoán rằng tổ chức từ thiện đã thổi phồng các con số về tác động.",
+      "explanation": "<b>Surmise</b> means to conclude without firm evidence, which fits <b>without access to the raw figures</b>; <b>ascertain</b>, <b>verify</b> and <b>discern</b> all imply actually finding out or seeing, which the critics cannot do."
+    },
+    {
+      "id": "gv-ch-36-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The claim that free tuition would bankrupt the state simply does not ______ once you look at the figures.",
+      "options": [
+        "hold water",
+        "hold the fort",
+        "hold sway",
+        "hold the line"
+      ],
+      "correct": 0,
+      "answer": "hold water",
+      "vi": "Luận điểm rằng miễn học phí sẽ làm nhà nước phá sản đơn giản là không đứng vững khi ta nhìn vào các con số.",
+      "explanation": "An argument that <b>does not hold water</b> is unsound; <b>hold the fort</b> is to take charge temporarily, <b>hold sway</b> is to have influence, and <b>hold the line</b> is to refuse to change position."
+    },
+    {
+      "id": "gv-ch-36-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The survey paints a ______ picture of morale in state secondary schools, with two in five teachers planning to leave.",
+      "options": [
+        "dim",
+        "faint",
+        "pale",
+        "bleak"
+      ],
+      "correct": 3,
+      "answer": "bleak",
+      "vi": "Cuộc khảo sát vẽ nên một bức tranh ảm đạm về tinh thần trong các trường trung học công lập, với hai phần năm giáo viên dự định bỏ nghề.",
+      "explanation": "<b>Paint a bleak/gloomy/grim picture</b> is the collocation for a pessimistic account; <b>dim</b>, <b>faint</b> and <b>pale</b> describe light or colour, not a hopeless situation."
+    },
+    {
+      "id": "gv-ch-36-5",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The lead author would rather her colleagues ______ the findings to the press until the peer review is complete.",
+      "options": [
+        "didn't release",
+        "don't release",
+        "wouldn't release",
+        "not to release"
+      ],
+      "correct": 0,
+      "answer": "didn't release",
+      "vi": "Tác giả chính muốn các đồng nghiệp đừng công bố kết quả cho báo chí cho đến khi quá trình bình duyệt hoàn tất.",
+      "explanation": "<b>Would rather + another subject + past subjunctive</b> expresses a wish about the present or future: <b>would rather her colleagues didn't release</b>; the present <b>don't</b> and the conditional <b>wouldn't</b> are wrong forms, and the infinitive <b>not to release</b> cannot follow a subject after <b>would rather</b> (the infinitive is only possible with no second subject: <b>would rather not release</b>)."
+    },
+    {
+      "id": "gv-ch-36-6",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Ministers met union leaders late into the night in an attempt to ______ a nationwide teachers' strike.",
+      "options": [
+        "head for",
+        "head off",
+        "head up",
+        "head back"
+      ],
+      "correct": 1,
+      "answer": "head off",
+      "vi": "Các bộ trưởng đã họp với lãnh đạo công đoàn đến khuya nhằm ngăn chặn một cuộc đình công giáo viên trên toàn quốc.",
+      "explanation": "<b>Head off</b> means to prevent something from happening; <b>head for</b> is to move towards, <b>head up</b> is to lead an organisation, and <b>head back</b> is to return."
+    },
+    {
+      "id": "gv-ch-36-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The online scholarship scheme ______ that every applicant has reliable internet access, which is far from true in rural provinces.",
+      "options": [
+        "predicts",
+        "perceives",
+        "proposes",
+        "presupposes"
+      ],
+      "correct": 3,
+      "answer": "presupposes",
+      "vi": "Chương trình học bổng trực tuyến mặc nhiên coi rằng mọi ứng viên đều có kết nối internet ổn định, điều hoàn toàn không đúng ở các tỉnh nông thôn.",
+      "explanation": "To <b>presuppose</b> is to take something for granted as a starting condition; the scheme does not <b>predict</b> or <b>propose</b> that applicants have access, and a scheme cannot <b>perceive</b>."
+    },
+    {
+      "id": "gv-ch-36-8",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Rather than ______ the buck to the previous administration, the new minister ______ full responsibility for the failed reform.",
+      "options": [
+        "push / took",
+        "throw / accepted",
+        "pass / accepted",
+        "pass / made"
+      ],
+      "correct": 2,
+      "answer": "pass / accepted",
+      "vi": "Thay vì đổ trách nhiệm cho chính quyền tiền nhiệm, tân bộ trưởng đã nhận hoàn toàn trách nhiệm về cuộc cải cách thất bại.",
+      "explanation": "The idiom is <b>pass the buck</b> (shift blame to someone else), and one <b>accepts/takes</b> responsibility, never <b>makes</b> it; only <b>pass / accepted</b> gets both blanks right."
+    },
+    {
+      "id": "gv-ch-36-9",
+      "level": "ch",
+      "focus": "linking",
+      "q": "Field researchers now carry satellite phones ______ the mobile network fails in the more remote provinces.",
+      "options": [
+        "in case",
+        "unless",
+        "so that",
+        "as long as"
+      ],
+      "correct": 0,
+      "answer": "in case",
+      "vi": "Các nhà nghiên cứu thực địa hiện mang theo điện thoại vệ tinh phòng khi mạng di động mất sóng ở những tỉnh xa xôi hơn.",
+      "explanation": "<b>In case + present simple</b> introduces a precaution against something that might happen; <b>so that</b> states a purpose, which a network failure cannot be, and <b>unless</b> and <b>as long as</b> set conditions rather than a possibility to guard against."
+    },
+    {
+      "id": "gv-ch-36-10",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The foundation deliberately works in villages that are ______, where the larger aid agencies rarely venture.",
+      "options": [
+        "off the record",
+        "off the beaten track",
+        "off the hook",
+        "off the cuff"
+      ],
+      "correct": 1,
+      "answer": "off the beaten track",
+      "vi": "Quỹ này cố tình hoạt động ở những ngôi làng hẻo lánh ít người lui tới, nơi các tổ chức viện trợ lớn hiếm khi đặt chân đến.",
+      "explanation": "<b>Off the beaten track</b> describes a remote, rarely visited place; <b>off the record</b> is unofficial, <b>off the hook</b> is freed from blame, and <b>off the cuff</b> is unprepared."
+    },
+    {
+      "id": "gv-ch-36-11",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The auditors ______ the discrepancy months earlier, yet somehow it went unnoticed until a whistle-blower came forward.",
+      "options": [
+        "must have spotted",
+        "needn't have spotted",
+        "could have spotted",
+        "can't have spotted"
+      ],
+      "correct": 2,
+      "answer": "could have spotted",
+      "vi": "Các kiểm toán viên lẽ ra đã có thể phát hiện sai lệch từ nhiều tháng trước, vậy mà không hiểu sao nó vẫn không bị phát hiện cho đến khi một người tố giác lên tiếng.",
+      "explanation": "<b>Could have + past participle</b> describes a past possibility that was not realised, which <b>yet it went unnoticed</b> confirms; <b>must have</b> and <b>can't have</b> are deductions that contradict the second clause, and <b>needn't have</b> means an action was done unnecessarily."
+    },
+    {
+      "id": "gv-ch-36-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "From the guarded tone of the reference, we can ______ that her former manager was less than impressed with her work.",
+      "options": [
+        "infer",
+        "imply",
+        "insinuate",
+        "allude"
+      ],
+      "correct": 0,
+      "answer": "infer",
+      "vi": "Từ giọng điệu dè dặt của thư giới thiệu, ta có thể suy ra rằng người quản lý cũ không mấy ấn tượng với công việc của cô ấy.",
+      "explanation": "The reader <b>infers</b> (draws a conclusion); the writer <b>implies</b> or <b>insinuates</b>, and <b>allude</b> is intransitive (<b>allude to</b>) and cannot take a that-clause."
+    },
+    {
+      "id": "gv-ch-36-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The embezzlement scandal has done ______ damage to the charity's reputation among its long-standing donors.",
+      "options": [
+        "unspoken",
+        "unsaid",
+        "unmentioned",
+        "untold"
+      ],
+      "correct": 3,
+      "answer": "untold",
+      "vi": "Vụ bê bối biển thủ đã gây thiệt hại khôn lường cho uy tín của tổ chức từ thiện trong mắt các nhà tài trợ lâu năm.",
+      "explanation": "<b>Untold damage</b> means damage too great to be measured; <b>unspoken</b>, <b>unsaid</b> and <b>unmentioned</b> describe things not put into words and do not collocate with <b>damage</b>."
+    },
+    {
+      "id": "gv-ch-36-14",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______, the three studies suggest that screen time has a far smaller effect on children's sleep than parents fear.",
+      "options": [
+        "Taking together",
+        "Taken together",
+        "Having taken together",
+        "To take together"
+      ],
+      "correct": 1,
+      "answer": "Taken together",
+      "vi": "Gộp lại, ba nghiên cứu cho thấy thời gian dùng màn hình ảnh hưởng đến giấc ngủ của trẻ ít hơn nhiều so với những gì cha mẹ lo sợ.",
+      "explanation": "The studies <b>are taken</b> together by the reader, so the passive participle <b>Taken together</b> is needed; <b>Taking</b> and <b>Having taken</b> would make the studies the ones doing the taking, and <b>To take together</b> expresses purpose."
+    },
+    {
+      "id": "gv-ch-36-15",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "With the education budget frozen, plans for a new vocational college have been put ______ until at least next year.",
+      "options": [
+        "on the front line",
+        "on the back foot",
+        "on the back burner",
+        "on the cards"
+      ],
+      "correct": 2,
+      "answer": "on the back burner",
+      "vi": "Với ngân sách giáo dục bị đóng băng, kế hoạch xây trường cao đẳng nghề mới đã bị gác lại ít nhất đến năm sau.",
+      "explanation": "To <b>put something on the back burner</b> is to postpone it; <b>on the back foot</b> means at a disadvantage, <b>on the cards</b> means likely to happen, and <b>on the front line</b> is where the action is."
+    },
+    {
+      "id": "gv-ch-36-16",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Whether the merger goes ahead will ______ the outcome of Friday's shareholder vote.",
+      "options": [
+        "hold on",
+        "hand on",
+        "home in on",
+        "hinge on"
+      ],
+      "correct": 3,
+      "answer": "hinge on",
+      "vi": "Việc sáp nhập có được tiến hành hay không sẽ phụ thuộc vào kết quả cuộc bỏ phiếu của cổ đông vào thứ Sáu.",
+      "explanation": "<b>Hinge on</b> means to depend entirely on; <b>hold on</b> is to wait or grip, <b>hand on</b> is to pass to someone else, and <b>home in on</b> is to move directly towards a target."
+    },
+    {
+      "id": "gv-ch-36-17",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It is high time the government ______ teachers' pay to that of comparable graduate professions.",
+      "options": [
+        "linked",
+        "links",
+        "link",
+        "has linked"
+      ],
+      "correct": 0,
+      "answer": "linked",
+      "vi": "Đã đến lúc chính phủ phải gắn lương giáo viên với mức lương của các ngành nghề tốt nghiệp đại học tương đương.",
+      "explanation": "<b>It is high time + subject + past subjunctive</b> expresses that something should already have been done: <b>high time the government linked</b>, not a present or perfect form."
+    },
+    {
+      "id": "gv-ch-36-18",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The trustees ______ the proposal too risky to fund, despite the founder's enthusiasm for it.",
+      "options": [
+        "regarded",
+        "viewed",
+        "deemed",
+        "looked"
+      ],
+      "correct": 2,
+      "answer": "deemed",
+      "vi": "Các ủy viên quản trị cho rằng đề xuất này quá rủi ro để tài trợ, bất chấp sự nhiệt tình của người sáng lập.",
+      "explanation": "<b>Deem + object + adjective</b> needs no preposition; <b>regard</b>, <b>view</b> and <b>look on</b> all require <b>as</b> (regarded the proposal as too risky)."
+    },
+    {
+      "id": "gv-ch-36-19",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "Having lost its final appeal, the trust had no choice but ______ the disputed funds to the donor's estate.",
+      "options": [
+        "returning",
+        "to return",
+        "return",
+        "to returning"
+      ],
+      "correct": 1,
+      "answer": "to return",
+      "vi": "Sau khi thua kháng cáo cuối cùng, quỹ không còn lựa chọn nào khác ngoài việc trả lại số tiền tranh chấp cho di sản của nhà tài trợ.",
+      "explanation": "<b>Have no choice/alternative but + to-infinitive</b> is the fixed pattern; the bare infinitive follows <b>cannot but</b> or <b>do nothing but</b>, not <b>have no choice but</b>."
+    },
+    {
+      "id": "gv-ch-36-20",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "A one-off retention bonus will merely ______; it will do nothing about the culture that is driving nurses out of the profession.",
+      "options": [
+        "read between the lines",
+        "clutch at straws",
+        "slip through the cracks",
+        "paper over the cracks"
+      ],
+      "correct": 3,
+      "answer": "paper over the cracks",
+      "vi": "Một khoản thưởng giữ chân một lần chỉ che đậy tạm thời vấn đề; nó chẳng làm gì được với văn hóa đang đẩy các y tá rời bỏ nghề.",
+      "explanation": "To <b>paper over the cracks</b> is to hide a problem rather than solve it; <b>slip through the cracks</b> is to be overlooked, <b>clutch at straws</b> is to try anything in desperation, and <b>read between the lines</b> is to find a hidden meaning."
+    },
+    {
+      "id": "gv-ch-36-21",
+      "level": "ch",
+      "focus": "article-quantifier",
+      "q": "______ progress has been made on narrowing the attainment gap, but far less than the ministry's press release suggests.",
+      "options": [
+        "Some",
+        "A few",
+        "Many",
+        "Several"
+      ],
+      "correct": 0,
+      "answer": "Some",
+      "vi": "Đã có một số tiến bộ trong việc thu hẹp khoảng cách thành tích, nhưng ít hơn nhiều so với những gì thông cáo báo chí của bộ gợi ý.",
+      "explanation": "<b>Progress</b> is uncountable, so only <b>some</b> can quantify it; <b>a few</b>, <b>many</b> and <b>several</b> go with plural countable nouns."
+    },
+    {
+      "id": "gv-ch-36-22",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "While ______ through a decade of old survey data, the analyst ______ a pattern that nobody in the department had noticed.",
+      "options": [
+        "shifting / hit on",
+        "sorting / hit at",
+        "sifting / hit on",
+        "sifting / hit out"
+      ],
+      "correct": 2,
+      "answer": "sifting / hit on",
+      "vi": "Trong lúc sàng lọc dữ liệu khảo sát cũ suốt một thập kỷ, nhà phân tích tình cờ phát hiện ra một quy luật mà chưa ai trong phòng để ý.",
+      "explanation": "<b>Sift through</b> is to examine carefully, and <b>hit on</b> is to discover by chance; <b>shifting through</b> is a spelling near-miss, <b>hit out</b> means to attack, and <b>hit at</b> is to strike towards."
+    },
+    {
+      "id": "gv-ch-36-23",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Only after the audit was made public ______ how much of their money had gone on administration.",
+      "options": [
+        "donors realised",
+        "did donors realise",
+        "donors did realise",
+        "had donors realised"
+      ],
+      "correct": 1,
+      "answer": "did donors realise",
+      "vi": "Chỉ sau khi báo cáo kiểm toán được công bố, các nhà tài trợ mới nhận ra bao nhiêu tiền của họ đã đi vào chi phí hành chính.",
+      "explanation": "A fronted <b>Only after + clause</b> forces subject–auxiliary inversion in the main clause: <b>did donors realise</b>; the realising happened after the audit, so the past perfect <b>had donors realised</b> is the wrong tense."
+    },
+    {
+      "id": "gv-ch-36-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Few head teachers could ______ of a timetable with no standardised testing at all.",
+      "options": [
+        "perceive",
+        "contemplate",
+        "consider",
+        "conceive"
+      ],
+      "correct": 3,
+      "answer": "conceive",
+      "vi": "Ít hiệu trưởng nào có thể hình dung nổi một thời khóa biểu hoàn toàn không có kỳ thi chuẩn hóa.",
+      "explanation": "<b>Conceive of</b> means to imagine something as possible; <b>perceive</b>, <b>contemplate</b> and <b>consider</b> are transitive and take a direct object without <b>of</b>."
+    },
+    {
+      "id": "gv-ch-36-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The central bank has raised interest rates twice this quarter in a bid to ______ inflation without tipping the economy into recession.",
+      "options": [
+        "deter",
+        "quench",
+        "curb",
+        "shrink"
+      ],
+      "correct": 2,
+      "answer": "curb",
+      "vi": "Ngân hàng trung ương đã hai lần tăng lãi suất trong quý này nhằm kiềm chế lạm phát mà không đẩy nền kinh tế vào suy thoái.",
+      "explanation": "<b>Curb inflation/spending/emissions</b> is the collocation for keeping something under control; <b>deter</b> takes a person or a crime, <b>quench</b> goes with thirst or fire, and <b>shrink</b> collocates with a deficit or a workforce, not inflation."
+    }
+  ]
+}

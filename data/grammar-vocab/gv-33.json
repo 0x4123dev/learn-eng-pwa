@@ -1,0 +1,406 @@
+{
+  "file": "33",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-33-1",
+      "level": "ch",
+      "focus": "tense",
+      "q": "By the end of next year the offshore wind farm ______ power to the island for a full decade.",
+      "options": [
+        "will supply",
+        "will have been supplying",
+        "has supplied",
+        "will be supplying"
+      ],
+      "correct": 1,
+      "answer": "will have been supplying",
+      "vi": "Đến cuối năm sau, trang trại điện gió ngoài khơi sẽ cung cấp điện cho hòn đảo được tròn một thập kỷ.",
+      "explanation": "<b>By the end of next year</b> + a duration (<b>for a decade</b>) describes an action continuing up to a point in the future, so the future perfect continuous <b>will have been supplying</b> is needed; the other forms cannot carry <b>for a decade</b> up to that deadline."
+    },
+    {
+      "id": "gv-ch-33-2",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The novelist's leukaemia went into ______ after a year of treatment, giving her time to finish the final volume of the trilogy.",
+      "options": [
+        "remission",
+        "relapse",
+        "recession",
+        "regression"
+      ],
+      "correct": 0,
+      "answer": "remission",
+      "vi": "Bệnh bạch cầu của nữ tiểu thuyết gia đã thuyên giảm sau một năm điều trị, cho bà thời gian hoàn thành tập cuối của bộ ba tác phẩm.",
+      "explanation": "A disease that stops getting worse or disappears for a time goes into <b>remission</b>. A <b>relapse</b> is the return of an illness, a <b>recession</b> is an economic decline, and <b>regression</b> is a return to an earlier, less developed state."
+    },
+    {
+      "id": "gv-ch-33-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The regulator ______ badly when it approved the gas pipeline without commissioning a single environmental survey.",
+      "options": [
+        "kept the ball rolling",
+        "was on the ball",
+        "dropped the ball",
+        "played ball"
+      ],
+      "correct": 2,
+      "answer": "dropped the ball",
+      "vi": "Cơ quan quản lý đã sai sót nghiêm trọng khi phê duyệt đường ống dẫn khí mà không hề yêu cầu một cuộc khảo sát môi trường nào.",
+      "explanation": "To <b>drop the ball</b> is to fail to do something you are responsible for. <b>Keep the ball rolling</b> means keep an activity going, <b>be on the ball</b> means be alert and competent, and <b>play ball</b> means cooperate."
+    },
+    {
+      "id": "gv-ch-33-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The city council has finally ______ approval for a second bridge across the estuary.",
+      "options": [
+        "allowed",
+        "permitted",
+        "admitted",
+        "granted"
+      ],
+      "correct": 3,
+      "answer": "granted",
+      "vi": "Hội đồng thành phố cuối cùng đã cấp phép xây cây cầu thứ hai bắc qua cửa sông.",
+      "explanation": "The fixed collocation is <b>grant approval</b> (also grant permission, grant a licence). <b>Allow</b> and <b>permit</b> take the action itself, not the noun <b>approval</b>, and <b>admit</b> means confess or let in."
+    },
+    {
+      "id": "gv-ch-33-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The switch to rooftop solar has ______ a sharp fall in electricity bills for rural households.",
+      "options": [
+        "brought about",
+        "brought up",
+        "brought down",
+        "brought off"
+      ],
+      "correct": 0,
+      "answer": "brought about",
+      "vi": "Việc chuyển sang điện mặt trời áp mái đã tạo ra sự sụt giảm mạnh trong hóa đơn tiền điện của các hộ gia đình nông thôn.",
+      "explanation": "<b>Bring about</b> means cause something to happen. <b>Bring up</b> is to raise a topic or a child, <b>bring down</b> is to reduce or topple (you bring down bills, not a fall), and <b>bring off</b> is to succeed in doing something difficult."
+    },
+    {
+      "id": "gv-ch-33-6",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The blackout ______ have been caused by the storm, since the transmission lines went down two hours before it reached the coast.",
+      "options": [
+        "must",
+        "can't",
+        "might",
+        "should"
+      ],
+      "correct": 1,
+      "answer": "can't",
+      "vi": "Vụ mất điện không thể do cơn bão gây ra, vì các đường dây truyền tải đã đổ hai tiếng trước khi bão vào đến bờ biển.",
+      "explanation": "<b>Can't have been</b> expresses a confident deduction that something was impossible in the past; the timing rules the storm out. <b>Must have</b> and <b>might have</b> claim the storm was a likely or possible cause, and <b>should have</b> expresses what ought to have happened."
+    },
+    {
+      "id": "gv-ch-33-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "A persistent cough is often the first ______ of the lung disease that miners in the coalfield develop.",
+      "options": [
+        "syndrome",
+        "diagnosis",
+        "symptom",
+        "prognosis"
+      ],
+      "correct": 2,
+      "answer": "symptom",
+      "vi": "Ho dai dẳng thường là triệu chứng đầu tiên của căn bệnh phổi mà các thợ mỏ ở vùng than mắc phải.",
+      "explanation": "A <b>symptom</b> is a sign of illness felt by the patient. A <b>syndrome</b> is a whole group of symptoms forming a condition, a <b>diagnosis</b> is the doctor's identification of the disease, and a <b>prognosis</b> is the forecast of how it will develop."
+    },
+    {
+      "id": "gv-ch-33-8",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ must a reporter reveal the identity of a confidential source, even when the police demand it.",
+      "options": [
+        "In any case",
+        "At all costs",
+        "On no account",
+        "Under any circumstances"
+      ],
+      "correct": 2,
+      "answer": "On no account",
+      "vi": "Trong bất kỳ trường hợp nào, phóng viên cũng không được tiết lộ danh tính của nguồn tin bí mật, ngay cả khi cảnh sát yêu cầu.",
+      "explanation": "<b>On no account</b> (= never, for no reason) is a negative adverbial that opens the sentence and forces the inversion <b>must a reporter reveal</b>. <b>In any case</b>, <b>At all costs</b> and <b>Under any circumstances</b> are not negative, so they cannot trigger an inverted verb; <b>Under any circumstances</b> would need <b>no</b> instead of <b>any</b>."
+    },
+    {
+      "id": "gv-ch-33-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Having inflated the magazine's circulation figures for years, the publisher finally had to ______ and answer for the fraud in court.",
+      "options": [
+        "face the music",
+        "call the tune",
+        "change his tune",
+        "blow his own trumpet"
+      ],
+      "correct": 0,
+      "answer": "face the music",
+      "vi": "Sau nhiều năm thổi phồng số lượng phát hành của tạp chí, nhà xuất bản cuối cùng phải chịu trách nhiệm và trả lời về vụ gian lận trước tòa.",
+      "explanation": "To <b>face the music</b> is to accept punishment or criticism for what you have done. <b>Call the tune</b> means be in control, <b>change your tune</b> means change your opinion, and <b>blow your own trumpet</b> means boast."
+    },
+    {
+      "id": "gv-ch-33-10",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Unless the state broadcaster gets its ______ together, advertisers will simply take their money ______.",
+      "options": [
+        "show / away",
+        "act / elsewhere",
+        "house / out",
+        "game / off"
+      ],
+      "correct": 1,
+      "answer": "act / elsewhere",
+      "vi": "Nếu đài truyền hình nhà nước không chấn chỉnh lại cách làm việc, các nhà quảng cáo sẽ đơn giản mang tiền đi nơi khác.",
+      "explanation": "<b>Get your act together</b> means organise yourself and start doing things properly, and customers who leave <b>take their money elsewhere</b>. <b>Get your house in order</b> and <b>get the show on the road</b> are different idioms, and <b>away / out / off</b> do not complete the second phrase."
+    },
+    {
+      "id": "gv-ch-33-11",
+      "level": "ch",
+      "focus": "relative",
+      "q": "The engineer ______ the tidal barrage was designed died before its first turbine ever turned.",
+      "options": [
+        "who",
+        "whose",
+        "by whom",
+        "whom"
+      ],
+      "correct": 2,
+      "answer": "by whom",
+      "vi": "Người kỹ sư đã thiết kế đập thủy triều ấy qua đời trước khi tua-bin đầu tiên của nó quay.",
+      "explanation": "The barrage <b>was designed by</b> the engineer, so the passive agent needs <b>by whom</b>. <b>Who</b> and <b>whom</b> leave the preposition missing, and <b>whose</b> would need a noun after it."
+    },
+    {
+      "id": "gv-ch-33-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The newspaper's health desk was the first to report an ______ of cholera in the flooded villages below the dam.",
+      "options": [
+        "outburst",
+        "outcome",
+        "outset",
+        "outbreak"
+      ],
+      "correct": 3,
+      "answer": "outbreak",
+      "vi": "Ban y tế của tờ báo là nơi đầu tiên đưa tin về một đợt bùng phát dịch tả ở các làng bị ngập bên dưới con đập.",
+      "explanation": "The sudden start of a disease, war or violence is an <b>outbreak</b>. An <b>outburst</b> is a sudden show of emotion, an <b>outcome</b> is a result, and the <b>outset</b> is the beginning of an activity."
+    },
+    {
+      "id": "gv-ch-33-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The national grid struggles to meet ______ demand on the hottest afternoons of the year, when every air conditioner is running.",
+      "options": [
+        "peak",
+        "top",
+        "summit",
+        "climax"
+      ],
+      "correct": 0,
+      "answer": "peak",
+      "vi": "Lưới điện quốc gia chật vật đáp ứng nhu cầu cao điểm vào những buổi chiều nóng nhất trong năm, khi mọi máy điều hòa đều chạy.",
+      "explanation": "<b>Peak demand</b> (like peak hours, peak season) is the fixed collocation for the highest level of use. <b>Top</b>, <b>summit</b> and <b>climax</b> are not used before <b>demand</b>."
+    },
+    {
+      "id": "gv-ch-33-14",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The station keeps a diesel generator on standby lest the wind farm ______ to deliver on a calm day.",
+      "options": [
+        "fails",
+        "fail",
+        "failed",
+        "would fail"
+      ],
+      "correct": 1,
+      "answer": "fail",
+      "vi": "Nhà máy luôn để sẵn một máy phát diesel đề phòng trường hợp trang trại điện gió không phát được điện vào ngày lặng gió.",
+      "explanation": "After <b>lest</b> (= for fear that) the verb takes the present subjunctive, the base form <b>fail</b> with no -s, whatever the subject; the indicative and conditional forms are not used."
+    },
+    {
+      "id": "gv-ch-33-15",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "For three years the engineers' warnings that the spillway was cracking ______, until the flood of 2019 proved them right.",
+      "options": [
+        "turned a deaf ear",
+        "were all ears",
+        "fell on deaf ears",
+        "played it by ear"
+      ],
+      "correct": 2,
+      "answer": "fell on deaf ears",
+      "vi": "Suốt ba năm, những cảnh báo của các kỹ sư rằng đập tràn đang nứt đều bị bỏ ngoài tai, cho đến khi trận lũ năm 2019 chứng minh họ đúng.",
+      "explanation": "Advice or warnings that are ignored <b>fall on deaf ears</b>. A person <b>turns a deaf ear</b> to something, <b>is all ears</b> when listening eagerly, or <b>plays it by ear</b> when improvising; none of these fits <b>warnings</b> as the subject."
+    },
+    {
+      "id": "gv-ch-33-16",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The editorial ______ an independent inquiry into the grid failure, arguing that the ministry could not investigate itself.",
+      "options": [
+        "called off",
+        "called up",
+        "called out",
+        "called for"
+      ],
+      "correct": 3,
+      "answer": "called for",
+      "vi": "Bài xã luận kêu gọi một cuộc điều tra độc lập về sự cố lưới điện, lập luận rằng bộ không thể tự điều tra chính mình.",
+      "explanation": "<b>Call for</b> means publicly demand that something be done. <b>Call off</b> is to cancel, <b>call up</b> is to telephone or summon for military service, and <b>call out</b> is to criticise someone publicly."
+    },
+    {
+      "id": "gv-ch-33-17",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The scan revealed a ______ tumour, so the poet cancelled his reading tour to begin chemotherapy at once.",
+      "options": [
+        "malignant",
+        "malicious",
+        "malevolent",
+        "malign"
+      ],
+      "correct": 0,
+      "answer": "malignant",
+      "vi": "Kết quả chụp cho thấy một khối u ác tính, nên nhà thơ hủy chuyến lưu diễn đọc thơ để bắt đầu hóa trị ngay lập tức.",
+      "explanation": "A cancerous tumour is <b>malignant</b> (the opposite of benign). <b>Malicious</b> and <b>malevolent</b> describe people or actions intended to harm, and <b>malign</b> as an adjective means harmful in influence, not a medical term."
+    },
+    {
+      "id": "gv-ch-33-18",
+      "level": "ch",
+      "focus": "linking",
+      "q": "The pipeline was completed on schedule; ______, it ended up costing nearly twice the original estimate.",
+      "options": [
+        "whereas",
+        "however",
+        "despite",
+        "although"
+      ],
+      "correct": 1,
+      "answer": "however",
+      "vi": "Đường ống được hoàn thành đúng tiến độ; tuy nhiên, chi phí cuối cùng gần gấp đôi dự toán ban đầu.",
+      "explanation": "Between a semicolon and a comma only the adverb <b>however</b> can stand alone. <b>Whereas</b> and <b>although</b> are conjunctions that must introduce a clause joined directly to the other, and <b>despite</b> needs a noun or -ing form."
+    },
+    {
+      "id": "gv-ch-33-19",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ entirely from recycled glass, the installation changes colour as the sun moves across the gallery.",
+      "options": [
+        "Making",
+        "Having made",
+        "Made",
+        "To make"
+      ],
+      "correct": 2,
+      "answer": "Made",
+      "vi": "Được làm hoàn toàn từ thủy tinh tái chế, tác phẩm sắp đặt đổi màu khi mặt trời di chuyển ngang phòng trưng bày.",
+      "explanation": "The installation <b>is made</b> from glass, so the reduced clause needs the passive past participle <b>Made</b>. <b>Making</b> and <b>Having made</b> would mean the installation itself made something, and <b>To make</b> expresses purpose."
+    },
+    {
+      "id": "gv-ch-33-20",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Residents ______ to stop the coal-fired plant being built on the edge of the wetland, and in the end they won.",
+      "options": [
+        "fought shy",
+        "fought like cat and dog",
+        "picked a fight",
+        "fought tooth and nail"
+      ],
+      "correct": 3,
+      "answer": "fought tooth and nail",
+      "vi": "Người dân đã đấu tranh quyết liệt để ngăn nhà máy nhiệt điện than được xây ở rìa vùng đất ngập nước, và cuối cùng họ đã thắng.",
+      "explanation": "To <b>fight tooth and nail</b> is to fight fiercely with every means available. <b>Fight shy of</b> means avoid something, <b>fight like cat and dog</b> describes two people quarrelling constantly, and <b>pick a fight</b> means deliberately start a quarrel."
+    },
+    {
+      "id": "gv-ch-33-21",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The new arts centre ______ for audiences ______ tastes range from opera to hip-hop.",
+      "options": [
+        "caters / whose",
+        "calls / who",
+        "provides / which",
+        "serves / whom"
+      ],
+      "correct": 0,
+      "answer": "caters / whose",
+      "vi": "Trung tâm nghệ thuật mới phục vụ những khán giả có gu thưởng thức trải dài từ opera đến hip-hop.",
+      "explanation": "<b>Cater for</b> means provide what a particular group wants, and the possessive relative <b>whose</b> links <b>audiences</b> to <b>tastes</b>. <b>Call for</b> means demand, <b>provide for</b> is to support financially, <b>serve</b> takes no <b>for</b>, and <b>who / which / whom</b> cannot show possession."
+    },
+    {
+      "id": "gv-ch-33-22",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "______ the emergency generators, the newsroom would have gone dark in the middle of the election broadcast.",
+      "options": [
+        "If it hadn't been",
+        "Had it not been for",
+        "Were it not for",
+        "Unless there were"
+      ],
+      "correct": 1,
+      "answer": "Had it not been for",
+      "vi": "Nếu không nhờ các máy phát điện dự phòng, phòng tin đã chìm trong bóng tối ngay giữa buổi phát sóng bầu cử.",
+      "explanation": "The main clause <b>would have gone</b> is a past unreal result, so the condition must be the inverted third conditional <b>Had it not been for</b>. <b>If it hadn't been</b> lacks the essential <b>for</b>, <b>Were it not for</b> refers to the present, and <b>Unless there were</b> is a present unreal form."
+    },
+    {
+      "id": "gv-ch-33-23",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The condition is ______, passed from parent to child through a faulty gene, rather than caught from anyone the patient has met.",
+      "options": [
+        "contagious",
+        "congenital",
+        "hereditary",
+        "infectious"
+      ],
+      "correct": 2,
+      "answer": "hereditary",
+      "vi": "Căn bệnh này mang tính di truyền, truyền từ cha mẹ sang con qua một gen lỗi, chứ không phải lây từ bất kỳ ai bệnh nhân từng gặp.",
+      "explanation": "A disease passed down through the genes is <b>hereditary</b>. <b>Contagious</b> and <b>infectious</b> diseases are caught from other people, and <b>congenital</b> means present from birth without saying it was inherited."
+    },
+    {
+      "id": "gv-ch-33-24",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The volcanologist says she will never ______ the lava fountain burst through the crater floor on her first field trip to Iceland.",
+      "options": [
+        "forget to see",
+        "forget seeing",
+        "forget to have seen",
+        "forget being seen"
+      ],
+      "correct": 1,
+      "answer": "forget seeing",
+      "vi": "Nhà nghiên cứu núi lửa nói rằng cô sẽ không bao giờ quên cảnh cột dung nham phun trào qua đáy miệng núi lửa trong chuyến thực địa đầu tiên ở Iceland.",
+      "explanation": "<b>Forget + -ing</b> refers to the memory of something that already happened: she will never <b>forget seeing</b> the eruption. <b>Forget to see</b> would mean fail to see something she was supposed to see, and the perfect infinitive and the passive gerund do not follow <b>forget</b> in this sense."
+    },
+    {
+      "id": "gv-ch-33-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Years of rotating night shifts at the refinery ______ a heavy toll on the workers' health.",
+      "options": [
+        "took",
+        "paid",
+        "made",
+        "had"
+      ],
+      "correct": 0,
+      "answer": "took",
+      "vi": "Nhiều năm làm ca đêm luân phiên ở nhà máy lọc dầu đã gây tổn hại nặng nề đến sức khỏe của công nhân.",
+      "explanation": "The collocation for causing serious harm or loss is <b>take a toll on</b>. You <b>pay</b> a toll only literally at a toll gate, and <b>make</b> and <b>have</b> do not combine with <b>toll</b>."
+    }
+  ]
+}

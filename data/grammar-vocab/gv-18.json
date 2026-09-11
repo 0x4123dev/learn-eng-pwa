@@ -1,0 +1,406 @@
+{
+  "file": "18",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-18-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The laboratory's verdict was ______: the bone fragments were at least forty thousand years old.",
+      "options": [
+        "equivocal",
+        "unequivocal",
+        "equivalent",
+        "ambivalent"
+      ],
+      "correct": 1,
+      "answer": "unequivocal",
+      "vi": "Kết luận của phòng thí nghiệm là không thể chối cãi: các mảnh xương có niên đại ít nhất bốn mươi nghìn năm.",
+      "explanation": "<b>Unequivocal</b> means leaving no room for doubt, which the clause after the colon confirms; <b>equivocal</b> means the opposite, <b>equivalent</b> means equal in value, and <b>ambivalent</b> describes a person's mixed feelings, not a result."
+    },
+    {
+      "id": "gv-ch-18-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "For almost a decade the data broker operated ______, compiling profiles that most users never knew existed.",
+      "options": [
+        "under the radar",
+        "off the hook",
+        "on the fence",
+        "up in the air"
+      ],
+      "correct": 0,
+      "answer": "under the radar",
+      "vi": "Trong gần một thập kỷ, công ty môi giới dữ liệu ấy hoạt động âm thầm ngoài tầm chú ý, lập những hồ sơ mà hầu hết người dùng chưa từng biết là có.",
+      "explanation": "To operate <b>under the radar</b> is to escape attention; <b>off the hook</b> means freed from blame, <b>on the fence</b> means undecided and <b>up in the air</b> means not yet settled."
+    },
+    {
+      "id": "gv-ch-18-3",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The builders of the tomb ______ have used wheeled carts, since no trace of a wheel has ever been found in the region.",
+      "options": [
+        "mustn't",
+        "needn't",
+        "can't",
+        "shouldn't"
+      ],
+      "correct": 2,
+      "answer": "can't",
+      "vi": "Những người xây lăng mộ này không thể nào đã dùng xe có bánh, vì chưa từng tìm thấy dấu vết bánh xe nào trong vùng.",
+      "explanation": "<b>Can't have + past participle</b> is a confident deduction that something did not happen; <b>mustn't have</b> is not used for deduction, and <b>needn't/shouldn't have</b> comment on necessity or advisability, not on what was possible."
+    },
+    {
+      "id": "gv-ch-18-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Broadcasting your location in real time ______ a serious risk to your personal safety.",
+      "options": [
+        "puts",
+        "makes",
+        "does",
+        "poses"
+      ],
+      "correct": 3,
+      "answer": "poses",
+      "vi": "Việc phát vị trí của bạn theo thời gian thực gây ra một rủi ro nghiêm trọng cho an toàn cá nhân.",
+      "explanation": "A danger <b>poses a risk</b> (or threat) to someone; <b>put</b> needs the pattern <i>put someone at risk</i>, and <b>make/do a risk</b> are not English collocations."
+    },
+    {
+      "id": "gv-ch-18-5",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "With no witnesses and no fingerprints, the case against the hacker rested entirely on ______ evidence.",
+      "options": [
+        "circumstantial",
+        "coincidental",
+        "incidental",
+        "accidental"
+      ],
+      "correct": 0,
+      "answer": "circumstantial",
+      "vi": "Không có nhân chứng và không có dấu vân tay, vụ án chống lại tin tặc ấy hoàn toàn dựa vào bằng chứng gián tiếp.",
+      "explanation": "<b>Circumstantial evidence</b> is indirect evidence that suggests guilt without proving it; <b>coincidental</b> means happening by chance, <b>incidental</b> means minor or secondary, and <b>accidental</b> means unintended."
+    },
+    {
+      "id": "gv-ch-18-6",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The deal to digitise the museum's entire archive ______ when the main sponsor withdrew at the last minute.",
+      "options": [
+        "fell out",
+        "fell through",
+        "fell behind",
+        "fell off"
+      ],
+      "correct": 1,
+      "answer": "fell through",
+      "vi": "Thỏa thuận số hóa toàn bộ kho lưu trữ của bảo tàng đã đổ bể khi nhà tài trợ chính rút lui vào phút chót.",
+      "explanation": "A plan or deal that <b>falls through</b> fails to happen; <b>fall out</b> means to quarrel, <b>fall behind</b> means to fail to keep up, and <b>fall off</b> means to decline in amount."
+    },
+    {
+      "id": "gv-ch-18-7",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ had the probe been launched than contact with it was lost.",
+      "options": [
+        "Hardly",
+        "Not until",
+        "No sooner",
+        "Only when"
+      ],
+      "correct": 2,
+      "answer": "No sooner",
+      "vi": "Tàu thăm dò vừa mới được phóng lên thì đã mất liên lạc.",
+      "explanation": "The inverted pattern <b>No sooner had … than …</b> pairs with <i>than</i>; <b>Hardly</b> would need <i>when</i>, and <b>Not until</b> and <b>Only when</b> invert the main clause, not the one they introduce."
+    },
+    {
+      "id": "gv-ch-18-8",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Rather than cut down gradually, he decided to ______ and deleted every social media app from his phone in a single evening.",
+      "options": [
+        "go the extra mile",
+        "go with the flow",
+        "go through the roof",
+        "go cold turkey"
+      ],
+      "correct": 3,
+      "answer": "go cold turkey",
+      "vi": "Thay vì giảm dần, anh ấy quyết định cai hẳn một lần và xóa toàn bộ ứng dụng mạng xã hội khỏi điện thoại chỉ trong một buổi tối.",
+      "explanation": "To <b>go cold turkey</b> is to stop a habit abruptly and completely; <b>go the extra mile</b> means to make extra effort, <b>go with the flow</b> means to accept what happens, and <b>go through the roof</b> means to rise sharply or lose one's temper."
+    },
+    {
+      "id": "gv-ch-18-9",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The privacy cost of a single photo upload may seem ______, but every post adds another data point to your profile.",
+      "options": [
+        "negligible",
+        "negligent",
+        "neglected",
+        "neglectful"
+      ],
+      "correct": 0,
+      "answer": "negligible",
+      "vi": "Cái giá về quyền riêng tư của một lần tải ảnh lên có vẻ không đáng kể, nhưng mỗi bài đăng lại thêm một điểm dữ liệu vào hồ sơ của bạn.",
+      "explanation": "<b>Negligible</b> means too small to matter; <b>negligent</b> and <b>neglectful</b> describe a person who fails to take proper care, and <b>neglected</b> describes something that has not been looked after."
+    },
+    {
+      "id": "gv-ch-18-10",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Each new leak ______ the stakes, ______ regulators to act sooner than they had planned.",
+      "options": [
+        "rose / forced",
+        "raised / forcing",
+        "raised / forced",
+        "rose / forcing"
+      ],
+      "correct": 1,
+      "answer": "raised / forcing",
+      "vi": "Mỗi vụ rò rỉ mới lại nâng cao mức độ rủi ro, buộc các cơ quan quản lý phải hành động sớm hơn dự kiến.",
+      "explanation": "<b>Raise the stakes</b> needs the transitive verb <i>raise</i> (<i>rise</i> takes no object), and the second blank is a present participle <b>forcing</b> giving the result; a second finite verb <i>forced</i> would need a conjunction."
+    },
+    {
+      "id": "gv-ch-18-11",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The regulator demanded that the company ______ fully transparent about which third parties receive users' data.",
+      "options": [
+        "is",
+        "was",
+        "be",
+        "were"
+      ],
+      "correct": 2,
+      "answer": "be",
+      "vi": "Cơ quan quản lý yêu cầu công ty phải hoàn toàn minh bạch về việc những bên thứ ba nào nhận được dữ liệu của người dùng.",
+      "explanation": "After <b>demand that</b>, the subjunctive uses the base form <b>be</b> for every subject; <i>is/was/were</i> are indicative forms and do not follow a verb of demand."
+    },
+    {
+      "id": "gv-ch-18-12",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The pottery unearthed at the site ______ a striking resemblance to designs found five hundred kilometres away.",
+      "options": [
+        "holds",
+        "carries",
+        "keeps",
+        "bears"
+      ],
+      "correct": 3,
+      "answer": "bears",
+      "vi": "Đồ gốm khai quật tại di chỉ này mang nét tương đồng đáng kinh ngạc với các hoa văn được tìm thấy cách đó năm trăm cây số.",
+      "explanation": "The fixed collocation is <b>bear a resemblance to</b>; <i>hold, carry</i> and <i>keep</i> do not combine with <i>resemblance</i>."
+    },
+    {
+      "id": "gv-ch-18-13",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The team had located the tomb in 2015 but, rather than dig at once, chose to ______ until better scanning technology became available.",
+      "options": [
+        "bide their time",
+        "cut their losses",
+        "pull their weight",
+        "mend their fences"
+      ],
+      "correct": 0,
+      "answer": "bide their time",
+      "vi": "Nhóm nghiên cứu đã xác định được vị trí lăng mộ từ năm 2015 nhưng, thay vì đào ngay, họ chọn kiên nhẫn chờ thời cơ cho đến khi có công nghệ quét tốt hơn.",
+      "explanation": "To <b>bide your time</b> is to wait patiently for the right moment; <b>cut your losses</b> means to abandon a failing venture, <b>pull your weight</b> means to do your share, and <b>mend fences</b> means to repair a relationship."
+    },
+    {
+      "id": "gv-ch-18-14",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The historian's claim that the city had a written language remained ______ until the clay tablets were finally deciphered.",
+      "options": [
+        "insubstantial",
+        "unsubstantiated",
+        "substantive",
+        "substantial"
+      ],
+      "correct": 1,
+      "answer": "unsubstantiated",
+      "vi": "Luận điểm của nhà sử học rằng thành phố này từng có chữ viết vẫn chưa được chứng thực cho đến khi các phiến đất sét cuối cùng được giải mã.",
+      "explanation": "<b>Unsubstantiated</b> means not yet supported by evidence; <b>insubstantial</b> means flimsy or lacking solidity, <b>substantive</b> means real and meaningful, and <b>substantial</b> means large."
+    },
+    {
+      "id": "gv-ch-18-15",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The site's founders now openly regret ______ user data to advertisers in the company's early years.",
+      "options": [
+        "to sell",
+        "sell",
+        "selling",
+        "to have sold"
+      ],
+      "correct": 2,
+      "answer": "selling",
+      "vi": "Những người sáng lập trang web giờ đây công khai hối tiếc vì đã bán dữ liệu người dùng cho các nhà quảng cáo trong những năm đầu của công ty.",
+      "explanation": "<b>Regret + -ing</b> looks back on something already done; <b>regret to + infinitive</b> announces bad news now (<i>we regret to inform you</i>), and the bare infinitive is impossible after <i>regret</i>."
+    },
+    {
+      "id": "gv-ch-18-16",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Every day the site's servers must ______ thousands of automated login attempts from hijacked computers.",
+      "options": [
+        "fend for",
+        "put off",
+        "set off",
+        "fend off"
+      ],
+      "correct": 3,
+      "answer": "fend off",
+      "vi": "Mỗi ngày, máy chủ của trang web phải chống đỡ hàng nghìn lượt đăng nhập tự động từ các máy tính bị chiếm quyền điều khiển.",
+      "explanation": "To <b>fend off</b> an attack is to repel it; <b>fend for yourself</b> means to look after yourself, <b>put off</b> means to postpone, and <b>set off</b> means to trigger or to depart."
+    },
+    {
+      "id": "gv-ch-18-17",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ with the paper surveys of the 1990s, today's online census forms take barely ten minutes to complete.",
+      "options": [
+        "Compared",
+        "Comparing",
+        "To compare",
+        "Having compared"
+      ],
+      "correct": 0,
+      "answer": "Compared",
+      "vi": "So với các phiếu khảo sát giấy của thập niên 1990, mẫu điều tra dân số trực tuyến ngày nay chỉ mất chưa đầy mười phút để hoàn thành.",
+      "explanation": "The forms are the thing being compared, so the past participle <b>Compared with</b> is needed; <i>Comparing</i> and <i>Having compared</i> would make the forms the ones doing the comparing."
+    },
+    {
+      "id": "gv-ch-18-18",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Once the researchers had ______ how the algorithm ranked posts, they ______ that outrage was being rewarded.",
+      "options": [
+        "figured in / realised",
+        "figured out / realised",
+        "figured on / to realise",
+        "worked out / realising"
+      ],
+      "correct": 1,
+      "answer": "figured out / realised",
+      "vi": "Một khi các nhà nghiên cứu đã hiểu ra cách thuật toán xếp hạng bài đăng, họ nhận ra rằng sự phẫn nộ đang được tưởng thưởng.",
+      "explanation": "<b>Figure out</b> means to work out or understand; <i>figure in</i> means to include and <i>figure on</i> means to expect. The main clause after <i>Once …</i> needs a finite past verb, <b>realised</b>, not an infinitive or participle."
+    },
+    {
+      "id": "gv-ch-18-19",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ carefully a password is chosen, it is worthless once it has been reused on a dozen sites.",
+      "options": [
+        "However much",
+        "Whatever",
+        "No matter how",
+        "Even though"
+      ],
+      "correct": 2,
+      "answer": "No matter how",
+      "vi": "Dù mật khẩu được chọn cẩn thận đến đâu, nó cũng trở nên vô giá trị một khi đã được dùng lại trên cả chục trang web.",
+      "explanation": "<b>No matter how + adverb</b> introduces a concession of degree; <i>However much</i> and <i>Whatever</i> cannot be followed directly by an adverb, and <i>Even though carefully</i> is not a grammatical clause."
+    },
+    {
+      "id": "gv-ch-18-20",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "By selling the family farm to fund the expedition, the explorer had ______: there was simply no going back.",
+      "options": [
+        "burnt his fingers",
+        "burnt the midnight oil",
+        "burnt a hole in his pocket",
+        "burnt his boats"
+      ],
+      "correct": 3,
+      "answer": "burnt his boats",
+      "vi": "Bằng việc bán nông trại của gia đình để tài trợ cho chuyến thám hiểm, nhà thám hiểm đã tự đốt thuyền chặt đứt đường lui: đơn giản là không còn đường quay về nữa.",
+      "explanation": "To <b>burn your boats</b> (or bridges) is to act so that retreat is impossible; <b>burn your fingers</b> means to suffer from a risky venture, <b>burn the midnight oil</b> means to work late, and money that <b>burns a hole in your pocket</b> is money you cannot wait to spend."
+    },
+    {
+      "id": "gv-ch-18-21",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Radiocarbon dating gave the team ______ grounds for redating the temple by three centuries.",
+      "options": [
+        "compelling",
+        "compulsive",
+        "compulsory",
+        "compelled"
+      ],
+      "correct": 0,
+      "answer": "compelling",
+      "vi": "Phương pháp định tuổi bằng carbon phóng xạ đã cho nhóm nghiên cứu những cơ sở rất thuyết phục để xác định lại niên đại ngôi đền, chênh lệch tới ba thế kỷ.",
+      "explanation": "<b>Compelling</b> evidence or grounds are convincing; <b>compulsive</b> describes an uncontrollable habit, <b>compulsory</b> means required by rule, and <b>compelled</b> means forced."
+    },
+    {
+      "id": "gv-ch-18-22",
+      "level": "ch",
+      "focus": "agreement",
+      "q": "Neither the archaeologists nor the museum director ______ willing to say when the sealed chamber will be opened.",
+      "options": [
+        "are",
+        "is",
+        "were",
+        "have been"
+      ],
+      "correct": 1,
+      "answer": "is",
+      "vi": "Cả các nhà khảo cổ lẫn giám đốc bảo tàng đều không sẵn lòng cho biết khi nào căn phòng bị niêm phong sẽ được mở.",
+      "explanation": "With <b>neither … nor</b> the verb agrees with the nearer subject, the singular <i>director</i>, so <b>is</b>; <i>are</i> and <i>have been</i> are plural, and <i>were</i> is both plural and the wrong tense for a statement about the present."
+    },
+    {
+      "id": "gv-ch-18-23",
+      "level": "ch",
+      "focus": "comparison",
+      "q": "The more personal data a platform collects, ______ it becomes to advertisers.",
+      "options": [
+        "the most valuable",
+        "more valuable",
+        "the more valuable",
+        "the more valuably"
+      ],
+      "correct": 2,
+      "answer": "the more valuable",
+      "vi": "Nền tảng càng thu thập nhiều dữ liệu cá nhân thì càng trở nên có giá trị đối với các nhà quảng cáo.",
+      "explanation": "The double comparative <b>the more …, the more …</b> needs <i>the</i> before both comparatives; <i>becomes</i> takes an adjective, so the adverb <i>valuably</i> is wrong."
+    },
+    {
+      "id": "gv-ch-18-24",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "After months of checks, the physicists ______ the conclusion that the signal was nothing more than noise from a nearby fridge.",
+      "options": [
+        "arrived",
+        "came",
+        "got",
+        "reached"
+      ],
+      "correct": 3,
+      "answer": "reached",
+      "vi": "Sau nhiều tháng kiểm tra, các nhà vật lý đi đến kết luận rằng tín hiệu đó chẳng qua chỉ là nhiễu từ một chiếc tủ lạnh gần đó.",
+      "explanation": "You <b>reach a conclusion</b> directly; <i>arrive at</i>, <i>come to</i> and <i>get to</i> would all need a preposition before <i>the conclusion</i>."
+    },
+    {
+      "id": "gv-ch-18-25",
+      "level": "ch",
+      "focus": "passive",
+      "q": "By the end of the decade, most routine scans ______ by algorithms rather than by radiologists.",
+      "options": [
+        "will have read",
+        "will have been read",
+        "will be reading",
+        "have been read"
+      ],
+      "correct": 1,
+      "answer": "will have been read",
+      "vi": "Đến cuối thập kỷ này, hầu hết các ảnh chụp thường quy sẽ được thuật toán đọc thay vì bác sĩ chẩn đoán hình ảnh.",
+      "explanation": "<i>By the end of the decade</i> points to a future deadline and the scans are read <i>by</i> algorithms, so the future perfect passive <b>will have been read</b> is required; the active forms make the scans the readers, and the present perfect ignores the future time marker."
+    }
+  ]
+}

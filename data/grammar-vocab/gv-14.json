@@ -1,0 +1,406 @@
+{
+  "file": "14",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-14-1",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "It was so dark in the clinic corridor that I had to ______ at the sign to read the doctor's name.",
+      "options": [
+        "glimpse",
+        "peer",
+        "notice",
+        "observe"
+      ],
+      "correct": 1,
+      "answer": "peer",
+      "vi": "Hành lang phòng khám tối đến nỗi tôi phải nheo mắt nhìn kỹ tấm biển mới đọc được tên bác sĩ.",
+      "explanation": "<b>Peer at</b> means to look closely and with difficulty, often because it is dark. <b>Glimpse</b>, <b>notice</b> and <b>observe</b> take a direct object and none of them means looking hard to see."
+    },
+    {
+      "id": "gv-kc-14-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Can you ______ any spelling mistakes in my post before I upload it?",
+      "options": [
+        "spot",
+        "glance",
+        "stare",
+        "gaze"
+      ],
+      "correct": 0,
+      "answer": "spot",
+      "vi": "Bạn có thể phát hiện lỗi chính tả nào trong bài đăng của mình trước khi mình tải lên không?",
+      "explanation": "<b>Spot</b> means to see or notice something that is hard to find. <b>Glance</b>, <b>stare</b> and <b>gaze</b> describe ways of looking and need <b>at</b>; they cannot take 'mistakes' as an object."
+    },
+    {
+      "id": "gv-kc-14-3",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "The little boy ______ at the goldfish in the doctor's waiting room for almost an hour.",
+      "options": [
+        "glimpsed",
+        "spotted",
+        "gazed",
+        "noticed"
+      ],
+      "correct": 2,
+      "answer": "gazed",
+      "vi": "Cậu bé ngắm nhìn đàn cá vàng trong phòng chờ của bác sĩ gần cả tiếng đồng hồ.",
+      "explanation": "<b>Gaze at</b> is to look steadily for a long time, which fits 'for almost an hour'. <b>Glimpse</b>, <b>spot</b> and <b>notice</b> are momentary and take a direct object, not <b>at</b>."
+    },
+    {
+      "id": "gv-kc-14-4",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "I only caught a ______ of the famous striker before the crowd closed in around him.",
+      "options": [
+        "glance",
+        "view",
+        "stare",
+        "glimpse"
+      ],
+      "correct": 3,
+      "answer": "glimpse",
+      "vi": "Tôi chỉ kịp thoáng thấy cầu thủ tiền đạo nổi tiếng trước khi đám đông vây quanh anh ấy.",
+      "explanation": "<b>Catch a glimpse of</b> = see something very briefly. A <b>glance</b> is a quick look you <b>take</b>, not catch; <b>view</b> and <b>stare</b> do not fit this expression."
+    },
+    {
+      "id": "gv-kc-14-5",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Lan spent the whole evening ______ the internet for a second-hand bicycle.",
+      "options": [
+        "browsing",
+        "peeking",
+        "glancing",
+        "staring"
+      ],
+      "correct": 0,
+      "answer": "browsing",
+      "vi": "Lan dành cả buổi tối lướt mạng để tìm một chiếc xe đạp cũ.",
+      "explanation": "<b>Browse the internet</b> means to look through websites without a fixed plan. <b>Peek</b>, <b>glance</b> and <b>stare</b> need <b>at</b> and describe a single look, not searching online."
+    },
+    {
+      "id": "gv-kc-14-6",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Please ______ attention to the road signs when you cycle through the city centre.",
+      "options": [
+        "pay",
+        "take",
+        "make",
+        "put"
+      ],
+      "correct": 0,
+      "answer": "pay",
+      "vi": "Hãy chú ý các biển báo giao thông khi bạn đạp xe qua trung tâm thành phố.",
+      "explanation": "The fixed collocation is <b>pay attention to</b>. We do not <b>take</b>, <b>make</b> or <b>put</b> attention."
+    },
+    {
+      "id": "gv-kc-14-7",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "When the teacher asked who had broken the window, Nam decided to ______ the truth.",
+      "options": [
+        "say",
+        "speak",
+        "tell",
+        "talk"
+      ],
+      "correct": 2,
+      "answer": "tell",
+      "vi": "Khi cô giáo hỏi ai đã làm vỡ cửa sổ, Nam quyết định nói thật.",
+      "explanation": "<b>Tell the truth</b> (like tell a lie, tell a story) is the fixed collocation. <b>Say</b> reports words, not truth or lies, and <b>speak</b> and <b>talk</b> do not take this object."
+    },
+    {
+      "id": "gv-kc-14-8",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "My grandfather cycles ten kilometres every morning to ______ fit.",
+      "options": [
+        "hold",
+        "make",
+        "go",
+        "keep"
+      ],
+      "correct": 3,
+      "answer": "keep",
+      "vi": "Ông tôi đạp xe mười ki-lô-mét mỗi sáng để giữ gìn sức khỏe.",
+      "explanation": "<b>Keep fit</b> (or stay fit) is the collocation for staying healthy through exercise. <b>Hold fit</b>, <b>make fit</b> and <b>go fit</b> are not English."
+    },
+    {
+      "id": "gv-kc-14-9",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: Where's Nam? / Minh: He ______ badminton at the sports centre. He'll be home by six.",
+      "options": [
+        "plays",
+        "is playing",
+        "has played",
+        "played"
+      ],
+      "correct": 1,
+      "answer": "is playing",
+      "vi": "Lan: Nam đâu rồi? / Minh: Cậu ấy đang chơi cầu lông ở trung tâm thể thao. Sáu giờ cậu ấy sẽ về.",
+      "explanation": "An action happening <b>right now</b> takes the present continuous: <b>is playing</b>. The present simple describes habits and the past forms describe finished actions."
+    },
+    {
+      "id": "gv-kc-14-10",
+      "level": "kc",
+      "focus": "tense",
+      "q": "I ______ this phone for three years, and the battery still lasts all day.",
+      "options": [
+        "had",
+        "am having",
+        "have had",
+        "have"
+      ],
+      "correct": 2,
+      "answer": "have had",
+      "vi": "Tôi đã dùng chiếc điện thoại này ba năm rồi mà pin vẫn dùng được cả ngày.",
+      "explanation": "<b>For three years</b> with a situation that continues to now needs the present perfect: <b>have had</b>. <b>Had</b> would mean I no longer have it, and <b>have</b> (possess) is not used in the continuous."
+    },
+    {
+      "id": "gv-kc-14-11",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: Are you free on Sunday? / Nam: No, I ______ my cousin in Da Lat. We booked the bus tickets last week.",
+      "options": [
+        "visit",
+        "visited",
+        "have visited",
+        "am visiting"
+      ],
+      "correct": 3,
+      "answer": "am visiting",
+      "vi": "Lan: Chủ nhật bạn có rảnh không? / Nam: Không, mình đi thăm anh họ ở Đà Lạt. Bọn mình đặt vé xe từ tuần trước rồi.",
+      "explanation": "A fixed future arrangement (the tickets are already booked) takes the present continuous: <b>am visiting</b>. The present simple is for timetables, not personal plans, and the past forms do not describe the future."
+    },
+    {
+      "id": "gv-kc-14-12",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Mai was ______ when she found out she had won the chess tournament.",
+      "options": [
+        "under the weather",
+        "over the moon",
+        "on the fence",
+        "in the dark"
+      ],
+      "correct": 1,
+      "answer": "over the moon",
+      "vi": "Mai vui sướng tột độ khi biết mình đã thắng giải cờ vua.",
+      "explanation": "<b>Over the moon</b> = extremely happy. <b>Under the weather</b> = slightly ill, <b>on the fence</b> = undecided, <b>in the dark</b> = not informed."
+    },
+    {
+      "id": "gv-kc-14-13",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "After months of talking about it, my brother finally ______ and signed up for the marathon.",
+      "options": [
+        "took the plunge",
+        "took the biscuit",
+        "took the floor",
+        "took the hint"
+      ],
+      "correct": 0,
+      "answer": "took the plunge",
+      "vi": "Sau nhiều tháng chỉ nói suông, cuối cùng anh tôi cũng quyết tâm dấn thân và đăng ký chạy marathon.",
+      "explanation": "<b>Take the plunge</b> = finally decide to do something big or risky after hesitating. <b>Take the biscuit</b> = be the most annoying, <b>take the floor</b> = start speaking, <b>take the hint</b> = understand an indirect message."
+    },
+    {
+      "id": "gv-kc-14-14",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Don't ______ our team just because we lost the first two matches of the season.",
+      "options": [
+        "write down",
+        "write up",
+        "write off",
+        "write out"
+      ],
+      "correct": 2,
+      "answer": "write off",
+      "vi": "Đừng vội coi đội mình là vô vọng chỉ vì thua hai trận đầu mùa giải.",
+      "explanation": "<b>Write off</b> = decide that someone or something is a failure and no longer worth attention. <b>Write down</b> = note, <b>write up</b> = write a full report, <b>write out</b> = write in full."
+    },
+    {
+      "id": "gv-kc-14-15",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Nam refused to ______ in the argument about which phone is better, even when he was clearly wrong.",
+      "options": [
+        "back up",
+        "back out",
+        "back away",
+        "back down"
+      ],
+      "correct": 3,
+      "answer": "back down",
+      "vi": "Nam nhất quyết không chịu nhượng bộ trong cuộc tranh cãi xem điện thoại nào tốt hơn, dù cậu ấy rõ ràng đã sai.",
+      "explanation": "<b>Back down</b> = admit you are wrong and stop arguing. <b>Back up</b> = support or copy data, <b>back out</b> = withdraw from an agreement, <b>back away</b> = move backwards physically."
+    },
+    {
+      "id": "gv-kc-14-16",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Lan: Nam isn't answering his phone. / Mai: He ______ be at the doctor's; he said he had an appointment at nine.",
+      "options": [
+        "can't",
+        "must",
+        "needn't",
+        "mustn't"
+      ],
+      "correct": 1,
+      "answer": "must",
+      "vi": "Lan: Nam không nghe điện thoại. / Mai: Chắc chắn cậu ấy đang ở chỗ bác sĩ; cậu ấy nói có hẹn lúc chín giờ.",
+      "explanation": "<b>Must</b> expresses a logical deduction that something is almost certainly true. <b>Can't</b> would mean it is impossible, and <b>needn't</b> / <b>mustn't</b> express necessity or prohibition, not deduction."
+    },
+    {
+      "id": "gv-kc-14-17",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The doctor ______ treated my grandmother has just opened a clinic near our school.",
+      "options": [
+        "whom",
+        "whose",
+        "which",
+        "who"
+      ],
+      "correct": 3,
+      "answer": "who",
+      "vi": "Vị bác sĩ đã chữa bệnh cho bà tôi vừa mở một phòng khám gần trường chúng tôi.",
+      "explanation": "The relative pronoun is the <b>subject</b> of 'treated' and refers to a person, so <b>who</b> is needed. <b>Whom</b> is for objects, <b>whose</b> shows possession and <b>which</b> is for things."
+    },
+    {
+      "id": "gv-kc-14-18",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "Only ______ people in my class still use a phone without internet access.",
+      "options": [
+        "a little",
+        "a few",
+        "much",
+        "little"
+      ],
+      "correct": 1,
+      "answer": "a few",
+      "vi": "Chỉ một vài bạn trong lớp tôi còn dùng điện thoại không có kết nối mạng.",
+      "explanation": "<b>People</b> is a plural countable noun, so it takes <b>a few</b>. <b>A little</b>, <b>much</b> and <b>little</b> are used only with uncountable nouns."
+    },
+    {
+      "id": "gv-kc-14-19",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Remember ______ your phone before the exam starts, or the teacher will take it away.",
+      "options": [
+        "switching off",
+        "to switch off",
+        "switch off",
+        "to switching off"
+      ],
+      "correct": 1,
+      "answer": "to switch off",
+      "vi": "Nhớ tắt điện thoại trước khi bài thi bắt đầu, nếu không cô giáo sẽ thu đấy.",
+      "explanation": "<b>Remember to do</b> = do not forget a duty you still have to do. <b>Remember doing</b> refers to a memory of something already done, and the other two forms are not grammatical after remember."
+    },
+    {
+      "id": "gv-kc-14-20",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Mai forgot to water the plants on the balcony for two weeks; ______, most of them died.",
+      "options": [
+        "as a result",
+        "even so",
+        "in addition",
+        "on the contrary"
+      ],
+      "correct": 0,
+      "answer": "as a result",
+      "vi": "Mai quên tưới cây trên ban công suốt hai tuần; kết quả là phần lớn cây đều chết.",
+      "explanation": "The second clause is the <b>consequence</b> of the first, so we need <b>as a result</b>. <b>Even so</b> and <b>on the contrary</b> express contrast, and <b>in addition</b> adds a similar point."
+    },
+    {
+      "id": "gv-kc-14-21",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If my dad hadn't bailed me out, I ______ my phone bill last month.",
+      "options": [
+        "couldn't have paid",
+        "couldn't pay",
+        "can't pay",
+        "won't pay"
+      ],
+      "correct": 0,
+      "answer": "couldn't have paid",
+      "vi": "Nếu bố không giúp tôi thoát khỏi cảnh túng thiếu, tháng trước tôi đã không thể trả nổi tiền cước điện thoại.",
+      "explanation": "An unreal past situation (third conditional) uses <b>if + past perfect</b> in one clause and <b>could/would have + past participle</b> in the other: <b>couldn't have paid</b>."
+    },
+    {
+      "id": "gv-kc-14-22",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "Neither the coach nor the players ______ happy with the referee's decision.",
+      "options": [
+        "was",
+        "is",
+        "has been",
+        "were"
+      ],
+      "correct": 3,
+      "answer": "were",
+      "vi": "Cả huấn luyện viên lẫn các cầu thủ đều không hài lòng với quyết định của trọng tài.",
+      "explanation": "With <b>neither ... nor</b>, the verb agrees with the <b>nearer</b> subject. 'The players' is plural, so the verb is <b>were</b>."
+    },
+    {
+      "id": "gv-kc-14-23",
+      "level": "kc",
+      "focus": "participle",
+      "q": "______ by a virus from a free download site, my laptop stopped working completely.",
+      "options": [
+        "Infecting",
+        "Having infected",
+        "Infected",
+        "To infect"
+      ],
+      "correct": 2,
+      "answer": "Infected",
+      "vi": "Bị nhiễm vi-rút từ một trang tải miễn phí, máy tính xách tay của tôi ngừng hoạt động hoàn toàn.",
+      "explanation": "The laptop was infected (it did not infect anything), so a <b>past participle</b> with passive meaning opens the clause: <b>Infected by</b>. The active forms and the infinitive make the laptop the one doing the infecting."
+    },
+    {
+      "id": "gv-kc-14-24",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "______ finishes the crossword first will get a free ice cream from Dad.",
+      "options": [
+        "Whomever",
+        "Whom",
+        "Whose",
+        "Whoever"
+      ],
+      "correct": 3,
+      "answer": "Whoever",
+      "vi": "Ai giải xong ô chữ trước sẽ được bố thưởng một cây kem miễn phí.",
+      "explanation": "<b>Whoever</b> = 'the person who' and acts as the <b>subject</b> of 'finishes'. <b>Whomever</b> and <b>whom</b> are object forms, and <b>whose</b> shows possession."
+    },
+    {
+      "id": "gv-kc-14-25",
+      "level": "kc",
+      "focus": "question-tag",
+      "q": "You haven't been to the dentist for two years, ______?",
+      "options": [
+        "have you",
+        "haven't you",
+        "did you",
+        "do you"
+      ],
+      "correct": 0,
+      "answer": "have you",
+      "vi": "Hai năm nay bạn chưa đi khám nha sĩ, đúng không?",
+      "explanation": "A negative present perfect statement (<b>haven't been</b>) takes a positive tag with the same auxiliary: <b>have you</b>."
+    }
+  ]
+}

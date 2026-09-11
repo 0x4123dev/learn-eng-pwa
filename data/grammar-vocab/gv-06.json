@@ -1,0 +1,406 @@
+{
+  "file": "06",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-06-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "We ______ football in the park when it suddenly started to pour.",
+      "options": [
+        "played",
+        "were playing",
+        "have played",
+        "had played"
+      ],
+      "correct": 1,
+      "answer": "were playing",
+      "vi": "Chúng tôi đang chơi bóng đá trong công viên thì trời bỗng đổ mưa như trút.",
+      "explanation": "A longer action in progress that is interrupted by a shorter past action (<b>started</b>) takes the past continuous: <b>were playing</b>."
+    },
+    {
+      "id": "gv-kc-06-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "We moved to a quiet ______ near the river, where all the neighbours know each other.",
+      "options": [
+        "region",
+        "territory",
+        "neighbourhood",
+        "zone"
+      ],
+      "correct": 2,
+      "answer": "neighbourhood",
+      "vi": "Chúng tôi chuyển đến một khu dân cư yên tĩnh gần bờ sông, nơi hàng xóm đều quen biết nhau.",
+      "explanation": "A <b>neighbourhood</b> is the small residential area around your home. A <b>region</b> or <b>territory</b> is a large part of a country, and a <b>zone</b> is an area set aside for a purpose (a no-parking zone)."
+    },
+    {
+      "id": "gv-kc-06-3",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Please ______ attention to the safety rules before you start the chemistry experiment.",
+      "options": [
+        "give",
+        "take",
+        "pay",
+        "put"
+      ],
+      "correct": 2,
+      "answer": "pay",
+      "vi": "Hãy chú ý đến các quy tắc an toàn trước khi bạn bắt đầu thí nghiệm hóa học.",
+      "explanation": "The fixed collocation is <b>pay attention (to)</b>. <b>Give</b>, <b>take</b> and <b>put</b> do not combine with attention: we give advice, take notes and put effort into something."
+    },
+    {
+      "id": "gv-kc-06-4",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Now that Mr Ba is retiring, he wants to ______ and let the younger teachers run the football club.",
+      "options": [
+        "take a rain check",
+        "take the floor",
+        "take a stand",
+        "take a back seat"
+      ],
+      "correct": 3,
+      "answer": "take a back seat",
+      "vi": "Giờ sắp nghỉ hưu, thầy Ba muốn lui về phía sau và để các giáo viên trẻ điều hành câu lạc bộ bóng đá.",
+      "explanation": "To <b>take a back seat</b> is to stop leading and let others take charge. To <b>take the floor</b> is to start speaking, to <b>take a stand</b> is to defend an opinion, and to <b>take a rain check</b> is to postpone an invitation."
+    },
+    {
+      "id": "gv-kc-06-5",
+      "level": "kc",
+      "focus": "relative",
+      "q": "My grandparents still live in the small town ______ my father grew up.",
+      "options": [
+        "which",
+        "whose",
+        "who",
+        "where"
+      ],
+      "correct": 3,
+      "answer": "where",
+      "vi": "Ông bà tôi vẫn sống ở thị trấn nhỏ nơi bố tôi lớn lên.",
+      "explanation": "The relative adverb <b>where</b> replaces 'in the town' and is followed by a full clause (my father grew up). <b>Which</b> would need a preposition (in which) because 'grew up' has no object, and <b>who</b> and <b>whose</b> refer to people."
+    },
+    {
+      "id": "gv-kc-06-6",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Lan: How did you ______ that the test was cancelled? / Nam: Our teacher posted it in the class group.",
+      "options": [
+        "look out",
+        "find out",
+        "make out",
+        "turn out"
+      ],
+      "correct": 1,
+      "answer": "find out",
+      "vi": "Lan: Sao cậu biết được là bài kiểm tra bị hủy? / Nam: Cô giáo đăng trong nhóm lớp.",
+      "explanation": "To <b>find out</b> is to discover a fact. <b>Look out</b> means be careful, <b>make out</b> means see or hear with difficulty, and <b>turn out</b> means happen in the end."
+    },
+    {
+      "id": "gv-kc-06-7",
+      "level": "kc",
+      "focus": "modal",
+      "q": "The streets are all wet this morning. It ______ have rained during the night.",
+      "options": [
+        "can't",
+        "should",
+        "must",
+        "needn't"
+      ],
+      "correct": 2,
+      "answer": "must",
+      "vi": "Sáng nay đường phố ướt hết cả. Chắc hẳn đêm qua trời đã mưa.",
+      "explanation": "<b>Must have</b> + past participle expresses a confident conclusion about the past based on evidence (the wet streets). <b>Can't have</b> would mean the opposite, and <b>should</b> and <b>needn't</b> do not express deduction."
+    },
+    {
+      "id": "gv-kc-06-8",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "The little shelter at the bus ______ outside our school keeps us dry when it rains.",
+      "options": [
+        "station",
+        "terminal",
+        "harbour",
+        "stop"
+      ],
+      "correct": 3,
+      "answer": "stop",
+      "vi": "Mái che nhỏ ở trạm xe buýt trước cổng trường giúp chúng tôi khỏi bị ướt khi trời mưa.",
+      "explanation": "A bus <b>stop</b> is the small roadside place where a bus picks people up. A <b>station</b> or <b>terminal</b> is a large building where many routes start and end, and a <b>harbour</b> is for ships."
+    },
+    {
+      "id": "gv-kc-06-9",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By the time the bus finally came, we ______ for over half an hour.",
+      "options": [
+        "had waited",
+        "waited",
+        "have waited",
+        "are waiting"
+      ],
+      "correct": 0,
+      "answer": "had waited",
+      "vi": "Đến lúc xe buýt cuối cùng cũng tới, chúng tôi đã đợi hơn nửa tiếng.",
+      "explanation": "<b>By the time</b> + past simple points to an action completed before that past moment, which takes the past perfect: <b>had waited</b>."
+    },
+    {
+      "id": "gv-kc-06-10",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "There is ______ traffic on this road in the early morning, so we usually get to school on time.",
+      "options": [
+        "few",
+        "little",
+        "a few",
+        "many"
+      ],
+      "correct": 1,
+      "answer": "little",
+      "vi": "Sáng sớm đường này rất ít xe cộ, nên chúng tôi thường đến trường đúng giờ.",
+      "explanation": "<b>Traffic</b> is uncountable, so it takes <b>little</b> (= not much). <b>Few</b>, <b>a few</b> and <b>many</b> only go with plural countable nouns."
+    },
+    {
+      "id": "gv-kc-06-11",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Nam usually ______ his homework right after dinner so he can watch TV later.",
+      "options": [
+        "makes",
+        "writes",
+        "does",
+        "works"
+      ],
+      "correct": 2,
+      "answer": "does",
+      "vi": "Nam thường làm bài tập về nhà ngay sau bữa tối để lát nữa được xem tivi.",
+      "explanation": "The fixed collocation is <b>do homework</b>. <b>Make</b> is used for creating things (make a cake, make a decision), and <b>work</b> needs a preposition (work on)."
+    },
+    {
+      "id": "gv-kc-06-12",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If it ______ so cold today, we would go for a walk along the river.",
+      "options": [
+        "isn't",
+        "hadn't been",
+        "wouldn't be",
+        "weren't"
+      ],
+      "correct": 3,
+      "answer": "weren't",
+      "vi": "Nếu hôm nay trời không lạnh thế này thì chúng tôi sẽ đi dạo dọc bờ sông.",
+      "explanation": "An unreal present situation (it IS cold) takes the second conditional: <b>if</b> + past subjunctive (<b>weren't</b>) with <b>would</b> in the main clause. <b>Hadn't been</b> would refer to the past."
+    },
+    {
+      "id": "gv-kc-06-13",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "There is a small ______ in the middle of town where people sit and feed the pigeons.",
+      "options": [
+        "corner",
+        "square",
+        "yard",
+        "block"
+      ],
+      "correct": 1,
+      "answer": "square",
+      "vi": "Có một quảng trường nhỏ ở giữa thị trấn, nơi mọi người ngồi cho bồ câu ăn.",
+      "explanation": "A <b>square</b> is an open public space in a town. A <b>yard</b> belongs to a house or school, a <b>block</b> is a group of buildings between streets, and a <b>corner</b> is where two streets meet, not a place to sit."
+    },
+    {
+      "id": "gv-kc-06-14",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Our old school bus ______ on the way to the museum, so we arrived an hour late.",
+      "options": [
+        "broke down",
+        "broke up",
+        "broke out",
+        "made up"
+      ],
+      "correct": 0,
+      "answer": "broke down",
+      "vi": "Chiếc xe buýt cũ của trường bị hỏng giữa đường đến bảo tàng, nên chúng tôi tới muộn một tiếng.",
+      "explanation": "A vehicle or machine <b>breaks down</b> when it stops working. <b>Break up</b> is to end a relationship or the school term, <b>break out</b> is to start suddenly (a fire, a war), and <b>make up</b> is to invent a story."
+    },
+    {
+      "id": "gv-kc-06-15",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Lan has practised the piano every day for months; ______, she played beautifully at the school concert.",
+      "options": [
+        "therefore",
+        "however",
+        "otherwise",
+        "meanwhile"
+      ],
+      "correct": 0,
+      "answer": "therefore",
+      "vi": "Lan đã luyện đàn piano mỗi ngày suốt nhiều tháng; vì vậy, cô ấy chơi rất hay trong buổi hòa nhạc của trường.",
+      "explanation": "Playing beautifully is the result of months of practice, so we need <b>therefore</b>. <b>However</b> shows a contrast, <b>otherwise</b> means 'if not', and <b>meanwhile</b> means 'at the same time'."
+    },
+    {
+      "id": "gv-kc-06-16",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: Have you finished your maths homework? / Nam: Not yet. I ______ the last two problems.",
+      "options": [
+        "don't do",
+        "didn't do",
+        "hadn't done",
+        "haven't done"
+      ],
+      "correct": 3,
+      "answer": "haven't done",
+      "vi": "Lan: Cậu làm xong bài tập toán chưa? / Nam: Chưa. Tớ vẫn chưa làm hai bài cuối.",
+      "explanation": "<b>Not yet</b> describes an unfinished action up to now, which takes the present perfect: <b>haven't done</b>. The past simple <b>didn't do</b> would need a finished past time."
+    },
+    {
+      "id": "gv-kc-06-17",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Before opening a second shop, Mrs Hoa decided to ______ by selling her cakes at the weekend market.",
+      "options": [
+        "break the ice",
+        "test the waters",
+        "hit the road",
+        "clear the air"
+      ],
+      "correct": 1,
+      "answer": "test the waters",
+      "vi": "Trước khi mở cửa hàng thứ hai, cô Hoa quyết định thăm dò thị trường bằng cách bán bánh ở chợ cuối tuần.",
+      "explanation": "To <b>test the waters</b> is to try something in a small way before committing to it. <b>Break the ice</b> is to make people relax when they first meet, <b>hit the road</b> is to set off, and <b>clear the air</b> is to end a misunderstanding."
+    },
+    {
+      "id": "gv-kc-06-18",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Turn left at the ______ where Nguyen Trai Street meets Le Loi Street, and the school is on your right.",
+      "options": [
+        "junction",
+        "lane",
+        "pavement",
+        "bridge"
+      ],
+      "correct": 0,
+      "answer": "junction",
+      "vi": "Rẽ trái ở ngã tư nơi đường Nguyễn Trãi giao với đường Lê Lợi, trường ở bên tay phải.",
+      "explanation": "A <b>junction</b> is the place where two roads meet. A <b>lane</b> is a narrow road, the <b>pavement</b> is where people walk beside the road, and a <b>bridge</b> crosses a river or another road."
+    },
+    {
+      "id": "gv-kc-06-19",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Lan: ______ I borrow your ruler for a minute? / Nam: Sure, here you are.",
+      "options": [
+        "Must",
+        "Should",
+        "Could",
+        "Would"
+      ],
+      "correct": 2,
+      "answer": "Could",
+      "vi": "Lan: Tớ mượn thước của cậu một lát được không? / Nam: Được chứ, đây này.",
+      "explanation": "<b>Could I…?</b> is the polite way to ask for permission. <b>Must I</b> asks about obligation, <b>Should I</b> asks for advice, and <b>Would I borrow</b> is not a request."
+    },
+    {
+      "id": "gv-kc-06-20",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Remember ______ your raincoat tomorrow; it looks like a storm is coming.",
+      "options": [
+        "taking",
+        "take",
+        "to taking",
+        "to take"
+      ],
+      "correct": 3,
+      "answer": "to take",
+      "vi": "Nhớ mang áo mưa ngày mai nhé; có vẻ bão sắp đến rồi.",
+      "explanation": "<b>Remember to do</b> means not to forget a task you still have to do. <b>Remember doing</b> refers to a memory of something already done, which does not fit 'tomorrow'."
+    },
+    {
+      "id": "gv-kc-06-21",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The new bridge, ______ opened last month, has cut my journey to school in half.",
+      "options": [
+        "that",
+        "which",
+        "where",
+        "what"
+      ],
+      "correct": 1,
+      "answer": "which",
+      "vi": "Cây cầu mới, mới thông xe tháng trước, đã rút ngắn quãng đường đến trường của tôi một nửa.",
+      "explanation": "A non-defining relative clause (between commas) about a thing takes <b>which</b>; <b>that</b> cannot follow a comma. <b>Where</b> needs a full clause after it, and <b>what</b> is not a relative pronoun."
+    },
+    {
+      "id": "gv-kc-06-22",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Hurry up, or we'll ______ the school bus again and have to walk!",
+      "options": [
+        "miss",
+        "lose",
+        "drop",
+        "fail"
+      ],
+      "correct": 0,
+      "answer": "miss",
+      "vi": "Nhanh lên, không thì chúng ta lại lỡ xe buýt của trường và phải đi bộ đấy!",
+      "explanation": "You <b>miss</b> a bus, train or plane when you arrive too late for it. <b>Lose the bus</b> is a direct translation that English does not use."
+    },
+    {
+      "id": "gv-kc-06-23",
+      "level": "kc",
+      "focus": "inversion",
+      "q": "______ had we left the house when it began to snow.",
+      "options": [
+        "No sooner",
+        "Not until",
+        "Hardly",
+        "Only"
+      ],
+      "correct": 2,
+      "answer": "Hardly",
+      "vi": "Chúng tôi vừa mới ra khỏi nhà thì tuyết bắt đầu rơi.",
+      "explanation": "<b>Hardly</b> + had + subject + past participle… <b>when</b> is the inverted pattern. <b>No sooner</b> needs <b>than</b>, not <b>when</b>, and <b>Not until</b> and <b>Only</b> do not fit this structure."
+    },
+    {
+      "id": "gv-kc-06-24",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Sa Pa is a favourite ______ for tourists who want to see snow in winter.",
+      "options": [
+        "direction",
+        "journey",
+        "arrival",
+        "destination"
+      ],
+      "correct": 3,
+      "answer": "destination",
+      "vi": "Sa Pa là điểm đến yêu thích của du khách muốn ngắm tuyết vào mùa đông.",
+      "explanation": "A <b>destination</b> is the place people travel to. A <b>journey</b> is the trip itself, a <b>direction</b> is the way you go, and an <b>arrival</b> is the act of reaching a place."
+    },
+    {
+      "id": "gv-kc-06-25",
+      "level": "kc",
+      "focus": "tense",
+      "q": "This time next week, we ______ on the beach in Nha Trang instead of sitting in class.",
+      "options": [
+        "lie",
+        "will be lying",
+        "are lying",
+        "have lain"
+      ],
+      "correct": 1,
+      "answer": "will be lying",
+      "vi": "Giờ này tuần sau, chúng tôi sẽ đang nằm trên bãi biển Nha Trang thay vì ngồi trong lớp.",
+      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, which takes the future continuous: <b>will be lying</b>."
+    }
+  ]
+}

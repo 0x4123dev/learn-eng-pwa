@@ -1,0 +1,281 @@
+{
+  "file": "26",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-26-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Having spent a decade on the novel, she was ______ when every publisher rejected it and did not write another word for years.",
+      "options": ["complacent", "disconsolate", "nonchalant", "euphoric"],
+      "correct": 1,
+      "answer": "disconsolate",
+      "vi": "Sau khi dành cả một thập kỷ cho cuốn tiểu thuyết, bà đã vô cùng đau khổ khi mọi nhà xuất bản đều từ chối nó và suốt nhiều năm không viết thêm một chữ nào.",
+      "explanation": "<b>Disconsolate</b> means so unhappy that nothing can comfort you, which fits the rejection and the years of silence; complacent (smugly satisfied), nonchalant (calmly unconcerned) and euphoric (intensely happy) all clash with the context."
+    },
+    {
+      "id": "gv-ch-26-2",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Wind and solar now ______ almost a third of the country's demand for electricity on a typical summer afternoon.",
+      "options": ["meet", "reach", "fill", "answer"],
+      "correct": 0,
+      "answer": "meet",
+      "vi": "Điện gió và điện mặt trời hiện đáp ứng gần một phần ba nhu cầu điện của cả nước vào một buổi chiều mùa hè điển hình.",
+      "explanation": "The verb that collocates with <b>demand</b> is <b>meet</b> (meet the demand for something); you reach a target, fill a gap and answer a question, not a demand."
+    },
+    {
+      "id": "gv-ch-26-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The festival lost money this year, but as its director put it, there is no use ______ when next summer's programme still has to be planned.",
+      "options": ["beating about the bush", "burning the midnight oil", "crying over spilt milk", "sitting on the fence"],
+      "correct": 2,
+      "answer": "crying over spilt milk",
+      "vi": "Liên hoan năm nay bị lỗ, nhưng như giám đốc nói, than khóc chuyện đã rồi cũng chẳng ích gì khi chương trình mùa hè năm sau vẫn còn phải lên kế hoạch.",
+      "explanation": "<b>Cry over spilt milk</b> means waste time regretting something that cannot be undone. Beating about the bush is avoiding the point, burning the midnight oil is working late, and sitting on the fence is refusing to take sides."
+    },
+    {
+      "id": "gv-ch-26-4",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the engineers suspect that the bridge's cables had been corroding for years when they signed off the routine inspection report.",
+      "options": ["Hardly had", "Not until", "Only when", "Little did"],
+      "correct": 3,
+      "answer": "Little did",
+      "vi": "Các kỹ sư hầu như không hề ngờ rằng dây cáp của cây cầu đã bị ăn mòn suốt nhiều năm khi họ ký duyệt báo cáo kiểm tra định kỳ.",
+      "explanation": "Fronted <b>Little</b> (= not at all) forces auxiliary inversion before a bare verb: <b>Little did</b> the engineers suspect. Hardly had needs a past participle and a later 'when', while Not until / Only when open a clause with an ordinary subject + verb and put the inversion in the main clause, not here."
+    },
+    {
+      "id": "gv-ch-26-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "With borrowing costs rising sharply, the utility has ______ its plans for a second offshore wind farm to a fraction of the original size.",
+      "options": ["scaled back", "scaled up", "brought back", "fallen back"],
+      "correct": 0,
+      "answer": "scaled back",
+      "vi": "Do chi phí vay tăng mạnh, công ty điện lực đã thu hẹp kế hoạch xây trang trại điện gió ngoài khơi thứ hai xuống chỉ còn một phần nhỏ so với quy mô ban đầu.",
+      "explanation": "<b>Scale back</b> means reduce the size or extent of something, which matches 'to a fraction of the original size'. Scale up is the opposite, bring back means reintroduce, and fall back (retreat) takes no object."
+    },
+    {
+      "id": "gv-ch-26-6",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The reviewer ______ the whole novel; her summary gets the ending completely wrong.",
+      "options": ["needn't have read", "can't have read", "shouldn't have read", "mustn't have read"],
+      "correct": 1,
+      "answer": "can't have read",
+      "vi": "Nhà phê bình chắc chắn đã không đọc hết cuốn tiểu thuyết; bản tóm tắt của bà ấy sai hoàn toàn về đoạn kết.",
+      "explanation": "A confident conclusion that something did <b>not</b> happen in the past uses <b>can't have</b> + past participle. Needn't have means it was unnecessary, shouldn't have expresses regret, and mustn't have is not used for deduction."
+    },
+    {
+      "id": "gv-ch-26-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Local investors remain ______ about the new pipeline, fearing that a single leak could wipe out years of returns.",
+      "options": ["jubilant", "nostalgic", "resentful", "apprehensive"],
+      "correct": 3,
+      "answer": "apprehensive",
+      "vi": "Các nhà đầu tư địa phương vẫn lo ngại về đường ống mới, e rằng chỉ một vụ rò rỉ cũng có thể xóa sạch lợi nhuận của nhiều năm.",
+      "explanation": "<b>Apprehensive</b> means anxious that something bad may happen, which 'fearing that a single leak could...' spells out; jubilant is triumphant, nostalgic longs for the past, and resentful is bitter about a wrong already done."
+    },
+    {
+      "id": "gv-ch-26-8",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The conductor was determined to ______ the restoration of the concert hall ______, however long the fundraising took.",
+      "options": ["look / through", "see / off", "see / through", "see / into"],
+      "correct": 2,
+      "answer": "see / through",
+      "vi": "Vị nhạc trưởng quyết tâm theo đuổi việc trùng tu nhà hát hòa nhạc đến cùng, dù việc gây quỹ có kéo dài bao lâu.",
+      "explanation": "<b>See something through</b> means continue with it until it is finished. Look through means examine quickly, see off means say goodbye to or drive away, and see into (understand the true nature of something, as in see into the future) makes no sense with a restoration project."
+    },
+    {
+      "id": "gv-ch-26-9",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The safety board recommended that the ageing reactor ______ offline until every crack in the cooling system had been examined.",
+      "options": ["be taken", "was taken", "is taken", "would be taken"],
+      "correct": 0,
+      "answer": "be taken",
+      "vi": "Ủy ban an toàn khuyến nghị rằng lò phản ứng cũ kỹ phải được ngừng hoạt động cho đến khi mọi vết nứt trong hệ thống làm mát được kiểm tra.",
+      "explanation": "After <b>recommend that</b>, the clause takes the subjunctive: the bare form <b>be taken</b>, with no tense marking. Was, is and would be are ordinary indicative forms and do not fit."
+    },
+    {
+      "id": "gv-ch-26-10",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "When the boy insisted he had not meant to break the vase, his mother chose to ______ rather than punish him.",
+      "options": ["give him a piece of her mind", "give him the benefit of the doubt", "give him the cold shoulder", "give him a run for his money"],
+      "correct": 1,
+      "answer": "give him the benefit of the doubt",
+      "vi": "Khi cậu bé khăng khăng rằng mình không cố ý làm vỡ bình hoa, mẹ cậu quyết định tin lời cậu thay vì phạt cậu.",
+      "explanation": "<b>Give someone the benefit of the doubt</b> means accept their word even though you cannot be sure it is true. A piece of one's mind is an angry telling-off, the cold shoulder is deliberate unfriendliness, and a run for one's money is strong competition."
+    },
+    {
+      "id": "gv-ch-26-11",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Several critics ______ the charge of plagiarism at the young novelist, though none produced a single copied sentence.",
+      "options": ["threw", "pointed", "sent", "levelled"],
+      "correct": 3,
+      "answer": "levelled",
+      "vi": "Nhiều nhà phê bình đã buộc tội nhà tiểu thuyết trẻ đạo văn, dù không ai đưa ra được một câu sao chép nào.",
+      "explanation": "The collocation is <b>level a charge / an accusation / criticism at</b> someone. You throw a ball, point a finger and send a letter, but none of these verbs takes 'charge' in this sense."
+    },
+    {
+      "id": "gv-ch-26-12",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______, the rescue helicopters will resume their search of the northern slopes at first light tomorrow.",
+      "options": ["Weather permitted", "Weather to permit", "Weather permitting", "Weather having permitted"],
+      "correct": 2,
+      "answer": "Weather permitting",
+      "vi": "Nếu thời tiết cho phép, các trực thăng cứu hộ sẽ nối lại việc tìm kiếm trên các sườn núi phía bắc vào lúc rạng sáng mai.",
+      "explanation": "The absolute clause <b>Weather permitting</b> (= if the weather permits) takes a present participle because the weather is the thing that permits. The past participle would make the weather the thing permitted, the infinitive is not used in absolute clauses, and the perfect form describes a condition already met, not tomorrow's."
+    },
+    {
+      "id": "gv-ch-26-13",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "After the fourth blackout in a single week, residents were ______, and dozens wrote to the newspapers demanding that the grid operator resign.",
+      "options": ["exasperated", "serene", "gratified", "apathetic"],
+      "correct": 0,
+      "answer": "exasperated",
+      "vi": "Sau lần mất điện thứ tư chỉ trong một tuần, cư dân vô cùng bực tức, và hàng chục người đã viết thư cho báo chí yêu cầu đơn vị vận hành lưới điện từ chức.",
+      "explanation": "<b>Exasperated</b> means intensely irritated after repeated annoyance, which the fourth blackout and the angry letters confirm. Serene (calm), gratified (pleased) and apathetic (uninterested) contradict the demand for a resignation."
+    },
+    {
+      "id": "gv-ch-26-14",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "Most participants denied ______ the instructions, even though the recording showed them reading the page twice.",
+      "options": ["to read", "having read", "to have read", "read"],
+      "correct": 1,
+      "answer": "having read",
+      "vi": "Hầu hết người tham gia phủ nhận đã đọc hướng dẫn, dù đoạn ghi hình cho thấy họ đọc trang đó hai lần.",
+      "explanation": "<b>Deny</b> is followed by a gerund, and <b>having read</b> (perfect gerund) marks the reading as earlier than the denying. Deny never takes a to-infinitive."
+    },
+    {
+      "id": "gv-ch-26-15",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The appeal court ______ the verdict after new evidence showed that the key witness had lied under oath.",
+      "options": ["set about", "set out", "set aside", "set off"],
+      "correct": 2,
+      "answer": "set aside",
+      "vi": "Tòa phúc thẩm đã hủy bản án sau khi bằng chứng mới cho thấy nhân chứng chủ chốt đã khai man khi tuyên thệ.",
+      "explanation": "In legal use, <b>set aside</b> a verdict means cancel it officially. Set about means begin a task, set out means start a journey or explain, and set off means depart or trigger."
+    },
+    {
+      "id": "gv-ch-26-16",
+      "level": "ch",
+      "focus": "linking",
+      "q": "The city's grid was designed for half its present population; ______, blackouts have become a routine feature of every heatwave.",
+      "options": ["nevertheless", "otherwise", "moreover", "consequently"],
+      "correct": 3,
+      "answer": "consequently",
+      "vi": "Lưới điện của thành phố được thiết kế cho một nửa dân số hiện tại; do đó, mất điện đã trở thành chuyện thường lệ trong mỗi đợt nắng nóng.",
+      "explanation": "The blackouts are the <b>result</b> of the undersized grid, so the linking adverb is <b>consequently</b>. Nevertheless signals contrast, otherwise a condition not met, and moreover simply adds a point."
+    },
+    {
+      "id": "gv-ch-26-17",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Nurses who ______ for their patients report higher job satisfaction, the study found, even though they work longer hours.",
+      "options": ["go the extra mile", "go through the roof", "go with the flow", "go round in circles"],
+      "correct": 0,
+      "answer": "go the extra mile",
+      "vi": "Nghiên cứu cho thấy những y tá nỗ lực hết mình vì bệnh nhân có mức độ hài lòng với công việc cao hơn, dù họ làm việc nhiều giờ hơn.",
+      "explanation": "<b>Go the extra mile</b> means make more effort than is expected. Go through the roof means rise very fast or lose one's temper, go with the flow means accept things passively, and go round in circles means make no progress."
+    },
+    {
+      "id": "gv-ch-26-18",
+      "level": "ch",
+      "focus": "agreement",
+      "q": "Neither the playwright nor the actors ______ willing to comment on the cancelled tour when the press arrived.",
+      "options": ["was", "were", "is", "has been"],
+      "correct": 1,
+      "answer": "were",
+      "vi": "Cả nhà viết kịch lẫn các diễn viên đều không muốn bình luận về chuyến lưu diễn bị hủy khi báo chí đến.",
+      "explanation": "With <b>neither... nor</b>, the verb agrees with the nearer subject, <b>the actors</b> (plural), and the past context ('when the press arrived') requires <b>were</b>."
+    },
+    {
+      "id": "gv-ch-26-19",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "He was ______ to discover that he had sent the unfinished draft, complete with his private notes, to the entire faculty.",
+      "options": ["overjoyed", "appeased", "mortified", "vindicated"],
+      "correct": 2,
+      "answer": "mortified",
+      "vi": "Anh ta vô cùng xấu hổ khi phát hiện ra mình đã gửi bản thảo chưa hoàn thành, kèm cả những ghi chú riêng tư, cho toàn bộ khoa.",
+      "explanation": "<b>Mortified</b> means extremely embarrassed, which fits sending private notes to everyone by mistake. Overjoyed is delighted, appeased is calmed after anger, and vindicated is proved right."
+    },
+    {
+      "id": "gv-ch-26-20",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "To ______ the ball ______, the moderator asked each panellist to name one film that had changed their mind about something.",
+      "options": ["put / rolling", "get / running", "make / turning", "get / rolling"],
+      "correct": 3,
+      "answer": "get / rolling",
+      "vi": "Để khởi động buổi thảo luận, người điều phối đề nghị mỗi khách mời kể tên một bộ phim đã làm thay đổi suy nghĩ của họ về điều gì đó.",
+      "explanation": "<b>Get the ball rolling</b> means start something happening. The idiom is fixed: neither the verb nor the participle can be swapped for a near-synonym."
+    },
+    {
+      "id": "gv-ch-26-21",
+      "level": "ch",
+      "focus": "comparison",
+      "q": "______ a community feels about the reliability of its power supply, the less willing it is to oppose new pylons nearby.",
+      "options": ["The more anxious", "The most anxious", "More anxious", "The much anxious"],
+      "correct": 0,
+      "answer": "The more anxious",
+      "vi": "Một cộng đồng càng lo lắng về độ tin cậy của nguồn điện thì càng ít muốn phản đối việc dựng cột điện mới gần đó.",
+      "explanation": "The double comparative <b>the more..., the less...</b> links two changes that go together; it needs <b>the</b> plus a comparative in both halves, so a superlative or a bare comparative breaks the pattern."
+    },
+    {
+      "id": "gv-ch-26-22",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Researchers are careful to ______ a distinction between a habit, which is automatic, and an addiction, which persists despite harm.",
+      "options": ["put", "take", "draw", "set"],
+      "correct": 2,
+      "answer": "draw",
+      "vi": "Các nhà nghiên cứu cẩn thận phân biệt giữa thói quen, vốn mang tính tự động, và chứng nghiện, vốn tồn tại dai dẳng bất chấp tác hại.",
+      "explanation": "The collocation is <b>draw a distinction</b> between two things (make a distinction is also possible, but is not offered). Put, take and set do not combine with 'distinction' in this sense."
+    },
+    {
+      "id": "gv-ch-26-23",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "'What if the grant runs out before the survey is finished?' 'It may never happen, so let's ______.'",
+      "options": ["burn our bridges", "cross that bridge when we come to it", "bite the bullet", "let sleeping dogs lie"],
+      "correct": 1,
+      "answer": "cross that bridge when we come to it",
+      "vi": "'Nếu khoản tài trợ cạn trước khi cuộc khảo sát hoàn thành thì sao?' 'Chuyện đó có thể chẳng bao giờ xảy ra, nên đến lúc đó rồi tính.'",
+      "explanation": "<b>Cross that bridge when you come to it</b> means deal with a problem only if and when it actually arises. Burn your bridges means destroy a way back, bite the bullet means face something unpleasant now, and let sleeping dogs lie means avoid stirring up an old problem."
+    },
+    {
+      "id": "gv-ch-26-24",
+      "level": "ch",
+      "focus": "passive",
+      "q": "By the time the new dam is completed, an estimated forty villages ______ to higher ground by the authorities.",
+      "options": ["will have moved", "will be moving", "have been moving", "will have been moved"],
+      "correct": 3,
+      "answer": "will have been moved",
+      "vi": "Đến khi con đập mới hoàn thành, ước tính khoảng bốn mươi ngôi làng sẽ đã được chính quyền di dời lên vùng đất cao hơn.",
+      "explanation": "The villages are moved by the authorities (agent with <b>by</b>), and 'by the time... is completed' points to a future completed action, so the future perfect passive <b>will have been moved</b> is required."
+    },
+    {
+      "id": "gv-ch-26-25",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The finding that participants who were paid more performed worse left the psychologists ______, as it contradicted every existing model of motivation.",
+      "options": ["reassured", "perplexed", "smug", "remorseful"],
+      "correct": 1,
+      "answer": "perplexed",
+      "vi": "Phát hiện rằng những người tham gia được trả nhiều tiền hơn lại làm việc kém hơn khiến các nhà tâm lý học bối rối, vì nó mâu thuẫn với mọi mô hình động lực hiện có.",
+      "explanation": "<b>Perplexed</b> means confused because something cannot be explained, which suits a result that contradicts every model. Reassured (comforted), smug (self-satisfied) and remorseful (sorry for a wrong) do not match."
+    }
+  ]
+}

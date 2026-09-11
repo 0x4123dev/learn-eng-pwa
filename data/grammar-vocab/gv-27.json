@@ -1,0 +1,406 @@
+{
+  "file": "27",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-27-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The gap between gold and silver in the 100 metres was ______ — three hundredths of a second — but in elite sprinting that is the difference between a medal and obscurity.",
+      "options": [
+        "meagre",
+        "trivial",
+        "minute",
+        "petty"
+      ],
+      "correct": 2,
+      "answer": "minute",
+      "vi": "Khoảng cách giữa huy chương vàng và bạc ở cự ly 100 mét là cực kỳ nhỏ — ba phần trăm giây — nhưng trong môn chạy nước rút đỉnh cao, đó là khác biệt giữa một tấm huy chương và sự vô danh.",
+      "explanation": "<b>Minute</b> (/maɪˈnjuːt/) means extremely small in size or amount, which fits a gap of three hundredths of a second. <b>Trivial</b> means unimportant, which the sentence goes on to deny; <b>meagre</b> describes an amount that is not enough (a meagre salary), and <b>petty</b> describes small-minded behaviour, not a measurement."
+    },
+    {
+      "id": "gv-ch-27-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Ever since his boyhood club released him at sixteen, the striker has ______, treating every question about his past as a personal insult.",
+      "options": [
+        "had a chip on his shoulder",
+        "had a bee in his bonnet",
+        "had an axe to grind",
+        "had a finger in every pie"
+      ],
+      "correct": 0,
+      "answer": "had a chip on his shoulder",
+      "vi": "Kể từ khi câu lạc bộ thời niên thiếu cho anh ra đi năm mười sáu tuổi, tiền đạo này luôn mang nỗi hậm hực trong lòng, coi mọi câu hỏi về quá khứ như một sự xúc phạm cá nhân.",
+      "explanation": "To <b>have a chip on your shoulder</b> is to stay resentful about a past injustice and be quick to take offence. <b>A bee in your bonnet</b> is an obsession with an idea, <b>an axe to grind</b> is a hidden personal motive, and <b>a finger in every pie</b> means being involved in everything."
+    },
+    {
+      "id": "gv-ch-27-3",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "After nine hours of deliberation, the jury in the data-fraud trial ______ a unanimous verdict of guilty on all three counts.",
+      "options": [
+        "arrived",
+        "reached",
+        "achieved",
+        "came"
+      ],
+      "correct": 1,
+      "answer": "reached",
+      "vi": "Sau chín giờ nghị án, bồi thẩm đoàn trong phiên tòa xét xử vụ gian lận dữ liệu đã đi đến phán quyết nhất trí là có tội ở cả ba tội danh.",
+      "explanation": "<b>Reach a verdict</b> is the fixed collocation for a jury deciding its answer. <b>Arrive</b> and <b>come</b> need a preposition (<b>arrive at</b>, <b>come to</b> a verdict), and <b>achieve</b> is used of goals and results, not verdicts."
+    },
+    {
+      "id": "gv-ch-27-4",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The striker ______ offside when the pass was played; the freeze-frame clearly shows two defenders standing goal-side of him.",
+      "options": [
+        "shouldn't have been",
+        "needn't have been",
+        "mustn't have been",
+        "can't have been"
+      ],
+      "correct": 3,
+      "answer": "can't have been",
+      "vi": "Tiền đạo không thể nào đã việt vị lúc đường chuyền được thực hiện; hình dừng cho thấy rõ hai hậu vệ đứng gần khung thành hơn anh ta.",
+      "explanation": "<b>Can't have been</b> expresses a confident deduction that something in the past was impossible. <b>Mustn't have</b> is not used for deduction in standard British English, <b>needn't have</b> means it was unnecessary, and <b>shouldn't have</b> criticises a choice."
+    },
+    {
+      "id": "gv-ch-27-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The world number one ______ the first-round defeat as a blip and was back on the practice court within hours.",
+      "options": [
+        "called off",
+        "shrugged off",
+        "put off",
+        "fended off"
+      ],
+      "correct": 1,
+      "answer": "shrugged off",
+      "vi": "Tay vợt số một thế giới gạt phăng trận thua vòng một, coi đó chỉ là một sự cố nhỏ, và quay lại sân tập chỉ vài giờ sau.",
+      "explanation": "<b>Shrug off</b> means to treat a setback as unimportant. <b>Call off</b> is to cancel, <b>put off</b> is to postpone, and <b>fend off</b> is to defend yourself against an attack or awkward questions."
+    },
+    {
+      "id": "gv-ch-27-6",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Abolishing the offside rule would be a ______ decision, one that historians of the game would still be arguing about a century from now.",
+      "options": [
+        "momentous",
+        "eminent",
+        "imposing",
+        "colossal"
+      ],
+      "correct": 0,
+      "answer": "momentous",
+      "vi": "Bãi bỏ luật việt vị sẽ là một quyết định trọng đại, mà các nhà sử học bóng đá vẫn còn tranh cãi cả trăm năm sau.",
+      "explanation": "<b>Momentous</b> describes a decision or event of great and lasting importance. <b>Eminent</b> is used of distinguished people, <b>imposing</b> of impressive buildings or figures, and <b>colossal</b> of physical size or huge amounts."
+    },
+    {
+      "id": "gv-ch-27-7",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Rarely ______ dominated a single Olympic programme so completely, winning all seven of her events by clear water.",
+      "options": [
+        "a swimmer has",
+        "does a swimmer",
+        "has a swimmer",
+        "a swimmer had"
+      ],
+      "correct": 2,
+      "answer": "has a swimmer",
+      "vi": "Hiếm khi có một vận động viên bơi lội nào thống trị trọn vẹn một kỳ Olympic đến thế, thắng cả bảy nội dung với khoảng cách rõ rệt.",
+      "explanation": "After a negative adverb such as <b>Rarely</b> at the start of a sentence, the auxiliary comes before the subject: <b>has a swimmer</b> dominated. <b>Does a swimmer</b> would need the base form <b>dominate</b>, and the other two are not inverted."
+    },
+    {
+      "id": "gv-ch-27-8",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The anchor found himself ______ after a live microphone picked him up mocking a guest during the commercial break.",
+      "options": [
+        "in the red",
+        "in the doldrums",
+        "in the dark",
+        "in hot water"
+      ],
+      "correct": 3,
+      "answer": "in hot water",
+      "vi": "Người dẫn chương trình rơi vào rắc rối sau khi micro đang bật thu được cảnh anh ta chế giễu một vị khách trong lúc nghỉ quảng cáo.",
+      "explanation": "To be <b>in hot water</b> is to be in trouble because of something you have done. <b>In the red</b> means owing money, <b>in the doldrums</b> means inactive or depressed, and <b>in the dark</b> means uninformed."
+    },
+    {
+      "id": "gv-ch-27-9",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Many freelance reporters, ______ fees have fallen by a third in real terms, can barely make ends ______ on what online outlets pay per article.",
+      "options": [
+        "whose / meet",
+        "who / meet",
+        "whose / match",
+        "whom / met"
+      ],
+      "correct": 0,
+      "answer": "whose / meet",
+      "vi": "Nhiều phóng viên tự do, những người có nhuận bút đã giảm một phần ba theo giá trị thực, hầu như không đủ sống với mức các trang tin trực tuyến trả cho mỗi bài.",
+      "explanation": "The first blank needs the possessive relative <b>whose</b> (their fees); the second completes the idiom <b>make ends meet</b>, to earn just enough to live on. <b>Match</b> and <b>met</b> break the idiom."
+    },
+    {
+      "id": "gv-ch-27-10",
+      "level": "ch",
+      "focus": "linking",
+      "q": "The public broadcaster's audience has grown steadily over the past two years, ______ its commercial rivals' has shrunk for six quarters in a row.",
+      "options": [
+        "despite",
+        "whereas",
+        "otherwise",
+        "nevertheless"
+      ],
+      "correct": 1,
+      "answer": "whereas",
+      "vi": "Lượng khán giả của đài truyền hình công đã tăng đều trong hai năm qua, trong khi lượng khán giả của các đối thủ thương mại lại giảm sáu quý liên tiếp.",
+      "explanation": "<b>Whereas</b> is a conjunction that contrasts two clauses directly. <b>Despite</b> must be followed by a noun or -ing form, and <b>otherwise</b> and <b>nevertheless</b> are adverbs that cannot join two clauses with a comma."
+    },
+    {
+      "id": "gv-ch-27-11",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Despite the scale of the doping scandal, the story received only ______ attention from the national broadcasters, which were busy covering the election.",
+      "options": [
+        "sparse",
+        "scarce",
+        "slender",
+        "scant"
+      ],
+      "correct": 3,
+      "answer": "scant",
+      "vi": "Dù vụ bê bối doping có quy mô lớn, câu chuyện chỉ nhận được rất ít sự chú ý từ các đài truyền hình quốc gia, vốn đang bận đưa tin về cuộc bầu cử.",
+      "explanation": "<b>Scant attention</b> is a fixed pairing meaning very little attention. <b>Scarce</b> describes resources in short supply, <b>sparse</b> describes things thinly spread out, and <b>slender</b> describes a thin build or a narrow margin."
+    },
+    {
+      "id": "gv-ch-27-12",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The press ombudsman recommended that the correction ______ on the same page and in the same type size as the original error.",
+      "options": [
+        "was printed",
+        "would be printed",
+        "be printed",
+        "is printed"
+      ],
+      "correct": 2,
+      "answer": "be printed",
+      "vi": "Thanh tra báo chí khuyến nghị rằng đính chính phải được đăng trên cùng trang và với cùng cỡ chữ như lỗi ban đầu.",
+      "explanation": "After verbs such as <b>recommend</b>, <b>suggest</b> and <b>insist</b>, the that-clause takes the subjunctive base form: <b>that the correction be printed</b>. The indicative forms <b>was</b>, <b>is</b> and <b>would be</b> are not used here."
+    },
+    {
+      "id": "gv-ch-27-13",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Before announcing her candidacy for the federation presidency, she quietly ______ several national coaches to gauge how much support she could count on.",
+      "options": [
+        "sounded out",
+        "spoke out",
+        "sounded off",
+        "spelled out"
+      ],
+      "correct": 0,
+      "answer": "sounded out",
+      "vi": "Trước khi tuyên bố ứng cử chức chủ tịch liên đoàn, bà đã âm thầm thăm dò ý kiến vài huấn luyện viên đội tuyển quốc gia để xem mình có thể trông cậy vào bao nhiêu sự ủng hộ.",
+      "explanation": "<b>Sound someone out</b> means to ask them discreetly to find out their opinion. <b>Speak out</b> is to state views publicly, <b>sound off</b> is to complain loudly, and <b>spell out</b> is to explain in detail."
+    },
+    {
+      "id": "gv-ch-27-14",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "\"______,\" the coach told the gymnast, who was close to tears after her fall; \"the all-around final is still two days away.\"",
+      "options": [
+        "Keep your hair on",
+        "Keep your chin up",
+        "Keep your head down",
+        "Keep your shirt on"
+      ],
+      "correct": 1,
+      "answer": "Keep your chin up",
+      "vi": "\"Cứ ngẩng cao đầu lên,\" huấn luyện viên nói với cô vận động viên thể dục dụng cụ đang rưng rưng nước mắt sau cú ngã; \"chung kết toàn năng vẫn còn hai ngày nữa.\"",
+      "explanation": "<b>Keep your chin up</b> means stay cheerful in a difficult situation. <b>Keep your hair on</b> and <b>keep your shirt on</b> both mean calm down, and <b>keep your head down</b> means avoid attracting attention."
+    },
+    {
+      "id": "gv-ch-27-15",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The documentary ______ a furious debate about the ethics of secretly filming athletes in their changing rooms.",
+      "options": [
+        "lit",
+        "flared",
+        "blazed",
+        "sparked"
+      ],
+      "correct": 3,
+      "answer": "sparked",
+      "vi": "Bộ phim tài liệu đã châm ngòi cho một cuộc tranh luận dữ dội về đạo đức của việc quay lén vận động viên trong phòng thay đồ.",
+      "explanation": "<b>Spark a debate</b> is the standard verb + noun collocation for causing a discussion to start. <b>Lit</b>, <b>flared</b> and <b>blazed</b> keep the fire image but do not collocate with <b>debate</b>."
+    },
+    {
+      "id": "gv-ch-27-16",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The club now regrets ______ the young winger a longer contract before its wealthier rivals came calling.",
+      "options": [
+        "not to offer",
+        "to not offer",
+        "not offering",
+        "not offer"
+      ],
+      "correct": 2,
+      "answer": "not offering",
+      "vi": "Câu lạc bộ giờ hối tiếc vì đã không đề nghị cầu thủ chạy cánh trẻ một hợp đồng dài hạn hơn trước khi các đối thủ giàu có hơn tìm đến.",
+      "explanation": "<b>Regret + -ing</b> looks back on something already done or not done: <b>regrets not offering</b>. <b>Regret + to-infinitive</b> is used only to announce bad news politely (we regret to inform you), so <b>not to offer</b> is wrong here."
+    },
+    {
+      "id": "gv-ch-27-17",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The proposal to expand the tournament to 48 teams was approved by an ______ majority of member associations, with only four voting against.",
+      "options": [
+        "overriding",
+        "overwhelming",
+        "overpowering",
+        "overbearing"
+      ],
+      "correct": 1,
+      "answer": "overwhelming",
+      "vi": "Đề xuất mở rộng giải đấu lên 48 đội đã được đa số áp đảo các liên đoàn thành viên thông qua, chỉ có bốn phiếu chống.",
+      "explanation": "<b>An overwhelming majority</b> is a very large majority. <b>Overriding</b> means more important than anything else (an overriding priority), <b>overpowering</b> describes a smell or emotion too strong to resist, and <b>overbearing</b> describes a bossy person."
+    },
+    {
+      "id": "gv-ch-27-18",
+      "level": "ch",
+      "focus": "reported",
+      "q": "The club's spokesman told reporters on Sunday evening that the board ______ the allegations at a press conference the following morning.",
+      "options": [
+        "would address",
+        "will address",
+        "addresses",
+        "had addressed"
+      ],
+      "correct": 0,
+      "answer": "would address",
+      "vi": "Người phát ngôn câu lạc bộ nói với các phóng viên tối Chủ nhật rằng ban lãnh đạo sẽ trả lời các cáo buộc tại cuộc họp báo vào sáng hôm sau.",
+      "explanation": "In reported speech after a past reporting verb (<b>told</b>), <b>will</b> shifts back to <b>would</b>; <b>the following morning</b> confirms the time was still future from the speaker's point of view, so <b>had addressed</b> is impossible."
+    },
+    {
+      "id": "gv-ch-27-19",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The editor promised to ______ in tracing the source of the leaked memo, even if it meant reviewing every email sent from the building that week.",
+      "options": [
+        "leave well alone",
+        "leave it at that",
+        "leave no stone unturned",
+        "leave a lot to be desired"
+      ],
+      "correct": 2,
+      "answer": "leave no stone unturned",
+      "vi": "Tổng biên tập hứa sẽ không bỏ sót bất cứ manh mối nào trong việc truy tìm nguồn của bản ghi nhớ bị rò rỉ, kể cả khi phải rà soát mọi email gửi đi từ tòa nhà trong tuần đó.",
+      "explanation": "<b>Leave no stone unturned</b> means to try every possible way to find or achieve something. <b>Leave well alone</b> is to avoid interfering, <b>leave it at that</b> is to say or do no more, and <b>leave a lot to be desired</b> means to be far from satisfactory."
+    },
+    {
+      "id": "gv-ch-27-20",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ how long the power cut would last, the laboratory staff moved the vaccine samples into a backup freezer running on a generator.",
+      "options": [
+        "Not known",
+        "Not to know",
+        "Not having known",
+        "Not knowing"
+      ],
+      "correct": 3,
+      "answer": "Not knowing",
+      "vi": "Không biết sự cố mất điện sẽ kéo dài bao lâu, nhân viên phòng thí nghiệm đã chuyển các mẫu vắc-xin sang tủ đông dự phòng chạy bằng máy phát.",
+      "explanation": "A present participle clause gives the reason for the main action, and its negative is formed by putting <b>not</b> before the -ing form: <b>Not knowing</b> how long it would last, the staff moved the samples. <b>Not known</b> is passive (the staff were not being known), <b>Not to know</b> is an infinitive that cannot open a reason clause, and <b>Not having known</b> wrongly suggests the ignorance was over before they acted."
+    },
+    {
+      "id": "gv-ch-27-21",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Instead of ______ any one player ______ for blame, the coach said the whole squad had underperformed in the second half.",
+      "options": [
+        "single / out",
+        "singling / out",
+        "singling / up",
+        "singled / out"
+      ],
+      "correct": 1,
+      "answer": "singling / out",
+      "vi": "Thay vì chỉ trích riêng một cầu thủ nào, huấn luyện viên nói rằng cả đội đã thi đấu dưới sức trong hiệp hai.",
+      "explanation": "<b>Instead of</b> is a preposition, so it is followed by the -ing form; the phrasal verb <b>single somebody out</b> means to pick one person from a group for special treatment. <b>Single up</b> does not exist."
+    },
+    {
+      "id": "gv-ch-27-22",
+      "level": "ch",
+      "focus": "pronoun",
+      "q": "With the two sides level after extra time, the semi-final will be decided by ______ keeps their nerve in the penalty shoot-out.",
+      "options": [
+        "who",
+        "whom",
+        "whomever",
+        "whoever"
+      ],
+      "correct": 3,
+      "answer": "whoever",
+      "vi": "Với hai đội hòa nhau sau hiệp phụ, trận bán kết sẽ được định đoạt bởi bất cứ ai giữ được bình tĩnh trong loạt sút luân lưu.",
+      "explanation": "Only <b>whoever</b> means 'the person who' and can stand as the subject of <b>keeps</b>; the preposition <b>by</b> governs the whole clause, not the pronoun, so the object form <b>whomever</b> is wrong, and <b>who</b>/<b>whom</b> would need a stated antecedent."
+    },
+    {
+      "id": "gv-ch-27-23",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "For four decades he was a ______ figure in sports broadcasting, whose commentary shaped how a whole generation heard the game.",
+      "options": [
+        "towering",
+        "lofty",
+        "soaring",
+        "elevated"
+      ],
+      "correct": 0,
+      "answer": "towering",
+      "vi": "Trong bốn thập kỷ, ông là một tượng đài của ngành bình luận thể thao, người mà lời bình đã định hình cách cả một thế hệ nghe trận đấu.",
+      "explanation": "<b>A towering figure</b> is a person of outstanding importance in a field. <b>Lofty</b> describes ideals or a superior attitude, <b>soaring</b> describes rising prices or birds, and <b>elevated</b> describes a raised position or level."
+    },
+    {
+      "id": "gv-ch-27-24",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Unregulated betting apps ______ a serious threat to the integrity of lower-league football, the inquiry concluded.",
+      "options": [
+        "put",
+        "make",
+        "pose",
+        "set"
+      ],
+      "correct": 2,
+      "answer": "pose",
+      "vi": "Các ứng dụng cá cược không được quản lý đặt ra mối đe dọa nghiêm trọng đối với sự trong sạch của bóng đá hạng dưới, cuộc điều tra kết luận.",
+      "explanation": "<b>Pose a threat</b> is the fixed verb + noun collocation. <b>Put</b>, <b>make</b> and <b>set</b> are not used with <b>threat</b>."
+    },
+    {
+      "id": "gv-ch-27-25",
+      "level": "ch",
+      "focus": "question-tag",
+      "q": "Nobody in the press room expected the manager to announce his resignation that afternoon, ______?",
+      "options": [
+        "didn't they",
+        "did they",
+        "didn't he",
+        "did he"
+      ],
+      "correct": 1,
+      "answer": "did they",
+      "vi": "Không ai trong phòng họp báo ngờ rằng huấn luyện viên sẽ tuyên bố từ chức chiều hôm đó, phải không?",
+      "explanation": "<b>Nobody</b> makes the statement negative, so the tag is positive, and indefinite pronouns such as <b>nobody</b> take <b>they</b> in the tag: <b>did they</b>."
+    }
+  ]
+}

@@ -11344,6 +11344,7 @@
         .nav-hub-card.reading .nav-hub-icon { color: #0f766e; background: #ccfbf1; }
         .nav-hub-card.cloze .nav-hub-icon { color: #b45309; background: #fef3c7; }
         .nav-hub-card.errors .nav-hub-icon { color: #be123c; background: #ffe4e6; }
+        .nav-hub-card.grammarvocab .nav-hub-icon { color: #6d28d9; background: #ede9fe; }
         .exam-card-go { font-size: 26px; color: var(--text-secondary); flex: 0 0 auto; }
 
         .exam-history-btn {

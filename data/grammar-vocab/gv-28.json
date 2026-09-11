@@ -1,0 +1,406 @@
+{
+  "file": "28",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-28-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "After years of complaints from tenants, the city council finally voted to ______ the by-law that let landlords evict without notice.",
+      "options": [
+        "retract",
+        "repeal",
+        "cancel",
+        "dismiss"
+      ],
+      "correct": 1,
+      "answer": "repeal",
+      "vi": "Sau nhiều năm bị người thuê nhà phàn nàn, hội đồng thành phố cuối cùng đã bỏ phiếu bãi bỏ quy định cho phép chủ nhà đuổi người thuê mà không cần báo trước.",
+      "explanation": "Laws and by-laws are <b>repealed</b>. <i>Cancel</i> takes events or orders, <i>dismiss</i> a case or an idea, and <i>retract</i> a statement."
+    },
+    {
+      "id": "gv-ch-28-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Having already been cautioned twice for leaking to the press, the junior minister knew he was ______.",
+      "options": [
+        "on thin ice",
+        "on the fence",
+        "on the rocks",
+        "on cloud nine"
+      ],
+      "correct": 0,
+      "answer": "on thin ice",
+      "vi": "Đã hai lần bị cảnh cáo vì để lộ tin cho báo chí, vị thứ trưởng trẻ biết mình đang ở thế ngàn cân treo sợi tóc.",
+      "explanation": "<b>On thin ice</b> = in a risky position where one more mistake brings disaster. <i>On the fence</i> is undecided, <i>on the rocks</i> is failing (a marriage, a business), <i>on cloud nine</i> is very happy."
+    },
+    {
+      "id": "gv-ch-28-3",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ has a single online rumour wiped so much value off a listed company as the one that circulated on Monday.",
+      "options": [
+        "Not only",
+        "Seldom",
+        "Not until",
+        "Only when"
+      ],
+      "correct": 1,
+      "answer": "Seldom",
+      "vi": "Hiếm khi một tin đồn trên mạng lại làm bốc hơi nhiều giá trị của một công ty niêm yết đến vậy như tin đồn lan truyền hôm thứ Hai.",
+      "explanation": "The negative frequency adverb <b>Seldom</b> at the front of a sentence forces inversion: <b>Seldom has a rumour wiped…</b>. <i>Not only</i> would need <i>but also</i>, and <i>Not until / Only when</i> must be followed by a time clause before the inverted main clause."
+    },
+    {
+      "id": "gv-ch-28-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Residents complained that the unlit stairwells had turned the estate into a ______ ground for petty crime.",
+      "options": [
+        "feeding",
+        "growing",
+        "nursing",
+        "breeding"
+      ],
+      "correct": 3,
+      "answer": "breeding",
+      "vi": "Cư dân than phiền rằng những cầu thang không có đèn đã biến khu chung cư thành mảnh đất màu mỡ cho tội phạm vặt.",
+      "explanation": "The fixed collocation is <b>breeding ground</b> (for crime, disease, ideas). The other adjectives do not combine with <i>ground</i> in this sense."
+    },
+    {
+      "id": "gv-ch-28-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The commissioner announced that she would ______ at the end of the year rather than face a vote of no confidence.",
+      "options": [
+        "step down",
+        "step in",
+        "step up",
+        "stand by"
+      ],
+      "correct": 0,
+      "answer": "step down",
+      "vi": "Bà cảnh sát trưởng tuyên bố sẽ từ chức vào cuối năm thay vì đối mặt với cuộc bỏ phiếu bất tín nhiệm.",
+      "explanation": "<b>Step down</b> = resign from a post. <i>Step in</i> is to intervene, <i>step up</i> is to increase or take on more responsibility, <i>stand by</i> is to wait ready or to support someone."
+    },
+    {
+      "id": "gv-ch-28-6",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The tribunal recommended that the landlord ______ the deposit in full within fourteen days.",
+      "options": [
+        "returns",
+        "return",
+        "returned",
+        "will return"
+      ],
+      "correct": 1,
+      "answer": "return",
+      "vi": "Toà án đã khuyến nghị rằng chủ nhà phải hoàn trả toàn bộ tiền đặt cọc trong vòng mười bốn ngày.",
+      "explanation": "After <i>recommend/suggest/insist that</i>, the verb takes the bare subjunctive: <b>that the landlord return</b>, with no -s and no tense change."
+    },
+    {
+      "id": "gv-ch-28-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The Court of Appeal ______ the conviction after DNA evidence showed the defendant had been elsewhere that night.",
+      "options": [
+        "abolished",
+        "suspended",
+        "quashed",
+        "terminated"
+      ],
+      "correct": 2,
+      "answer": "quashed",
+      "vi": "Toà phúc thẩm đã huỷ bản án sau khi bằng chứng ADN cho thấy bị cáo ở nơi khác vào đêm hôm đó.",
+      "explanation": "A conviction or verdict is <b>quashed</b> (declared invalid). <i>Abolish</i> applies to laws and institutions, <i>suspend</i> to a sentence or a rule, <i>terminate</i> to a contract."
+    },
+    {
+      "id": "gv-ch-28-8",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The ombudsman insisted that the council ______ its reasons in full, ______ residents assume the decision had been arbitrary.",
+      "options": [
+        "spill out / lest",
+        "spell out / unless",
+        "spill over / so that",
+        "spell out / lest"
+      ],
+      "correct": 3,
+      "answer": "spell out / lest",
+      "vi": "Thanh tra viên yêu cầu hội đồng phải giải thích rõ ràng đầy đủ lý do, kẻo người dân cho rằng quyết định đó là tuỳ tiện.",
+      "explanation": "<b>Spell out</b> = explain in detail; <b>lest</b> = for fear that, followed here by a bare subjunctive. <i>Spill out</i> is to pour out, and <i>unless</i> reverses the logic of the sentence."
+    },
+    {
+      "id": "gv-ch-28-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "With no way of knowing how many people would turn up to the housing consultation, the planning officers decided to ______.",
+      "options": [
+        "play for time",
+        "play it by ear",
+        "play the field",
+        "play with fire"
+      ],
+      "correct": 1,
+      "answer": "play it by ear",
+      "vi": "Không thể biết sẽ có bao nhiêu người đến buổi tham vấn về nhà ở, các cán bộ quy hoạch quyết định tuỳ cơ ứng biến.",
+      "explanation": "<b>Play it by ear</b> = decide as things happen rather than plan ahead. <i>Play for time</i> is to delay deliberately, <i>play the field</i> is to date many people, <i>play with fire</i> is to take a dangerous risk."
+    },
+    {
+      "id": "gv-ch-28-10",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The defendant ______ been at the scene; his phone records place him fifty miles away at the time.",
+      "options": [
+        "can't have",
+        "mustn't have",
+        "needn't have",
+        "shouldn't have"
+      ],
+      "correct": 0,
+      "answer": "can't have",
+      "vi": "Bị cáo không thể nào có mặt ở hiện trường được; dữ liệu điện thoại cho thấy anh ta ở cách đó năm mươi dặm vào thời điểm đó.",
+      "explanation": "<b>Can't have + past participle</b> expresses a confident deduction that something did NOT happen. <i>Mustn't have</i> is not used for deduction, <i>needn't have</i> means it was unnecessary, <i>shouldn't have</i> is criticism."
+    },
+    {
+      "id": "gv-ch-28-11",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The judge ______ a heavy fine on the developer for ignoring the safety order.",
+      "options": [
+        "inflicted",
+        "charged",
+        "imposed",
+        "delivered"
+      ],
+      "correct": 2,
+      "answer": "imposed",
+      "vi": "Thẩm phán đã áp mức phạt nặng lên chủ đầu tư vì phớt lờ lệnh an toàn.",
+      "explanation": "The collocation is <b>impose a fine/penalty/tax on</b> someone. You <i>inflict</i> pain or damage, <i>charge</i> a fee, and <i>deliver</i> a verdict."
+    },
+    {
+      "id": "gv-ch-28-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The housing charity was forced to ______ its night-shelter programme when the council grant ran out.",
+      "options": [
+        "disband",
+        "dissolve",
+        "dispel",
+        "discontinue"
+      ],
+      "correct": 3,
+      "answer": "discontinue",
+      "vi": "Tổ chức từ thiện về nhà ở buộc phải ngừng chương trình nhà tạm trú ban đêm khi khoản tài trợ của hội đồng cạn kiệt.",
+      "explanation": "A service or programme is <b>discontinued</b>. You <i>disband</i> a group of people, <i>dissolve</i> a parliament or a company, and <i>dispel</i> doubts or fears."
+    },
+    {
+      "id": "gv-ch-28-13",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ loudly residents object, the developer has the legal right to proceed once planning permission is granted.",
+      "options": [
+        "However",
+        "Whatever",
+        "Although",
+        "Despite"
+      ],
+      "correct": 0,
+      "answer": "However",
+      "vi": "Dù người dân phản đối lớn tiếng đến đâu, chủ đầu tư vẫn có quyền hợp pháp tiến hành một khi đã được cấp phép quy hoạch.",
+      "explanation": "<b>However + adverb/adjective</b> (= no matter how) introduces a concession clause. <i>Whatever</i> needs a noun, <i>although</i> cannot take <i>loudly</i> directly, and <i>despite</i> takes a noun phrase."
+    },
+    {
+      "id": "gv-ch-28-14",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Faced with spiralling costs and a hostile audit, the ministry finally decided to ______ the new stadium.",
+      "options": [
+        "pull the wool over",
+        "pull the plug on",
+        "pull the strings behind",
+        "pull rank on"
+      ],
+      "correct": 1,
+      "answer": "pull the plug on",
+      "vi": "Đối mặt với chi phí leo thang và một cuộc kiểm toán bất lợi, bộ cuối cùng quyết định ngừng hẳn dự án sân vận động mới.",
+      "explanation": "<b>Pull the plug on</b> something = stop it by cutting off its support. <i>Pull the wool over someone's eyes</i> is to deceive, <i>pull the strings</i> is to control secretly, <i>pull rank on</i> is to use seniority over a person."
+    },
+    {
+      "id": "gv-ch-28-15",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "After years of rising rents, many young graduates have been reduced to ______ in converted garages on the edge of town.",
+      "options": [
+        "live",
+        "be living",
+        "living",
+        "have lived"
+      ],
+      "correct": 2,
+      "answer": "living",
+      "vi": "Sau nhiều năm giá thuê tăng, nhiều cử nhân trẻ đã rơi vào cảnh phải sống trong những gara cải tạo ở rìa thành phố.",
+      "explanation": "<b>Be reduced to + -ing</b>: here <i>to</i> is a preposition, so the verb takes the gerund, not the infinitive."
+    },
+    {
+      "id": "gv-ch-28-16",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Police believe the riots were ______ by a rumour that an officer had shot an unarmed teenager.",
+      "options": [
+        "instigated",
+        "inaugurated",
+        "instituted",
+        "installed"
+      ],
+      "correct": 0,
+      "answer": "instigated",
+      "vi": "Cảnh sát tin rằng cuộc bạo loạn đã bị kích động bởi tin đồn rằng một sĩ quan đã bắn một thiếu niên không vũ trang.",
+      "explanation": "<b>Instigate</b> = provoke or stir up trouble. <i>Inaugurate</i> opens something ceremonially, <i>institute</i> sets up a system or policy, <i>install</i> puts equipment or a person in place."
+    },
+    {
+      "id": "gv-ch-28-17",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ orbit, the delta’s patchwork of shrimp farms looks like a sheet of shattered glass.",
+      "options": [
+        "Seeing from",
+        "To see from",
+        "Seen from",
+        "Having seen from"
+      ],
+      "correct": 2,
+      "answer": "Seen from",
+      "vi": "Nhìn từ quỹ đạo, mạng lưới đầm nuôi tôm chằng chịt của vùng châu thổ trông như một tấm kính vỡ.",
+      "explanation": "The subject <i>patchwork of shrimp farms</i> is what is <b>seen</b>, not what sees, so the reduced clause takes the past participle: <b>Seen from orbit</b>. <i>Seeing</i> and <i>having seen</i> would dangle, and <i>to see</i> would state a purpose."
+    },
+    {
+      "id": "gv-ch-28-18",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The minister's resignation came ______ the ______, catching even his closest aides unawares.",
+      "options": [
+        "off / cuff",
+        "out of / blue",
+        "under / radar",
+        "out of / ordinary"
+      ],
+      "correct": 1,
+      "answer": "out of / blue",
+      "vi": "Việc bộ trưởng từ chức diễn ra hoàn toàn bất ngờ, khiến ngay cả các trợ lý thân cận nhất của ông cũng trở tay không kịp.",
+      "explanation": "<b>Out of the blue</b> = completely unexpectedly. <i>Off the cuff</i> means unrehearsed, <i>under the radar</i> means unnoticed, and <i>out of the ordinary</i> is an adjective phrase that does not follow <i>came</i>."
+    },
+    {
+      "id": "gv-ch-28-19",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It is high time the government ______ something about the chronic shortage of social housing.",
+      "options": [
+        "does",
+        "do",
+        "did",
+        "will do"
+      ],
+      "correct": 2,
+      "answer": "did",
+      "vi": "Đã đến lúc chính phủ phải làm gì đó về tình trạng thiếu nhà ở xã hội kinh niên.",
+      "explanation": "<b>It's (high) time + past subjunctive</b>: the past form <b>did</b> refers to the present and shows the action is overdue."
+    },
+    {
+      "id": "gv-ch-28-20",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The new chief constable has vowed to ______ bribery in the traffic division once and for all.",
+      "options": [
+        "stamp out",
+        "rule out",
+        "wear out",
+        "phase out"
+      ],
+      "correct": 0,
+      "answer": "stamp out",
+      "vi": "Tân cảnh sát trưởng đã thề sẽ dẹp tận gốc nạn hối lộ trong đội cảnh sát giao thông một lần và mãi mãi.",
+      "explanation": "<b>Stamp out</b> = eliminate something bad completely. <i>Rule out</i> excludes a possibility, <i>wear out</i> exhausts, <i>phase out</i> withdraws something gradually."
+    },
+    {
+      "id": "gv-ch-28-21",
+      "level": "ch",
+      "focus": "article-quantifier",
+      "q": "______ tenants had even heard of the compensation scheme, so turnout at the meeting was poor.",
+      "options": [
+        "A few",
+        "Little",
+        "A little",
+        "Few"
+      ],
+      "correct": 3,
+      "answer": "Few",
+      "vi": "Rất ít người thuê nhà từng nghe nói đến chương trình bồi thường, nên số người đến dự họp rất thưa thớt.",
+      "explanation": "<b>Few</b> (without <i>a</i>) means hardly any and carries a negative sense, matching the poor turnout; <i>a few</i> is positive (some), and <i>little/a little</i> go with uncountable nouns."
+    },
+    {
+      "id": "gv-ch-28-22",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Economists warned the city not to ______ by tying its entire budget to tourism revenue.",
+      "options": [
+        "put the cart before the horse",
+        "walk on eggshells",
+        "put all its eggs in one basket",
+        "count its chickens before they hatch"
+      ],
+      "correct": 2,
+      "answer": "put all its eggs in one basket",
+      "vi": "Các nhà kinh tế cảnh báo thành phố không nên dồn hết trứng vào một giỏ bằng cách gắn toàn bộ ngân sách vào nguồn thu từ du lịch.",
+      "explanation": "<b>Put all your eggs in one basket</b> = depend entirely on one thing. <i>Put the cart before the horse</i> is to do things in the wrong order, <i>walk on eggshells</i> is to be very careful not to offend, <i>count your chickens</i> is to assume success too early."
+    },
+    {
+      "id": "gv-ch-28-23",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Only after the third burglary in a single month ______ to install cameras on the estate.",
+      "options": [
+        "the council agreed",
+        "did the council agree",
+        "the council did agree",
+        "the council had agreed"
+      ],
+      "correct": 1,
+      "answer": "did the council agree",
+      "vi": "Chỉ sau vụ trộm thứ ba trong vòng một tháng, hội đồng mới đồng ý lắp camera trong khu chung cư.",
+      "explanation": "When <b>Only after…</b> opens the sentence, the main clause inverts: <b>did the council agree</b>. The auxiliary must come before the subject; <i>the council agreed / did agree / had agreed</i> all leave the subject in front, and there is no earlier event for a past perfect to precede."
+    },
+    {
+      "id": "gv-ch-28-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The licensing board ______ the nightclub's licence after a third stabbing on its premises in a year.",
+      "options": [
+        "revoked",
+        "refuted",
+        "retrieved",
+        "repelled"
+      ],
+      "correct": 0,
+      "answer": "revoked",
+      "vi": "Ban cấp phép đã thu hồi giấy phép của hộp đêm sau vụ đâm chém thứ ba trong khuôn viên trong vòng một năm.",
+      "explanation": "A licence, permit or permission is <b>revoked</b> (officially withdrawn). <i>Refute</i> is to disprove a claim, <i>retrieve</i> is to get something back, <i>repel</i> is to drive away."
+    },
+    {
+      "id": "gv-ch-28-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Prosecutors ______ doubt on the alibi after CCTV placed the defendant near the scene an hour before the robbery.",
+      "options": [
+        "placed",
+        "laid",
+        "set",
+        "cast"
+      ],
+      "correct": 3,
+      "answer": "cast",
+      "vi": "Các công tố viên đã gieo nghi ngờ lên bằng chứng ngoại phạm sau khi camera an ninh cho thấy bị cáo ở gần hiện trường một giờ trước vụ cướp.",
+      "explanation": "The collocation is <b>cast doubt on</b> something. <i>Place</i>, <i>lay</i> and <i>set</i> do not combine with <i>doubt</i> in this sense."
+    }
+  ]
+}

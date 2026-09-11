@@ -1,0 +1,406 @@
+{
+  "file": "04",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-04-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Grandma ______ in this village since she was a little girl.",
+      "options": [
+        "lives",
+        "has lived",
+        "lived",
+        "is living"
+      ],
+      "correct": 1,
+      "answer": "has lived",
+      "vi": "Bà nội đã sống ở ngôi làng này từ khi còn là một cô bé.",
+      "explanation": "<b>Since</b> + a past point in time needs the present perfect: <b>has lived</b> (she started then and still lives there)."
+    },
+    {
+      "id": "gv-kc-04-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Although she had made lots of new friends at the summer camp, Lan still felt ______ and kept talking about her mum’s cooking and her own little bedroom.",
+      "options": [
+        "homesick",
+        "lonely",
+        "nostalgic",
+        "bored"
+      ],
+      "correct": 0,
+      "answer": "homesick",
+      "vi": "Dù đã có nhiều bạn mới ở trại hè, Lan vẫn thấy nhớ nhà và cứ nhắc mãi về món mẹ nấu và căn phòng nhỏ của mình.",
+      "explanation": "<b>Homesick</b> = sad because you are away from home and miss it, which is why she keeps talking about home. <b>Lonely</b> = sad because you have no friends, <b>nostalgic</b> = missing the past, and <b>bored</b> does not explain missing her mum’s cooking."
+    },
+    {
+      "id": "gv-kc-04-3",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "The forecast says there will be ______ rain all weekend, so the picnic in the forest is cancelled.",
+      "options": [
+        "strong",
+        "hard",
+        "heavy",
+        "big"
+      ],
+      "correct": 2,
+      "answer": "heavy",
+      "vi": "Dự báo nói cuối tuần sẽ mưa to suốt, nên buổi dã ngoại trong rừng bị hủy.",
+      "explanation": "English says <b>heavy rain</b> (also heavy snow, heavy traffic). <b>Strong</b> goes with wind, not rain; <b>hard</b> and <b>big</b> do not collocate with 'rain'."
+    },
+    {
+      "id": "gv-kc-04-4",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "We ______ for the mountains at five in the morning to avoid the traffic.",
+      "options": [
+        "set up",
+        "set about",
+        "set down",
+        "set off"
+      ],
+      "correct": 3,
+      "answer": "set off",
+      "vi": "Chúng tôi lên đường đi lên núi lúc năm giờ sáng để tránh kẹt xe.",
+      "explanation": "<b>Set off</b> = start a journey. <b>Set up</b> = establish, <b>set about</b> = begin a task, <b>set down</b> = put something down."
+    },
+    {
+      "id": "gv-kc-04-5",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Nam: I saw Lan at the hospital yesterday. / Hoa: You ______ her — she has been in Hà Nội all week.",
+      "options": [
+        "can't have seen",
+        "mustn't have seen",
+        "shouldn't have seen",
+        "needn't have seen"
+      ],
+      "correct": 0,
+      "answer": "can't have seen",
+      "vi": "Nam: Hôm qua tớ thấy Lan ở bệnh viện. / Hoa: Cậu không thể nào thấy cô ấy được — cả tuần nay cô ấy ở Hà Nội mà.",
+      "explanation": "<b>Can't have + past participle</b> says something in the past was impossible. <b>Mustn't have</b> is not used for deduction; <b>shouldn't have</b> = it was wrong to; <b>needn't have</b> = it was unnecessary."
+    },
+    {
+      "id": "gv-kc-04-6",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Tickets for the island boat tour are ______ — book now or you will miss out.",
+      "options": [
+        "burning the midnight oil",
+        "selling like hot cakes",
+        "raining cats and dogs",
+        "going the extra mile"
+      ],
+      "correct": 1,
+      "answer": "selling like hot cakes",
+      "vi": "Vé tour thuyền ra đảo đang bán đắt như tôm tươi — đặt ngay kẻo hết.",
+      "explanation": "<b>Sell like hot cakes</b> = sell very quickly in large numbers. <b>Burn the midnight oil</b> = work late at night, <b>rain cats and dogs</b> = rain heavily, <b>go the extra mile</b> = make extra effort."
+    },
+    {
+      "id": "gv-kc-04-7",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The dentist to ______ my mother goes has moved her clinic to District 3.",
+      "options": [
+        "who",
+        "whose",
+        "whom",
+        "which"
+      ],
+      "correct": 2,
+      "answer": "whom",
+      "vi": "Nha sĩ mà mẹ tôi hay đến khám đã chuyển phòng khám sang Quận 3.",
+      "explanation": "After a preposition (<b>to</b>) the relative pronoun must be the object form <b>whom</b>: ‘to whom my mother goes’. <b>Who</b> is the subject form and cannot follow a preposition, <b>whose</b> needs a noun after it, and <b>which</b> is for things."
+    },
+    {
+      "id": "gv-kc-04-8",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Mum was ______ to hear that it was only a cold and not the flu.",
+      "options": [
+        "relaxed",
+        "comfortable",
+        "peaceful",
+        "relieved"
+      ],
+      "correct": 3,
+      "answer": "relieved",
+      "vi": "Mẹ nhẹ cả người khi nghe đó chỉ là cảm lạnh chứ không phải cúm.",
+      "explanation": "<b>Relieved</b> = happy because a worry has gone. <b>Relaxed</b>, <b>comfortable</b> and <b>peaceful</b> describe a calm state, not the feeling of a worry disappearing, and are not used with 'to hear that'."
+    },
+    {
+      "id": "gv-kc-04-9",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "My uncle has suffered ______ back pain for years, so he sees a doctor every month.",
+      "options": [
+        "from",
+        "of",
+        "with",
+        "by"
+      ],
+      "correct": 0,
+      "answer": "from",
+      "vi": "Chú tôi bị đau lưng nhiều năm nay nên tháng nào cũng đi khám bác sĩ.",
+      "explanation": "The verb <b>suffer</b> takes the preposition <b>from</b> when it means to have an illness or a pain."
+    },
+    {
+      "id": "gv-kc-04-10",
+      "level": "kc",
+      "focus": "tense",
+      "q": "This time next week we ______ on a beach in Phú Quốc.",
+      "options": [
+        "lie",
+        "are lying",
+        "will be lying",
+        "have been lying"
+      ],
+      "correct": 2,
+      "answer": "will be lying",
+      "vi": "Giờ này tuần sau chúng tôi sẽ đang nằm dài trên bãi biển ở Phú Quốc.",
+      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, so the future continuous <b>will be lying</b> is needed."
+    },
+    {
+      "id": "gv-kc-04-11",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "There's ______ time before the flight, so let's have a coffee.",
+      "options": [
+        "a few",
+        "a little",
+        "few",
+        "many"
+      ],
+      "correct": 1,
+      "answer": "a little",
+      "vi": "Còn một chút thời gian trước chuyến bay, nên mình đi uống cà phê đi.",
+      "explanation": "<b>Time</b> is uncountable, so <b>a little</b> (= some). <b>A few</b> and <b>many</b> go with countable nouns, and <b>few</b> means 'almost none', which would not fit 'let's have a coffee'."
+    },
+    {
+      "id": "gv-kc-04-12",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "I would like to ______ an appointment with Dr Hùng for tomorrow morning, please.",
+      "options": [
+        "do",
+        "take",
+        "put",
+        "make"
+      ],
+      "correct": 3,
+      "answer": "make",
+      "vi": "Tôi muốn đặt lịch hẹn với bác sĩ Hùng vào sáng mai ạ.",
+      "explanation": "You <b>make</b> an appointment (also make a booking, make a decision). <b>Do</b>, <b>take</b> and <b>put</b> do not collocate with 'appointment'."
+    },
+    {
+      "id": "gv-kc-04-13",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Minh was ______ when the doctor told him he could not play football for a month.",
+      "options": [
+        "disappointed",
+        "ashamed",
+        "amused",
+        "grateful"
+      ],
+      "correct": 0,
+      "answer": "disappointed",
+      "vi": "Minh thất vọng khi bác sĩ bảo cậu không được đá bóng trong một tháng.",
+      "explanation": "<b>Disappointed</b> = sad because something you hoped for will not happen. <b>Ashamed</b> = feeling guilty, <b>amused</b> = finding something funny, <b>grateful</b> = thankful — none of them fit bad news."
+    },
+    {
+      "id": "gv-kc-04-14",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If I ______ you, I would see a doctor about that cough.",
+      "options": [
+        "am",
+        "were",
+        "had been",
+        "would be"
+      ],
+      "correct": 1,
+      "answer": "were",
+      "vi": "Nếu tớ là cậu, tớ sẽ đi khám bác sĩ về cơn ho đó.",
+      "explanation": "Second conditional (an imaginary present): <b>if + past simple</b>, and 'If I <b>were</b> you' is the fixed form for giving advice."
+    },
+    {
+      "id": "gv-kc-04-15",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "We ______ petrol halfway to the beach and had to push the car to a garage.",
+      "options": [
+        "ran into",
+        "ran after",
+        "ran out of",
+        "ran over"
+      ],
+      "correct": 2,
+      "answer": "ran out of",
+      "vi": "Chúng tôi hết xăng giữa đường ra biển và phải đẩy xe đến tiệm sửa.",
+      "explanation": "<b>Run out of</b> = have no more of something. <b>Run into</b> = meet by chance or crash into, <b>run after</b> = chase, <b>run over</b> = hit with a vehicle."
+    },
+    {
+      "id": "gv-kc-04-16",
+      "level": "kc",
+      "focus": "linking",
+      "q": "The weather in Sa Pa was terrible all week; ______, we still had a wonderful holiday.",
+      "options": [
+        "therefore",
+        "moreover",
+        "otherwise",
+        "however"
+      ],
+      "correct": 3,
+      "answer": "however",
+      "vi": "Thời tiết ở Sa Pa tệ suốt cả tuần; tuy nhiên, chúng tôi vẫn có một kỳ nghỉ tuyệt vời.",
+      "explanation": "The two ideas contrast (bad weather / great holiday), so <b>however</b>. <b>Therefore</b> shows a result, <b>moreover</b> adds a similar point, <b>otherwise</b> = if not."
+    },
+    {
+      "id": "gv-kc-04-17",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Hoa felt ______ when she realised she had been following the wrong tour group for ten minutes.",
+      "options": [
+        "frightened",
+        "embarrassed",
+        "delighted",
+        "proud"
+      ],
+      "correct": 1,
+      "answer": "embarrassed",
+      "vi": "Hoa thấy xấu hổ khi nhận ra mình đã đi theo nhầm đoàn du lịch suốt mười phút.",
+      "explanation": "<b>Embarrassed</b> = ashamed and uncomfortable because of a silly mistake. <b>Frightened</b> = scared, and <b>delighted</b> and <b>proud</b> are positive feelings that do not fit a mistake."
+    },
+    {
+      "id": "gv-kc-04-18",
+      "level": "kc",
+      "focus": "passive",
+      "q": "Thousands of young trees ______ in the national park every year by student volunteers.",
+      "options": [
+        "are planted",
+        "are planting",
+        "plant",
+        "have planted"
+      ],
+      "correct": 0,
+      "answer": "are planted",
+      "vi": "Hàng nghìn cây non được trồng trong vườn quốc gia mỗi năm bởi các tình nguyện viên học sinh.",
+      "explanation": "The trees receive the action and the agent follows <b>by</b>, so the sentence is passive: <b>are planted</b>. The active forms would make the trees do the planting."
+    },
+    {
+      "id": "gv-kc-04-19",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "The doctor went on television to ______ about the rumours that the new vaccine was dangerous.",
+      "options": [
+        "hit the nail on the head",
+        "turn over a new leaf",
+        "break the ice",
+        "set the record straight"
+      ],
+      "correct": 3,
+      "answer": "set the record straight",
+      "vi": "Bác sĩ lên truyền hình để làm rõ sự thật về những tin đồn rằng vắc-xin mới nguy hiểm.",
+      "explanation": "<b>Set the record straight</b> = tell the true facts after false ones have spread. <b>Hit the nail on the head</b> = say exactly the right thing, <b>turn over a new leaf</b> = start behaving better, <b>break the ice</b> = make people feel relaxed."
+    },
+    {
+      "id": "gv-kc-04-20",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "I am really looking forward to ______ my cousins in Huế this summer.",
+      "options": [
+        "see",
+        "to see",
+        "seeing",
+        "to seeing"
+      ],
+      "correct": 2,
+      "answer": "seeing",
+      "vi": "Tớ rất mong được gặp các anh chị em họ ở Huế hè này.",
+      "explanation": "In <b>look forward to</b>, 'to' is a preposition, so it is followed by a gerund: <b>seeing</b>, never the infinitive."
+    },
+    {
+      "id": "gv-kc-04-21",
+      "level": "kc",
+      "focus": "reported",
+      "q": "Lan asked me ______ on holiday that summer.",
+      "options": [
+        "where I was going",
+        "where was I going",
+        "where am I going",
+        "where I am going"
+      ],
+      "correct": 0,
+      "answer": "where I was going",
+      "vi": "Lan hỏi tôi sẽ đi nghỉ ở đâu vào mùa hè năm đó.",
+      "explanation": "A reported question keeps statement word order (subject before verb) and shifts the tense back: <b>where I was going</b>."
+    },
+    {
+      "id": "gv-kc-04-22",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "The doctor asked me to ______ a deep breath and hold it for five seconds.",
+      "options": [
+        "make",
+        "take",
+        "do",
+        "give"
+      ],
+      "correct": 1,
+      "answer": "take",
+      "vi": "Bác sĩ bảo tôi hít một hơi thật sâu và giữ trong năm giây.",
+      "explanation": "The collocation is <b>take a (deep) breath</b>. <b>Make</b>, <b>do</b> and <b>give</b> are not used with 'breath' in this meaning."
+    },
+    {
+      "id": "gv-kc-04-23",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Our tour guide stayed ______ even when the bus broke down in the rain, joking with everyone until help came.",
+      "options": [
+        "anxious",
+        "jealous",
+        "cheerful",
+        "hopeless"
+      ],
+      "correct": 2,
+      "answer": "cheerful",
+      "vi": "Hướng dẫn viên của chúng tôi vẫn vui vẻ ngay cả khi xe buýt hỏng giữa trời mưa, đùa với mọi người cho tới khi có người tới giúp.",
+      "explanation": "<b>Cheerful</b> = happy and in a good mood, which matches 'joking with everyone'. <b>Anxious</b> and <b>hopeless</b> are negative feelings, and <b>jealous</b> does not fit the situation."
+    },
+    {
+      "id": "gv-kc-04-24",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "The mountains were ______ than we expected, so we bought warm jackets at the market.",
+      "options": [
+        "as cold",
+        "far coldest",
+        "more cold",
+        "far colder"
+      ],
+      "correct": 3,
+      "answer": "far colder",
+      "vi": "Trên núi lạnh hơn nhiều so với chúng tôi tưởng, nên chúng tôi mua áo khoác ấm ở chợ.",
+      "explanation": "<b>Than</b> needs a comparative: <b>far colder</b> ('far' = much). <b>Coldest</b> is a superlative, <b>as cold</b> needs 'as' not 'than', and a one-syllable adjective takes <b>-er</b>, not 'more'."
+    },
+    {
+      "id": "gv-kc-04-25",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: You look exhausted! / Nam: Yes, I ______ back from Đà Lạt — the bus took eight hours.",
+      "options": [
+        "have just come",
+        "had just come",
+        "just come",
+        "am just coming"
+      ],
+      "correct": 0,
+      "answer": "have just come",
+      "vi": "Lan: Trông cậu mệt quá! / Nam: Ừ, tớ vừa mới về từ Đà Lạt — xe buýt đi mất tám tiếng.",
+      "explanation": "<b>Just</b> + a recent action with a present result ('you look exhausted') takes the present perfect: <b>have just come</b>. <b>Had just come</b> needs another past event to refer to."
+    }
+  ]
+}

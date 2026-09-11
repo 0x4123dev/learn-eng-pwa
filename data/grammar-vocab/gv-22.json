@@ -1,0 +1,406 @@
+{
+  "file": "22",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-22-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The reforestation fund is facing a ______ of nearly two million dollars between what donors pledged and what they actually paid.",
+      "options": [
+        "scarcity",
+        "shortfall",
+        "deficiency",
+        "dearth"
+      ],
+      "correct": 1,
+      "answer": "shortfall",
+      "vi": "Quỹ trồng lại rừng đang đối mặt với mức thiếu hụt gần hai triệu đô la giữa số tiền các nhà tài trợ cam kết và số tiền họ thực sự chi trả.",
+      "explanation": "A <b>shortfall</b> is the exact amount by which something falls short of what was expected; <b>scarcity</b>, <b>deficiency</b> and <b>dearth</b> describe a general lack and are not measured in dollars."
+    },
+    {
+      "id": "gv-ch-22-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Once electric cars became fashionable, several oil companies were quick to ______, launching charging networks of their own.",
+      "options": [
+        "jump the gun",
+        "jump through hoops",
+        "jump on the bandwagon",
+        "jump ship"
+      ],
+      "correct": 2,
+      "answer": "jump on the bandwagon",
+      "vi": "Khi xe điện trở nên thịnh hành, nhiều công ty dầu mỏ đã nhanh chóng chạy theo trào lưu, tự tung ra các mạng lưới trạm sạc của riêng mình.",
+      "explanation": "<b>Jump on the bandwagon</b> = join something once it has become popular. <b>Jump the gun</b> = act too soon; <b>jump through hoops</b> = go through a demanding process; <b>jump ship</b> = abandon an organisation."
+    },
+    {
+      "id": "gv-ch-22-3",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The burglars ______ in through the front door – it was still bolted from the inside when the police arrived.",
+      "options": [
+        "mightn't have come",
+        "needn't have come",
+        "shouldn't have come",
+        "can't have come"
+      ],
+      "correct": 3,
+      "answer": "can't have come",
+      "vi": "Bọn trộm không thể nào đã vào bằng cửa trước – cửa vẫn còn cài then từ bên trong khi cảnh sát đến.",
+      "explanation": "A confident deduction that something was impossible in the past takes <b>can't have + past participle</b>; <b>mightn't have</b> only expresses a weak possibility, and <b>needn't / shouldn't have</b> express necessity or advice, not certainty."
+    },
+    {
+      "id": "gv-ch-22-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Prosecutors decided to ______ charges against the chemical company after the spill was traced to its pipeline.",
+      "options": [
+        "bring",
+        "raise",
+        "put",
+        "make"
+      ],
+      "correct": 0,
+      "answer": "bring",
+      "vi": "Các công tố viên quyết định khởi tố công ty hóa chất sau khi vụ rò rỉ được xác định bắt nguồn từ đường ống của công ty này.",
+      "explanation": "The fixed collocation is <b>bring (or press) charges against</b> someone; you <b>raise</b> objections and <b>make</b> accusations, but charges are <b>brought</b>."
+    },
+    {
+      "id": "gv-ch-22-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The city's recycling scheme has failed to ______ the expectations of the residents who campaigned so hard for it.",
+      "options": [
+        "live down",
+        "live off",
+        "live through",
+        "live up to"
+      ],
+      "correct": 3,
+      "answer": "live up to",
+      "vi": "Chương trình tái chế của thành phố đã không đáp ứng được kỳ vọng của những cư dân đã vận động hết mình cho nó.",
+      "explanation": "<b>Live up to</b> = be as good as what was expected. <b>Live down</b> = make people forget an embarrassing mistake; <b>live off</b> = depend on for money; <b>live through</b> = survive an experience."
+    },
+    {
+      "id": "gv-ch-22-6",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The council inspects its flood defences only once in a ______ moon, ______ neighbouring towns check theirs every spring.",
+      "options": [
+        "full / whereas",
+        "blue / whereas",
+        "blue / despite",
+        "new / while"
+      ],
+      "correct": 1,
+      "answer": "blue / whereas",
+      "vi": "Hội đồng thành phố hiếm hoi lắm mới kiểm tra hệ thống đê chắn lũ, trong khi các thị trấn lân cận kiểm tra hàng năm vào mỗi mùa xuân.",
+      "explanation": "<b>Once in a blue moon</b> = very rarely, and the contrast between the two clauses needs the conjunction <b>whereas</b>; <b>despite</b> must be followed by a noun, not a clause."
+    },
+    {
+      "id": "gv-ch-22-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The courts are still struggling to clear a ______ of more than sixty thousand cases that built up during the pandemic.",
+      "options": [
+        "stockpile",
+        "reserve",
+        "backlog",
+        "surplus"
+      ],
+      "correct": 2,
+      "answer": "backlog",
+      "vi": "Các tòa án vẫn đang chật vật giải quyết lượng tồn đọng hơn sáu mươi nghìn vụ án tích tụ trong đại dịch.",
+      "explanation": "A <b>backlog</b> is an accumulation of work that should already have been dealt with; a <b>stockpile</b> or <b>reserve</b> is kept deliberately for later, and a <b>surplus</b> is more than is needed."
+    },
+    {
+      "id": "gv-ch-22-8",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the vaccine had been tested on ten thousand volunteers did the regulator agree to license it.",
+      "options": [
+        "Not only",
+        "Only after",
+        "Hardly",
+        "Seldom"
+      ],
+      "correct": 1,
+      "answer": "Only after",
+      "vi": "Chỉ sau khi vắc-xin được thử nghiệm trên mười nghìn tình nguyện viên, cơ quan quản lý mới đồng ý cấp phép cho nó.",
+      "explanation": "<b>Only after</b> + clause at the start of a sentence forces inversion in the main clause: <b>did the regulator agree</b>. <b>Not only</b> and <b>Hardly</b> must be followed immediately by the inverted verb, and <b>Seldom</b> gives no time sequence at all."
+    },
+    {
+      "id": "gv-ch-22-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The minister meant to unveil the carbon tax in June, but a careless tweet from an aide ______ three weeks early.",
+      "options": [
+        "let the cat out of the bag",
+        "let sleeping dogs lie",
+        "let off steam",
+        "let the grass grow under his feet"
+      ],
+      "correct": 0,
+      "answer": "let the cat out of the bag",
+      "vi": "Bộ trưởng định công bố thuế các-bon vào tháng Sáu, nhưng một dòng tweet bất cẩn của trợ lý đã để lộ bí mật sớm ba tuần.",
+      "explanation": "<b>Let the cat out of the bag</b> = reveal a secret by accident. <b>Let sleeping dogs lie</b> = avoid stirring up trouble; <b>let off steam</b> = release pent-up anger; <b>let the grass grow under one's feet</b> = waste time."
+    },
+    {
+      "id": "gv-ch-22-10",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The union insisted that every worker ______ issued with protective clothing before entering the contaminated site.",
+      "options": [
+        "were",
+        "has been",
+        "be",
+        "will be"
+      ],
+      "correct": 2,
+      "answer": "be",
+      "vi": "Công đoàn khăng khăng yêu cầu mọi công nhân phải được cấp quần áo bảo hộ trước khi vào khu vực bị ô nhiễm.",
+      "explanation": "After verbs of demand such as <b>insist, demand, suggest</b> + that, the verb takes the bare subjunctive: <b>(should) be issued</b>, whatever the tense of the main verb."
+    },
+    {
+      "id": "gv-ch-22-11",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The evidence against the ringleader was ______ – fingerprints, CCTV footage and two eyewitnesses who picked him out of a line-up.",
+      "options": [
+        "overpowering",
+        "overwhelming",
+        "overriding",
+        "overbearing"
+      ],
+      "correct": 1,
+      "answer": "overwhelming",
+      "vi": "Bằng chứng chống lại kẻ cầm đầu là quá rõ ràng và áp đảo – dấu vân tay, hình ảnh camera an ninh và hai nhân chứng đã nhận diện được hắn.",
+      "explanation": "<b>Overwhelming evidence</b> is the collocation for evidence too strong to argue with; <b>overpowering</b> describes smells or feelings, <b>overriding</b> a priority, and <b>overbearing</b> a domineering person."
+    },
+    {
+      "id": "gv-ch-22-12",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The accountant admitted ______ the invoices but denied knowing that they had been forged.",
+      "options": [
+        "to sign",
+        "having signed",
+        "to have signed",
+        "sign"
+      ],
+      "correct": 1,
+      "answer": "having signed",
+      "vi": "Kế toán viên thừa nhận đã ký các hóa đơn nhưng phủ nhận việc biết chúng là giả.",
+      "explanation": "<b>Admit</b> is followed by a gerund, never an infinitive; the perfect gerund <b>having signed</b> shows the signing happened before the admission."
+    },
+    {
+      "id": "gv-ch-22-13",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The new sentencing guidelines give judges very little ______ to shorten a term for a first-time offender.",
+      "options": [
+        "allowance",
+        "clearance",
+        "tolerance",
+        "leeway"
+      ],
+      "correct": 3,
+      "answer": "leeway",
+      "vi": "Hướng dẫn tuyên án mới cho các thẩm phán rất ít khoảng linh hoạt để rút ngắn mức án đối với người phạm tội lần đầu.",
+      "explanation": "<b>Leeway</b> is the freedom to vary from a rule within limits; an <b>allowance</b> is money or a permitted amount, <b>clearance</b> is official permission or physical space, and <b>tolerance</b> is the willingness to accept something."
+    },
+    {
+      "id": "gv-ch-22-14",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Give me a couple of days to ______ your offer before I hand in my notice at the bank.",
+      "options": [
+        "mull over",
+        "glaze over",
+        "hand over",
+        "take over"
+      ],
+      "correct": 0,
+      "answer": "mull over",
+      "vi": "Hãy cho tôi vài ngày để cân nhắc kỹ lời đề nghị của anh trước khi tôi nộp đơn xin nghỉ việc ở ngân hàng.",
+      "explanation": "<b>Mull over</b> = think carefully about something for a period of time. <b>Glaze over</b> is what bored eyes do; <b>hand over</b> = give to someone; <b>take over</b> = gain control of."
+    },
+    {
+      "id": "gv-ch-22-15",
+      "level": "ch",
+      "focus": "linking",
+      "q": "The tannery was fined twice last year; ______, it continues to discharge untreated waste into the river.",
+      "options": [
+        "whereas",
+        "therefore",
+        "nevertheless",
+        "otherwise"
+      ],
+      "correct": 2,
+      "answer": "nevertheless",
+      "vi": "Xưởng thuộc da đã bị phạt hai lần vào năm ngoái; tuy vậy, nó vẫn tiếp tục xả chất thải chưa qua xử lý ra sông.",
+      "explanation": "The second clause goes against what the fines should have achieved, so the concessive adverb <b>nevertheless</b> fits; <b>whereas</b> is a conjunction, and <b>therefore / otherwise</b> give the wrong logic."
+    },
+    {
+      "id": "gv-ch-22-16",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ afford the rising licence fees, the small radio station switched to streaming its programmes online.",
+      "options": [
+        "Been unable to",
+        "Be unable to",
+        "Having unable to",
+        "Being unable to"
+      ],
+      "correct": 3,
+      "answer": "Being unable to",
+      "vi": "Vì không thể trả nổi phí bản quyền ngày càng tăng, đài phát thanh nhỏ đã chuyển sang phát trực tuyến các chương trình của mình.",
+      "explanation": "A present participle clause gives the reason for the main clause: <b>Being unable to afford</b> = because it was unable to afford. <b>Been</b> and <b>Be</b> cannot open a participle clause, and <b>having</b> needs a past participle (<b>having been unable</b>), not the adjective <b>unable</b> on its own."
+    },
+    {
+      "id": "gv-ch-22-17",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Companies that delay investing in wind power now may well ______ when the government subsidies are withdrawn next year.",
+      "options": [
+        "miss the boat",
+        "miss the mark",
+        "miss the point",
+        "miss a beat"
+      ],
+      "correct": 0,
+      "answer": "miss the boat",
+      "vi": "Những công ty trì hoãn đầu tư vào điện gió lúc này rất có thể sẽ bỏ lỡ cơ hội khi trợ cấp của chính phủ bị rút vào năm tới.",
+      "explanation": "<b>Miss the boat</b> = lose an opportunity by being too slow. <b>Miss the mark</b> = fail to achieve the aim; <b>miss the point</b> = fail to understand; <b>miss a beat</b> = hesitate."
+    },
+    {
+      "id": "gv-ch-22-18",
+      "level": "ch",
+      "focus": "agreement",
+      "q": "A number of senior engineers ______ resigned since the merger was announced, leaving the department badly understaffed.",
+      "options": [
+        "has",
+        "have",
+        "is",
+        "was"
+      ],
+      "correct": 1,
+      "answer": "have",
+      "vi": "Nhiều kỹ sư cấp cao đã từ chức kể từ khi vụ sáp nhập được công bố, khiến bộ phận này thiếu nhân lực trầm trọng.",
+      "explanation": "<b>A number of</b> + plural noun takes a plural verb, and <b>since</b> calls for the present perfect: <b>have resigned</b>. (<b>The number of</b> would be singular.)"
+    },
+    {
+      "id": "gv-ch-22-19",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Global coal consumption reached its ______ in 2013 and has been drifting downwards ever since.",
+      "options": [
+        "summit",
+        "climax",
+        "peak",
+        "crest"
+      ],
+      "correct": 2,
+      "answer": "peak",
+      "vi": "Mức tiêu thụ than toàn cầu đạt đỉnh vào năm 2013 và đã giảm dần kể từ đó.",
+      "explanation": "A quantity reaches its <b>peak</b> (highest level); a <b>summit</b> is the top of a mountain or a leaders' meeting, a <b>climax</b> is the most exciting point of a story, and a <b>crest</b> is the top of a wave or hill."
+    },
+    {
+      "id": "gv-ch-22-20",
+      "level": "ch",
+      "focus": "passive",
+      "q": "The suspect is believed ______ the country on a false passport within hours of the robbery.",
+      "options": [
+        "to have left",
+        "to leave",
+        "having left",
+        "to be left"
+      ],
+      "correct": 0,
+      "answer": "to have left",
+      "vi": "Nghi phạm được cho là đã rời khỏi đất nước bằng hộ chiếu giả chỉ vài giờ sau vụ cướp.",
+      "explanation": "With <b>be believed / thought / said</b> + infinitive, an action that happened earlier takes the perfect infinitive: <b>is believed to have left</b>."
+    },
+    {
+      "id": "gv-ch-22-21",
+      "level": "ch",
+      "focus": "comparison",
+      "q": "Recycling aluminium uses ______ energy than smelting it from raw ore, which is why scrap cans are so valuable.",
+      "options": [
+        "far less",
+        "much fewer",
+        "very less",
+        "the least"
+      ],
+      "correct": 0,
+      "answer": "far less",
+      "vi": "Tái chế nhôm tiêu tốn ít năng lượng hơn nhiều so với luyện từ quặng thô, đó là lý do lon nhôm phế liệu có giá trị đến vậy.",
+      "explanation": "<b>Energy</b> is uncountable, so the comparative is <b>less</b>, intensified by <b>far</b> (or <b>much</b>); <b>fewer</b> goes with countable nouns and <b>very</b> cannot modify a comparative."
+    },
+    {
+      "id": "gv-ch-22-22",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "When my manager announced that the whole department would be relocating to Iceland, I assumed she was ______.",
+      "options": [
+        "pulling strings",
+        "pulling my leg",
+        "pulling her weight",
+        "pulling her punches"
+      ],
+      "correct": 1,
+      "answer": "pulling my leg",
+      "vi": "Khi quản lý của tôi thông báo rằng cả phòng sẽ chuyển tới Iceland, tôi cứ tưởng chị ấy đang trêu tôi.",
+      "explanation": "<b>Pull someone's leg</b> = tease them with a joke that is not true. <b>Pull strings</b> = use influence; <b>pull one's weight</b> = do one's share of the work; <b>pull one's punches</b> = be less harsh than one could be."
+    },
+    {
+      "id": "gv-ch-22-23",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "An independent laboratory has ______ doubt on the company's claim that the leak was contained within hours.",
+      "options": [
+        "shed",
+        "laid",
+        "cast",
+        "drawn"
+      ],
+      "correct": 2,
+      "answer": "cast",
+      "vi": "Một phòng thí nghiệm độc lập đã đặt nghi vấn về tuyên bố của công ty rằng vụ rò rỉ đã được khống chế trong vài giờ.",
+      "explanation": "The collocation is <b>cast doubt on</b> something; you <b>shed light on</b> a matter and <b>draw attention to</b> it, but doubt is <b>cast</b>."
+    },
+    {
+      "id": "gv-ch-22-24",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "After weeks of haggling, the delegates finally ______ down the wording of the treaty, ______ that the wealthiest nations would fund the adaptation programme.",
+      "options": [
+        "pinned / unless",
+        "boiled / in case",
+        "narrowed / as long as",
+        "nailed / provided"
+      ],
+      "correct": 3,
+      "answer": "nailed / provided",
+      "vi": "Sau nhiều tuần mặc cả, các đại biểu cuối cùng cũng chốt được câu chữ của hiệp ước, với điều kiện các quốc gia giàu nhất sẽ tài trợ cho chương trình thích ứng.",
+      "explanation": "<b>Nail down</b> = settle something definitely, and the condition attached is introduced by <b>provided that</b>; <b>unless / in case / as long as</b> cannot be followed by <b>that</b>."
+    },
+    {
+      "id": "gv-ch-22-25",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Even a minute ______ of the pesticide is enough to kill the bees that pollinate the orchard.",
+      "options": [
+        "portion",
+        "ration",
+        "serving",
+        "dose"
+      ],
+      "correct": 3,
+      "answer": "dose",
+      "vi": "Chỉ một liều thuốc trừ sâu rất nhỏ cũng đủ để giết chết những con ong thụ phấn cho vườn cây.",
+      "explanation": "A <b>dose</b> is a measured quantity of a drug or chemical; <b>portion</b> and <b>serving</b> are amounts of food, and a <b>ration</b> is a fixed allowance in times of shortage."
+    }
+  ]
+}

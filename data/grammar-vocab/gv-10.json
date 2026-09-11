@@ -1,0 +1,403 @@
+{ "file": "10", "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-10-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Look! The cat ______ on the kitchen table again.",
+      "options": [
+        "sleeps",
+        "is sleeping",
+        "slept",
+        "has slept"
+      ],
+      "correct": 1,
+      "answer": "is sleeping",
+      "vi": "Nhìn kìa! Con mèo lại đang ngủ trên bàn bếp.",
+      "explanation": "<b>Look!</b> points to something happening right now, so the present continuous <b>is sleeping</b> is needed, not a simple or perfect form."
+    },
+    {
+      "id": "gv-kc-10-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "The kitten ______ its paw on a piece of broken glass in the garden.",
+      "options": [
+        "bruised",
+        "sprained",
+        "cut",
+        "strained"
+      ],
+      "correct": 2,
+      "answer": "cut",
+      "vi": "Con mèo con bị đứt chân vì một mảnh thủy tinh vỡ trong vườn.",
+      "explanation": "Broken glass makes a <b>cut</b>. You <b>bruise</b> yourself by knocking against something, and you <b>sprain</b> or <b>strain</b> a joint or muscle by twisting it."
+    },
+    {
+      "id": "gv-kc-10-3",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Everyone expects Tuan's dog to ______ at Sunday's race because it is much faster than the others.",
+      "options": [
+        "run out of steam",
+        "win by a whisker",
+        "lose its way",
+        "win hands down"
+      ],
+      "correct": 3,
+      "answer": "win hands down",
+      "vi": "Ai cũng nghĩ chó của Tuấn sẽ thắng dễ dàng ở cuộc đua hôm Chủ nhật vì nó nhanh hơn hẳn những con khác.",
+      "explanation": "<b>Win hands down</b> = win very easily. <b>Win by a whisker</b> means win only just, which contradicts 'much faster'; <b>run out of steam</b> and <b>lose its way</b> describe failing."
+    },
+    {
+      "id": "gv-kc-10-4",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "You should ______ your promise to visit Grandma this weekend, or she will be very upset.",
+      "options": [
+        "hold",
+        "stay",
+        "keep",
+        "save"
+      ],
+      "correct": 2,
+      "answer": "keep",
+      "vi": "Con nên giữ lời hứa đi thăm bà vào cuối tuần này, không thì bà sẽ buồn lắm.",
+      "explanation": "The collocation is <b>keep a promise</b> (do what you said you would do). <b>Hold</b>, <b>stay</b> and <b>save</b> do not go with promise in this meaning."
+    },
+    {
+      "id": "gv-kc-10-5",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Don't ______ your teammates by missing the school cooking contest on Saturday.",
+      "options": [
+        "turn down",
+        "let off",
+        "let down",
+        "put down"
+      ],
+      "correct": 2,
+      "answer": "let down",
+      "vi": "Đừng làm đồng đội thất vọng bằng cách bỏ lỡ cuộc thi nấu ăn của trường vào thứ Bảy.",
+      "explanation": "<b>Let somebody down</b> = disappoint someone. <b>Turn down</b> = refuse, <b>let off</b> = not punish, <b>put down</b> = criticise or place something."
+    },
+    {
+      "id": "gv-kc-10-6",
+      "level": "kc",
+      "focus": "relative",
+      "q": "Nobody could explain the reason ______ the school swimming pool stayed closed all summer.",
+      "options": [
+        "which",
+        "where",
+        "when",
+        "why"
+      ],
+      "correct": 3,
+      "answer": "why",
+      "vi": "Không ai giải thích được lý do vì sao bể bơi của trường đóng cửa suốt cả mùa hè.",
+      "explanation": "After <b>the reason</b>, the relative adverb <b>why</b> is used. <b>Where</b> follows a place, <b>when</b> a time, and <b>which</b> would need to be the subject or object of the clause, which it is not here."
+    },
+    {
+      "id": "gv-kc-10-7",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "After eating the fish that had been left out in the sun, Nam felt ______ and had to lie down.",
+      "options": [
+        "sore",
+        "bruised",
+        "hurt",
+        "sick"
+      ],
+      "correct": 3,
+      "answer": "sick",
+      "vi": "Sau khi ăn con cá bị để ngoài nắng, Nam thấy buồn nôn và phải nằm nghỉ.",
+      "explanation": "Bad food makes you feel <b>sick</b>. <b>Sore</b>, <b>bruised</b> and <b>hurt</b> describe a painful part of the body, not a feeling of illness."
+    },
+    {
+      "id": "gv-kc-10-8",
+      "level": "kc",
+      "focus": "modal",
+      "q": "The bowl is empty — the cat ______ all the fish while we were out.",
+      "options": [
+        "must have eaten",
+        "should have eaten",
+        "needn't have eaten",
+        "can't have eaten"
+      ],
+      "correct": 0,
+      "answer": "must have eaten",
+      "vi": "Cái bát trống không — chắc chắn con mèo đã ăn hết cá lúc chúng ta đi vắng.",
+      "explanation": "<b>Must have + past participle</b> is a confident guess about the past based on evidence (the empty bowl). <b>Can't have</b> means the opposite; <b>should have</b> and <b>needn't have</b> express advice or lack of need, not deduction."
+    },
+    {
+      "id": "gv-kc-10-9",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "Parrots are famous ______ copying the sounds of human speech.",
+      "options": [
+        "of",
+        "about",
+        "for",
+        "with"
+      ],
+      "correct": 2,
+      "answer": "for",
+      "vi": "Vẹt nổi tiếng vì bắt chước được âm thanh tiếng người.",
+      "explanation": "The adjective <b>famous</b> takes the preposition <b>for</b> before the thing someone is known for; of, about and with do not follow it."
+    },
+    {
+      "id": "gv-kc-10-10",
+      "level": "kc",
+      "focus": "tense",
+      "q": "My grandmother ______ the same soup recipe since she was a little girl.",
+      "options": [
+        "uses",
+        "used",
+        "is using",
+        "has used"
+      ],
+      "correct": 3,
+      "answer": "has used",
+      "vi": "Bà tôi đã dùng cùng một công thức nấu canh này từ khi bà còn là một cô bé.",
+      "explanation": "<b>Since</b> + a past starting point describes something that continues up to now, so the present perfect <b>has used</b> is needed."
+    },
+    {
+      "id": "gv-kc-10-11",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Lan's ankle became ______ after she twisted it on the mountain trail.",
+      "options": [
+        "dizzy",
+        "swollen",
+        "hoarse",
+        "feverish"
+      ],
+      "correct": 1,
+      "answer": "swollen",
+      "vi": "Cổ chân của Lan bị sưng lên sau khi cô ấy bị trẹo chân trên đường mòn lên núi.",
+      "explanation": "A twisted ankle becomes <b>swollen</b> (bigger than normal). <b>Dizzy</b>, <b>hoarse</b> and <b>feverish</b> describe a person's head, voice or temperature, not a joint."
+    },
+    {
+      "id": "gv-kc-10-12",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Could you ______ the table while I finish the spring rolls?",
+      "options": [
+        "put",
+        "make",
+        "lay",
+        "do"
+      ],
+      "correct": 2,
+      "answer": "lay",
+      "vi": "Con dọn bàn ăn giúp mẹ trong lúc mẹ làm nốt chả giò được không?",
+      "explanation": "The collocation is <b>lay the table</b> (put out the plates, bowls and chopsticks). <b>Put</b>, <b>make</b> and <b>do</b> do not go with 'the table' in this meaning."
+    },
+    {
+      "id": "gv-kc-10-13",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "Lan: Are we going to the beach tomorrow? / Nam: If the weather ______ fine, we'll take the dog with us.",
+      "options": [
+        "will be",
+        "is",
+        "was",
+        "would be"
+      ],
+      "correct": 1,
+      "answer": "is",
+      "vi": "Lan: Mai mình đi biển chứ? / Nam: Nếu trời đẹp, mình sẽ dắt chó theo.",
+      "explanation": "A first conditional uses the present simple in the <b>if</b>-clause and <b>will</b> in the main clause, even when it refers to the future."
+    },
+    {
+      "id": "gv-kc-10-14",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Planting ten trees is only ______ when a whole forest has been cut down.",
+      "options": [
+        "a drop in the ocean",
+        "a piece of cake",
+        "a storm in a teacup",
+        "a breath of fresh air"
+      ],
+      "correct": 0,
+      "answer": "a drop in the ocean",
+      "vi": "Trồng mười cái cây chỉ như muối bỏ biển khi cả một khu rừng đã bị chặt.",
+      "explanation": "<b>A drop in the ocean</b> = a very small amount compared with what is needed. <b>A piece of cake</b> = very easy; <b>a storm in a teacup</b> = a fuss about nothing; <b>a breath of fresh air</b> = something pleasantly new."
+    },
+    {
+      "id": "gv-kc-10-15",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "There is only ______ rice left in the pot, so I'll cook some noodles as well.",
+      "options": [
+        "a few",
+        "many",
+        "a little",
+        "several"
+      ],
+      "correct": 2,
+      "answer": "a little",
+      "vi": "Trong nồi chỉ còn một ít cơm, nên mình sẽ nấu thêm mì.",
+      "explanation": "<b>Rice</b> is uncountable, so it takes <b>a little</b>. <b>A few</b>, <b>many</b> and <b>several</b> are only used with plural countable nouns."
+    },
+    {
+      "id": "gv-kc-10-16",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Mai has a bad ______, so she keeps coughing and sneezing in class.",
+      "options": [
+        "cold",
+        "ache",
+        "bruise",
+        "rash"
+      ],
+      "correct": 0,
+      "answer": "cold",
+      "vi": "Mai bị cảm nặng nên cứ ho và hắt hơi liên tục trong lớp.",
+      "explanation": "Coughing and sneezing are the signs of a <b>cold</b>. An <b>ache</b> is a dull pain, a <b>bruise</b> is a dark mark on the skin, and a <b>rash</b> is a patch of red spots."
+    },
+    {
+      "id": "gv-kc-10-17",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Our old dog ______ peacefully last winter, and we buried him under the mango tree.",
+      "options": [
+        "passed out",
+        "gave away",
+        "passed by",
+        "passed away"
+      ],
+      "correct": 3,
+      "answer": "passed away",
+      "vi": "Con chó già của chúng tôi đã qua đời thanh thản vào mùa đông năm ngoái, và chúng tôi chôn nó dưới gốc xoài.",
+      "explanation": "<b>Pass away</b> is a gentle way of saying die. <b>Pass out</b> = faint, <b>pass by</b> = go past, <b>give away</b> = give something as a present."
+    },
+    {
+      "id": "gv-kc-10-18",
+      "level": "kc",
+      "focus": "reported",
+      "q": "The vet said she ______ the problem with our rabbit's teeth the next day.",
+      "options": [
+        "will look into",
+        "looks into",
+        "would look into",
+        "has looked into"
+      ],
+      "correct": 2,
+      "answer": "would look into",
+      "vi": "Bác sĩ thú y nói rằng hôm sau cô ấy sẽ xem xét vấn đề về răng của con thỏ nhà chúng tôi.",
+      "explanation": "In reported speech after <b>said</b>, <b>will</b> becomes <b>would</b>: 'I will look into it tomorrow' becomes she <b>would look into</b> it the next day."
+    },
+    {
+      "id": "gv-kc-10-19",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Nam: Shall we eat out tonight? / Lan: I'd rather ______ at home; I've bought some fresh prawns.",
+      "options": [
+        "cook",
+        "cooking",
+        "to cook",
+        "cooked"
+      ],
+      "correct": 0,
+      "answer": "cook",
+      "vi": "Nam: Tối nay mình ra ngoài ăn nhé? / Lan: Tớ thích nấu ở nhà hơn; tớ mới mua ít tôm tươi.",
+      "explanation": "<b>Would rather</b> is followed by the bare infinitive: <b>I'd rather cook</b>, not 'to cook', 'cooking' or 'cooked'."
+    },
+    {
+      "id": "gv-kc-10-20",
+      "level": "kc",
+      "focus": "tense",
+      "q": "When I got home from school, my dog ______ my new slippers to pieces.",
+      "options": [
+        "chews",
+        "has chewed",
+        "is chewing",
+        "had chewed"
+      ],
+      "correct": 3,
+      "answer": "had chewed",
+      "vi": "Khi tôi đi học về thì con chó đã cắn nát đôi dép mới của tôi.",
+      "explanation": "The chewing happened <b>before</b> I got home, so the earlier past action takes the past perfect: <b>had chewed</b>. Present forms cannot follow a past time clause here."
+    },
+    {
+      "id": "gv-kc-10-21",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Minh has a terrible ______, so he can't chew the sticky rice cake his mother made.",
+      "options": [
+        "headache",
+        "toothache",
+        "earache",
+        "stomachache"
+      ],
+      "correct": 1,
+      "answer": "toothache",
+      "vi": "Minh bị đau răng dữ dội nên không nhai được bánh chưng mẹ làm.",
+      "explanation": "Only a <b>toothache</b> stops you chewing. A <b>headache</b>, an <b>earache</b> and a <b>stomachache</b> are pains in other parts of the body."
+    },
+    {
+      "id": "gv-kc-10-22",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Nam loves spicy food, ______ his sister cannot eat even a little chilli.",
+      "options": [
+        "therefore",
+        "whereas",
+        "so that",
+        "because"
+      ],
+      "correct": 1,
+      "answer": "whereas",
+      "vi": "Nam rất thích đồ ăn cay, trong khi chị của cậu ấy không ăn nổi dù chỉ một chút ớt.",
+      "explanation": "<b>Whereas</b> links two contrasting facts. <b>Therefore</b> and <b>so that</b> give a result or purpose, and <b>because</b> gives a reason — none of them fits a contrast."
+    },
+    {
+      "id": "gv-kc-10-23",
+      "level": "kc",
+      "focus": "passive",
+      "q": "Fresh vegetables ______ to the market every morning by farmers from the countryside.",
+      "options": [
+        "bring",
+        "brought",
+        "are bringing",
+        "are brought"
+      ],
+      "correct": 3,
+      "answer": "are brought",
+      "vi": "Rau tươi được nông dân từ vùng quê chở đến chợ mỗi sáng.",
+      "explanation": "The vegetables do not act; they receive the action, and <b>by farmers</b> shows the agent, so the present simple passive <b>are brought</b> is needed."
+    },
+    {
+      "id": "gv-kc-10-24",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Lan: Why don't you buy frozen fish? It's cheaper. / Nam: Fresh fish tastes far ______ than frozen fish.",
+      "options": [
+        "best",
+        "better",
+        "good",
+        "well"
+      ],
+      "correct": 1,
+      "answer": "better",
+      "vi": "Lan: Sao cậu không mua cá đông lạnh? Rẻ hơn mà. / Nam: Cá tươi ăn ngon hơn cá đông lạnh nhiều.",
+      "explanation": "<b>Than</b> signals a comparative, and the comparative of <b>good</b> is <b>better</b>; <b>far</b> simply makes the comparison stronger."
+    },
+    {
+      "id": "gv-kc-10-25",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "After dinner, Nam always ______ the washing-up so that his mother can rest.",
+      "options": [
+        "does",
+        "makes",
+        "takes",
+        "gets"
+      ],
+      "correct": 0,
+      "answer": "does",
+      "vi": "Sau bữa tối, Nam luôn rửa bát để mẹ được nghỉ ngơi.",
+      "explanation": "The collocation is <b>do the washing-up</b>, like do the cooking or do the dishes; <b>make</b>, <b>take</b> and <b>get</b> do not go with it."
+    }
+  ] }

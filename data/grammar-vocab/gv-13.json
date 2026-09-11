@@ -1,0 +1,406 @@
+{
+  "file": "13",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-13-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Mai ______ three novels by that author since January.",
+      "options": [
+        "read",
+        "is reading",
+        "has read",
+        "had read"
+      ],
+      "correct": 2,
+      "answer": "has read",
+      "vi": "Từ tháng Một đến giờ Mai đã đọc ba cuốn tiểu thuyết của tác giả đó.",
+      "explanation": "<b>Since January</b> links a past starting point to now, so the present perfect <b>has read</b> is needed; the past simple and past perfect cut the action off from the present."
+    },
+    {
+      "id": "gv-kc-13-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "My sister ______ the ending of the film in my ear so that nobody else in the cinema could hear.",
+      "options": [
+        "shouted",
+        "announced",
+        "whispered",
+        "declared"
+      ],
+      "correct": 2,
+      "answer": "whispered",
+      "vi": "Chị tôi thì thầm vào tai tôi đoạn kết của bộ phim để không ai khác trong rạp nghe thấy.",
+      "explanation": "<b>So that nobody else could hear</b> tells you the words were said very quietly: <b>whisper</b>. <b>Shout</b> is loud, and <b>announce</b> / <b>declare</b> mean to say something openly to everyone."
+    },
+    {
+      "id": "gv-kc-13-3",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "We ______ a lot of money on new furniture for the living room.",
+      "options": [
+        "paid",
+        "spent",
+        "cost",
+        "took"
+      ],
+      "correct": 1,
+      "answer": "spent",
+      "vi": "Chúng tôi đã tiêu rất nhiều tiền vào đồ nội thất mới cho phòng khách.",
+      "explanation": "The collocation is <b>spend money on</b> something. You <b>pay for</b> something, a thing <b>costs</b> money, and <b>take</b> does not go with money in this way."
+    },
+    {
+      "id": "gv-kc-13-4",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Relax – it is only a tiny scratch on the car door. Don't ______.",
+      "options": [
+        "put all your eggs in one basket",
+        "bite off more than you can chew",
+        "kill two birds with one stone",
+        "make a mountain out of a molehill"
+      ],
+      "correct": 3,
+      "answer": "make a mountain out of a molehill",
+      "vi": "Bình tĩnh đi, chỉ là một vết xước nhỏ xíu trên cửa xe thôi. Đừng có chuyện bé xé ra to.",
+      "explanation": "<b>Make a mountain out of a molehill</b> = treat a small problem as a big one. The others mean risking everything on one plan, taking on too much, and achieving two things at once."
+    },
+    {
+      "id": "gv-kc-13-5",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "We waited an hour outside the cinema, but Nam never ______.",
+      "options": [
+        "put up",
+        "turned down",
+        "turned up",
+        "turned off"
+      ],
+      "correct": 2,
+      "answer": "turned up",
+      "vi": "Chúng tôi đợi cả tiếng ngoài rạp chiếu phim, nhưng Nam chẳng bao giờ xuất hiện.",
+      "explanation": "<b>Turn up</b> = arrive or appear. <b>Turn down</b> = refuse or lower the volume, <b>turn off</b> = switch off, and <b>put up</b> needs an object (put up a poster)."
+    },
+    {
+      "id": "gv-kc-13-6",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Nam ______ at the concert last night – I saw him at home at nine o'clock.",
+      "options": [
+        "mustn't have been",
+        "can't have been",
+        "needn't have been",
+        "shouldn't have been"
+      ],
+      "correct": 1,
+      "answer": "can't have been",
+      "vi": "Tối qua Nam không thể nào ở buổi hòa nhạc được – lúc chín giờ tôi thấy cậu ấy ở nhà mà.",
+      "explanation": "<b>Can't have + past participle</b> expresses a confident conclusion that something was impossible in the past. <b>Mustn't have</b> is not used for deduction; <b>needn't have</b> and <b>shouldn't have</b> talk about necessity and advice."
+    },
+    {
+      "id": "gv-kc-13-7",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The coach with ______ we trained for the swimming competition has moved to another club.",
+      "options": [
+        "who",
+        "whose",
+        "which",
+        "whom"
+      ],
+      "correct": 3,
+      "answer": "whom",
+      "vi": "Huấn luyện viên mà chúng tôi đã tập luyện cùng cho giải bơi đã chuyển sang câu lạc bộ khác.",
+      "explanation": "After a preposition (<b>with</b>) the relative pronoun for a person must be the object form <b>whom</b>: <b>with whom we trained</b>. <b>Who</b> cannot follow a preposition, <b>whose</b> needs a noun after it, and <b>which</b> refers to things."
+    },
+    {
+      "id": "gv-kc-13-8",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "Linh has visited ______ countries in Asia, but she has never been to Japan.",
+      "options": [
+        "several",
+        "much",
+        "a little",
+        "every"
+      ],
+      "correct": 0,
+      "answer": "several",
+      "vi": "Linh đã đi thăm vài nước ở châu Á, nhưng cô ấy chưa từng đến Nhật Bản.",
+      "explanation": "<b>Countries</b> is a plural countable noun, so it takes <b>several</b> (= a few, more than two). <b>Much</b> and <b>a little</b> go with uncountable nouns, and <b>every</b> must be followed by a singular noun."
+    },
+    {
+      "id": "gv-kc-13-9",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Could you ______ the last scene to me? I didn't understand why the hero left.",
+      "options": [
+        "complain",
+        "explain",
+        "persuade",
+        "argue"
+      ],
+      "correct": 1,
+      "answer": "explain",
+      "vi": "Bạn giải thích cảnh cuối cho mình được không? Mình không hiểu tại sao nhân vật chính lại bỏ đi.",
+      "explanation": "<b>Explain something to someone</b> = make it clear. <b>Complain</b> = say you are unhappy, <b>persuade</b> takes a person as object, and you <b>argue with</b> someone, not a scene."
+    },
+    {
+      "id": "gv-kc-13-10",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Remember ______ the front door when you go out this evening.",
+      "options": [
+        "locking",
+        "lock",
+        "to locking",
+        "to lock"
+      ],
+      "correct": 3,
+      "answer": "to lock",
+      "vi": "Nhớ khóa cửa trước khi con ra ngoài tối nay nhé.",
+      "explanation": "<b>Remember to do</b> = don't forget a task that is still to come. <b>Remember doing</b> looks back at a memory of something already done, so it does not fit an instruction."
+    },
+    {
+      "id": "gv-kc-13-11",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Nam still went to school ______ he had a bad cold and a sore throat.",
+      "options": [
+        "despite",
+        "in spite of",
+        "although",
+        "however"
+      ],
+      "correct": 2,
+      "answer": "although",
+      "vi": "Nam vẫn đi học mặc dù cậu ấy bị cảm nặng và đau họng.",
+      "explanation": "A contrast followed by a full clause (<b>he had a bad cold</b>) needs the conjunction <b>although</b>. <b>Despite</b> and <b>in spite of</b> are followed by a noun or -ing form, and <b>however</b> is an adverb that cannot join two clauses like this."
+    },
+    {
+      "id": "gv-kc-13-12",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Could you ______ me to call Grandma tonight? I always forget.",
+      "options": [
+        "suggest",
+        "recommend",
+        "remind",
+        "mention"
+      ],
+      "correct": 2,
+      "answer": "remind",
+      "vi": "Bạn nhắc mình gọi cho bà tối nay nhé? Mình lúc nào cũng quên.",
+      "explanation": "<b>Remind someone to do</b> something = help them not forget. <b>Suggest</b> and <b>recommend</b> do not take <b>someone to do</b>, and <b>mention</b> means to speak briefly about something."
+    },
+    {
+      "id": "gv-kc-13-13",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "I wish I ______ the film last night – everyone at school is talking about it.",
+      "options": [
+        "saw",
+        "have seen",
+        "had seen",
+        "would see"
+      ],
+      "correct": 2,
+      "answer": "had seen",
+      "vi": "Giá mà tối qua tôi đã xem bộ phim đó – ở trường ai cũng đang bàn về nó.",
+      "explanation": "A wish about the <b>past</b> (last night) takes the past perfect: <b>wish + had seen</b>. <b>Saw</b> would be a wish about the present, and <b>would see</b> is for the future."
+    },
+    {
+      "id": "gv-kc-13-14",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Could you ______ me a favour and return this book to the library?",
+      "options": [
+        "do",
+        "make",
+        "give",
+        "take"
+      ],
+      "correct": 0,
+      "answer": "do",
+      "vi": "Bạn giúp mình một việc, trả cuốn sách này về thư viện được không?",
+      "explanation": "The fixed collocation is <b>do someone a favour</b>. <b>Make</b>, <b>give</b> and <b>take</b> do not combine with <b>favour</b> in this meaning."
+    },
+    {
+      "id": "gv-kc-13-15",
+      "level": "kc",
+      "focus": "passive",
+      "q": "The film ______ in Da Lat last year, which is why the scenery looks so familiar.",
+      "options": [
+        "shot",
+        "has shot",
+        "is shot",
+        "was shot"
+      ],
+      "correct": 3,
+      "answer": "was shot",
+      "vi": "Bộ phim được quay ở Đà Lạt năm ngoái, vì thế cảnh trong phim trông rất quen thuộc.",
+      "explanation": "The film does not shoot itself, so the passive is needed, and <b>last year</b> puts it in the past simple: <b>was shot</b>. <b>Is shot</b> is present, and <b>shot</b> / <b>has shot</b> are active."
+    },
+    {
+      "id": "gv-kc-13-16",
+      "level": "kc",
+      "focus": "tense",
+      "q": "This time next week, my family ______ in our new house on the other side of town.",
+      "options": [
+        "live",
+        "will live",
+        "are living",
+        "will be living"
+      ],
+      "correct": 3,
+      "answer": "will be living",
+      "vi": "Vào giờ này tuần sau, gia đình tôi sẽ đang sống trong ngôi nhà mới ở phía bên kia thành phố.",
+      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, so the future continuous <b>will be living</b> is used. <b>Will live</b> states a plain future fact, and <b>are living</b> is present."
+    },
+    {
+      "id": "gv-kc-13-17",
+      "level": "kc",
+      "focus": "reported",
+      "q": "Mum asked me where ______ the TV remote after the film.",
+      "options": [
+        "had I put",
+        "I had put",
+        "did I put",
+        "have I put"
+      ],
+      "correct": 1,
+      "answer": "I had put",
+      "vi": "Mẹ hỏi tôi đã để cái điều khiển ti vi ở đâu sau khi xem phim.",
+      "explanation": "In a reported question the word order is <b>subject + verb</b> (no inversion, no <b>did</b>), and <b>asked</b> moves the past simple back to the past perfect: <b>where I had put</b>. The other three keep the inverted order of a direct question."
+    },
+    {
+      "id": "gv-kc-13-18",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "After a long talk, my parents and I are finally ______ about my plan to study music.",
+      "options": [
+        "in the same boat",
+        "on the same page",
+        "under the weather",
+        "over the moon"
+      ],
+      "correct": 1,
+      "answer": "on the same page",
+      "vi": "Sau một cuộc nói chuyện dài, cuối cùng bố mẹ và tôi cũng đã đồng quan điểm về kế hoạch học nhạc của tôi.",
+      "explanation": "<b>On the same page</b> = agreeing, sharing the same understanding. <b>In the same boat</b> = in the same difficult situation, <b>under the weather</b> = slightly ill, <b>over the moon</b> = very happy."
+    },
+    {
+      "id": "gv-kc-13-19",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "My sister is really keen ______ Korean pop music and knows every song by heart.",
+      "options": [
+        "in",
+        "of",
+        "at",
+        "on"
+      ],
+      "correct": 3,
+      "answer": "on",
+      "vi": "Chị tôi rất mê nhạc pop Hàn Quốc và thuộc lòng mọi bài hát.",
+      "explanation": "The adjective <b>keen</b> takes the preposition <b>on</b>: <b>keen on</b> something. <b>Interested in</b>, <b>fond of</b> and <b>good at</b> are the patterns learners mix it up with."
+    },
+    {
+      "id": "gv-kc-13-20",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Please don't ______ while Grandma is telling her story – wait until she finishes.",
+      "options": [
+        "interrupt",
+        "repeat",
+        "describe",
+        "pronounce"
+      ],
+      "correct": 0,
+      "answer": "interrupt",
+      "vi": "Đừng ngắt lời khi bà đang kể chuyện – hãy đợi bà kể xong đã.",
+      "explanation": "<b>Interrupt</b> = start speaking while someone else is still talking. <b>Repeat</b>, <b>describe</b> and <b>pronounce</b> all need an object and do not fit <b>wait until she finishes</b>."
+    },
+    {
+      "id": "gv-kc-13-21",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "My parents couldn't ______ how to use the new TV remote, so I showed them.",
+      "options": [
+        "work out",
+        "work up",
+        "carry out",
+        "set out"
+      ],
+      "correct": 0,
+      "answer": "work out",
+      "vi": "Bố mẹ tôi không tìm ra cách dùng cái điều khiển ti vi mới, nên tôi chỉ cho họ.",
+      "explanation": "<b>Work out</b> = find the answer to something by thinking. <b>Carry out</b> = perform a task, <b>set out</b> = begin a journey, and <b>work up</b> = build up (an appetite, courage)."
+    },
+    {
+      "id": "gv-kc-13-22",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "The more pocket money you save now, ______ you can spend on the school trip.",
+      "options": [
+        "more",
+        "the more",
+        "the most",
+        "most"
+      ],
+      "correct": 1,
+      "answer": "the more",
+      "vi": "Bây giờ bạn càng để dành nhiều tiền tiêu vặt, thì bạn càng có nhiều tiền để chi cho chuyến đi của trường.",
+      "explanation": "The double comparative pattern is <b>the more ..., the more ...</b>: both halves need <b>the</b> plus a comparative, never a superlative."
+    },
+    {
+      "id": "gv-kc-13-23",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By the time the film ended, the painkiller ______, and my tooth hurt again.",
+      "options": [
+        "wore off",
+        "had worn off",
+        "has worn off",
+        "wears off"
+      ],
+      "correct": 1,
+      "answer": "had worn off",
+      "vi": "Đến lúc bộ phim kết thúc thì thuốc giảm đau đã hết tác dụng, và răng tôi lại đau.",
+      "explanation": "<b>By the time + past simple</b> marks a point in the past before which the other action was already complete, so it takes the past perfect: <b>had worn off</b> (stopped having an effect). <b>Has worn off</b> and <b>wears off</b> are present tenses."
+    },
+    {
+      "id": "gv-kc-13-24",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "The bookshop ______ a twenty per cent discount on all novels this week.",
+      "options": [
+        "offers",
+        "makes",
+        "does",
+        "brings"
+      ],
+      "correct": 0,
+      "answer": "offers",
+      "vi": "Tuần này hiệu sách giảm giá hai mươi phần trăm cho tất cả tiểu thuyết.",
+      "explanation": "A shop <b>offers</b> (or gives) <b>a discount</b>. <b>Make</b>, <b>do</b> and <b>bring</b> do not collocate with <b>discount</b>."
+    },
+    {
+      "id": "gv-kc-13-25",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "The shop assistant ______ that the phone was cheaper online, so we didn't buy it there.",
+      "options": [
+        "admitted",
+        "denied",
+        "refused",
+        "promised"
+      ],
+      "correct": 0,
+      "answer": "admitted",
+      "vi": "Nhân viên cửa hàng thừa nhận rằng chiếc điện thoại mua trên mạng rẻ hơn, nên chúng tôi không mua ở đó.",
+      "explanation": "<b>Admit that</b> = agree that something (often unwelcome) is true. <b>Deny</b> is the opposite, <b>refuse</b> is not followed by a <b>that</b>-clause, and <b>promise that</b> would not lead to <b>we didn't buy it</b>."
+    }
+  ]
+}

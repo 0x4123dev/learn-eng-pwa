@@ -678,6 +678,10 @@ node scripts/validate-practice.js reading data/reading/*.json   # (also: cloze, 
 node scripts/balance-practice-keys.js         # spread MCQ keys across A–D (engine never shuffles); run after authoring
 node scripts/build-math-hk2-data.js           # js/math-data-hk2.js from data/math-hk2/base.json + ch<N>-add-<NN>.json
 node scripts/validate-math-hk2.js data/math-hk2/ch6-add-*.json   # one addition file
+node scripts/build-tier-data.js               # js/wordform-data.js, js/rewrite-data.js from data/{wordform,rewrite}/base.json + ch-add-NN.json
+node scripts/validate-tier.js wordform data/wordform/ch-add-*.json   # (also: rewrite)
+node scripts/build-grammar-vocab-data.js      # js/grammar-vocab-data.js from data/grammar-vocab/gv-NN.json
+node scripts/validate-grammar-vocab.js data/grammar-vocab/gv-*.json
 ```
 
 ---

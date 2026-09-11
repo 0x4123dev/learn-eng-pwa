@@ -1,0 +1,406 @@
+{
+  "file": "12",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-12-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By the time Lan gets home from school, her little brother ______ all the birthday cake.",
+      "options": [
+        "has eaten",
+        "ate",
+        "will have eaten",
+        "is eating"
+      ],
+      "correct": 2,
+      "answer": "will have eaten",
+      "vi": "Đến lúc Lan đi học về thì em trai cô ấy sẽ ăn hết cả cái bánh sinh nhật rồi.",
+      "explanation": "An action that will be finished <b>before</b> a future point (by the time she gets home) takes the future perfect: <b>will have eaten</b>."
+    },
+    {
+      "id": "gv-kc-12-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Could you ______ the kitchen floor? There are crumbs everywhere after the party.",
+      "options": [
+        "sweep",
+        "dust",
+        "fold",
+        "hang"
+      ],
+      "correct": 0,
+      "answer": "sweep",
+      "vi": "Bạn quét sàn bếp giúp mình được không? Sau bữa tiệc, vụn bánh rơi khắp nơi.",
+      "explanation": "You <b>sweep</b> a floor with a broom. You <b>dust</b> shelves, <b>fold</b> clothes and <b>hang</b> washing — none of these fit a floor covered in crumbs."
+    },
+    {
+      "id": "gv-kc-12-3",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Nam's parents ______ when they found out he had skipped school to go to a party.",
+      "options": [
+        "went round in circles",
+        "went through the roof",
+        "went down the drain",
+        "went off the rails"
+      ],
+      "correct": 1,
+      "answer": "went through the roof",
+      "vi": "Bố mẹ Nam nổi giận đùng đùng khi phát hiện cậu ấy trốn học đi dự tiệc.",
+      "explanation": "<b>Go through the roof</b> means to become extremely angry. <b>Go round in circles</b> is to make no progress, <b>go down the drain</b> is to be wasted, and <b>go off the rails</b> is to start behaving badly."
+    },
+    {
+      "id": "gv-kc-12-4",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Lan: Shall I bring some snacks tonight? / Nam: No, you ______ — my mum has made enough for everyone.",
+      "options": [
+        "mustn't",
+        "can't",
+        "won't",
+        "needn't"
+      ],
+      "correct": 3,
+      "answer": "needn't",
+      "vi": "Lan: Tối nay mình mang chút đồ ăn vặt tới nhé? / Nam: Không, cậu không cần đâu — mẹ mình đã làm đủ cho mọi người rồi.",
+      "explanation": "<b>Needn't</b> means it is not necessary. <b>Mustn't</b> forbids something, <b>can't</b> denies permission or ability, and <b>won't</b> is a refusal — none matches \"my mum has made enough\"."
+    },
+    {
+      "id": "gv-kc-12-5",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The letters on our badge, ______ stand for the school's name, were designed by a student.",
+      "options": [
+        "which",
+        "that",
+        "who",
+        "whose"
+      ],
+      "correct": 0,
+      "answer": "which",
+      "vi": "Các chữ cái trên huy hiệu của chúng tôi, vốn là viết tắt của tên trường, do một học sinh thiết kế.",
+      "explanation": "A non-defining clause (between commas) about a thing takes <b>which</b>. <b>That</b> cannot follow a comma, <b>who</b> is for people and <b>whose</b> needs a noun after it."
+    },
+    {
+      "id": "gv-kc-12-6",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Minh is ______ a real effort to finish his homework before the party starts.",
+      "options": [
+        "doing",
+        "making",
+        "taking",
+        "having"
+      ],
+      "correct": 1,
+      "answer": "making",
+      "vi": "Minh đang thực sự cố gắng làm xong bài tập về nhà trước khi bữa tiệc bắt đầu.",
+      "explanation": "The fixed collocation is <b>make an effort</b>. We <b>do</b> homework, <b>take</b> a break and <b>have</b> a party, but never <b>do / take / have an effort</b>."
+    },
+    {
+      "id": "gv-kc-12-7",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "It's your turn to ______ the dishes tonight; I did them yesterday.",
+      "options": [
+        "mop",
+        "sweep",
+        "wash",
+        "dust"
+      ],
+      "correct": 2,
+      "answer": "wash",
+      "vi": "Tối nay đến lượt cậu rửa bát; hôm qua mình rửa rồi.",
+      "explanation": "We <b>wash</b> the dishes. <b>Mop</b> and <b>sweep</b> are for floors, and <b>dust</b> is for furniture and shelves."
+    },
+    {
+      "id": "gv-kc-12-8",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Hung only bought that expensive phone to ______ in front of his classmates.",
+      "options": [
+        "show off",
+        "show up",
+        "put off",
+        "take off"
+      ],
+      "correct": 0,
+      "answer": "show off",
+      "vi": "Hùng mua cái điện thoại đắt tiền đó chỉ để khoe khoang trước mặt các bạn cùng lớp.",
+      "explanation": "<b>Show off</b> means to try to impress people with what you have. <b>Show up</b> is to arrive, <b>put off</b> is to postpone and <b>take off</b> is to remove or to leave the ground."
+    },
+    {
+      "id": "gv-kc-12-9",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: Where's Nam? / Hoa: He ______ his homework in the library — he'll be back at six.",
+      "options": [
+        "does",
+        "has done",
+        "did",
+        "is doing"
+      ],
+      "correct": 3,
+      "answer": "is doing",
+      "vi": "Lan: Nam đâu rồi? / Hoa: Cậu ấy đang làm bài tập trong thư viện — sáu giờ sẽ về.",
+      "explanation": "An action in progress <b>right now</b> (he is not here at this moment) takes the present continuous: <b>is doing</b>. <b>Has done</b> and <b>did</b> would mean the homework is finished."
+    },
+    {
+      "id": "gv-kc-12-10",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Before the party, we had to ______ the living room so there was space to dance.",
+      "options": [
+        "mend",
+        "tidy",
+        "polish",
+        "iron"
+      ],
+      "correct": 1,
+      "answer": "tidy",
+      "vi": "Trước bữa tiệc, chúng tôi phải dọn gọn phòng khách để có chỗ nhảy.",
+      "explanation": "<b>Tidy</b> a room means to put things in order and make space. <b>Mend</b> is to repair, <b>polish</b> is to make shoes or furniture shine, and <b>iron</b> is for clothes."
+    },
+    {
+      "id": "gv-kc-12-11",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "I have very ______ homework tonight, so I can come to Hoa's party after all.",
+      "options": [
+        "few",
+        "a few",
+        "little",
+        "a little"
+      ],
+      "correct": 2,
+      "answer": "little",
+      "vi": "Tối nay mình có rất ít bài tập, nên rốt cuộc mình có thể đến dự tiệc của Hoa.",
+      "explanation": "<b>Homework</b> is uncountable, so <b>few / a few</b> are impossible. <b>Little</b> (almost none) explains why she is free, and only <b>little</b> can follow <b>very</b> — <b>very a little</b> does not exist."
+    },
+    {
+      "id": "gv-kc-12-12",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If I ______ more free time after school, I would join the school band.",
+      "options": [
+        "had",
+        "have",
+        "had had",
+        "would have"
+      ],
+      "correct": 0,
+      "answer": "had",
+      "vi": "Nếu mình có nhiều thời gian rảnh sau giờ học hơn, mình sẽ tham gia ban nhạc của trường.",
+      "explanation": "A second conditional (an unreal present situation) uses the past simple in the if-clause: <b>If I had</b> ... <b>I would join</b>. <b>Had had</b> belongs to the third conditional and <b>would have</b> never goes in the if-clause."
+    },
+    {
+      "id": "gv-kc-12-13",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Hurry up, or we will ______ the last bus home and have to call a taxi.",
+      "options": [
+        "lose",
+        "fail",
+        "miss",
+        "drop"
+      ],
+      "correct": 2,
+      "answer": "miss",
+      "vi": "Nhanh lên, không thì chúng ta sẽ lỡ chuyến xe buýt cuối cùng về nhà và phải gọi taxi đấy.",
+      "explanation": "You <b>miss</b> a bus, train or flight when you arrive too late to catch it. <b>Lose</b> is for things you cannot find, <b>fail</b> is for tests, and <b>drop</b> is to let something fall."
+    },
+    {
+      "id": "gv-kc-12-14",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Dad ______ the bookshelves every weekend because the dust makes my brother sneeze.",
+      "options": [
+        "rinses",
+        "dusts",
+        "peels",
+        "stirs"
+      ],
+      "correct": 1,
+      "answer": "dusts",
+      "vi": "Cuối tuần nào bố cũng lau bụi giá sách vì bụi làm em trai tôi hắt hơi.",
+      "explanation": "To <b>dust</b> is to wipe the dust off furniture. <b>Rinse</b> is to wash with clean water, and <b>peel</b> and <b>stir</b> are cooking verbs."
+    },
+    {
+      "id": "gv-kc-12-15",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Hoa ______ the party yet — her bag and jacket are still on the chair.",
+      "options": [
+        "must have left",
+        "should have left",
+        "can't have left",
+        "needn't have left"
+      ],
+      "correct": 2,
+      "answer": "can't have left",
+      "vi": "Hoa không thể nào đã rời bữa tiệc được — túi và áo khoác của cô ấy vẫn còn trên ghế.",
+      "explanation": "<b>Can't have + past participle</b> expresses that something is impossible, based on evidence (her things are still here). <b>Must have</b> gives the opposite conclusion; <b>should have</b> and <b>needn't have</b> are about advice and necessity, not deduction."
+    },
+    {
+      "id": "gv-kc-12-16",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Studying a little every day feels hard now, but it will pay off ______.",
+      "options": [
+        "in the nick of time",
+        "on the spur of the moment",
+        "at the drop of a hat",
+        "in the long run"
+      ],
+      "correct": 3,
+      "answer": "in the long run",
+      "vi": "Mỗi ngày học một chút bây giờ thấy vất vả, nhưng về lâu dài sẽ có kết quả.",
+      "explanation": "<b>In the long run</b> means over a long period of time, eventually. <b>In the nick of time</b> is just before it is too late, <b>on the spur of the moment</b> is without planning, and <b>at the drop of a hat</b> is immediately."
+    },
+    {
+      "id": "gv-kc-12-17",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Mr Tran ______ maths at our school since 2015, and he still loves the job.",
+      "options": [
+        "taught",
+        "has taught",
+        "is teaching",
+        "had taught"
+      ],
+      "correct": 1,
+      "answer": "has taught",
+      "vi": "Thầy Trần đã dạy toán ở trường chúng tôi từ năm 2015, và thầy vẫn yêu công việc này.",
+      "explanation": "<b>Since 2015</b> links a past starting point to now, so the present perfect <b>has taught</b> is needed. <b>Taught</b> and <b>had taught</b> would mean he no longer teaches there."
+    },
+    {
+      "id": "gv-kc-12-18",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The café ______ we usually meet at after school is closed for repairs this week.",
+      "options": [
+        "where",
+        "whom",
+        "whose",
+        "that"
+      ],
+      "correct": 3,
+      "answer": "that",
+      "vi": "Quán cà phê mà bọn mình hay gặp nhau sau giờ học tuần này đóng cửa để sửa chữa.",
+      "explanation": "In a defining clause with the preposition left at the end (<b>meet at</b>), a thing or place takes <b>that</b> (or which). <b>Where</b> already contains the idea of <b>at</b>, so it cannot be used with the preposition; <b>whom</b> is for people and <b>whose</b> needs a noun after it."
+    },
+    {
+      "id": "gv-kc-12-19",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Everyone says Mai ______ her mother — they have the same laugh and the same smile.",
+      "options": [
+        "takes up",
+        "looks after",
+        "takes after",
+        "takes off"
+      ],
+      "correct": 2,
+      "answer": "takes after",
+      "vi": "Ai cũng bảo Mai giống mẹ — hai mẹ con có cùng tiếng cười và nụ cười.",
+      "explanation": "<b>Take after</b> someone means to resemble an older relative. <b>Take up</b> is to start a hobby, <b>look after</b> is to care for, and <b>take off</b> is to remove or to leave the ground."
+    },
+    {
+      "id": "gv-kc-12-20",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Hang the ______ on the line outside; it won't dry indoors in this weather.",
+      "options": [
+        "rubbish",
+        "dishes",
+        "groceries",
+        "laundry"
+      ],
+      "correct": 3,
+      "answer": "laundry",
+      "vi": "Phơi quần áo giặt lên dây ngoài trời đi; thời tiết này để trong nhà sẽ không khô đâu.",
+      "explanation": "<b>Laundry</b> is the clothes you have washed, which you hang out to dry. <b>Rubbish</b> is taken out, <b>dishes</b> are washed and <b>groceries</b> are put away."
+    },
+    {
+      "id": "gv-kc-12-21",
+      "level": "kc",
+      "focus": "linking",
+      "q": "______ the bad weather, the school football match went ahead on Sunday afternoon.",
+      "options": [
+        "Despite",
+        "Although",
+        "In spite",
+        "Even though"
+      ],
+      "correct": 0,
+      "answer": "Despite",
+      "vi": "Dù thời tiết xấu, trận bóng đá của trường vẫn diễn ra vào chiều Chủ nhật.",
+      "explanation": "<b>Despite</b> is a preposition, so a noun phrase (<b>the bad weather</b>) follows it directly. <b>Although</b> and <b>even though</b> need a clause with a subject and verb, and <b>in spite</b> is incomplete without <b>of</b>."
+    },
+    {
+      "id": "gv-kc-12-22",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Remember ______ the lights before you leave the classroom this afternoon.",
+      "options": [
+        "to turn off",
+        "turning off",
+        "turn off",
+        "to turning off"
+      ],
+      "correct": 0,
+      "answer": "to turn off",
+      "vi": "Nhớ tắt đèn trước khi rời lớp chiều nay nhé.",
+      "explanation": "<b>Remember + to-infinitive</b> is a reminder to do something in the future. <b>Remember + -ing</b> refers to a memory of something already done, which makes no sense here."
+    },
+    {
+      "id": "gv-kc-12-23",
+      "level": "kc",
+      "focus": "tense",
+      "q": "When I called at seven, my friends ______ for the party, so nobody answered the phone.",
+      "options": [
+        "got ready",
+        "have got ready",
+        "are getting ready",
+        "were getting ready"
+      ],
+      "correct": 3,
+      "answer": "were getting ready",
+      "vi": "Lúc mình gọi vào bảy giờ, các bạn mình đang chuẩn bị cho bữa tiệc, nên không ai nghe máy.",
+      "explanation": "A longer action in progress when a shorter past action (I called) interrupted it takes the past continuous: <b>were getting ready</b>."
+    },
+    {
+      "id": "gv-kc-12-24",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "We're ______ a party on Saturday to celebrate the end of the exams — can you come?",
+      "options": [
+        "making",
+        "doing",
+        "throwing",
+        "taking"
+      ],
+      "correct": 2,
+      "answer": "throwing",
+      "vi": "Thứ Bảy này bọn mình tổ chức một bữa tiệc mừng thi xong — cậu đến được không?",
+      "explanation": "We <b>throw</b> (or have / hold) <b>a party</b>. <b>Make</b>, <b>do</b> and <b>take</b> do not collocate with <b>party</b>."
+    },
+    {
+      "id": "gv-kc-12-25",
+      "level": "kc",
+      "focus": "inversion",
+      "q": "______ does Lan miss a homework deadline; she is the most organised student in the class.",
+      "options": [
+        "Not until",
+        "Rarely",
+        "No sooner",
+        "Only after"
+      ],
+      "correct": 1,
+      "answer": "Rarely",
+      "vi": "Hiếm khi Lan trễ hạn nộp bài tập; cô ấy là học sinh ngăn nắp nhất lớp.",
+      "explanation": "A negative adverb like <b>Rarely</b> at the start of a sentence causes inversion: <b>Rarely does Lan miss</b>. <b>No sooner</b> needs <b>than</b>, and <b>Not until / Only after</b> need a time phrase or clause before the inverted verb."
+    }
+  ]
+}

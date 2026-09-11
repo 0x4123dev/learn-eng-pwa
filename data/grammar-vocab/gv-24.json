@@ -1,0 +1,281 @@
+{
+  "file": "24",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-24-1",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Small family firms often weather a recession because their staff stand by them ______, even when wages are paid late.",
+      "options": ["through thick and thin", "by hook or by crook", "by leaps and bounds", "at sixes and sevens"],
+      "correct": 0,
+      "answer": "through thick and thin",
+      "vi": "Các doanh nghiệp gia đình nhỏ thường vượt qua suy thoái vì nhân viên sát cánh cùng họ dù sướng hay khổ, ngay cả khi lương bị trả chậm.",
+      "explanation": "<b>Through thick and thin</b> = loyally, in good times and bad. <b>By hook or by crook</b> means by any means, <b>by leaps and bounds</b> describes rapid progress, and <b>at sixes and sevens</b> means in confusion — none describes loyalty."
+    },
+    {
+      "id": "gv-ch-24-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Setting up two-factor authentication turned out to be ______ — the whole process took less than a minute.",
+      "options": ["a hard nut to crack", "a piece of cake", "a storm in a teacup", "a drop in the ocean"],
+      "correct": 1,
+      "answer": "a piece of cake",
+      "vi": "Hóa ra việc cài đặt xác thực hai lớp dễ như ăn kẹo — toàn bộ quá trình chưa đến một phút.",
+      "explanation": "<b>A piece of cake</b> = something very easy. <b>A hard nut to crack</b> is the opposite, <b>a storm in a teacup</b> is a fuss about nothing, and <b>a drop in the ocean</b> is a tiny, insignificant amount."
+    },
+    {
+      "id": "gv-ch-24-3",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Data brokers can ______ a user's home address from nothing more than a handful of location pings.",
+      "options": ["overlook", "survey", "pinpoint", "browse"],
+      "correct": 2,
+      "answer": "pinpoint",
+      "vi": "Các công ty môi giới dữ liệu có thể xác định chính xác địa chỉ nhà của người dùng chỉ từ vài tín hiệu định vị.",
+      "explanation": "<b>Pinpoint</b> = locate or identify exactly. <b>Overlook</b> means to fail to notice, <b>survey</b> means to look over a wide area, and <b>browse</b> means to look through casually."
+    },
+    {
+      "id": "gv-ch-24-4",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "When the regulator rejected the trial data, the research team found itself ______, with three years of work to repeat.",
+      "options": ["on the same page", "out of the woods", "in the same boat", "back to square one"],
+      "correct": 3,
+      "answer": "back to square one",
+      "vi": "Khi cơ quan quản lý bác bỏ dữ liệu thử nghiệm, nhóm nghiên cứu thấy mình phải bắt đầu lại từ đầu, với ba năm công sức phải làm lại.",
+      "explanation": "<b>Back to square one</b> = back at the very beginning, having made no progress. <b>On the same page</b> means in agreement, <b>out of the woods</b> means safe from danger, and <b>in the same boat</b> means in the same difficult situation."
+    },
+    {
+      "id": "gv-ch-24-5",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The auditors spent three weeks ______ over the bank's ledgers before the missing transfers came to light.",
+      "options": ["poring", "peering", "gazing", "squinting"],
+      "correct": 0,
+      "answer": "poring",
+      "vi": "Các kiểm toán viên mất ba tuần nghiền ngẫm sổ sách của ngân hàng trước khi các khoản chuyển tiền thất thoát bị phát hiện.",
+      "explanation": "<b>Pore over</b> = study something very carefully. <b>Peer</b>, <b>gaze</b> and <b>squint</b> describe how the eyes look (with difficulty, steadily, half-closed), not the careful study of a document."
+    },
+    {
+      "id": "gv-ch-24-6",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The surgeon was confident the patient would pull ______, though recovery ______ such an operation can take months.",
+      "options": ["over / of", "through / from", "out / in", "off / to"],
+      "correct": 1,
+      "answer": "through / from",
+      "vi": "Bác sĩ phẫu thuật tin rằng bệnh nhân sẽ qua khỏi, dù việc hồi phục sau một ca mổ như vậy có thể mất nhiều tháng.",
+      "explanation": "<b>Pull through</b> = survive a serious illness or operation; the noun <b>recovery</b> takes the preposition <b>from</b>. <b>Pull over/out/off</b> have other meanings, and <b>recovery of/in/to</b> would not mean getting better after an illness."
+    },
+    {
+      "id": "gv-ch-24-7",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Company spokespeople tried to ______ the scale of the breach, insisting only a handful of accounts had been exposed.",
+      "options": ["play up", "play off", "play down", "play along"],
+      "correct": 2,
+      "answer": "play down",
+      "vi": "Người phát ngôn của công ty cố giảm nhẹ mức độ của vụ rò rỉ, khăng khăng rằng chỉ một số ít tài khoản bị lộ.",
+      "explanation": "<b>Play down</b> = make something seem less serious than it is. <b>Play up</b> is the opposite (exaggerate), <b>play off</b> means to set people against each other, and <b>play along</b> means to pretend to agree."
+    },
+    {
+      "id": "gv-ch-24-8",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Despite objections from privacy groups, the ministry has decided to ______ with the facial-recognition scheme in every station.",
+      "options": ["press for", "get ahead", "press upon", "press ahead"],
+      "correct": 3,
+      "answer": "press ahead",
+      "vi": "Bất chấp sự phản đối của các nhóm bảo vệ quyền riêng tư, bộ đã quyết định xúc tiến kế hoạch nhận diện khuôn mặt ở mọi nhà ga.",
+      "explanation": "<b>Press ahead with</b> = continue determinedly with a plan despite opposition. <b>Press for</b> means to demand, <b>press upon</b> means to force something on someone, and <b>get ahead</b> means to advance in a career."
+    },
+    {
+      "id": "gv-ch-24-9",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The merger is still ______ in the air, so the bank has put its hiring plans ______ hold.",
+      "options": ["up / on", "out / in", "off / at", "over / under"],
+      "correct": 0,
+      "answer": "up / on",
+      "vi": "Vụ sáp nhập vẫn còn chưa ngã ngũ, nên ngân hàng đã tạm hoãn kế hoạch tuyển dụng.",
+      "explanation": "<b>Up in the air</b> = still undecided; <b>on hold</b> = postponed. No other pair completes both fixed expressions."
+    },
+    {
+      "id": "gv-ch-24-10",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Economists warn that ______ inflation is quietly eroding the value of household savings.",
+      "options": ["insistent", "persistent", "resistant", "consistent"],
+      "correct": 1,
+      "answer": "persistent",
+      "vi": "Các nhà kinh tế cảnh báo rằng lạm phát dai dẳng đang âm thầm bào mòn giá trị tiền tiết kiệm của các hộ gia đình.",
+      "explanation": "<b>Persistent inflation</b> is the standard collocation for inflation that refuses to go away. <b>Insistent</b> describes a demanding person, <b>resistant</b> needs <b>to</b>, and <b>consistent</b> means steady or unchanging, not stubborn."
+    },
+    {
+      "id": "gv-ch-24-11",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The two governments reached a tariff deal ______, only minutes before the new duties were due to take effect.",
+      "options": ["at the end of the day", "around the clock", "at the eleventh hour", "in the long run"],
+      "correct": 2,
+      "answer": "at the eleventh hour",
+      "vi": "Hai chính phủ đạt được thỏa thuận thuế quan vào phút chót, chỉ vài phút trước khi các mức thuế mới có hiệu lực.",
+      "explanation": "<b>At the eleventh hour</b> = at the last possible moment. <b>At the end of the day</b> means 'ultimately', <b>around the clock</b> means 'all day and night', and <b>in the long run</b> means 'eventually'."
+    },
+    {
+      "id": "gv-ch-24-12",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The health ministry has ______ a thorough investigation into hygiene standards at the private clinic.",
+      "options": ["made", "done", "taken", "conducted"],
+      "correct": 3,
+      "answer": "conducted",
+      "vi": "Bộ Y tế đã tiến hành một cuộc điều tra kỹ lưỡng về tiêu chuẩn vệ sinh tại phòng khám tư đó.",
+      "explanation": "<b>Conduct an investigation</b> (also <b>carry out</b> or <b>hold</b> one) is the collocation. <b>Make</b>, <b>do</b> and <b>take</b> do not combine with <b>investigation</b>."
+    },
+    {
+      "id": "gv-ch-24-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Regulators fined the platform for failing to obtain ______ consent before selling users' browsing histories to advertisers.",
+      "options": ["informed", "knowing", "advised", "aware"],
+      "correct": 0,
+      "answer": "informed",
+      "vi": "Cơ quan quản lý đã phạt nền tảng này vì không xin được sự đồng ý có hiểu biết của người dùng trước khi bán lịch sử duyệt web của họ cho các nhà quảng cáo.",
+      "explanation": "<b>Informed consent</b> is the fixed legal and medical collocation for agreement given with full knowledge of the facts. <b>Knowing</b>, <b>advised</b> and <b>aware</b> are related in meaning but do not collocate with <b>consent</b>."
+    },
+    {
+      "id": "gv-ch-24-14",
+      "level": "ch",
+      "focus": "linking",
+      "q": "Ministers insist the economy is recovering, ______ most households report that their real incomes have fallen.",
+      "options": ["despite", "whereas", "otherwise", "so that"],
+      "correct": 1,
+      "answer": "whereas",
+      "vi": "Các bộ trưởng khẳng định nền kinh tế đang hồi phục, trong khi hầu hết các hộ gia đình cho biết thu nhập thực tế của họ đã giảm.",
+      "explanation": "<b>Whereas</b> introduces a clause that contrasts directly with the first. <b>Despite</b> must be followed by a noun or -ing form, <b>otherwise</b> means 'if not', and <b>so that</b> expresses purpose."
+    },
+    {
+      "id": "gv-ch-24-15",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "After a decade in investment banking, she found it hard to get used to ______ on a researcher's salary.",
+      "options": ["live", "to live", "living", "having lived"],
+      "correct": 2,
+      "answer": "living",
+      "vi": "Sau mười năm làm ngân hàng đầu tư, cô thấy khó mà quen được với việc sống bằng đồng lương của một nhà nghiên cứu.",
+      "explanation": "In <b>get used to</b>, <b>to</b> is a preposition, so it is followed by a gerund: <b>living</b>. <b>Having lived</b> would wrongly refer to a completed past action."
+    },
+    {
+      "id": "gv-ch-24-16",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The board recommended that the chief executive ______ from any decision involving her family's shareholding.",
+      "options": ["abstains", "abstained", "will abstain", "abstain"],
+      "correct": 3,
+      "answer": "abstain",
+      "vi": "Hội đồng quản trị đề nghị giám đốc điều hành không tham gia bất kỳ quyết định nào liên quan đến cổ phần của gia đình bà.",
+      "explanation": "After <b>recommend that</b>, the verb takes the base-form subjunctive: <b>abstain</b>, whatever the subject or the tense of the main clause."
+    },
+    {
+      "id": "gv-ch-24-17",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ for the central bank's emergency intervention, the currency would have collapsed within days.",
+      "options": ["Had it not been", "Had not it been", "It had not been", "Not had it been"],
+      "correct": 0,
+      "answer": "Had it not been",
+      "vi": "Nếu không có sự can thiệp khẩn cấp của ngân hàng trung ương, đồng tiền này đã sụp đổ chỉ trong vài ngày.",
+      "explanation": "<b>Had it not been for</b> is the inverted form of <b>If it had not been for</b> in a third conditional: the auxiliary <b>had</b> moves before the subject <b>it</b>, and <b>not</b> follows the subject."
+    },
+    {
+      "id": "gv-ch-24-18",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Only after the second wave of infections ______ the true cost of years of underfunding the health service.",
+      "options": ["the public realised", "did the public realise", "the public did realise", "realised the public"],
+      "correct": 1,
+      "answer": "did the public realise",
+      "vi": "Chỉ sau làn sóng lây nhiễm thứ hai công chúng mới nhận ra cái giá thực sự của nhiều năm cắt giảm ngân sách y tế.",
+      "explanation": "When a sentence opens with <b>Only after</b> + phrase, the main clause is inverted: the auxiliary <b>did</b> comes before the subject, followed by the bare verb <b>realise</b>."
+    },
+    {
+      "id": "gv-ch-24-19",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Without her glasses, the pharmacist had to ______ at the tiny print on the label to read the dosage.",
+      "options": ["gaze", "glare", "peer", "observe"],
+      "correct": 2,
+      "answer": "peer",
+      "vi": "Không có kính, dược sĩ phải nheo mắt nhìn kỹ dòng chữ li ti trên nhãn để đọc liều dùng.",
+      "explanation": "<b>Peer at</b> = look closely at something that is hard to see. <b>Gaze</b> is a long, steady look, <b>glare</b> is an angry look, and <b>observe</b> takes a direct object without <b>at</b>."
+    },
+    {
+      "id": "gv-ch-24-20",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Journalists eventually ______ the leaked memo to a contractor working for the health ministry.",
+      "options": ["spotted", "sighted", "located", "traced"],
+      "correct": 3,
+      "answer": "traced",
+      "vi": "Cuối cùng các nhà báo đã lần ra bản ghi nhớ bị rò rỉ xuất phát từ một nhà thầu làm việc cho Bộ Y tế.",
+      "explanation": "<b>Trace something to</b> = follow evidence back to its source. <b>Spot</b>, <b>sight</b> and <b>locate</b> mean to find or see something, but none of them takes <b>to</b> a source."
+    },
+    {
+      "id": "gv-ch-24-21",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It's high time regulators ______ a clear line between targeted advertising and outright surveillance.",
+      "options": ["drew", "draw", "will draw", "have drawn"],
+      "correct": 0,
+      "answer": "drew",
+      "vi": "Đã đến lúc các cơ quan quản lý phải vạch ra ranh giới rõ ràng giữa quảng cáo nhắm mục tiêu và giám sát trắng trợn.",
+      "explanation": "<b>It's high time</b> + subject takes a past subjunctive (<b>drew</b>) to say something should already be happening. A present, future or perfect form is not used after this expression."
+    },
+    {
+      "id": "gv-ch-24-22",
+      "level": "ch",
+      "focus": "article-quantifier",
+      "q": "______ research has been done on how late-night scrolling affects teenagers' sleep, so no one can yet say whether the harm is real.",
+      "options": ["A little", "Little", "Few", "A few"],
+      "correct": 1,
+      "answer": "Little",
+      "vi": "Rất ít nghiên cứu được thực hiện về việc lướt điện thoại khuya ảnh hưởng thế nào đến giấc ngủ của thanh thiếu niên, nên chưa ai dám nói tác hại đó là có thật.",
+      "explanation": "<b>Research</b> is uncountable, so <b>few/a few</b> are impossible; <b>little</b> (without <b>a</b>) means 'almost none', which is why nobody can yet judge. <b>A little</b> would stress that some research does exist."
+    },
+    {
+      "id": "gv-ch-24-23",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The patient ______ the wrong dose — the pharmacy's records show every prescription that day was filled correctly.",
+      "options": ["shouldn't have been given", "needn't have been given", "can't have been given", "mustn't have been given"],
+      "correct": 2,
+      "answer": "can't have been given",
+      "vi": "Bệnh nhân không thể nào đã bị đưa sai liều — hồ sơ nhà thuốc cho thấy mọi đơn thuốc hôm đó đều được cấp phát đúng.",
+      "explanation": "<b>Can't have + past participle</b> expresses a confident deduction that something did NOT happen. <b>Shouldn't have</b> criticises something that did happen, <b>needn't have</b> means it was unnecessary, and <b>mustn't have</b> is not used for deduction."
+    },
+    {
+      "id": "gv-ch-24-24",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ the sheer volume of records exposed in the breach, investigators expect the inquiry to take at least a year.",
+      "options": ["Giving", "Give", "Given", "To give"],
+      "correct": 2,
+      "answer": "Given",
+      "vi": "Xét đến khối lượng hồ sơ bị lộ quá lớn trong vụ rò rỉ, các điều tra viên dự đoán cuộc điều tra sẽ kéo dài ít nhất một năm.",
+      "explanation": "The past participle <b>Given</b> + noun works as a fixed preposition meaning 'considering, taking into account'. <b>Giving</b> would make the investigators the ones doing the giving, and <b>Give</b> or <b>To give</b> cannot introduce a noun phrase in this way."
+    },
+    {
+      "id": "gv-ch-24-25",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Most users simply ______ the headlines in their news feed rather than read a single article to the end.",
+      "options": ["stare", "skim", "gaze", "squint"],
+      "correct": 1,
+      "answer": "skim",
+      "vi": "Hầu hết người dùng chỉ lướt qua các tiêu đề trong bảng tin thay vì đọc trọn vẹn dù chỉ một bài báo.",
+      "explanation": "<b>Skim</b> = read quickly to get the general idea, and it takes a direct object. <b>Stare</b>, <b>gaze</b> and <b>squint</b> are ways of looking (fixedly, steadily, with narrowed eyes) and would need <b>at</b>."
+    }
+  ]
+}

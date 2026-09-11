@@ -1,0 +1,406 @@
+{
+  "file": "21",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-21-1",
+      "level": "ch",
+      "focus": "tense",
+      "q": "By the time the new metro line finally opens, the city ______ on it for eleven years.",
+      "options": [
+        "will work",
+        "will have been working",
+        "is working",
+        "has been working"
+      ],
+      "correct": 1,
+      "answer": "will have been working",
+      "vi": "Đến lúc tuyến metro mới cuối cùng khánh thành, thành phố sẽ thi công tuyến này được mười một năm rồi.",
+      "explanation": "An action continuing up to a point in the future (<b>by the time … opens</b>) takes the future perfect continuous: <b>will have been working</b>."
+    },
+    {
+      "id": "gv-ch-21-2",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The judge's ______ handling of the case was praised by both sides, neither of which felt it had been favoured.",
+      "options": [
+        "impartial",
+        "indifferent",
+        "apathetic",
+        "aloof"
+      ],
+      "correct": 0,
+      "answer": "impartial",
+      "vi": "Cách xử lý vụ án công tâm của thẩm phán được cả hai bên khen ngợi, không bên nào cảm thấy mình được thiên vị.",
+      "explanation": "<b>Impartial</b> means treating both sides equally; <b>indifferent</b> and <b>apathetic</b> mean not caring at all, and <b>aloof</b> means cold and distant."
+    },
+    {
+      "id": "gv-ch-21-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "When the landlord raised the rent for the third time in a year, it was ______ for the tenants, who began organising a rent strike.",
+      "options": [
+        "the last word",
+        "the last resort",
+        "the last straw",
+        "the last laugh"
+      ],
+      "correct": 2,
+      "answer": "the last straw",
+      "vi": "Khi chủ nhà tăng tiền thuê lần thứ ba trong một năm, đó là giọt nước tràn ly đối với người thuê, và họ bắt đầu tổ chức đình công tiền nhà.",
+      "explanation": "<b>The last straw</b> is the final small problem that makes a situation unbearable. <b>The last resort</b> is the only remaining option, <b>the last word</b> is the final say, and <b>the last laugh</b> is winning in the end."
+    },
+    {
+      "id": "gv-ch-21-4",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The printing plant was forced to ______ a third of its workforce once the newspaper moved online.",
+      "options": [
+        "lay out",
+        "lay down",
+        "lay up",
+        "lay off"
+      ],
+      "correct": 3,
+      "answer": "lay off",
+      "vi": "Nhà in buộc phải sa thải một phần ba nhân công khi tờ báo chuyển sang phát hành trực tuyến.",
+      "explanation": "<b>Lay off</b> means to dismiss workers because there is not enough work. <b>Lay out</b> is to arrange or spend, <b>lay down</b> is to put down or set (rules), and <b>lay up</b> is to store or to confine someone to bed."
+    },
+    {
+      "id": "gv-ch-21-5",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the laboratory had repeated the test three times did the researchers announce that the river's lead levels were safe.",
+      "options": [
+        "Until",
+        "As soon as",
+        "Not until",
+        "By the time"
+      ],
+      "correct": 2,
+      "answer": "Not until",
+      "vi": "Mãi đến khi phòng thí nghiệm lặp lại xét nghiệm ba lần, các nhà nghiên cứu mới công bố rằng mức chì trong con sông đã ở ngưỡng an toàn.",
+      "explanation": "<b>Not until + clause</b> at the start of a sentence is a negative opener, so the main clause inverts: <b>did the researchers announce</b>. <b>Until</b>, <b>as soon as</b> and <b>by the time</b> are ordinary time conjunctions and would need normal word order (the researchers announced)."
+    },
+    {
+      "id": "gv-ch-21-6",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The minister sounded distinctly ______ about the bill, praising its aims in one breath and questioning its cost in the next.",
+      "options": [
+        "indifferent",
+        "apathetic",
+        "oblivious",
+        "ambivalent"
+      ],
+      "correct": 3,
+      "answer": "ambivalent",
+      "vi": "Bộ trưởng tỏ ra rõ ràng là nước đôi về dự luật, vừa khen mục tiêu của nó ở câu trước lại vừa nghi ngờ chi phí ở câu sau.",
+      "explanation": "<b>Ambivalent</b> means having mixed feelings, which the praise-then-doubt shows. <b>Indifferent</b> and <b>apathetic</b> mean not caring, and <b>oblivious</b> means unaware (and takes <b>to</b>)."
+    },
+    {
+      "id": "gv-ch-21-7",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The appeal court ______ the original ruling, rejecting every ground on which the developer had challenged it.",
+      "options": [
+        "upheld",
+        "held up",
+        "kept up",
+        "retained"
+      ],
+      "correct": 0,
+      "answer": "upheld",
+      "vi": "Tòa phúc thẩm giữ nguyên phán quyết ban đầu, bác bỏ mọi căn cứ mà chủ đầu tư đã dùng để khiếu nại.",
+      "explanation": "A court <b>upholds</b> a ruling, meaning it confirms it on appeal. <b>Held up</b> means delayed, and <b>kept up</b> and <b>retained</b> do not collocate with a ruling."
+    },
+    {
+      "id": "gv-ch-21-8",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The mayor ______ the report before the press conference; she stumbled over even its most basic figures.",
+      "options": [
+        "needn't have read",
+        "shouldn't have read",
+        "can't have read",
+        "mustn't have read"
+      ],
+      "correct": 2,
+      "answer": "can't have read",
+      "vi": "Thị trưởng chắc chắn đã không đọc bản báo cáo trước buổi họp báo; bà vấp ngay cả ở những con số cơ bản nhất.",
+      "explanation": "<b>Can't have + past participle</b> expresses a confident deduction that something did not happen. <b>Needn't have</b> means it was unnecessary, <b>shouldn't have</b> is criticism, and <b>mustn't have</b> is not used for deduction."
+    },
+    {
+      "id": "gv-ch-21-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Rather than keep patching the leaking roof every winter, the housing association decided to ______ and replace it entirely.",
+      "options": [
+        "bite the bullet",
+        "bite the dust",
+        "bite its tongue",
+        "bite off more than it could chew"
+      ],
+      "correct": 0,
+      "answer": "bite the bullet",
+      "vi": "Thay vì cứ vá mái nhà dột mỗi mùa đông, hiệp hội nhà ở quyết định cắn răng chịu đựng và thay toàn bộ mái.",
+      "explanation": "To <b>bite the bullet</b> is to accept something unpleasant but necessary. <b>Bite the dust</b> means to fail or die, <b>bite your tongue</b> is to stay silent, and <b>bite off more than you can chew</b> is to take on too much."
+    },
+    {
+      "id": "gv-ch-21-10",
+      "level": "ch",
+      "focus": "relative",
+      "q": "The linguist ______ fieldwork on endangered dialects won last year's prize is now advising the ministry on language policy.",
+      "options": [
+        "whom",
+        "whose",
+        "which",
+        "that"
+      ],
+      "correct": 1,
+      "answer": "whose",
+      "vi": "Nhà ngôn ngữ học mà công trình điền dã về các phương ngữ đang mai một đã đoạt giải năm ngoái hiện đang cố vấn cho bộ về chính sách ngôn ngữ.",
+      "explanation": "<b>Whose</b> is the possessive relative: the fieldwork belongs to the linguist. <b>Whom</b>, <b>which</b> and <b>that</b> cannot stand directly before a noun in this way."
+    },
+    {
+      "id": "gv-ch-21-11",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The columnist ______ the nail on the head when she ______ that the city has plenty of homes, just not where people can afford to live.",
+      "options": [
+        "struck / observing",
+        "hit / observing",
+        "hit / observed",
+        "struck / observed"
+      ],
+      "correct": 2,
+      "answer": "hit / observed",
+      "vi": "Nhà bình luận đã nói trúng phóc khi bà nhận xét rằng thành phố có thừa nhà ở, chỉ là không ở những nơi người dân đủ tiền sống.",
+      "explanation": "The idiom is <b>hit the nail on the head</b> (say exactly the right thing), and a <b>when</b>-clause needs a finite verb: <b>observed</b>, not the participle <b>observing</b>."
+    },
+    {
+      "id": "gv-ch-21-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Older residents are ______ to abandon the low-rise streets they grew up in, however generous the relocation package.",
+      "options": [
+        "averse",
+        "hostile",
+        "resistant",
+        "loath"
+      ],
+      "correct": 3,
+      "answer": "loath",
+      "vi": "Những cư dân lớn tuổi không muốn rời bỏ những con phố nhà thấp tầng nơi họ lớn lên, dù gói tái định cư có hào phóng đến đâu.",
+      "explanation": "<b>Loath to do</b> something means very unwilling to do it. <b>Averse</b>, <b>hostile</b> and <b>resistant</b> all take <b>to + noun/-ing</b> (averse to abandoning), not <b>to + infinitive</b>."
+    },
+    {
+      "id": "gv-ch-21-13",
+      "level": "ch",
+      "focus": "linking",
+      "q": "Rents in the capital have doubled in a decade; ______, wages have barely moved.",
+      "options": [
+        "meanwhile",
+        "therefore",
+        "otherwise",
+        "likewise"
+      ],
+      "correct": 0,
+      "answer": "meanwhile",
+      "vi": "Tiền thuê nhà ở thủ đô đã tăng gấp đôi trong một thập kỷ; trong khi đó, tiền lương hầu như không nhúc nhích.",
+      "explanation": "<b>Meanwhile</b> sets two things happening over the same period against each other. <b>Therefore</b> gives a result, <b>otherwise</b> the consequence of not doing something, and <b>likewise</b> a similarity."
+    },
+    {
+      "id": "gv-ch-21-14",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Most junior reporters would ______ the chance to cover a general election, even if it meant weeks without a day off.",
+      "options": [
+        "jump through",
+        "jump at",
+        "jump over",
+        "jump off"
+      ],
+      "correct": 1,
+      "answer": "jump at",
+      "vi": "Hầu hết phóng viên trẻ sẽ chớp ngay cơ hội đưa tin về một cuộc tổng tuyển cử, dù phải làm nhiều tuần không nghỉ.",
+      "explanation": "To <b>jump at</b> a chance is to accept it eagerly. <b>Jump through</b> (hoops) means to go through tedious procedures; <b>jump over</b> and <b>jump off</b> are literal movements."
+    },
+    {
+      "id": "gv-ch-21-15",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The committee recommended that the controversial clause ______ from the bill before its second reading.",
+      "options": [
+        "was removed",
+        "is removed",
+        "be removed",
+        "would be removed"
+      ],
+      "correct": 2,
+      "answer": "be removed",
+      "vi": "Ủy ban đề nghị điều khoản gây tranh cãi được loại khỏi dự luật trước phiên đọc thứ hai.",
+      "explanation": "After <b>recommend that</b>, the verb is in the subjunctive, the base form: <b>be removed</b>, whatever the tense of the main verb."
+    },
+    {
+      "id": "gv-ch-21-16",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The dictionary's editors keep a ______ eye on social media for words that are slipping into everyday use.",
+      "options": [
+        "tight",
+        "strict",
+        "near",
+        "close"
+      ],
+      "correct": 3,
+      "answer": "close",
+      "vi": "Các biên tập viên từ điển theo dõi sát mạng xã hội để tìm những từ đang dần đi vào ngôn ngữ hằng ngày.",
+      "explanation": "<b>Keep a close eye on</b> is the fixed phrase for watching carefully. <b>Tight</b> goes with grip or rein, and <b>strict</b> and <b>near</b> do not collocate with <b>eye</b>."
+    },
+    {
+      "id": "gv-ch-21-17",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "City officials were accused of being ______ about flood risk, insisting the century-old drains would cope as they always had.",
+      "options": [
+        "reluctant",
+        "complacent",
+        "apathetic",
+        "averse"
+      ],
+      "correct": 1,
+      "answer": "complacent",
+      "vi": "Giới chức thành phố bị cáo buộc là chủ quan về nguy cơ ngập lụt, khăng khăng rằng hệ thống cống trăm năm tuổi vẫn sẽ chịu được như trước nay.",
+      "explanation": "<b>Complacent about</b> means so satisfied with things as they are that you ignore a danger. <b>Reluctant</b> and <b>averse</b> take <b>to</b>, and <b>apathetic</b> means lacking interest rather than falsely confident."
+    },
+    {
+      "id": "gv-ch-21-18",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The developer ______ at the last minute and withdrew its bid for the riverside site, citing 'market uncertainty'.",
+      "options": [
+        "got cold feet",
+        "got itchy feet",
+        "got the cold shoulder",
+        "got off on the wrong foot"
+      ],
+      "correct": 0,
+      "answer": "got cold feet",
+      "vi": "Chủ đầu tư chùn bước vào phút chót và rút hồ sơ đấu thầu khu đất ven sông, viện lý do 'thị trường bất ổn'.",
+      "explanation": "To <b>get cold feet</b> is to lose your nerve just before doing something. <b>Itchy feet</b> is a desire to travel, <b>the cold shoulder</b> is deliberate unfriendliness, and <b>off on the wrong foot</b> is a bad start."
+    },
+    {
+      "id": "gv-ch-21-19",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The tenants' association now regrets ______ the landlord's first offer, which looks generous beside the one on the table today.",
+      "options": [
+        "to reject",
+        "reject",
+        "rejecting",
+        "to be rejecting"
+      ],
+      "correct": 2,
+      "answer": "rejecting",
+      "vi": "Hiệp hội người thuê nhà giờ hối tiếc vì đã từ chối đề nghị đầu tiên của chủ nhà, đề nghị ấy trông hào phóng hơn hẳn so với đề nghị đang bàn hôm nay.",
+      "explanation": "<b>Regret + -ing</b> looks back at something you wish you had not done; <b>regret + to-infinitive</b> is only for announcing bad news (we regret to inform you)."
+    },
+    {
+      "id": "gv-ch-21-20",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "If the city ______ its drainage system a decade ago, last week's storm would not have flooded three metro stations.",
+      "options": [
+        "modernised",
+        "has modernised",
+        "would have modernised",
+        "had modernised"
+      ],
+      "correct": 3,
+      "answer": "had modernised",
+      "vi": "Nếu thành phố đã hiện đại hóa hệ thống thoát nước từ một thập kỷ trước, cơn bão tuần rồi đã không làm ngập ba ga metro.",
+      "explanation": "An unreal past condition with a past result (third conditional) takes <b>if + past perfect</b>: <b>had modernised</b>, with <b>would have + past participle</b> in the main clause."
+    },
+    {
+      "id": "gv-ch-21-21",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Voters grew steadily ______ with a government that promised change every spring and delivered none by autumn.",
+      "options": [
+        "dismissive",
+        "disillusioned",
+        "disinclined",
+        "disapproving"
+      ],
+      "correct": 1,
+      "answer": "disillusioned",
+      "vi": "Cử tri ngày càng vỡ mộng với một chính phủ cứ mỗi mùa xuân hứa đổi thay mà đến mùa thu chẳng làm được gì.",
+      "explanation": "<b>Disillusioned with</b> means having lost your belief in something after being let down. <b>Dismissive of</b> and <b>disapproving of</b> take a different preposition, and <b>disinclined</b> takes <b>to</b>."
+    },
+    {
+      "id": "gv-ch-21-22",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ in plain language rather than legal jargon, the new tenancy contract can be understood without a lawyer.",
+      "options": [
+        "Written",
+        "Writing",
+        "Having written",
+        "To write"
+      ],
+      "correct": 0,
+      "answer": "Written",
+      "vi": "Được viết bằng ngôn ngữ giản dị thay vì thuật ngữ pháp lý, hợp đồng thuê nhà mới có thể hiểu được mà không cần luật sư.",
+      "explanation": "The contract is written by someone, so the reduced clause is passive: the past participle <b>Written</b>. <b>Writing</b> and <b>Having written</b> would make the contract the writer."
+    },
+    {
+      "id": "gv-ch-21-23",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "After fourteen hours of talks on the budget, the two parties agreed to ______ and resume in the morning.",
+      "options": [
+        "call the shots",
+        "call a spade a spade",
+        "call it a day",
+        "call the tune"
+      ],
+      "correct": 2,
+      "answer": "call it a day",
+      "vi": "Sau mười bốn giờ đàm phán về ngân sách, hai đảng đồng ý dừng lại ở đây và tiếp tục vào sáng hôm sau.",
+      "explanation": "To <b>call it a day</b> is to stop working for now. <b>Call the shots</b> and <b>call the tune</b> both mean to be in charge, and <b>call a spade a spade</b> is to speak bluntly."
+    },
+    {
+      "id": "gv-ch-21-24",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Had the council ______ with residents from the outset, far fewer of them would ______ opposed the scheme.",
+      "options": [
+        "squared / had",
+        "levelled / had",
+        "squared / have",
+        "levelled / have"
+      ],
+      "correct": 3,
+      "answer": "levelled / have",
+      "vi": "Nếu hội đồng thành phố thẳng thắn với cư dân ngay từ đầu, thì đã có ít người phản đối dự án hơn nhiều.",
+      "explanation": "<b>Level with</b> someone is to be honest with them (<b>square with</b> means to be consistent with), and the result clause of a past unreal condition is <b>would have + past participle</b>."
+    },
+    {
+      "id": "gv-ch-21-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The new tram line is expected to ______ pressure on the city's overcrowded northern bus routes.",
+      "options": [
+        "release",
+        "relieve",
+        "loosen",
+        "lighten"
+      ],
+      "correct": 1,
+      "answer": "relieve",
+      "vi": "Tuyến tàu điện mới được kỳ vọng sẽ giảm bớt áp lực cho các tuyến xe buýt quá tải ở phía bắc thành phố.",
+      "explanation": "<b>Relieve pressure on</b> is the collocation for reducing strain on a service. <b>Release</b> pressure is physical (a valve), and <b>loosen</b> and <b>lighten</b> do not combine with <b>pressure on</b>."
+    }
+  ]
+}

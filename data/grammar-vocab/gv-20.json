@@ -1,0 +1,406 @@
+{
+  "file": "20",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-20-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Figures released by the grid operator on Monday comprehensively ______ the allegation that the country had been days away from rolling blackouts.",
+      "options": [
+        "argued",
+        "objected",
+        "refuted",
+        "disagreed"
+      ],
+      "correct": 2,
+      "answer": "refuted",
+      "vi": "Số liệu do đơn vị vận hành lưới điện công bố hôm thứ Hai đã bác bỏ hoàn toàn cáo buộc rằng đất nước chỉ còn vài ngày nữa là phải cắt điện luân phiên.",
+      "explanation": "<b>Refute</b> = prove a claim false, and it takes a direct object. <b>Object</b> and <b>disagree</b> need <b>to / with</b>, and you cannot <b>argue</b> an allegation."
+    },
+    {
+      "id": "gv-ch-20-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The sponsor's late withdrawal threw ______ just weeks before the new stadium was due to open.",
+      "options": [
+        "a spanner in the works",
+        "a fly in the ointment",
+        "a bone of contention",
+        "a nail in the coffin"
+      ],
+      "correct": 0,
+      "answer": "a spanner in the works",
+      "vi": "Việc nhà tài trợ rút lui vào phút chót đã phá hỏng kế hoạch chỉ vài tuần trước ngày sân vận động mới dự kiến khai trương.",
+      "explanation": "<b>Throw a spanner in the works</b> = suddenly wreck a plan. A <b>fly in the ointment</b> and a <b>bone of contention</b> are things that <b>are</b>, not thrown, and a nail is <b>put</b> in a coffin."
+    },
+    {
+      "id": "gv-ch-20-3",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ had the vaccine trial's results been published when three rival laboratories announced they were abandoning their own programmes.",
+      "options": [
+        "No sooner",
+        "Hardly",
+        "Not only",
+        "Seldom"
+      ],
+      "correct": 1,
+      "answer": "Hardly",
+      "vi": "Kết quả thử nghiệm vắc-xin vừa mới được công bố thì ba phòng thí nghiệm đối thủ đã tuyên bố từ bỏ chương trình của riêng họ.",
+      "explanation": "<b>Hardly … when</b> is the pair that takes <b>when</b> (with the past perfect inverted). <b>No sooner</b> needs <b>than</b>, <b>Not only</b> needs <b>but (also)</b>, and <b>Seldom</b> does not form a pair with <b>when</b> at all."
+    },
+    {
+      "id": "gv-ch-20-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Rolling blackouts ______ a serious threat to the region's hospitals, which cannot run their ventilators on generators for long.",
+      "options": [
+        "make",
+        "do",
+        "put",
+        "pose"
+      ],
+      "correct": 3,
+      "answer": "pose",
+      "vi": "Cắt điện luân phiên gây ra mối đe dọa nghiêm trọng cho các bệnh viện trong vùng, vốn không thể chạy máy thở bằng máy phát điện lâu được.",
+      "explanation": "The fixed collocation is <b>pose a threat</b>; <b>make / do / put</b> do not combine with <b>threat</b>."
+    },
+    {
+      "id": "gv-ch-20-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Despite weeks of pressure from broadcasters, the league refused to ______ and kept every kick-off time unchanged.",
+      "options": [
+        "give in",
+        "give off",
+        "give out",
+        "give away"
+      ],
+      "correct": 0,
+      "answer": "give in",
+      "vi": "Dù bị các đài truyền hình gây sức ép suốt nhiều tuần, giải đấu vẫn không chịu nhượng bộ và giữ nguyên mọi giờ thi đấu.",
+      "explanation": "<b>Give in</b> = yield to pressure. <b>Give off</b> = emit, <b>give out</b> = distribute or run out, <b>give away</b> = reveal or donate — and all three need an object here."
+    },
+    {
+      "id": "gv-ch-20-6",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The press commission recommended that the broadcaster ______ its correction on the front page of its website rather than bury it in a footnote.",
+      "options": [
+        "prints",
+        "printed",
+        "print",
+        "would print"
+      ],
+      "correct": 2,
+      "answer": "print",
+      "vi": "Ủy ban báo chí khuyến nghị đài truyền hình đăng bản đính chính lên trang đầu của trang web thay vì giấu nó trong một ghi chú cuối trang.",
+      "explanation": "After <b>recommend that</b> the verb is in the bare subjunctive: <b>that the broadcaster print</b>, with no <b>-s</b>, no past form and no <b>would</b>."
+    },
+    {
+      "id": "gv-ch-20-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Once the replay had been shown on the big screen, the coach was forced to ______ that the goal had been perfectly legitimate.",
+      "options": [
+        "consent",
+        "concede",
+        "comply",
+        "conform"
+      ],
+      "correct": 1,
+      "answer": "concede",
+      "vi": "Khi đoạn quay chậm được chiếu lên màn hình lớn, huấn luyện viên buộc phải thừa nhận rằng bàn thắng hoàn toàn hợp lệ.",
+      "explanation": "<b>Concede that</b> = reluctantly admit something is true. <b>Consent to</b>, <b>comply with</b> and <b>conform to</b> mean agreeing to a request or rule and never take a <b>that</b>-clause."
+    },
+    {
+      "id": "gv-ch-20-8",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Aware that the drivers' union was losing patience, the ministry ______ by promising a review of shift patterns before the end of the year.",
+      "options": [
+        "threw in the towel",
+        "threw its weight around",
+        "threw caution to the wind",
+        "threw it a bone"
+      ],
+      "correct": 3,
+      "answer": "threw it a bone",
+      "vi": "Biết công đoàn tài xế đang mất kiên nhẫn, bộ đã nhượng bộ chút ít bằng cách hứa xem xét lại lịch ca làm việc trước cuối năm.",
+      "explanation": "<b>Throw someone a bone</b> = give a small concession to keep them quiet. <b>Throw in the towel</b> = give up completely, <b>throw your weight around</b> = bully, <b>throw caution to the wind</b> = act recklessly."
+    },
+    {
+      "id": "gv-ch-20-9",
+      "level": "ch",
+      "focus": "modal",
+      "q": "Judging by the vibration recorded within an hour of start-up, the turbine ______ been installed correctly.",
+      "options": [
+        "can't have",
+        "must have",
+        "needn't have",
+        "should have"
+      ],
+      "correct": 0,
+      "answer": "can't have",
+      "vi": "Căn cứ vào độ rung ghi nhận được chỉ trong vòng một giờ sau khi khởi động, tua-bin chắc chắn đã không được lắp đặt đúng cách.",
+      "explanation": "<b>Judging by</b> signals a deduction, and the vibration is evidence that correct installation was impossible: <b>can't have been</b>. <b>Must have</b> deduces the opposite; <b>needn't have</b> and <b>should have</b> are not deductions."
+    },
+    {
+      "id": "gv-ch-20-10",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Having sat on the ______ for months, the regulator finally came ______ in favour of a single national grid operator.",
+      "options": [
+        "wall / down",
+        "fence / down",
+        "fence / up",
+        "line / out"
+      ],
+      "correct": 1,
+      "answer": "fence / down",
+      "vi": "Sau nhiều tháng lưỡng lự không chọn bên nào, cơ quan quản lý cuối cùng đã quyết định ủng hộ mô hình một đơn vị vận hành lưới điện quốc gia duy nhất.",
+      "explanation": "<b>Sit on the fence</b> = refuse to take sides, and <b>come down in favour of</b> = finally decide for. <b>Wall / line</b> break the idiom, and <b>come up in favour of</b> does not exist."
+    },
+    {
+      "id": "gv-ch-20-11",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ the home side dominated possession for eighty minutes, it was the visitors who created the clearer chances.",
+      "options": [
+        "Despite",
+        "However",
+        "Although",
+        "Nevertheless"
+      ],
+      "correct": 2,
+      "answer": "Although",
+      "vi": "Mặc dù đội chủ nhà kiểm soát bóng áp đảo suốt tám mươi phút, chính đội khách mới là bên tạo ra những cơ hội rõ rệt hơn.",
+      "explanation": "A clause with a subject and verb needs the conjunction <b>Although</b>. <b>Despite</b> takes a noun or <b>-ing</b>, while <b>However / Nevertheless</b> are adverbs that cannot join two clauses."
+    },
+    {
+      "id": "gv-ch-20-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The columnist stopped short of an outright accusation, merely ______ that the sprinter's sudden improvement owed more to chemistry than to training.",
+      "options": [
+        "proclaiming",
+        "pronouncing",
+        "announcing",
+        "insinuating"
+      ],
+      "correct": 3,
+      "answer": "insinuating",
+      "vi": "Cây bút bình luận không đưa ra lời buộc tội thẳng thừng mà chỉ ám chỉ rằng sự tiến bộ đột ngột của vận động viên chạy nước rút là nhờ hóa chất nhiều hơn là nhờ tập luyện.",
+      "explanation": "<b>Insinuate</b> = suggest something unpleasant indirectly, which fits <b>stopped short of an outright accusation</b>. <b>Proclaim / pronounce / announce</b> all mean stating something openly and publicly."
+    },
+    {
+      "id": "gv-ch-20-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The pipeline has been running at ______ capacity since the faulty compressor was replaced in March.",
+      "options": [
+        "whole",
+        "full",
+        "entire",
+        "complete"
+      ],
+      "correct": 1,
+      "answer": "full",
+      "vi": "Đường ống đã vận hành hết công suất kể từ khi máy nén bị lỗi được thay thế hồi tháng Ba.",
+      "explanation": "The collocation is <b>at full capacity</b>; <b>whole / entire / complete</b> describe a thing in its totality but do not pair with <b>capacity</b>."
+    },
+    {
+      "id": "gv-ch-20-14",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ its survey of the reef, the research vessel headed north to sample a second stretch of coastline before the monsoon arrived.",
+      "options": [
+        "Having finished",
+        "Finished",
+        "Being finished",
+        "To have finished"
+      ],
+      "correct": 0,
+      "answer": "Having finished",
+      "vi": "Sau khi hoàn tất khảo sát rạn san hô, tàu nghiên cứu đi lên phía bắc để lấy mẫu ở một dải bờ biển thứ hai trước khi gió mùa tới.",
+      "explanation": "The vessel did the finishing, and it finished <b>before</b> it headed north, so the perfect participle <b>Having finished</b> is needed. <b>Finished / Being finished</b> would make the vessel the thing that was finished, and <b>To have finished</b> expresses purpose or result, not sequence."
+    },
+    {
+      "id": "gv-ch-20-15",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The night editor asked the reporter at the mine to ______ as the rescue unfolded, even if it meant calling at three in the morning.",
+      "options": [
+        "keep her at bay",
+        "keep her in the dark",
+        "keep her posted",
+        "keep her at arm's length"
+      ],
+      "correct": 2,
+      "answer": "keep her posted",
+      "vi": "Biên tập viên ca đêm yêu cầu phóng viên tại hiện trường mỏ liên tục cập nhật tình hình khi cuộc giải cứu diễn ra, kể cả phải gọi lúc ba giờ sáng.",
+      "explanation": "<b>Keep someone posted</b> = keep sending them the latest news. <b>Keep at bay / at arm's length</b> = keep away, and <b>keep in the dark</b> means the exact opposite — tell them nothing."
+    },
+    {
+      "id": "gv-ch-20-16",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the goalkeeper's save in stoppage time, the club would have been relegated on the final day of the season.",
+      "options": [
+        "Had not it been for",
+        "If it had not for",
+        "Were it not been for",
+        "Had it not been for"
+      ],
+      "correct": 3,
+      "answer": "Had it not been for",
+      "vi": "Nếu không nhờ pha cứu thua của thủ môn ở phút bù giờ, câu lạc bộ đã xuống hạng ngay ngày thi đấu cuối cùng của mùa giải.",
+      "explanation": "The inverted third conditional is <b>Had it not been for</b> (= If it had not been for). <b>Not</b> must follow the subject, <b>had not for</b> lacks <b>been</b>, and <b>were</b> cannot combine with <b>been</b>."
+    },
+    {
+      "id": "gv-ch-20-17",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Under threat of legal action, the newspaper agreed to ______ the story and print an apology in the following day's edition.",
+      "options": [
+        "retract",
+        "rescind",
+        "revoke",
+        "repeal"
+      ],
+      "correct": 0,
+      "answer": "retract",
+      "vi": "Trước nguy cơ bị kiện, tờ báo đồng ý rút lại bài viết và đăng lời xin lỗi trong số báo ngày hôm sau.",
+      "explanation": "You <b>retract</b> a statement or story (withdraw it as untrue). <b>Rescind</b> an order or decision, <b>revoke</b> a licence or permit, <b>repeal</b> a law."
+    },
+    {
+      "id": "gv-ch-20-18",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The club's owners would rather ______ a season in the second tier than sell the stadium to property developers.",
+      "options": [
+        "to endure",
+        "endure",
+        "enduring",
+        "endured"
+      ],
+      "correct": 1,
+      "answer": "endure",
+      "vi": "Các ông chủ câu lạc bộ thà chịu đựng một mùa giải ở hạng hai còn hơn bán sân vận động cho các nhà phát triển bất động sản.",
+      "explanation": "<b>Would rather</b> + bare infinitive: <b>would rather endure … than sell</b>. The <b>-ing</b>, <b>to</b> and past forms are not possible after <b>would rather</b> when the subject stays the same."
+    },
+    {
+      "id": "gv-ch-20-19",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Repairs to the transmission line were ______ for a month by a dispute over access to farmland along the route.",
+      "options": [
+        "held out",
+        "held on",
+        "set up",
+        "held up"
+      ],
+      "correct": 3,
+      "answer": "held up",
+      "vi": "Việc sửa chữa đường dây truyền tải bị trì hoãn suốt một tháng vì tranh chấp về quyền đi qua đất nông nghiệp dọc tuyến.",
+      "explanation": "<b>Hold up</b> = delay, and only it makes sense in the passive here. <b>Hold out / hold on</b> are intransitive (last, wait), and <b>set up</b> = establish."
+    },
+    {
+      "id": "gv-ch-20-20",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It's high time the federation ______ the anti-doping rules it wrote more than a decade ago.",
+      "options": [
+        "revise",
+        "revises",
+        "revised",
+        "has revised"
+      ],
+      "correct": 2,
+      "answer": "revised",
+      "vi": "Đã đến lúc liên đoàn phải sửa đổi các quy định chống doping mà họ soạn ra từ hơn một thập kỷ trước.",
+      "explanation": "<b>It's high time</b> + past subjunctive: <b>It's high time the federation revised</b>, even though the meaning is present; the bare, present and present-perfect forms are wrong."
+    },
+    {
+      "id": "gv-ch-20-21",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Missing the cup final through injury proved ______: the striker returned fully rested for the World Cup qualifiers.",
+      "options": [
+        "a shot in the dark",
+        "a blessing in disguise",
+        "a drop in the ocean",
+        "a storm in a teacup"
+      ],
+      "correct": 1,
+      "answer": "a blessing in disguise",
+      "vi": "Việc lỡ trận chung kết cúp vì chấn thương hóa ra lại là trong cái rủi có cái may: tiền đạo trở lại với thể trạng sung sức cho vòng loại World Cup.",
+      "explanation": "<b>A blessing in disguise</b> = something that seems bad but turns out well. <b>A shot in the dark</b> = a wild guess, <b>a drop in the ocean</b> = a tiny amount, <b>a storm in a teacup</b> = fuss over nothing."
+    },
+    {
+      "id": "gv-ch-20-22",
+      "level": "ch",
+      "focus": "article-quantifier",
+      "q": "Only ______ of the stadium's eighty thousand seats were empty when the final kicked off.",
+      "options": [
+        "a few",
+        "few",
+        "a little",
+        "little"
+      ],
+      "correct": 0,
+      "answer": "a few",
+      "vi": "Chỉ có một vài chỗ trong số tám mươi nghìn ghế của sân vận động là còn trống khi trận chung kết bắt đầu.",
+      "explanation": "<b>Seats</b> are countable, so <b>a little / little</b> are out, and after <b>only</b> English uses <b>a few</b> (a small number), never bare <b>few</b>."
+    },
+    {
+      "id": "gv-ch-20-23",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The inquiry's report drew a ______ distinction between honest reporting and the paid content that had been dressed up as news.",
+      "options": [
+        "strong",
+        "hard",
+        "sharp",
+        "heavy"
+      ],
+      "correct": 2,
+      "answer": "sharp",
+      "vi": "Báo cáo của cuộc điều tra phân biệt rõ ràng giữa đưa tin trung thực và nội dung được trả tiền nhưng được khoác vỏ tin tức.",
+      "explanation": "The collocation is <b>draw a sharp / clear distinction</b>; <b>strong / hard / heavy</b> do not pair with <b>distinction</b>."
+    },
+    {
+      "id": "gv-ch-20-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Two independent engineers have since ______ the whistleblower's account of cracks in the dam's spillway.",
+      "options": [
+        "cooperated",
+        "coincided",
+        "conformed",
+        "corroborated"
+      ],
+      "correct": 3,
+      "answer": "corroborated",
+      "vi": "Hai kỹ sư độc lập sau đó đã xác nhận lời kể của người tố giác về các vết nứt ở đập tràn của con đập.",
+      "explanation": "<b>Corroborate</b> = confirm someone's account with further evidence, and it takes a direct object. <b>Cooperate with</b>, <b>coincide with</b> and <b>conform to</b> mean something different and need a preposition."
+    },
+    {
+      "id": "gv-ch-20-25",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Once the last sticking points over image rights had been ______, the broadcasting deal was ______ by both boards on Monday.",
+      "options": [
+        "ironed off / sealed off",
+        "wiped out / signed off",
+        "ironed out / signed off",
+        "ironed out / sent off"
+      ],
+      "correct": 2,
+      "answer": "ironed out / signed off",
+      "vi": "Khi những vướng mắc cuối cùng về bản quyền hình ảnh đã được giải quyết, thỏa thuận phát sóng được cả hai hội đồng quản trị phê duyệt hôm thứ Hai.",
+      "explanation": "<b>Iron out</b> = resolve small problems, and <b>sign off</b> = formally approve. <b>Wipe out</b> = destroy, <b>seal off</b> = close an area, <b>send off</b> = dismiss a player."
+    }
+  ]
+}

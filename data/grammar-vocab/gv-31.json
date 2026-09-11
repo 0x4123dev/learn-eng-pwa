@@ -1,0 +1,406 @@
+{
+  "file": "31",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-31-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Sales of home blood-pressure monitors ______ after the ministry's warning about undiagnosed hypertension, rising fivefold in a single month.",
+      "options": [
+        "dwindled",
+        "skyrocketed",
+        "fluctuated",
+        "stagnated"
+      ],
+      "correct": 1,
+      "answer": "skyrocketed",
+      "vi": "Doanh số máy đo huyết áp tại nhà tăng vọt sau cảnh báo của bộ y tế về tình trạng cao huyết áp chưa được chẩn đoán, tăng gấp năm lần chỉ trong một tháng.",
+      "explanation": "<b>Skyrocket</b> = rise extremely fast, which matches 'rising fivefold in a single month'. <b>Dwindle</b> = shrink gradually, <b>fluctuate</b> = move up and down, <b>stagnate</b> = stop growing."
+    },
+    {
+      "id": "gv-ch-31-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Persuading teenagers to switch off location sharing has proved ______ for privacy campaigners, who report that fewer than one in ten has done so.",
+      "options": [
+        "an uphill battle",
+        "a foregone conclusion",
+        "a blessing in disguise",
+        "a red herring"
+      ],
+      "correct": 0,
+      "answer": "an uphill battle",
+      "vi": "Việc thuyết phục thanh thiếu niên tắt chia sẻ vị trí đã tỏ ra là một cuộc chiến gian nan đối với các nhà vận động về quyền riêng tư, những người cho biết chưa tới một phần mười các em làm vậy.",
+      "explanation": "<b>An uphill battle</b> = a struggle that is very hard to win, which fits 'fewer than one in ten'. <b>A foregone conclusion</b> = a certain result, <b>a blessing in disguise</b> = hidden good luck, <b>a red herring</b> = a misleading clue."
+    },
+    {
+      "id": "gv-ch-31-3",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Facial recognition in shopping centres ______ a serious threat to the anonymity that city life once guaranteed.",
+      "options": [
+        "makes",
+        "does",
+        "poses",
+        "puts"
+      ],
+      "correct": 2,
+      "answer": "poses",
+      "vi": "Công nghệ nhận diện khuôn mặt ở các trung tâm mua sắm đặt ra mối đe dọa nghiêm trọng đối với sự ẩn danh mà đời sống đô thị từng bảo đảm.",
+      "explanation": "The fixed collocation for presenting a danger is <b>pose a threat</b> (also pose a risk / a danger / a question). <b>Make a threat</b> means to utter one, not to be a danger to something, and <b>do</b> and <b>put</b> do not combine with 'threat' at all."
+    },
+    {
+      "id": "gv-ch-31-4",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Not until a journalist published the leaked database ______ that millions of accounts had been exposed.",
+      "options": [
+        "the company admitted",
+        "had the company admitted",
+        "the company did admit",
+        "did the company admit"
+      ],
+      "correct": 3,
+      "answer": "did the company admit",
+      "vi": "Mãi đến khi một nhà báo công bố cơ sở dữ liệu bị rò rỉ, công ty mới thừa nhận rằng hàng triệu tài khoản đã bị lộ.",
+      "explanation": "After a fronted <b>Not until</b> clause the main clause is inverted: auxiliary + subject + bare verb, <b>did the company admit</b>. The admission comes after the publishing, so the past perfect 'had ... admitted' is wrong, and the uninverted forms are ungrammatical here."
+    },
+    {
+      "id": "gv-ch-31-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The laboratory will gradually ______ its vaccine production over the next six months rather than halt it overnight.",
+      "options": [
+        "wind down",
+        "wind up",
+        "wear down",
+        "tone down"
+      ],
+      "correct": 0,
+      "answer": "wind down",
+      "vi": "Phòng thí nghiệm sẽ dần thu hẹp hoạt động sản xuất vắc-xin trong sáu tháng tới thay vì dừng đột ngột.",
+      "explanation": "<b>Wind down</b> = reduce an activity gradually before ending it, the opposite of 'halt it overnight'. <b>Wind up</b> = bring to a complete end (a company, a meeting), <b>wear down</b> = exhaust or erode, <b>tone down</b> = make less forceful (language, colours)."
+    },
+    {
+      "id": "gv-ch-31-6",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Public enthusiasm for the fitness app began to ______ once users discovered how much location data it had been collecting.",
+      "options": [
+        "accelerate",
+        "rebound",
+        "escalate",
+        "wane"
+      ],
+      "correct": 3,
+      "answer": "wane",
+      "vi": "Sự hào hứng của công chúng với ứng dụng thể dục bắt đầu nguội dần khi người dùng phát hiện nó đã thu thập bao nhiêu dữ liệu vị trí.",
+      "explanation": "<b>Wane</b> = decrease gradually in strength or intensity, the natural reaction to a privacy scandal. <b>Accelerate</b> and <b>escalate</b> mean to increase, and <b>rebound</b> = recover after a fall, none of which fits a discovery that damages trust."
+    },
+    {
+      "id": "gv-ch-31-7",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "After a decade of lawsuits, the two chip makers agreed to ______ the ______ and pool their patents on medical sensors.",
+      "options": [
+        "bite / bullet",
+        "bury / hatchet",
+        "break / ice",
+        "call / shots"
+      ],
+      "correct": 1,
+      "answer": "bury / hatchet",
+      "vi": "Sau một thập kỷ kiện tụng, hai hãng sản xuất chip đồng ý gác lại hiềm khích và gộp chung các bằng sáng chế về cảm biến y tế.",
+      "explanation": "<b>Bury the hatchet</b> = end a long quarrel and make peace, which 'a decade of lawsuits' followed by pooling patents describes. <b>Bite the bullet</b> = accept something painful, <b>break the ice</b> = ease first-meeting awkwardness, <b>call the shots</b> = be in control."
+    },
+    {
+      "id": "gv-ch-31-8",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The patient ______ the tablets on an empty stomach, or she would not be feeling this nauseous now.",
+      "options": [
+        "should have taken",
+        "needn't have taken",
+        "must have taken",
+        "can't have taken"
+      ],
+      "correct": 2,
+      "answer": "must have taken",
+      "vi": "Bệnh nhân hẳn đã uống thuốc lúc bụng đói, nếu không thì giờ cô ấy đã không buồn nôn đến thế.",
+      "explanation": "The nausea is evidence, so the speaker draws a confident conclusion about the past: <b>must have taken</b>. <b>Can't have</b> expresses the opposite deduction, <b>should have</b> is criticism, and <b>needn't have</b> means it was unnecessary."
+    },
+    {
+      "id": "gv-ch-31-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Researchers who blame screen time alone for teenage insomnia may be ______, since the latest data point to caffeine as the stronger factor.",
+      "options": [
+        "beating around the bush",
+        "barking up the wrong tree",
+        "jumping on the bandwagon",
+        "putting the cart before the horse"
+      ],
+      "correct": 1,
+      "answer": "barking up the wrong tree",
+      "vi": "Các nhà nghiên cứu chỉ đổ lỗi cho thời gian dùng màn hình gây mất ngủ ở tuổi teen có lẽ đang nhắm sai hướng, vì dữ liệu mới nhất cho thấy caffeine là yếu tố mạnh hơn.",
+      "explanation": "<b>Bark up the wrong tree</b> = pursue a mistaken explanation or target, which the caffeine data suggest. <b>Beat around the bush</b> = avoid the point, <b>jump on the bandwagon</b> = follow a fashion, <b>put the cart before the horse</b> = do things in the wrong order."
+    },
+    {
+      "id": "gv-ch-31-10",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Rural clinics have been left to ______ the burden of the vaccination drive while city hospitals receive most of the extra funding.",
+      "options": [
+        "foot",
+        "head",
+        "hand",
+        "shoulder"
+      ],
+      "correct": 3,
+      "answer": "shoulder",
+      "vi": "Các phòng khám nông thôn bị bỏ mặc gánh vác gánh nặng của chiến dịch tiêm chủng, trong khi các bệnh viện thành phố nhận phần lớn khoản kinh phí bổ sung.",
+      "explanation": "To take on a heavy responsibility is to <b>shoulder the burden</b> (also shoulder the cost / the blame). <b>Foot</b> collocates with 'the bill', <b>head</b> with a committee or a list, and <b>hand</b> needs 'over' or 'out'; none of them combines with 'burden'."
+    },
+    {
+      "id": "gv-ch-31-11",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It is vital that the lead researcher ______ the safety briefing in person before the trial resumes.",
+      "options": [
+        "attended",
+        "attending",
+        "attend",
+        "will attend"
+      ],
+      "correct": 2,
+      "answer": "attend",
+      "vi": "Điều thiết yếu là trưởng nhóm nghiên cứu phải trực tiếp tham dự buổi phổ biến an toàn trước khi thử nghiệm được nối lại.",
+      "explanation": "After <b>It is vital / essential / important that</b> the clause takes the base-form subjunctive whatever the subject: <b>that she attend</b>. The past form attended and the future 'will attend' do not fit this pattern, and attending is not a finite verb, so the clause would have no verb at all."
+    },
+    {
+      "id": "gv-ch-31-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Shares in the social network ______ by a fifth in a single afternoon after regulators announced a privacy investigation.",
+      "options": [
+        "dwindled",
+        "crept",
+        "tumbled",
+        "hovered"
+      ],
+      "correct": 2,
+      "answer": "tumbled",
+      "vi": "Cổ phiếu của mạng xã hội này lao dốc một phần năm chỉ trong một buổi chiều sau khi cơ quan quản lý công bố cuộc điều tra về quyền riêng tư.",
+      "explanation": "<b>Tumble</b> = fall suddenly and steeply, matching 'by a fifth in a single afternoon'. <b>Dwindle</b> is a slow, gradual decline, <b>creep</b> is slow movement, and <b>hover</b> means to stay roughly level."
+    },
+    {
+      "id": "gv-ch-31-13",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ carefully a hospital encrypts its records, a single careless password can undo the whole effort.",
+      "options": [
+        "Whatever",
+        "No matter how",
+        "Even though",
+        "In spite of"
+      ],
+      "correct": 1,
+      "answer": "No matter how",
+      "vi": "Dù một bệnh viện mã hóa hồ sơ cẩn thận đến đâu, chỉ một mật khẩu bất cẩn cũng có thể làm đổ sông đổ biển toàn bộ nỗ lực.",
+      "explanation": "Before an adverb (<b>carefully</b>) the concessive link is <b>No matter how</b> (= however carefully). <b>Whatever</b> needs a noun, <b>even though</b> introduces a full clause, and <b>in spite of</b> takes a noun phrase."
+    },
+    {
+      "id": "gv-ch-31-14",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Using the phone's metadata, investigators were able to ______ the exact building from which the stolen files had been uploaded.",
+      "options": [
+        "zoom in at",
+        "home in to",
+        "close in at",
+        "zero in on"
+      ],
+      "correct": 3,
+      "answer": "zero in on",
+      "vi": "Nhờ siêu dữ liệu của chiếc điện thoại, các điều tra viên đã khoanh vùng được chính xác tòa nhà nơi các tệp bị đánh cắp đã được tải lên.",
+      "explanation": "<b>Zero in on</b> = identify and focus precisely on a target. The others use the wrong particle: it is home in <b>on</b>, close in <b>on</b> and zoom in <b>on</b>, never 'to' or 'at'."
+    },
+    {
+      "id": "gv-ch-31-15",
+      "level": "ch",
+      "focus": "reported",
+      "q": "At the hearing, the journalist asked the chief executive ______ the company had ever sold its users' location history to advertisers.",
+      "options": [
+        "whether",
+        "that",
+        "what",
+        "did"
+      ],
+      "correct": 0,
+      "answer": "whether",
+      "vi": "Tại phiên điều trần, nhà báo hỏi vị tổng giám đốc liệu công ty có bao giờ bán lịch sử vị trí của người dùng cho các nhà quảng cáo hay không.",
+      "explanation": "A reported yes/no question is introduced by <b>whether</b> (or if) with statement word order. <b>That</b> reports a statement, <b>what</b> would need a missing object, and <b>did</b> belongs to direct-question order."
+    },
+    {
+      "id": "gv-ch-31-16",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The surgeon is not one to ______, but her transplant team's survival figures speak for themselves.",
+      "options": [
+        "blow hot and cold",
+        "blow the whistle",
+        "blow her own trumpet",
+        "blow her top"
+      ],
+      "correct": 2,
+      "answer": "blow her own trumpet",
+      "vi": "Vị bác sĩ phẫu thuật không phải người thích khoe khoang, nhưng con số tỷ lệ sống sót của đội ghép tạng của bà đã tự nói lên tất cả.",
+      "explanation": "<b>Blow your own trumpet</b> = boast about your achievements, which contrasts with the figures doing the talking. <b>Blow hot and cold</b> = keep changing your mind, <b>blow the whistle</b> = expose wrongdoing, <b>blow your top</b> = lose your temper."
+    },
+    {
+      "id": "gv-ch-31-17",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "Older users seem resigned to ______ tracked wherever they go online, whereas teenagers are increasingly fighting back.",
+      "options": [
+        "be",
+        "being",
+        "to be",
+        "been"
+      ],
+      "correct": 1,
+      "answer": "being",
+      "vi": "Người dùng lớn tuổi dường như cam chịu việc bị theo dõi ở bất cứ đâu họ lên mạng, trong khi thanh thiếu niên ngày càng phản kháng.",
+      "explanation": "In <b>resigned to</b>, 'to' is a preposition (like 'used to', 'look forward to'), so it is followed by a gerund: <b>being tracked</b>. The bare infinitive, 'to be' and 'been' cannot follow a preposition."
+    },
+    {
+      "id": "gv-ch-31-18",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The probe is now ______ towards Jupiter at almost 200,000 kilometres an hour, faster than any craft before it.",
+      "options": [
+        "hurtling",
+        "drifting",
+        "dawdling",
+        "meandering"
+      ],
+      "correct": 0,
+      "answer": "hurtling",
+      "vi": "Tàu thăm dò hiện đang lao về phía Sao Mộc với tốc độ gần 200.000 km/giờ, nhanh hơn bất kỳ con tàu nào trước đó.",
+      "explanation": "<b>Hurtle</b> = move at great speed, often uncontrollably, so it fits a record-breaking velocity. <b>Drift</b> = move slowly with no power, <b>dawdle</b> = move slowly and lazily, <b>meander</b> = wander along a winding path."
+    },
+    {
+      "id": "gv-ch-31-19",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ a surge in counterfeit medicines, the health ministry has ordered every pharmacy to scan a barcode on each pack it sells.",
+      "options": [
+        "Prompted by",
+        "Prompting by",
+        "Having prompted by",
+        "To prompt by"
+      ],
+      "correct": 0,
+      "answer": "Prompted by",
+      "vi": "Trước tình trạng thuốc giả gia tăng, bộ y tế đã yêu cầu mọi hiệu thuốc quét mã vạch trên từng hộp thuốc bán ra.",
+      "explanation": "The ministry was moved to act <b>by</b> the surge, so the past participle with passive meaning is needed: <b>Prompted by</b>. <b>Prompting</b> and <b>Having prompted</b> would make the ministry the cause rather than the thing acted on, and 'to prompt by' is not a participle clause."
+    },
+    {
+      "id": "gv-ch-31-20",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Even a ______ smoker who quits at fifty regains several years of life expectancy, the study concludes.",
+      "options": [
+        "strong",
+        "heavy",
+        "hard",
+        "big"
+      ],
+      "correct": 1,
+      "answer": "heavy",
+      "vi": "Ngay cả một người nghiện thuốc nặng bỏ thuốc ở tuổi năm mươi cũng lấy lại được vài năm tuổi thọ, nghiên cứu kết luận.",
+      "explanation": "Someone who smokes a great deal is a <b>heavy smoker</b> (likewise a heavy drinker, heavy traffic, heavy rain). <b>Strong</b>, <b>hard</b> and <b>big</b> are not used with 'smoker'."
+    },
+    {
+      "id": "gv-ch-31-21",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "It ______ out that the clinic had been ______ patient records on an unsecured server for almost three years.",
+      "options": [
+        "ended / to store",
+        "worked / stored",
+        "turned / storing",
+        "made / storing"
+      ],
+      "correct": 2,
+      "answer": "turned / storing",
+      "vi": "Hóa ra phòng khám đã lưu trữ hồ sơ bệnh nhân trên một máy chủ không được bảo mật trong gần ba năm.",
+      "explanation": "<b>It turned out that</b> = it was discovered that; after 'had been' the past perfect continuous needs the -ing form, <b>storing</b>. 'End out' and 'make out that' do not mean discover, and 'had been stored patient records' has no grammatical object slot."
+    },
+    {
+      "id": "gv-ch-31-22",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "The telehealth start-up expects to ______ by next spring, once subscription income finally covers its server costs.",
+      "options": [
+        "break ground",
+        "break ranks",
+        "break the bank",
+        "break even"
+      ],
+      "correct": 3,
+      "answer": "break even",
+      "vi": "Công ty khởi nghiệp y tế từ xa dự kiến sẽ hòa vốn vào mùa xuân tới, khi thu nhập từ thuê bao cuối cùng bù đắp được chi phí máy chủ.",
+      "explanation": "<b>Break even</b> = make neither a profit nor a loss, exactly what 'income covers its costs' means. <b>Break ground</b> = start building, <b>break ranks</b> = stop supporting your group, <b>break the bank</b> = cost too much."
+    },
+    {
+      "id": "gv-ch-31-23",
+      "level": "ch",
+      "focus": "pronoun",
+      "q": "______ leaks a patient's records, even unintentionally, now faces a fine of up to a year's salary under the new law.",
+      "options": [
+        "Whoever",
+        "Whomever",
+        "Whichever",
+        "Whom"
+      ],
+      "correct": 0,
+      "answer": "Whoever",
+      "vi": "Bất kỳ ai làm rò rỉ hồ sơ bệnh nhân, dù vô ý, giờ đây đều đối mặt với khoản phạt lên tới một năm lương theo luật mới.",
+      "explanation": "<b>Whoever</b> = any person who, and it is the subject of 'leaks', so the subject form is needed. <b>Whomever</b> and <b>whom</b> are object forms, and <b>whichever</b> refers to a choice among things, not to an unknown person."
+    },
+    {
+      "id": "gv-ch-31-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Life expectancy in the region has ______ at around 72 for a decade, despite heavy investment in new hospitals.",
+      "options": [
+        "rocketed",
+        "rebounded",
+        "plateaued",
+        "dipped"
+      ],
+      "correct": 2,
+      "answer": "plateaued",
+      "vi": "Tuổi thọ trung bình ở khu vực này đã chững lại ở mức khoảng 72 suốt một thập kỷ, bất chấp đầu tư mạnh vào các bệnh viện mới.",
+      "explanation": "<b>Plateau</b> = stop rising and stay level, which 'at around 72 for a decade' and 'despite investment' both signal. <b>Rocket</b> and <b>rebound</b> describe rises, and <b>dip</b> is a short fall; none can be followed by 'at around 72 for a decade'."
+    },
+    {
+      "id": "gv-ch-31-25",
+      "level": "ch",
+      "focus": "question-tag",
+      "q": "Nobody expected the vaccine to clear the regulator's review this quickly, ______?",
+      "options": [
+        "didn't they",
+        "did they",
+        "did it",
+        "wasn't it"
+      ],
+      "correct": 1,
+      "answer": "did they",
+      "vi": "Không ai ngờ vắc-xin lại vượt qua đợt xét duyệt của cơ quan quản lý nhanh đến thế, phải không?",
+      "explanation": "<b>Nobody</b> makes the statement negative, so the tag is positive, and indefinite person subjects take <b>they</b>: <b>did they</b>. 'Didn't they' repeats the negative, and 'it' would refer to the vaccine, not to the subject."
+    }
+  ]
+}

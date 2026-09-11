@@ -1,0 +1,406 @@
+{
+  "file": "35",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-35-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Witnesses caught only a ______ glimpse of the getaway driver before the car sped off down the alley.",
+      "options": [
+        "temporary",
+        "interim",
+        "fleeting",
+        "provisional"
+      ],
+      "correct": 2,
+      "answer": "fleeting",
+      "vi": "Các nhân chứng chỉ thoáng thấy tài xế xe tẩu thoát trong chốc lát trước khi chiếc xe lao vụt xuống con hẻm.",
+      "explanation": "<b>Fleeting</b> (lasting a very short moment) is the word that collocates with <i>glimpse</i>; <i>temporary</i>, <i>interim</i> and <i>provisional</i> describe arrangements that will later be replaced, not a moment of seeing."
+    },
+    {
+      "id": "gv-ch-35-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "New officers seldom ______ before their second year, so each is paired with a veteran detective until then.",
+      "options": [
+        "know the ropes",
+        "pull the strings",
+        "call the shots",
+        "hold the fort"
+      ],
+      "correct": 0,
+      "answer": "know the ropes",
+      "vi": "Cảnh sát mới hiếm khi nắm vững công việc trước năm thứ hai, nên mỗi người được ghép cặp với một thám tử kỳ cựu cho đến lúc đó.",
+      "explanation": "<b>Know the ropes</b> = understand how a job is done. <i>Pull the strings</i> (control from behind the scenes), <i>call the shots</i> (be in charge) and <i>hold the fort</i> (take charge while others are away) describe power or cover, not familiarity with a job."
+    },
+    {
+      "id": "gv-ch-35-3",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "After three days of deliberation the jury was still unable to ______ a verdict.",
+      "options": [
+        "arrive",
+        "reach",
+        "make",
+        "come"
+      ],
+      "correct": 1,
+      "answer": "reach",
+      "vi": "Sau ba ngày nghị án, bồi thẩm đoàn vẫn không thể đưa ra được phán quyết.",
+      "explanation": "The fixed collocation is <b>reach a verdict</b>. <i>Arrive</i> and <i>come</i> would need <i>at</i> before the noun, and <i>make a verdict</i> is not English."
+    },
+    {
+      "id": "gv-ch-35-4",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The accused ______ the getaway car that night — he was already in police custody.",
+      "options": [
+        "mustn't have driven",
+        "needn't have driven",
+        "shouldn't have driven",
+        "can't have driven"
+      ],
+      "correct": 3,
+      "answer": "can't have driven",
+      "vi": "Bị cáo không thể nào đã lái chiếc xe tẩu thoát đêm đó — lúc ấy anh ta đã bị cảnh sát tạm giữ rồi.",
+      "explanation": "<b>Can't have + past participle</b> expresses certainty that something was impossible in the past. <i>Mustn't have</i> is not used for deduction, <i>needn't have</i> means it was unnecessary, and <i>shouldn't have</i> means it was wrong to do."
+    },
+    {
+      "id": "gv-ch-35-5",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The rain was ______ all afternoon, stopping and starting so often that the flood sirens were tested three times.",
+      "options": [
+        "chronic",
+        "intermittent",
+        "perennial",
+        "interim"
+      ],
+      "correct": 1,
+      "answer": "intermittent",
+      "vi": "Mưa rơi ngắt quãng suốt buổi chiều, ngừng rồi lại rơi thường xuyên đến mức còi báo lũ được thử tới ba lần.",
+      "explanation": "<b>Intermittent</b> = stopping and starting at intervals. <i>Chronic</i> describes a long-lasting problem or illness, <i>perennial</i> something that recurs every year, and <i>interim</i> a temporary arrangement."
+    },
+    {
+      "id": "gv-ch-35-6",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Only after the river had burst its banks twice ______ to fund the dredging work.",
+      "options": [
+        "the council agreed",
+        "the council did agree",
+        "did the council agree",
+        "had the council agreed"
+      ],
+      "correct": 2,
+      "answer": "did the council agree",
+      "vi": "Chỉ sau khi con sông đã tràn bờ hai lần, hội đồng thành phố mới đồng ý cấp kinh phí nạo vét.",
+      "explanation": "A sentence opening with <b>Only after…</b> inverts the main clause: <b>did the council agree</b>. The past perfect belongs in the <i>after</i> clause, not in the inverted main clause."
+    },
+    {
+      "id": "gv-ch-35-7",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "With no savings to ______, the evicted family spent the winter sleeping in their car.",
+      "options": [
+        "fall back on",
+        "fall behind with",
+        "fall in with",
+        "fall out with"
+      ],
+      "correct": 0,
+      "answer": "fall back on",
+      "vi": "Không có khoản tiết kiệm nào để dựa vào, gia đình bị đuổi khỏi nhà phải ngủ trong xe suốt mùa đông.",
+      "explanation": "<b>Fall back on</b> = use something as a reserve when nothing else is available. <i>Fall behind with</i> (payments), <i>fall in with</i> (a group or a plan) and <i>fall out with</i> (quarrel with) all take different objects."
+    },
+    {
+      "id": "gv-ch-35-8",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "For decades the old seawall has ______ the rising tide ______ bay, but engineers now doubt it can survive another winter.",
+      "options": [
+        "held / in",
+        "put / to",
+        "set / from",
+        "kept / at"
+      ],
+      "correct": 3,
+      "answer": "kept / at",
+      "vi": "Suốt hàng chục năm, bức tường chắn sóng cũ đã ngăn được thủy triều dâng, nhưng nay các kỹ sư nghi ngờ nó có thể trụ thêm một mùa đông nữa.",
+      "explanation": "The idiom is <b>keep something at bay</b> = prevent something harmful from reaching you. No other verb–preposition pair forms an expression with <i>bay</i>."
+    },
+    {
+      "id": "gv-ch-35-9",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It is high time the city ______ its century-old sewers instead of patching them every monsoon.",
+      "options": [
+        "replaces",
+        "replaced",
+        "will replace",
+        "has replaced"
+      ],
+      "correct": 1,
+      "answer": "replaced",
+      "vi": "Đã đến lúc thành phố phải thay hệ thống cống trăm năm tuổi thay vì cứ vá víu mỗi mùa mưa.",
+      "explanation": "<b>It is high time + past subjunctive</b>: the past form <b>replaced</b> refers to the present and means the action is overdue. Present, future and present-perfect forms are not used after <i>high time</i>."
+    },
+    {
+      "id": "gv-ch-35-10",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Warnings of the ______ storm surge sent thousands of residents inland before nightfall.",
+      "options": [
+        "impending",
+        "eventual",
+        "forthcoming",
+        "subsequent"
+      ],
+      "correct": 0,
+      "answer": "impending",
+      "vi": "Những cảnh báo về đợt nước dâng do bão sắp ập đến khiến hàng nghìn cư dân đổ vào đất liền trước khi trời tối.",
+      "explanation": "<b>Impending</b> = about to happen, usually something threatening. <i>Forthcoming</i> is used for scheduled events or publications, <i>eventual</i> means happening at the end of a process, and <i>subsequent</i> means coming after."
+    },
+    {
+      "id": "gv-ch-35-11",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Coastal towns that ignored the flood warnings ______ that a seawall costs far less than a rebuild.",
+      "options": [
+        "took a hard line",
+        "played hardball",
+        "learned the hard way",
+        "had a hard time"
+      ],
+      "correct": 2,
+      "answer": "learned the hard way",
+      "vi": "Những thị trấn ven biển phớt lờ cảnh báo lũ đã phải trả giá đắt để hiểu rằng xây tường chắn sóng rẻ hơn nhiều so với xây dựng lại.",
+      "explanation": "<b>Learn the hard way</b> = discover something through a painful experience, and it takes a <i>that</i>-clause. <i>Take a hard line</i>, <i>play hardball</i> and <i>have a hard time</i> cannot be followed by <i>that…</i>."
+    },
+    {
+      "id": "gv-ch-35-12",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ the sheer volume of complaints, the new bus timetable has satisfied almost no one.",
+      "options": [
+        "Judged from",
+        "Judge from",
+        "Judging from",
+        "Having been judged from"
+      ],
+      "correct": 2,
+      "answer": "Judging from",
+      "vi": "Xét từ số lượng khiếu nại khổng lồ, lịch chạy xe buýt mới hầu như chẳng làm hài lòng ai.",
+      "explanation": "<b>Judging from</b> (= if one considers) is a fixed participle phrase whose understood subject is the speaker, who does the judging, so the active -ing form is used. The passive <i>judged</i> / <i>having been judged</i> would make the timetable the thing judged, and the bare <i>judge</i> cannot open a participle clause."
+    },
+    {
+      "id": "gv-ch-35-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The documentary set out to ______ public awareness of the smog choking the capital every winter.",
+      "options": [
+        "rise",
+        "lift",
+        "grow",
+        "raise"
+      ],
+      "correct": 3,
+      "answer": "raise",
+      "vi": "Bộ phim tài liệu nhằm nâng cao nhận thức của công chúng về màn sương mù ô nhiễm bao trùm thủ đô mỗi mùa đông.",
+      "explanation": "The collocation is <b>raise awareness</b>. <i>Rise</i> is intransitive and cannot take an object; <i>lift</i> and <i>grow</i> do not collocate with <i>awareness</i>."
+    },
+    {
+      "id": "gv-ch-35-14",
+      "level": "ch",
+      "focus": "reported",
+      "q": "The housing inspector asked the tenant how long ______ in the damp basement flat.",
+      "options": [
+        "she had been living",
+        "had she been living",
+        "she has been living",
+        "has she been living"
+      ],
+      "correct": 0,
+      "answer": "she had been living",
+      "vi": "Thanh tra nhà ở hỏi người thuê rằng cô ấy đã sống trong căn hộ tầng hầm ẩm thấp đó bao lâu rồi.",
+      "explanation": "A reported question keeps statement word order and shifts the tense back: <b>she had been living</b>. The inverted forms and the present perfect belong to the direct question."
+    },
+    {
+      "id": "gv-ch-35-15",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The judge ruled that the two prison terms would run ______ rather than one after the other.",
+      "options": [
+        "contemporarily",
+        "coincidentally",
+        "concurrently",
+        "instantaneously"
+      ],
+      "correct": 2,
+      "answer": "concurrently",
+      "vi": "Thẩm phán phán quyết rằng hai án tù sẽ được thi hành đồng thời chứ không phải nối tiếp nhau.",
+      "explanation": "<b>Concurrently</b> = at the same time, the legal term for sentences served together. <i>Contemporarily</i> refers to the same era, <i>coincidentally</i> means by chance, and <i>instantaneously</i> means immediately."
+    },
+    {
+      "id": "gv-ch-35-16",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Once the most feared prosecutor in the city, she seems to have ______ — her last three cases collapsed within a week.",
+      "options": [
+        "lost her head",
+        "lost her voice",
+        "lost her footing",
+        "lost her touch"
+      ],
+      "correct": 3,
+      "answer": "lost her touch",
+      "vi": "Từng là công tố viên đáng sợ nhất thành phố, giờ bà dường như đã mất đi sự sắc bén — ba vụ gần nhất của bà đều đổ vỡ trong vòng một tuần.",
+      "explanation": "<b>Lose your touch</b> = no longer have the skill you once had. <i>Lose your head</i> means panic, <i>lose your voice</i> is literal, and <i>lose your footing</i> means slip."
+    },
+    {
+      "id": "gv-ch-35-17",
+      "level": "ch",
+      "focus": "pronoun",
+      "q": "Residents of the tower block rarely speak to ______, even after years on the same floor.",
+      "options": [
+        "each other's",
+        "one another",
+        "themselves",
+        "the other"
+      ],
+      "correct": 1,
+      "answer": "one another",
+      "vi": "Cư dân tòa chung cư hiếm khi trò chuyện với nhau, dù đã sống cùng tầng nhiều năm.",
+      "explanation": "The reciprocal pronoun <b>one another</b> (= each other) is needed. <i>Each other's</i> is possessive, <i>themselves</i> is reflexive, and <i>the other</i> would need a specific second party."
+    },
+    {
+      "id": "gv-ch-35-18",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The jury foreman refused to ______ the majority verdict until every doubt had been discussed.",
+      "options": [
+        "go in for",
+        "go down with",
+        "go along with",
+        "go off with"
+      ],
+      "correct": 2,
+      "answer": "go along with",
+      "vi": "Chủ tịch bồi thẩm đoàn từ chối tán thành phán quyết của đa số cho đến khi mọi nghi vấn đã được thảo luận.",
+      "explanation": "<b>Go along with</b> = accept or agree with. <i>Go in for</i> (enjoy, enter a competition), <i>go down with</i> (fall ill with) and <i>go off with</i> (take away, run away with) do not fit a verdict."
+    },
+    {
+      "id": "gv-ch-35-19",
+      "level": "ch",
+      "focus": "linking",
+      "q": "The clinic now opens at six in the morning ______ shift workers can be seen before they start work.",
+      "options": [
+        "in order to",
+        "so as to",
+        "in case",
+        "so that"
+      ],
+      "correct": 3,
+      "answer": "so that",
+      "vi": "Phòng khám nay mở cửa từ sáu giờ sáng để công nhân làm ca có thể được khám trước khi vào làm.",
+      "explanation": "<b>So that</b> introduces a purpose clause with its own subject and verb (<i>shift workers can be seen</i>). <i>In order to</i> and <i>so as to</i> must be followed by a bare infinitive, not a clause, and <i>in case</i> expresses a precaution, not a purpose."
+    },
+    {
+      "id": "gv-ch-35-20",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Small farmers along the delta will ______ the brunt of the new export tariffs, according to the ministry's own forecast.",
+      "options": [
+        "bear",
+        "carry",
+        "hold",
+        "stand"
+      ],
+      "correct": 0,
+      "answer": "bear",
+      "vi": "Theo chính dự báo của bộ, các nông hộ nhỏ dọc vùng châu thổ sẽ phải gánh chịu nặng nề nhất từ mức thuế xuất khẩu mới.",
+      "explanation": "The fixed collocation is <b>bear the brunt of</b> = suffer the worst part of something. <i>Carry</i>, <i>hold</i> and <i>stand</i> can all take a burden in other expressions, but none of them combines with <i>the brunt</i>."
+    },
+    {
+      "id": "gv-ch-35-21",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "The witness admitted ______ the accused leave the warehouse, but denied having spoken to him.",
+      "options": [
+        "to see",
+        "see",
+        "to have seen",
+        "having seen"
+      ],
+      "correct": 3,
+      "answer": "having seen",
+      "vi": "Nhân chứng thừa nhận đã thấy bị cáo rời khỏi nhà kho, nhưng phủ nhận việc đã nói chuyện với anh ta.",
+      "explanation": "<b>Admit</b> takes a gerund; the perfect gerund <b>having seen</b> shows the seeing happened before the admission. <i>Admit</i> is never followed by an infinitive."
+    },
+    {
+      "id": "gv-ch-35-22",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The residents' committee only ______ round to ______ the leaking roof after part of the ceiling had collapsed.",
+      "options": [
+        "set / repairing",
+        "got / repair",
+        "got / repairing",
+        "put / repair"
+      ],
+      "correct": 2,
+      "answer": "got / repairing",
+      "vi": "Ban đại diện cư dân chỉ chịu bắt tay vào sửa mái dột sau khi một phần trần nhà đã sập.",
+      "explanation": "<b>Get round to + -ing</b> = finally find the time to do something. Only <i>get</i> forms this phrasal verb, and the <i>to</i> here is a preposition, so it must be followed by a gerund."
+    },
+    {
+      "id": "gv-ch-35-23",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Developers complain that the planning department keeps ______, adding fresh conditions every time a scheme is resubmitted.",
+      "options": [
+        "moving heaven and earth",
+        "moving the goalposts",
+        "moving with the times",
+        "moving mountains"
+      ],
+      "correct": 1,
+      "answer": "moving the goalposts",
+      "vi": "Các nhà phát triển phàn nàn rằng sở quy hoạch cứ liên tục thay đổi luật chơi, thêm điều kiện mới mỗi lần hồ sơ được nộp lại.",
+      "explanation": "<b>Move the goalposts</b> = unfairly change the rules while something is in progress. <i>Move heaven and earth</i> and <i>move mountains</i> mean make a huge effort; <i>move with the times</i> means modernise."
+    },
+    {
+      "id": "gv-ch-35-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The inquiry published an ______ report on the landfill fire while the full investigation continues.",
+      "options": [
+        "instant",
+        "momentary",
+        "transitory",
+        "interim"
+      ],
+      "correct": 3,
+      "answer": "interim",
+      "vi": "Ủy ban điều tra đã công bố báo cáo sơ bộ về vụ cháy bãi rác trong khi cuộc điều tra đầy đủ vẫn đang tiếp diễn.",
+      "explanation": "An <b>interim</b> report is issued in the period before the final one. <i>Momentary</i> and <i>transitory</i> mean lasting a very short time, and <i>instant</i> means immediate — none of them describes a document."
+    },
+    {
+      "id": "gv-ch-35-25",
+      "level": "ch",
+      "focus": "question-tag",
+      "q": "Hardly anyone on the estate bothers to sort their recycling, ______?",
+      "options": [
+        "do they",
+        "don't they",
+        "does he",
+        "doesn't it"
+      ],
+      "correct": 0,
+      "answer": "do they",
+      "vi": "Hầu như chẳng ai trong khu dân cư chịu phân loại rác tái chế, phải không?",
+      "explanation": "<b>Hardly</b> makes the statement negative, so the tag is positive, and <i>anyone</i> is picked up by the plural pronoun <b>they</b>: <b>do they</b>."
+    }
+  ]
+}

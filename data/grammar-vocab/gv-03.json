@@ -1,0 +1,204 @@
+{ "file": "03", "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-03-1", "level": "kc", "focus": "word-choice",
+      "q": "At the checkout, the ______ scanned my items and asked if I wanted a bag.",
+      "options": ["cashier", "customer", "accountant", "banker"],
+      "correct": 0, "answer": "cashier",
+      "vi": "Ở quầy tính tiền, nhân viên thu ngân quét các món hàng của tôi và hỏi tôi có cần túi không.",
+      "explanation": "A <b>cashier</b> takes payment at the checkout. A <b>customer</b> is the buyer, an <b>accountant</b> keeps company accounts and a <b>banker</b> works in a bank."
+    },
+    {
+      "id": "gv-kc-03-2", "level": "kc", "focus": "word-choice",
+      "q": "Thousands of ______ cheered when the striker scored in the last minute.",
+      "options": ["witnesses", "spectators", "observers", "audiences"],
+      "correct": 1, "answer": "spectators",
+      "vi": "Hàng nghìn khán giả reo hò khi tiền đạo ghi bàn ở phút cuối.",
+      "explanation": "<b>Spectators</b> are the people watching a sports event. <b>Witnesses</b> see a crime or accident, <b>observers</b> watch officially, and <b>audience</b> is a group noun that is not counted as 'thousands of audiences'."
+    },
+    {
+      "id": "gv-kc-03-3", "level": "kc", "focus": "word-choice",
+      "q": "My sister's ______ in the chess final was a boy who had never lost a game.",
+      "options": ["partner", "colleague", "opponent", "teammate"],
+      "correct": 2, "answer": "opponent",
+      "vi": "Đối thủ của chị tôi trong trận chung kết cờ vua là một cậu bé chưa từng thua ván nào.",
+      "explanation": "An <b>opponent</b> is the person you play against. A <b>partner</b> or <b>teammate</b> plays on your side, and a <b>colleague</b> works with you."
+    },
+    {
+      "id": "gv-kc-03-4", "level": "kc", "focus": "word-choice",
+      "q": "The ______ blew her whistle and told the children to get out of the pool.",
+      "options": ["bodyguard", "doorman", "guardian", "lifeguard"],
+      "correct": 3, "answer": "lifeguard",
+      "vi": "Nhân viên cứu hộ thổi còi và bảo bọn trẻ ra khỏi hồ bơi.",
+      "explanation": "A <b>lifeguard</b> watches swimmers at a pool or beach. A <b>bodyguard</b> protects a person, a <b>doorman</b> stands at a building's entrance, and a <b>guardian</b> is legally responsible for a child."
+    },
+    {
+      "id": "gv-kc-03-5", "level": "kc", "focus": "word-choice",
+      "q": "A famous ______ with two million subscribers reviews new phones on her video channel every week.",
+      "options": ["vlogger", "blogger", "editor", "reporter"],
+      "correct": 0, "answer": "vlogger",
+      "vi": "Một vlogger nổi tiếng với hai triệu người đăng ký đánh giá điện thoại mới trên kênh video của cô ấy mỗi tuần.",
+      "explanation": "A <b>vlogger</b> makes videos for a channel. A <b>blogger</b> writes posts, an <b>editor</b> checks and corrects texts, and a <b>reporter</b> writes news."
+    },
+    {
+      "id": "gv-kc-03-6", "level": "kc", "focus": "collocation",
+      "q": "Before buying the phone, Nam ______ a lot of research online.",
+      "options": ["made", "did", "took", "gave"],
+      "correct": 1, "answer": "did",
+      "vi": "Trước khi mua điện thoại, Nam đã tìm hiểu rất nhiều trên mạng.",
+      "explanation": "The collocation is <b>do research</b>; we do not say 'make', 'take' or 'give' research."
+    },
+    {
+      "id": "gv-kc-03-7", "level": "kc", "focus": "collocation",
+      "q": "Choose a ______ password so that nobody can get into your account.",
+      "options": ["heavy", "hard", "strong", "powerful"],
+      "correct": 2, "answer": "strong",
+      "vi": "Hãy chọn một mật khẩu mạnh để không ai vào được tài khoản của bạn.",
+      "explanation": "A password that is difficult to guess is a <b>strong password</b>; 'heavy', 'hard' and 'powerful' do not collocate with 'password'."
+    },
+    {
+      "id": "gv-kc-03-8", "level": "kc", "focus": "collocation",
+      "q": "Please ______ attention when the referee explains the rules of the game.",
+      "options": ["give", "take", "make", "pay"],
+      "correct": 3, "answer": "pay",
+      "vi": "Hãy chú ý khi trọng tài giải thích luật của trận đấu.",
+      "explanation": "The fixed collocation is <b>pay attention</b>; 'give', 'take' and 'make' are not used with 'attention' in this meaning."
+    },
+    {
+      "id": "gv-kc-03-9", "level": "kc", "focus": "tense",
+      "q": "Even though it started to rain, the players ______ with the match until the referee stopped it.",
+      "options": ["carried on", "have carried on", "carry on", "had carried on"],
+      "correct": 0, "answer": "carried on",
+      "vi": "Dù trời bắt đầu mưa, các cầu thủ vẫn tiếp tục trận đấu cho đến khi trọng tài dừng lại.",
+      "explanation": "A finished past story told in order (it started to rain, they carried on, the referee stopped it) uses the <b>past simple</b>: <b>carried on</b>."
+    },
+    {
+      "id": "gv-kc-03-10", "level": "kc", "focus": "tense",
+      "q": "Lan: Where's Nam? / Nam's mum: He ______ football in the park at the moment.",
+      "options": ["plays", "is playing", "has played", "played"],
+      "correct": 1, "answer": "is playing",
+      "vi": "Lan: Nam đâu ạ? / Mẹ Nam: Nó đang đá bóng trong công viên.",
+      "explanation": "<b>At the moment</b> signals an action happening now, so the present continuous <b>is playing</b> is needed."
+    },
+    {
+      "id": "gv-kc-03-11", "level": "kc", "focus": "tense",
+      "q": "I ______ this phone for three years, so it's time to buy a new one.",
+      "options": ["had", "am having", "have had", "have"],
+      "correct": 2, "answer": "have had",
+      "vi": "Tôi đã dùng chiếc điện thoại này ba năm rồi, nên đã đến lúc mua cái mới.",
+      "explanation": "A situation that began in the past and continues now, with <b>for three years</b>, takes the present perfect: <b>have had</b>."
+    },
+    {
+      "id": "gv-kc-03-12", "level": "kc", "focus": "tense",
+      "q": "By the time the shop opened, dozens of people ______ outside for hours.",
+      "options": ["waited", "have waited", "were waiting", "had been waiting"],
+      "correct": 3, "answer": "had been waiting",
+      "vi": "Đến lúc cửa hàng mở cửa, hàng chục người đã đứng chờ bên ngoài suốt mấy tiếng.",
+      "explanation": "An activity that continued up to a past moment (<b>by the time the shop opened</b>) with <b>for hours</b> takes the past perfect continuous: <b>had been waiting</b>."
+    },
+    {
+      "id": "gv-kc-03-13", "level": "kc", "focus": "idiom",
+      "q": "Lan: Do you know a shop called Phone World? / Nam: The name ______, but I can't remember where it is.",
+      "options": ["breaks the ice", "rings a bell", "hits the nail on the head", "gets on my nerves"],
+      "correct": 1, "answer": "rings a bell",
+      "vi": "Lan: Cậu biết cửa hàng tên Phone World không? / Nam: Cái tên nghe quen quen, nhưng tớ không nhớ nó ở đâu.",
+      "explanation": "<b>Ring a bell</b> means 'sound familiar'. <b>Break the ice</b> is to make people relax, <b>hit the nail on the head</b> is to be exactly right, and <b>get on someone's nerves</b> is to annoy them."
+    },
+    {
+      "id": "gv-kc-03-14", "level": "kc", "focus": "idiom",
+      "q": "Our team played well in the first half but ______ after the break and lost 3-1.",
+      "options": ["ran out of steam", "hit the roof", "missed the boat", "made ends meet"],
+      "correct": 0, "answer": "ran out of steam",
+      "vi": "Đội chúng tôi chơi tốt ở hiệp một nhưng đuối sức sau giờ nghỉ và thua 3-1.",
+      "explanation": "<b>Run out of steam</b> means to lose energy and stop trying hard. <b>Hit the roof</b> is to get very angry, <b>miss the boat</b> is to lose a chance, and <b>make ends meet</b> is to have just enough money."
+    },
+    {
+      "id": "gv-kc-03-15", "level": "kc", "focus": "phrasal-verb",
+      "q": "The shop ______ my request for a refund because I had lost the receipt.",
+      "options": ["turned up", "turned over", "turned off", "turned down"],
+      "correct": 3, "answer": "turned down",
+      "vi": "Cửa hàng đã từ chối yêu cầu hoàn tiền của tôi vì tôi làm mất hóa đơn.",
+      "explanation": "<b>Turn down</b> means to refuse a request or offer. <b>Turn up</b> is to arrive or increase, <b>turn over</b> is to flip something, and <b>turn off</b> is to switch off."
+    },
+    {
+      "id": "gv-kc-03-16", "level": "kc", "focus": "phrasal-verb",
+      "q": "Please don't ______ the money I owe you in front of my parents.",
+      "options": ["bring back", "bring about", "bring up", "bring in"],
+      "correct": 2, "answer": "bring up",
+      "vi": "Làm ơn đừng nhắc đến số tiền tớ nợ cậu trước mặt bố mẹ tớ.",
+      "explanation": "<b>Bring up</b> means to mention a subject. <b>Bring back</b> is to return something, <b>bring about</b> is to cause, and <b>bring in</b> is to introduce or earn."
+    },
+    {
+      "id": "gv-kc-03-17", "level": "kc", "focus": "modal",
+      "q": "Nam paid full price in the shop. He ______ have bought the phone online, where the same model is much cheaper.",
+      "options": ["must", "should", "can't", "needn't"],
+      "correct": 1, "answer": "should",
+      "vi": "Nam đã trả nguyên giá ở cửa hàng. Lẽ ra cậu ấy nên mua điện thoại trên mạng, nơi cùng mẫu đó rẻ hơn nhiều.",
+      "explanation": "<b>Should have + past participle</b> criticises a past action that was not done. <b>Must have</b> is a deduction, <b>can't have</b> a negative deduction, and <b>needn't have</b> means it was unnecessary but done."
+    },
+    {
+      "id": "gv-kc-03-18", "level": "kc", "focus": "modal",
+      "q": "Lan ______ have spent much money at the market - she only bought a keyring.",
+      "options": ["can't", "must", "should", "needn't"],
+      "correct": 0, "answer": "can't",
+      "vi": "Lan không thể nào tiêu nhiều tiền ở chợ được - cô ấy chỉ mua một cái móc khóa.",
+      "explanation": "<b>Can't have + past participle</b> says the speaker is sure something did NOT happen. <b>Must have</b> is a positive deduction, <b>should have</b> gives criticism, and <b>needn't have</b> means something was done unnecessarily."
+    },
+    {
+      "id": "gv-kc-03-19", "level": "kc", "focus": "relative",
+      "q": "The girl ______ phone was stolen on the bus reported it to the police.",
+      "options": ["who", "which", "whom", "whose"],
+      "correct": 3, "answer": "whose",
+      "vi": "Cô gái có điện thoại bị lấy cắp trên xe buýt đã báo cảnh sát.",
+      "explanation": "<b>Whose</b> shows possession (the girl's phone). <b>Who</b> and <b>whom</b> replace a person, and <b>which</b> replaces a thing, but none of them can stand before a noun like 'phone'."
+    },
+    {
+      "id": "gv-kc-03-20", "level": "kc", "focus": "relative",
+      "q": "The shop ______ I bought my headphones has closed down.",
+      "options": ["which", "that", "where", "whose"],
+      "correct": 2, "answer": "where",
+      "vi": "Cửa hàng nơi tôi mua tai nghe đã đóng cửa rồi.",
+      "explanation": "<b>Where</b> replaces 'in the shop' - a place with a full clause after it. <b>Which</b> or <b>that</b> would need a preposition ('from which'), and <b>whose</b> shows possession."
+    },
+    {
+      "id": "gv-kc-03-21", "level": "kc", "focus": "article-quantifier",
+      "q": "There isn't ______ time left before the sale ends, so hurry up.",
+      "options": ["many", "much", "a few", "few"],
+      "correct": 1, "answer": "much",
+      "vi": "Không còn nhiều thời gian trước khi đợt giảm giá kết thúc, nên nhanh lên.",
+      "explanation": "<b>Time</b> is uncountable, so a negative sentence takes <b>much</b>; <b>many</b>, <b>a few</b> and <b>few</b> go with plural countable nouns."
+    },
+    {
+      "id": "gv-kc-03-22", "level": "kc", "focus": "gerund-infinitive",
+      "q": "Don't forget ______ your phone before the match; you'll want to take photos.",
+      "options": ["to charge", "charging", "charge", "to charging"],
+      "correct": 0, "answer": "to charge",
+      "vi": "Đừng quên sạc điện thoại trước trận đấu; cậu sẽ muốn chụp ảnh đấy.",
+      "explanation": "<b>Forget to do</b> refers to a task you need to do; <b>forget doing</b> means having no memory of something already done, and the bare form and 'to charging' are ungrammatical here."
+    },
+    {
+      "id": "gv-kc-03-23", "level": "kc", "focus": "linking",
+      "q": "The tickets were quite expensive; ______, the stadium was completely full.",
+      "options": ["therefore", "because", "although", "however"],
+      "correct": 3, "answer": "however",
+      "vi": "Vé khá đắt; tuy nhiên, sân vận động vẫn chật kín.",
+      "explanation": "Two contrasting ideas joined with a semicolon and a comma need the adverb <b>however</b>. <b>Therefore</b> shows result, and <b>because</b> and <b>although</b> are conjunctions that cannot sit between a semicolon and a comma."
+    },
+    {
+      "id": "gv-kc-03-24", "level": "kc", "focus": "conditional",
+      "q": "If I ______ so much on clothes last month, I could buy those trainers now.",
+      "options": ["didn't spend", "haven't spent", "hadn't spent", "wouldn't spend"],
+      "correct": 2, "answer": "hadn't spent",
+      "vi": "Nếu tháng trước tôi không tiêu quá nhiều vào quần áo thì bây giờ tôi đã có thể mua đôi giày thể thao đó.",
+      "explanation": "A mixed conditional: an unreal past condition (<b>last month</b>) takes the past perfect <b>hadn't spent</b>, with a present result (<b>could buy ... now</b>)."
+    },
+    {
+      "id": "gv-kc-03-25", "level": "kc", "focus": "inversion",
+      "q": "Only after the final whistle ______ how tired he was.",
+      "options": ["Nam realised", "did Nam realise", "Nam did realise", "realised Nam"],
+      "correct": 1, "answer": "did Nam realise",
+      "vi": "Chỉ sau tiếng còi kết thúc Nam mới nhận ra mình mệt đến thế nào.",
+      "explanation": "After <b>Only after ...</b> at the start of a sentence, the subject and auxiliary are inverted: <b>did Nam realise</b>."
+    }
+  ]
+}

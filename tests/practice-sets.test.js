@@ -1,5 +1,5 @@
-// practice-sets.test.js — the three PTNK-format practice menus on the exam
-// engine: 📖 Đọc hiểu, ✏️ Điền từ, 🔍 Tìm lỗi sai.
+// practice-sets.test.js — the four PTNK-format practice menus on the exam
+// engine: 📖 Đọc hiểu, ✏️ Điền từ, 🔍 Tìm lỗi sai, 🧩 Grammar & Vocabulary.
 //
 // Runs the real engine (js/exam.js) with STUB banks, so it does not depend on
 // the authored data having landed; tests/practice-data.test.js covers that.
@@ -49,6 +49,13 @@ const ERROR_ITEMS = [
   { id: 'er-kc-01-2', level: 'kc', focus: 'agreement', q: 'The (A) news (B) are (C) always (D) surprising.', options: ['news','are','always','surprising'], correct: 1, correction: 'is', explanation: 'news is uncountable' },
   { id: 'er-kc-01-3', level: 'kc', focus: 'article', q: 'He is (A) a (B) honest (C) man (D) indeed.', options: ['a','honest','man','indeed'], correct: 0, correction: 'an', explanation: 'vowel sound' },
   { id: 'er-ch-06-1', level: 'ch', focus: 'word-order', q: '(A) No sooner (B) he had left (C) than it (D) began to rain.', options: ['No sooner','he had left','than it','began to rain'], correct: 1, correction: 'had he left', explanation: 'inversion after No sooner' },
+];
+const GRAMMAR_VOCAB_ITEMS = [
+  { id: 'gv-kc-01-1', level: 'kc', focus: 'tense', q: 'By the time we arrived, the film ______.', options: ['started','has started','had started','was starting'], correct: 2, answer: 'had started', vi: 'Lúc bọn tớ tới thì phim đã bắt đầu rồi.', explanation: 'earlier past action: past perfect' },
+  { id: 'gv-kc-01-2', level: 'kc', focus: 'tense', q: 'She ______ tennis every Sunday.', options: ['plays','is playing','played','has played'], correct: 0, answer: 'plays', vi: 'Cô ấy chơi tennis mỗi chủ nhật.', explanation: 'habit: present simple' },
+  { id: 'gv-kc-01-3', level: 'kc', focus: 'preposition', q: 'He is good ______ maths.', options: ['in','at','on','for'], correct: 1, answer: 'at', vi: 'Cậu ấy giỏi toán.', explanation: 'good at' },
+  { id: 'gv-kc-01-4', level: 'kc', focus: 'modal', q: 'You ______ wear a helmet on a motorbike.', options: ['must','might','would','may'], correct: 0, answer: 'must', vi: 'Bạn phải đội mũ bảo hiểm khi đi xe máy.', explanation: 'obligation: must' },
+  { id: 'gv-ch-06-1', level: 'ch', focus: 'idiom', q: 'After the third loss he decided to ______.', options: ['cut his losses','bide his time','raise the stakes','burn his boats'], correct: 0, answer: 'cut his losses', vi: 'Sau lần thua thứ ba anh ấy quyết định dừng lại để tránh mất thêm.', explanation: 'cut your losses = stop before losing more' },
 ];`;
 
 function world(extra) {
@@ -83,9 +90,9 @@ function sit(ctx, perfect) {
 }
 
 suite('practice sets: three sets, three screens', () => {
-  test('reading, cloze and errors are registered with their own screens and history', () => {
+  test('reading, cloze, errors and grammarvocab are registered with their own screens and history', () => {
     const { ctx } = world();
-    for (const [set, screen] of [['reading', 'readingScreen'], ['cloze', 'clozeScreen'], ['errors', 'errorsScreen']]) {
+    for (const [set, screen] of [['reading', 'readingScreen'], ['cloze', 'clozeScreen'], ['errors', 'errorsScreen'], ['grammarvocab', 'grammarVocabScreen']]) {
       assert.truthy(ctx.__sets[set], set + ' not registered');
       assert.equal(ctx.__sets[set].screen, screen);
       assert.equal(ctx.__sets[set].coinsPerCorrect, 5, 'the English practice rate');
@@ -170,6 +177,61 @@ suite('practice sets: error rounds are drawn, and rebuilt from their id', () => 
     ctx.examSelectSet('errors');
     assert.equal(ctx.examLookup('er-round-kc:er-kc-99-9'), null);
     assert.equal(ctx.examLookup('nonsense'), null);
+  });
+});
+
+suite('practice sets: grammar & vocabulary rounds', () => {
+  test('a round draws one item per focus before a second of any focus', () => {
+    const { ctx } = world();
+    // Three focuses in the kc stub (tense ×2, preposition, modal): whatever the
+    // shuffle, the first three ids must cover all three focuses.
+    for (const seed of [0.1, 0.5, 0.9]) {
+      const ids = ctx.grammarVocabDraw('kc', () => seed);
+      assert.equal(ids.length, 4);
+      const focus = id => ctx.grammarVocabBank().find(it => it.id === id).focus;
+      assert.equal(new Set(ids.slice(0, 3).map(focus)).size, 3, 'first three cover every focus: ' + ids);
+    }
+    assert.deepEqual(ctx.grammarVocabDraw('ch'), ['gv-ch-06-1']);
+  });
+
+  test('startGrammarVocabRound opens a paper: focus label as the tag, Vietnamese under the explanation', () => {
+    const { ctx } = world();
+    ctx.startGrammarVocabRound('kc');
+    assert.truthy(ctx.isExamActive());
+    assert.equal(ctx.examCurrentSet(), 'grammarvocab');
+    const s = ctx.__state();
+    assert.truthy(/^gv-round-kc:gv-kc-01-\d(,gv-kc-01-\d)*$/.test(s.examId), s.examId);
+    assert.equal(s.questions.length, 4);
+    const q = s.questions.find(x => x.q.startsWith('He is good'));
+    assert.equal(q.section, 'Prepositions');
+    assert.truthy(q.explanation.includes('good at') && q.explanation.includes('<i>Cậu ấy giỏi toán.</i>'), q.explanation);
+    ctx.abandonExam();
+  });
+
+  test('the same id rebuilds the same round; an unknown id is null', () => {
+    const { ctx } = world();
+    ctx.examSelectSet('grammarvocab');
+    const paper = ctx.examLookup(ctx.grammarVocabRoundId('kc', ['gv-kc-01-3', 'gv-kc-01-1']));
+    assert.truthy(paper);
+    assert.deepEqual(paper.questions.map(q => q.correct), [1, 2]);
+    assert.equal(paper.durationMin, 10);
+    assert.equal(ctx.examLookup('gv-round-kc:gv-kc-99-9'), null);
+  });
+
+  test('a round records under grammarVocabHistory only, and a clean round unlocks Chuyên', () => {
+    const { ctx } = world();
+    assert.equal(ctx.practiceLevelFor('grammarVocabHistory'), 'kc');
+    ctx.startGrammarVocabRound('kc');
+    sit(ctx, true);
+    assert.equal(ctx.appState.grammarVocabHistory.length, 1);
+    assert.truthy(ctx.appState.grammarVocabHistory[0].examId.startsWith('gv-round-kc:'));
+    assert.equal(ctx.appState.coins, 4 * 5);
+    assert.falsy(ctx.appState.errorsHistory && ctx.appState.errorsHistory.length, 'errors history untouched');
+    assert.equal(ctx.practiceLevelFor('grammarVocabHistory'), 'ch');
+    ctx.startGrammarVocabPractice();
+    assert.truthy(ctx.__state().examId.startsWith('gv-round-ch:'), 'the next round must be Chuyên');
+    ctx.abandonExam();
+    assert.truthy(ctx.renderGrammarVocabHomeHTML().includes('startGrammarVocabPractice()'));
   });
 });
 
@@ -317,9 +379,9 @@ suite('practice sets: homes', () => {
 });
 
 suite('practice sets: wiring', () => {
-  test('three Learn cards, three screens, script after the engine', () => {
+  test('four Learn cards, four screens, script after the engine', () => {
     const html = read('index.html');
-    for (const s of ['readingScreen', 'clozeScreen', 'errorsScreen']) {
+    for (const s of ['readingScreen', 'clozeScreen', 'errorsScreen', 'grammarVocabScreen']) {
       assert.truthy(html.includes(`id="${s}"`), s + ' missing');
       assert.truthy(html.includes(`switchScreen('${s}')`), 'no Learn card for ' + s);
     }
@@ -331,11 +393,12 @@ suite('practice sets: wiring', () => {
     assert.deepEqual(lazy.SCREEN_FILES.readingScreen, ['js/reading-data.js']);
     assert.deepEqual(lazy.SCREEN_FILES.clozeScreen, ['js/cloze-data.js']);
     assert.deepEqual(lazy.SCREEN_FILES.errorsScreen, ['js/errors-data.js']);
+    assert.deepEqual(lazy.SCREEN_FILES.grammarVocabScreen, ['js/grammar-vocab-data.js']);
     const sw = read('sw.js');
-    for (const f of ['reading-data', 'cloze-data', 'errors-data']) assert.truthy(sw.includes(`'/js/${f}.js'`), f);
+    for (const f of ['reading-data', 'cloze-data', 'errors-data', 'grammar-vocab-data']) assert.truthy(sw.includes(`'/js/${f}.js'`), f);
     assert.truthy(sw.includes("'/js/practice-sets.js'"));
     const app = read('js/app.js');
-    for (const [s, fn] of [['readingScreen', 'renderReadingHome'], ['clozeScreen', 'renderClozeHome'], ['errorsScreen', 'renderErrorsHome']]) {
+    for (const [s, fn] of [['readingScreen', 'renderReadingHome'], ['clozeScreen', 'renderClozeHome'], ['errorsScreen', 'renderErrorsHome'], ['grammarVocabScreen', 'renderGrammarVocabHome']]) {
       assert.truthy(app.includes(`screenId === '${s}' && typeof ${fn} === 'function') ${fn}()`), s);
       assert.truthy(app.includes(`${s}: 'learn'`), s + ' nav group');
     }
@@ -344,10 +407,12 @@ suite('practice sets: wiring', () => {
   test('attempts upload as exam activities; the catalog offers every menu at both levels', () => {
     const auth = read('js/auth.js');
     // Literal `appState.<name>History`, the shape the drift guard greps for.
-    for (const k of ['readingHistory', 'clozeHistory', 'errorsHistory']) assert.truthy(auth.includes(`appState.${k}`), k + ' not uploaded');
+    for (const k of ['readingHistory', 'clozeHistory', 'errorsHistory', 'grammarVocabHistory']) assert.truthy(auth.includes(`appState.${k}`), k + ' not uploaded');
     const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
     const keys = Catalog.entries('ptnk-practice').map(e => e.key).sort();
-    assert.deepEqual(keys, ['cloze:any', 'cloze:ch', 'cloze:kc', 'errors:ch', 'errors:kc', 'reading:any', 'reading:ch', 'reading:kc']);
+    assert.deepEqual(keys, ['cloze:any', 'cloze:ch', 'cloze:kc', 'errors:ch', 'errors:kc', 'grammarvocab:ch', 'grammarvocab:kc', 'reading:any', 'reading:ch', 'reading:kc']);
+    assert.deepEqual(Catalog.get('grammarvocab:ch').go, { screen: 'grammarVocabScreen', calls: [['startGrammarVocabRound', 'ch']] });
+    assert.deepEqual(Catalog.get('grammarvocab:kc').path, ['Eng', 'Grammar & Vocabulary']);
     assert.deepEqual(Catalog.get('reading:ch').match, { detail: { field: 'examId', prefix: 'rd-ch-' } });
     assert.deepEqual(Catalog.get('errors:kc').go, { screen: 'errorsScreen', calls: [['startErrorsRound', 'kc']] });
   });

@@ -1,0 +1,281 @@
+{
+  "file": "29",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-29-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Years of broken promises have gradually ______ public confidence in the government's climate pledges.",
+      "options": ["collapsed", "eroded", "dissolved", "decayed"],
+      "correct": 1,
+      "answer": "eroded",
+      "vi": "Nhiều năm thất hứa đã dần dần bào mòn niềm tin của công chúng vào những cam kết khí hậu của chính phủ.",
+      "explanation": "<b>Erode</b> is the transitive verb for wearing something away gradually (erode confidence/trust/support). <b>Collapse</b> and <b>decay</b> are intransitive here, and <b>dissolve</b> is used of substances, partnerships or parliaments, not confidence."
+    },
+    {
+      "id": "gv-ch-29-2",
+      "level": "ch",
+      "focus": "tense",
+      "q": "By the end of this decade, the logistics firm ______ its entire delivery fleet with electric vehicles.",
+      "options": ["will replace", "has replaced", "will have replaced", "will be replacing"],
+      "correct": 2,
+      "answer": "will have replaced",
+      "vi": "Đến cuối thập kỷ này, công ty logistics sẽ thay thế xong toàn bộ đội xe giao hàng bằng xe điện.",
+      "explanation": "<b>By + a future time</b> marks a deadline before which the action will be complete, so the future perfect <b>will have replaced</b> is needed; the future continuous would describe an action still in progress at that point."
+    },
+    {
+      "id": "gv-ch-29-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "I hate to ______, but the grant you have been promised is far from guaranteed.",
+      "options": ["rain on your parade", "throw in the towel", "bite the bullet", "jump the gun"],
+      "correct": 0,
+      "answer": "rain on your parade",
+      "vi": "Tôi không muốn làm bạn mất hứng, nhưng khoản tài trợ mà bạn được hứa hẹn còn lâu mới chắc chắn.",
+      "explanation": "To <b>rain on someone's parade</b> is to spoil their excitement with unwelcome news, which is exactly what the speaker apologises for doing. <b>Throw in the towel</b> = give up, <b>bite the bullet</b> = face something unpleasant, <b>jump the gun</b> = act too soon."
+    },
+    {
+      "id": "gv-ch-29-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Rising sea levels ______ a grave threat to low-lying island nations such as the Maldives.",
+      "options": ["put", "place", "set", "pose"],
+      "correct": 3,
+      "answer": "pose",
+      "vi": "Mực nước biển dâng gây ra mối đe dọa nghiêm trọng cho các quốc đảo thấp như Maldives.",
+      "explanation": "The fixed collocation is <b>pose a threat / a risk / a danger</b>. Put, place and set are not used with <b>threat</b> in this sense."
+    },
+    {
+      "id": "gv-ch-29-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The documentary ______ fresh anger over the dumping of toxic waste near the village.",
+      "options": ["brought up", "took up", "stirred up", "set up"],
+      "correct": 2,
+      "answer": "stirred up",
+      "vi": "Bộ phim tài liệu đã khơi dậy làn sóng phẫn nộ mới về việc đổ chất thải độc hại gần ngôi làng.",
+      "explanation": "<b>Stir up</b> means to provoke strong feelings or trouble (stir up anger/resentment/controversy). <b>Bring up</b> = mention, <b>take up</b> = start a hobby or occupy space, <b>set up</b> = establish."
+    },
+    {
+      "id": "gv-ch-29-6",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The samples ______ contaminated in the laboratory; they were sealed the moment they were collected.",
+      "options": ["mustn't have been", "can't have been", "needn't have been", "shouldn't have been"],
+      "correct": 1,
+      "answer": "can't have been",
+      "vi": "Các mẫu không thể nào bị nhiễm bẩn trong phòng thí nghiệm được; chúng đã được niêm phong ngay lúc thu thập.",
+      "explanation": "A confident deduction that something was <b>impossible</b> in the past uses <b>can't have + past participle</b>. <b>Mustn't have</b> is not used for deduction, <b>needn't have</b> = it was unnecessary, and <b>shouldn't have</b> = it was wrong to do so."
+    },
+    {
+      "id": "gv-ch-29-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The appeal court ______ the original verdict, rejecting all three grounds of appeal.",
+      "options": ["sustained", "retained", "preserved", "upheld"],
+      "correct": 3,
+      "answer": "upheld",
+      "vi": "Tòa phúc thẩm giữ nguyên phán quyết ban đầu, bác bỏ cả ba căn cứ kháng cáo.",
+      "explanation": "A court <b>upholds</b> a verdict, ruling or decision when it confirms it on appeal. <b>Sustain</b> is used of objections in court, while <b>retain</b> and <b>preserve</b> describe keeping objects or conditions, not confirming a legal decision."
+    },
+    {
+      "id": "gv-ch-29-8",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ did the new tram line cut journey times across the city, but it also reduced traffic on the ring road by a fifth.",
+      "options": ["Not only", "Hardly", "Only after", "Not until"],
+      "correct": 0,
+      "answer": "Not only",
+      "vi": "Tuyến tàu điện mới không những rút ngắn thời gian đi lại trong thành phố mà còn giảm một phần năm lượng xe cộ trên đường vành đai.",
+      "explanation": "The second half <b>but it also reduced</b> demands the pairing <b>Not only … but also</b>, with inversion (did the tram line cut) after the fronted negative. <b>Hardly</b> pairs with <b>when</b>, and <b>Not until</b> / <b>Only after</b> need a time phrase or clause before the inverted verb."
+    },
+    {
+      "id": "gv-ch-29-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Junior staff are often reluctant to ______ by questioning decisions made higher up.",
+      "options": ["spill the beans", "break the ice", "rock the boat", "hold the fort"],
+      "correct": 2,
+      "answer": "rock the boat",
+      "vi": "Nhân viên cấp dưới thường ngại gây xáo trộn bằng cách chất vấn những quyết định từ cấp trên.",
+      "explanation": "To <b>rock the boat</b> is to disturb a stable situation by challenging it, which fits questioning senior decisions. <b>Spill the beans</b> = reveal a secret, <b>break the ice</b> = ease first meetings, <b>hold the fort</b> = take charge while others are away."
+    },
+    {
+      "id": "gv-ch-29-10",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The missing funds uncovered so far are only the ______ of the ______; investigators believe far more was diverted.",
+      "options": ["tip / iceberg", "top / mountain", "edge / cliff", "peak / glacier"],
+      "correct": 0,
+      "answer": "tip / iceberg",
+      "vi": "Số tiền thất thoát được phát hiện cho đến nay chỉ là phần nổi của tảng băng chìm; các điều tra viên tin rằng còn nhiều hơn thế đã bị chuyển đi.",
+      "explanation": "<b>The tip of the iceberg</b> is the small visible part of a much larger hidden problem. The other pairs are made-up variations that do not exist as idioms."
+    },
+    {
+      "id": "gv-ch-29-11",
+      "level": "ch",
+      "focus": "relative",
+      "q": "The researchers, most of ______ had spent years in the Arctic, warned that the ice was thinning faster than predicted.",
+      "options": ["which", "whom", "them", "whose"],
+      "correct": 1,
+      "answer": "whom",
+      "vi": "Các nhà nghiên cứu, mà phần lớn trong số họ đã dành nhiều năm ở Bắc Cực, cảnh báo rằng băng đang mỏng đi nhanh hơn dự đoán.",
+      "explanation": "After a quantifier + <b>of</b> in a non-defining relative clause, people take <b>whom</b> (most of whom, many of whom). <b>Which</b> is for things, <b>them</b> cannot introduce a relative clause, and <b>whose</b> needs a following noun."
+    },
+    {
+      "id": "gv-ch-29-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The report ______ that roughly a third of the region's wells are contaminated with pesticides.",
+      "options": ["assesses", "evaluates", "appraises", "estimates"],
+      "correct": 3,
+      "answer": "estimates",
+      "vi": "Báo cáo ước tính rằng khoảng một phần ba số giếng trong khu vực bị nhiễm thuốc trừ sâu.",
+      "explanation": "<b>Estimate</b> means to give an approximate figure and takes a <b>that</b>-clause. <b>Assess</b>, <b>evaluate</b> and <b>appraise</b> mean to judge the quality or value of something and take a direct object, not a clause with a rough number."
+    },
+    {
+      "id": "gv-ch-29-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The airline ______ a loss of forty million dollars in the final quarter of the year.",
+      "options": ["posted", "noted", "marked", "scored"],
+      "correct": 0,
+      "answer": "posted",
+      "vi": "Hãng hàng không ghi nhận khoản lỗ bốn mươi triệu đô la trong quý cuối năm.",
+      "explanation": "In financial news a company <b>posts</b> a profit or a loss, meaning it reports it officially. Note, mark and score do not collocate with <b>a loss</b> in this sense."
+    },
+    {
+      "id": "gv-ch-29-14",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The auditor recommended that the foundation ______ an independent trustee before the next funding round.",
+      "options": ["appoints", "appointed", "would appoint", "appoint"],
+      "correct": 3,
+      "answer": "appoint",
+      "vi": "Kiểm toán viên khuyến nghị quỹ bổ nhiệm một ủy viên quản trị độc lập trước vòng tài trợ tiếp theo.",
+      "explanation": "After <b>recommend / suggest / insist that</b>, the that-clause takes the base-form subjunctive: <b>that the foundation appoint</b>, with no -s, no past tense and no would."
+    },
+    {
+      "id": "gv-ch-29-15",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "By unveiling its own electric van a day early, the rival firm ______ at the trade fair.",
+      "options": ["pulled the company's leg", "stole the company's thunder", "twisted the company's arm", "got the company's goat"],
+      "correct": 1,
+      "answer": "stole the company's thunder",
+      "vi": "Bằng cách ra mắt chiếc xe tải điện của mình sớm một ngày, hãng đối thủ đã cướp mất sự chú ý của công ty tại hội chợ thương mại.",
+      "explanation": "To <b>steal someone's thunder</b> is to take the attention or praise they expected by acting first. <b>Pull someone's leg</b> = tease, <b>twist someone's arm</b> = pressure them, <b>get someone's goat</b> = annoy them."
+    },
+    {
+      "id": "gv-ch-29-16",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ generous the pension scheme may seem, few employees stay long enough to benefit from it.",
+      "options": ["Whatever", "No matter", "However", "Although"],
+      "correct": 2,
+      "answer": "However",
+      "vi": "Dù chương trình hưu trí có vẻ hào phóng đến đâu, ít nhân viên ở lại đủ lâu để được hưởng lợi từ nó.",
+      "explanation": "Before an adjective, the concessive form is <b>However + adjective + subject + verb</b>. <b>No matter</b> would need <b>how</b>, <b>Whatever</b> is followed by a noun, and <b>Although</b> introduces a full clause, not an adjective."
+    },
+    {
+      "id": "gv-ch-29-17",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Before accepting the overseas posting, she wanted to ______ the decision with her family.",
+      "options": ["talk back", "talk down", "talk into", "talk over"],
+      "correct": 3,
+      "answer": "talk over",
+      "vi": "Trước khi nhận nhiệm vụ ở nước ngoài, cô ấy muốn bàn bạc kỹ quyết định đó với gia đình.",
+      "explanation": "<b>Talk something over (with someone)</b> means to discuss it thoroughly before deciding. <b>Talk back</b> = answer rudely, <b>talk down (to)</b> = speak condescendingly, and <b>talk someone into</b> needs a person as its object."
+    },
+    {
+      "id": "gv-ch-29-18",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Several studies have ______ a direct link between air pollution and premature births.",
+      "options": ["founded", "established", "instituted", "formulated"],
+      "correct": 1,
+      "answer": "established",
+      "vi": "Nhiều nghiên cứu đã xác lập được mối liên hệ trực tiếp giữa ô nhiễm không khí và sinh non.",
+      "explanation": "Research <b>establishes</b> a link, a fact or a connection, meaning it proves it. <b>Found</b> is for organisations, <b>institute</b> for systems or procedures, and <b>formulate</b> for plans or theories."
+    },
+    {
+      "id": "gv-ch-29-19",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "______ for the anonymous donation, the hospice would have closed last winter.",
+      "options": ["Were it not", "If it were not", "Had it not been", "Unless it were"],
+      "correct": 2,
+      "answer": "Had it not been",
+      "vi": "Nếu không nhờ khoản quyên góp ẩn danh, nhà chăm sóc cuối đời đã phải đóng cửa vào mùa đông năm ngoái.",
+      "explanation": "The result clause <b>would have closed</b> refers to the past, so the condition must be the third-conditional form <b>Had it not been for</b>. <b>Were it not for</b> / <b>If it were not for</b> describe a present situation, and <b>unless</b> is not used with this pattern."
+    },
+    {
+      "id": "gv-ch-29-20",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ how little rain has fallen this year, the region's reservoirs are in surprisingly good shape.",
+      "options": ["Considered", "To consider", "Considering", "Having considered"],
+      "correct": 2,
+      "answer": "Considering",
+      "vi": "Xét đến việc năm nay mưa quá ít, các hồ chứa của khu vực đang ở trong tình trạng tốt đến bất ngờ.",
+      "explanation": "<b>Considering (how / that / + noun)</b> is a fixed participle used like a preposition, meaning taking into account, and it needs no subject of its own. <b>Considered</b> is passive and would make the reservoirs the thing considered, while <b>Having considered</b> and <b>To consider</b> would require the reservoirs to do the considering."
+    },
+    {
+      "id": "gv-ch-29-21",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Figures released by the lobby group should be ______, since it is funded by the very industry it defends.",
+      "options": ["swept under the carpet", "kept under wraps", "taken with a pinch of salt", "put on the back burner"],
+      "correct": 2,
+      "answer": "taken with a pinch of salt",
+      "vi": "Những số liệu do nhóm vận động hành lang công bố nên được tiếp nhận một cách dè dặt, vì nhóm này được tài trợ bởi chính ngành mà nó bênh vực.",
+      "explanation": "To <b>take something with a pinch of salt</b> is to doubt whether it is fully accurate, which fits figures from a biased source. <b>Sweep under the carpet</b> = hide a problem, <b>keep under wraps</b> = keep secret, <b>put on the back burner</b> = postpone."
+    },
+    {
+      "id": "gv-ch-29-22",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "After a decade in banking, she has finally got used ______ far less than her former colleagues.",
+      "options": ["to earning", "to earn", "earning", "for earning"],
+      "correct": 0,
+      "answer": "to earning",
+      "vi": "Sau một thập kỷ làm trong ngành ngân hàng, cuối cùng cô ấy đã quen với việc kiếm được ít hơn nhiều so với các đồng nghiệp cũ.",
+      "explanation": "In <b>be/get used to</b>, <b>to</b> is a preposition and is followed by an <b>-ing</b> form: <b>get used to earning</b>. <b>Used to + infinitive</b> describes a past habit, a different structure."
+    },
+    {
+      "id": "gv-ch-29-23",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "The foundation has agreed to ______ on the running costs of the shelter ______ the council pays for the repairs.",
+      "options": ["put / unless", "bring / in case", "carry / whereas", "take / provided"],
+      "correct": 3,
+      "answer": "take / provided",
+      "vi": "Quỹ đã đồng ý gánh vác chi phí vận hành của nhà tạm trú với điều kiện hội đồng thành phố chi trả cho việc sửa chữa.",
+      "explanation": "<b>Take on</b> means to accept a responsibility or cost, and <b>provided (that)</b> means on condition that. Put on, bring on and carry on do not mean accept a burden, and unless / in case / whereas give the wrong logical link."
+    },
+    {
+      "id": "gv-ch-29-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The retraining scheme ______ of three phases, the first of which begins next spring.",
+      "options": ["consists", "comprises", "composes", "constitutes"],
+      "correct": 0,
+      "answer": "consists",
+      "vi": "Chương trình đào tạo lại gồm ba giai đoạn, giai đoạn đầu tiên bắt đầu vào mùa xuân tới.",
+      "explanation": "Only <b>consist</b> takes <b>of</b>: the scheme consists of three phases. <b>Comprise</b> takes a direct object with no preposition, while <b>compose</b> and <b>constitute</b> work the other way round (three phases constitute the scheme)."
+    },
+    {
+      "id": "gv-ch-29-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Small manufacturers often struggle to ______ the strict new emissions standards.",
+      "options": ["reach", "meet", "fill", "match"],
+      "correct": 1,
+      "answer": "meet",
+      "vi": "Các nhà sản xuất nhỏ thường chật vật để đáp ứng các tiêu chuẩn khí thải nghiêm ngặt mới.",
+      "explanation": "The collocation is <b>meet standards / requirements / targets</b>, meaning to satisfy them. Reach, fill and match are not used with <b>standards</b> in this sense."
+    }
+  ]
+}

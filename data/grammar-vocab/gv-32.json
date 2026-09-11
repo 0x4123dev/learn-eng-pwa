@@ -1,0 +1,406 @@
+{
+  "file": "32",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-32-1",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Many long-term backpackers pride themselves on being ______, stretching a modest budget over months on the road without ever feeling deprived.",
+      "options": [
+        "thrifty",
+        "stingy",
+        "miserly",
+        "tight-fisted"
+      ],
+      "correct": 0,
+      "answer": "thrifty",
+      "vi": "Nhiều người đi du lịch bụi dài ngày tự hào vì mình tiết kiệm, kéo dài một ngân sách khiêm tốn qua nhiều tháng trên đường mà chưa bao giờ thấy thiếu thốn.",
+      "explanation": "<b>Thrifty</b> is the approving word for someone who spends carefully, so it fits <b>pride themselves on</b>. <b>Stingy</b>, <b>miserly</b> and <b>tight-fisted</b> all mean meanly unwilling to spend and are insults, not points of pride."
+    },
+    {
+      "id": "gv-ch-32-2",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "When the exhibition's visitor figures were queried, it was the junior curator who was left to ______, although every decision had been taken far above her.",
+      "options": [
+        "carry the day",
+        "carry the can",
+        "carry the torch",
+        "carry the weight"
+      ],
+      "correct": 1,
+      "answer": "carry the can",
+      "vi": "Khi số liệu khách tham quan của triển lãm bị chất vấn, chính cô phụ trách trưng bày trẻ tuổi phải đứng ra gánh trách nhiệm, dù mọi quyết định đều do cấp trên đưa ra.",
+      "explanation": "<b>Carry the can</b> = take the blame for something others did. <b>Carry the day</b> = win, <b>carry the torch</b> = keep a cause alive, and <b>carry the weight</b> is not an idiom of blame."
+    },
+    {
+      "id": "gv-ch-32-3",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Under mounting pressure from residents, the council has ______ strict limits on the number of cruise ships allowed to dock each day.",
+      "options": [
+        "installed",
+        "inflicted",
+        "imposed",
+        "instilled"
+      ],
+      "correct": 2,
+      "answer": "imposed",
+      "vi": "Trước sức ép ngày càng lớn từ cư dân, hội đồng thành phố đã áp đặt giới hạn nghiêm ngặt về số tàu du lịch được phép cập cảng mỗi ngày.",
+      "explanation": "You <b>impose</b> limits, rules or taxes. <b>Inflict</b> goes with damage or pain, <b>instil</b> with values or fear, and <b>install</b> with equipment or software."
+    },
+    {
+      "id": "gv-ch-32-4",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Visitors from a single neighbouring country ______ nearly half of all overnight stays recorded in the province last year.",
+      "options": [
+        "answer for",
+        "allow for",
+        "stand for",
+        "account for"
+      ],
+      "correct": 3,
+      "answer": "account for",
+      "vi": "Du khách từ một nước láng giềng duy nhất chiếm gần một nửa tổng số đêm lưu trú được ghi nhận ở tỉnh này năm ngoái.",
+      "explanation": "<b>Account for</b> = make up a stated share of a total. <b>Answer for</b> = be responsible for a fault, <b>allow for</b> = take into consideration, <b>stand for</b> = represent."
+    },
+    {
+      "id": "gv-ch-32-5",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "Only when the last tour bus has pulled away ______ the village square return to its usual silence.",
+      "options": [
+        "does",
+        "do",
+        "did",
+        "has"
+      ],
+      "correct": 0,
+      "answer": "does",
+      "vi": "Chỉ khi chiếc xe du lịch cuối cùng đã rời đi, quảng trường làng mới trở lại sự tĩnh lặng thường ngày.",
+      "explanation": "After a fronted <b>Only when…</b> clause the main clause inverts with an auxiliary: <b>does the square return</b>. The subject is singular (not <b>do</b>), the habit is present (not <b>did</b>), and <b>has</b> would need a past participle."
+    },
+    {
+      "id": "gv-ch-32-6",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Reviewers described the resort's manager as ______, brushing aside complaints about the flooded rooms with a shrug and a joke.",
+      "options": [
+        "impartial",
+        "disinterested",
+        "indifferent",
+        "unbiased"
+      ],
+      "correct": 2,
+      "answer": "indifferent",
+      "vi": "Người đánh giá mô tả quản lý khu nghỉ dưỡng là kẻ thờ ơ, gạt phăng những lời phàn nàn về các phòng bị ngập bằng cái nhún vai và một câu đùa.",
+      "explanation": "<b>Indifferent</b> = not caring at all, which matches the shrug. <b>Impartial</b>, <b>unbiased</b> and <b>disinterested</b> all mean fair and not favouring either side, a quality, not a fault."
+    },
+    {
+      "id": "gv-ch-32-7",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The tribunal recommended that the operator ______ every guide in emergency first aid before the trekking season resumes.",
+      "options": [
+        "trains",
+        "train",
+        "trained",
+        "would train"
+      ],
+      "correct": 1,
+      "answer": "train",
+      "vi": "Hội đồng xét xử khuyến nghị nhà điều hành đào tạo sơ cứu khẩn cấp cho mọi hướng dẫn viên trước khi mùa leo núi bắt đầu lại.",
+      "explanation": "After <b>recommend / suggest / insist that</b> the verb takes the base-form subjunctive: <b>that the operator train</b>. Neither <b>-s</b>, past tense nor <b>would</b> belongs in this clause."
+    },
+    {
+      "id": "gv-ch-32-8",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Scholars who explain the missing layer by an earthquake that no chronicle records are merely ______, the reviewer argued.",
+      "options": [
+        "splitting hairs",
+        "beating about the bush",
+        "sitting on the fence",
+        "clutching at straws"
+      ],
+      "correct": 3,
+      "answer": "clutching at straws",
+      "vi": "Những học giả giải thích tầng địa chất bị thiếu bằng một trận động đất mà không biên niên sử nào ghi lại chỉ đang bám víu vào hy vọng mong manh, nhà phê bình lập luận.",
+      "explanation": "<b>Clutch at straws</b> = rely on a hopeless explanation because nothing better is available. <b>Split hairs</b> = argue over tiny details, <b>beat about the bush</b> = avoid the point, <b>sit on the fence</b> = refuse to take sides."
+    },
+    {
+      "id": "gv-ch-32-9",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Reluctant to ______ corners on safety, the operator insisted that every raft ______ inspected before the river reopened to tourists.",
+      "options": [
+        "clip / be",
+        "cut / be",
+        "cut / to be",
+        "trim / being"
+      ],
+      "correct": 1,
+      "answer": "cut / be",
+      "vi": "Không muốn làm ẩu về an toàn, nhà điều hành yêu cầu mọi chiếc bè phải được kiểm tra trước khi con sông mở cửa lại cho du khách.",
+      "explanation": "The idiom is <b>cut corners</b> = do something cheaply and carelessly; <b>clip</b> and <b>trim</b> do not form it. <b>Insisted that</b> takes the base-form subjunctive <b>be inspected</b>, not <b>to be</b> or <b>being</b>."
+    },
+    {
+      "id": "gv-ch-32-10",
+      "level": "ch",
+      "focus": "linking",
+      "q": "______ the lure of overseas travel, most trips taken in the region are still to places within three hours' drive of home.",
+      "options": [
+        "Notwithstanding",
+        "Nevertheless",
+        "Whereas",
+        "Albeit"
+      ],
+      "correct": 0,
+      "answer": "Notwithstanding",
+      "vi": "Bất chấp sức hút của du lịch nước ngoài, phần lớn các chuyến đi trong khu vực vẫn là tới những nơi cách nhà không quá ba giờ lái xe.",
+      "explanation": "<b>Notwithstanding</b> is a preposition (= despite) and can be followed by a noun phrase. <b>Nevertheless</b> is an adverb, <b>whereas</b> needs a full clause, and <b>albeit</b> introduces a reduced clause or adjective, not a noun."
+    },
+    {
+      "id": "gv-ch-32-11",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The dig director was ______ to a fault, insisting that every shard be photographed in place before anyone lifted it.",
+      "options": [
+        "unscrupulous",
+        "sceptical",
+        "secretive",
+        "scrupulous"
+      ],
+      "correct": 3,
+      "answer": "scrupulous",
+      "vi": "Người chỉ đạo khai quật cẩn trọng đến mức thái quá, yêu cầu mọi mảnh gốm phải được chụp ảnh tại chỗ trước khi ai đó nhấc lên.",
+      "explanation": "<b>Scrupulous</b> = extremely careful and exact, which the photographing rule illustrates. <b>Unscrupulous</b> is the opposite (without morals), <b>sceptical</b> = doubting, <b>secretive</b> = hiding things."
+    },
+    {
+      "id": "gv-ch-32-12",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The pottery ______ locally, since its clay contains minerals found nowhere in the valley.",
+      "options": [
+        "needn't have been made",
+        "mustn't have been made",
+        "can't have been made",
+        "shouldn't have been made"
+      ],
+      "correct": 2,
+      "answer": "can't have been made",
+      "vi": "Số gốm này không thể được làm tại địa phương, vì đất sét của nó chứa những khoáng chất không hề có trong thung lũng.",
+      "explanation": "<b>Can't have + past participle</b> expresses a confident deduction that something was impossible. <b>Needn't have</b> = it was unnecessary, <b>shouldn't have</b> = it was wrong, and <b>mustn't have</b> is not used for deduction."
+    },
+    {
+      "id": "gv-ch-32-13",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The traveller's timeline simply does not ______: she claims to have crossed the border twice in a single afternoon.",
+      "options": [
+        "add on",
+        "add up",
+        "add in",
+        "sum up"
+      ],
+      "correct": 1,
+      "answer": "add up",
+      "vi": "Mốc thời gian của nữ du khách đơn giản là không hợp lý: cô ta khai đã qua biên giới hai lần chỉ trong một buổi chiều.",
+      "explanation": "<b>Add up</b> (intransitive) = make sense, be consistent. <b>Add on</b> and <b>add in</b> mean include something extra, and <b>sum up</b> = summarise."
+    },
+    {
+      "id": "gv-ch-32-14",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The hoard of foreign coins ______ new light on trade routes that no written source ever mentions.",
+      "options": [
+        "sheds",
+        "pours",
+        "spreads",
+        "spills"
+      ],
+      "correct": 0,
+      "answer": "sheds",
+      "vi": "Kho tiền xu nước ngoài đã làm sáng tỏ thêm những tuyến thương mại mà không tài liệu thành văn nào từng nhắc tới.",
+      "explanation": "The fixed collocation is <b>shed light on</b> = make something clearer. <b>Pour</b>, <b>spread</b> and <b>spill</b> do not combine with <b>light on</b> in this sense."
+    },
+    {
+      "id": "gv-ch-32-15",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Tension over overcrowding on the island finally ______ last August, when residents blockaded the ferry terminal.",
+      "options": [
+        "came to light",
+        "came to grief",
+        "came to a head",
+        "came to nothing"
+      ],
+      "correct": 2,
+      "answer": "came to a head",
+      "vi": "Căng thẳng về tình trạng quá tải trên đảo cuối cùng đã lên đến đỉnh điểm vào tháng Tám năm ngoái, khi cư dân phong toả bến phà.",
+      "explanation": "<b>Come to a head</b> = reach a crisis point demanding action. <b>Come to light</b> = become known, <b>come to grief</b> = fail or have an accident, <b>come to nothing</b> = produce no result."
+    },
+    {
+      "id": "gv-ch-32-16",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ twice about the unstable slope, the mining company nevertheless pressed ahead with blasting directly beneath the village.",
+      "options": [
+        "Having warned",
+        "Warning",
+        "Being warned",
+        "Having been warned"
+      ],
+      "correct": 3,
+      "answer": "Having been warned",
+      "vi": "Dù đã hai lần bị cảnh báo về sườn dốc không ổn định, công ty khai mỏ vẫn tiếp tục cho nổ mìn ngay bên dưới ngôi làng.",
+      "explanation": "The company received the warnings, and it did so before it pressed ahead, so the perfect passive participle <b>Having been warned</b> is needed. <b>Having warned</b> and <b>Warning</b> would make the company give the warning, and <b>Being warned</b> does not show the warnings came first."
+    },
+    {
+      "id": "gv-ch-32-17",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Psychologists find that ______ colleagues, who voice the objections others keep to themselves, are often valued more than they are liked.",
+      "options": [
+        "outspoken",
+        "outstanding",
+        "outgoing",
+        "outlandish"
+      ],
+      "correct": 0,
+      "answer": "outspoken",
+      "vi": "Các nhà tâm lý học nhận thấy những đồng nghiệp thẳng thắn, người nói ra những phản đối mà người khác giữ trong lòng, thường được coi trọng hơn là được yêu mến.",
+      "explanation": "<b>Outspoken</b> = saying frankly what you think, which the relative clause defines. <b>Outstanding</b> = excellent, <b>outgoing</b> = sociable, <b>outlandish</b> = bizarre."
+    },
+    {
+      "id": "gv-ch-32-18",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "It is high time the ministry ______ how many visitors the caves can safely absorb in a day.",
+      "options": [
+        "decides",
+        "decided",
+        "decide",
+        "will decide"
+      ],
+      "correct": 1,
+      "answer": "decided",
+      "vi": "Đã đến lúc bộ phải quyết định các hang động có thể tiếp nhận an toàn bao nhiêu du khách mỗi ngày.",
+      "explanation": "<b>It is high time + past subjunctive</b>: the past form <b>decided</b> refers to the present and shows the action is overdue. Present, base form and <b>will</b> are all wrong after <b>high time</b>."
+    },
+    {
+      "id": "gv-ch-32-19",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "After one bad experience, the group would sooner ______ the night on the bus than trust another roadside hotel.",
+      "options": [
+        "spending",
+        "to spend",
+        "spend",
+        "spent"
+      ],
+      "correct": 2,
+      "answer": "spend",
+      "vi": "Sau một trải nghiệm tồi tệ, cả nhóm thà qua đêm trên xe còn hơn tin thêm một khách sạn ven đường nào nữa.",
+      "explanation": "<b>Would sooner / would rather</b> is followed by the bare infinitive: <b>would sooner spend</b>. The <b>-ing</b>, <b>to</b> and past forms are all wrong here."
+    },
+    {
+      "id": "gv-ch-32-20",
+      "level": "ch",
+      "focus": "article-quantifier",
+      "q": "______ evidence survives of the ancient harbour suggests that it silted up within a single century.",
+      "options": [
+        "The few",
+        "A little",
+        "Little of",
+        "What little"
+      ],
+      "correct": 3,
+      "answer": "What little",
+      "vi": "Chút ít bằng chứng còn sót lại về thương cảng cổ cho thấy nó đã bị bồi lấp chỉ trong vòng một thế kỷ.",
+      "explanation": "<b>What little evidence survives</b> = the small amount that survives, and the whole phrase is the subject of <b>suggests</b>. <b>Evidence</b> is uncountable (not <b>the few</b>), <b>a little evidence survives</b> leaves <b>suggests</b> without a subject, and <b>little of</b> needs <b>the</b>."
+    },
+    {
+      "id": "gv-ch-32-21",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Guides will cheerfully embellish a castle's ghost story, but most ______ inventing a massacre that never took place.",
+      "options": [
+        "draw the line at",
+        "draw a veil over",
+        "draw a bead on",
+        "draw a blank on"
+      ],
+      "correct": 0,
+      "answer": "draw the line at",
+      "vi": "Hướng dẫn viên sẵn sàng thêu dệt chuyện ma ở lâu đài, nhưng phần lớn dứt khoát không bịa ra một vụ thảm sát chưa từng xảy ra.",
+      "explanation": "<b>Draw the line at</b> = refuse to go as far as something. <b>Draw a veil over</b> = keep something quiet, <b>draw a bead on</b> = aim at, <b>draw a blank</b> = fail to find or remember."
+    },
+    {
+      "id": "gv-ch-32-22",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ the volunteer divers who map the reef every spring, nobody would know how quickly the coral is disappearing.",
+      "options": [
+        "Had it not been for",
+        "Should it not be for",
+        "Were it not for",
+        "Were it not"
+      ],
+      "correct": 2,
+      "answer": "Were it not for",
+      "vi": "Nếu không có những thợ lặn tình nguyện lập bản đồ rạn san hô mỗi mùa xuân, sẽ chẳng ai biết san hô đang biến mất nhanh đến mức nào.",
+      "explanation": "<b>Were it not for + noun</b> is the inverted form of <b>If it were not for</b>, and the present result <b>nobody would know</b> shows a present unreal condition. <b>Had it not been for</b> pairs with a past result (<b>would have</b>), <b>Should it not be for</b> is not an English pattern, and <b>Were it not</b> lacks the <b>for</b> that the noun requires."
+    },
+    {
+      "id": "gv-ch-32-23",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Later digs ______ her hunch: a second gateway was found exactly ______ she had predicted it would be.",
+      "options": [
+        "bore up / where",
+        "bore out / where",
+        "bore out / which",
+        "bore with / that"
+      ],
+      "correct": 1,
+      "answer": "bore out / where",
+      "vi": "Những đợt khai quật sau đó đã chứng thực linh cảm của bà: cổng thứ hai được tìm thấy đúng nơi bà đã dự đoán.",
+      "explanation": "<b>Bear out</b> = confirm, support (a theory or claim); <b>bear up</b> = stay strong, <b>bear with</b> = be patient with. The second blank needs the place word <b>where</b>, not <b>which</b> or <b>that</b>."
+    },
+    {
+      "id": "gv-ch-32-24",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "The chronicle portrays the emperor as a ______ ruler who taxed his provinces into ruin to pay for a single palace.",
+      "options": [
+        "proficient",
+        "profound",
+        "prolific",
+        "profligate"
+      ],
+      "correct": 3,
+      "answer": "profligate",
+      "vi": "Biên niên sử khắc hoạ vị hoàng đế như một kẻ hoang phí, đánh thuế các tỉnh đến kiệt quệ chỉ để xây một cung điện.",
+      "explanation": "<b>Profligate</b> = recklessly wasteful with money, exactly what the palace shows. <b>Proficient</b> = skilled, <b>profound</b> = deep, <b>prolific</b> = producing a lot."
+    },
+    {
+      "id": "gv-ch-32-25",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Although they hold no formal office, the island's fishing cooperatives still ______ considerable influence over how the marine reserve is policed.",
+      "options": [
+        "brandish",
+        "wield",
+        "flex",
+        "swing"
+      ],
+      "correct": 1,
+      "answer": "wield",
+      "vi": "Dù không nắm giữ chức vụ chính thức nào, các hợp tác xã ngư dân trên đảo vẫn có ảnh hưởng đáng kể tới cách khu bảo tồn biển được giám sát.",
+      "explanation": "The fixed collocation is <b>wield influence / power</b>. <b>Brandish</b> goes with a weapon, <b>flex</b> with muscles, and <b>swing</b> with a bat or an axe; none of them takes <b>influence</b>."
+    }
+  ]
+}

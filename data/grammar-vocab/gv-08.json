@@ -1,0 +1,406 @@
+{
+  "file": "08",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-08-1",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Our class ______ shows that we have PE right after lunch on Mondays.",
+      "options": [
+        "timetable",
+        "register",
+        "diary",
+        "agenda"
+      ],
+      "correct": 0,
+      "answer": "timetable",
+      "vi": "Thời khóa biểu của lớp mình cho thấy thứ Hai có tiết Thể dục ngay sau giờ ăn trưa.",
+      "explanation": "A <b>timetable</b> lists when each lesson happens. A <b>register</b> records who is present, a <b>diary</b> is personal, and an <b>agenda</b> is the list of points for a meeting."
+    },
+    {
+      "id": "gv-kc-08-2",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Lan ______ most of her pocket money on comic books and film magazines.",
+      "options": [
+        "pays",
+        "spends",
+        "costs",
+        "uses"
+      ],
+      "correct": 1,
+      "answer": "spends",
+      "vi": "Lan tiêu phần lớn tiền tiêu vặt vào truyện tranh và tạp chí điện ảnh.",
+      "explanation": "We <b>spend money on</b> something. <b>Pay</b> takes <b>for</b>, <b>cost</b> needs the thing as its subject, and <b>use money on</b> is not a natural collocation."
+    },
+    {
+      "id": "gv-kc-08-3",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By next Friday, Lan ______ all her exam revision, so she can join the camping trip.",
+      "options": [
+        "finishes",
+        "will finish",
+        "will have finished",
+        "has finished"
+      ],
+      "correct": 2,
+      "answer": "will have finished",
+      "vi": "Đến thứ Sáu tuần sau, Lan sẽ ôn thi xong hết nên có thể tham gia chuyến cắm trại.",
+      "explanation": "<b>By + a future time</b> marks an action that will be complete before that point, so we use the future perfect: <b>will have finished</b>. <b>Will finish</b> only says it happens in the future, and the present forms cannot follow <b>by next Friday</b>."
+    },
+    {
+      "id": "gv-kc-08-4",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "The new coach is strict: any player who refuses to ______ will be dropped from the team.",
+      "options": [
+        "cross the line",
+        "draw the line",
+        "hold the line",
+        "toe the line"
+      ],
+      "correct": 3,
+      "answer": "toe the line",
+      "vi": "Huấn luyện viên mới rất nghiêm: cầu thủ nào không chịu tuân thủ kỷ luật sẽ bị loại khỏi đội.",
+      "explanation": "<b>Toe the line</b> means to obey the rules. <b>Cross the line</b> is to go too far, <b>draw the line</b> is to set a limit, and <b>hold the line</b> is to keep a position."
+    },
+    {
+      "id": "gv-kc-08-5",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "The doctor told Nam to ______ sweets and fizzy drinks before the big race.",
+      "options": [
+        "cut down on",
+        "cut off",
+        "cut up",
+        "cut across"
+      ],
+      "correct": 0,
+      "answer": "cut down on",
+      "vi": "Bác sĩ bảo Nam giảm bớt kẹo và nước ngọt có ga trước cuộc đua lớn.",
+      "explanation": "<b>Cut down on</b> means to reduce the amount of something you eat or use. <b>Cut off</b> means to disconnect, <b>cut up</b> means to chop, and <b>cut across</b> means to take a short way through."
+    },
+    {
+      "id": "gv-kc-08-6",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Lan got full ______ in the music quiz because she knew every song.",
+      "options": [
+        "degrees",
+        "grades",
+        "marks",
+        "levels"
+      ],
+      "correct": 2,
+      "answer": "marks",
+      "vi": "Lan được điểm tối đa trong cuộc thi đố vui âm nhạc vì bạn ấy biết hết mọi bài hát.",
+      "explanation": "<b>Full marks</b> is the fixed phrase for the highest possible score. <b>Grades</b> are letters like A or B, a <b>degree</b> is a university qualification, and <b>levels</b> are stages."
+    },
+    {
+      "id": "gv-kc-08-7",
+      "level": "kc",
+      "focus": "modal",
+      "q": "Nam ______ have bought the concert tickets yet — the box office doesn't open until ten.",
+      "options": [
+        "mustn't",
+        "can't",
+        "needn't",
+        "shouldn't"
+      ],
+      "correct": 1,
+      "answer": "can't",
+      "vi": "Nam không thể nào đã mua vé buổi hòa nhạc được — quầy vé mười giờ mới mở cửa mà.",
+      "explanation": "<b>Can't have + past participle</b> says that something was impossible in the past. <b>Needn't have</b> and <b>shouldn't have</b> describe things that actually happened, and <b>mustn't have</b> is not used for deduction."
+    },
+    {
+      "id": "gv-kc-08-8",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Nam ______ two goals in the final, so his team won the school cup.",
+      "options": [
+        "made",
+        "hit",
+        "won",
+        "scored"
+      ],
+      "correct": 3,
+      "answer": "scored",
+      "vi": "Nam ghi hai bàn trong trận chung kết nên đội của cậu ấy giành cúp của trường.",
+      "explanation": "In football you <b>score a goal</b>. You <b>win</b> a match or a cup, not a goal, and <b>make</b> and <b>hit</b> do not collocate with <b>goal</b>."
+    },
+    {
+      "id": "gv-kc-08-9",
+      "level": "kc",
+      "focus": "relative",
+      "q": "Nam told his mother everything ______ had happened at the football match.",
+      "options": [
+        "who",
+        "which",
+        "that",
+        "what"
+      ],
+      "correct": 2,
+      "answer": "that",
+      "vi": "Nam kể cho mẹ nghe mọi chuyện đã xảy ra ở trận bóng đá.",
+      "explanation": "After <b>everything</b>, <b>all</b> and superlatives, the relative pronoun is <b>that</b>. <b>What</b> cannot follow a noun it refers back to, <b>who</b> is for people, and <b>which</b> is not used after <b>everything</b>."
+    },
+    {
+      "id": "gv-kc-08-10",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Lan has to ______ two chapters of history tonight, so she can't come to the cinema.",
+      "options": [
+        "rehearse",
+        "remind",
+        "revise",
+        "repeat"
+      ],
+      "correct": 2,
+      "answer": "revise",
+      "vi": "Tối nay Lan phải ôn lại hai chương lịch sử nên không đi xem phim được.",
+      "explanation": "<b>Revise</b> means to study something again before a test. <b>Rehearse</b> is for practising a performance, <b>remind</b> needs a person as its object, and <b>repeat</b> means to say or do again."
+    },
+    {
+      "id": "gv-kc-08-11",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "There were very ______ people at the early screening, so we got the best seats.",
+      "options": [
+        "few",
+        "little",
+        "a few",
+        "a little"
+      ],
+      "correct": 0,
+      "answer": "few",
+      "vi": "Có rất ít người ở suất chiếu sớm nên bọn mình được ngồi chỗ đẹp nhất.",
+      "explanation": "<b>People</b> is countable, so we use <b>few</b>; <b>little</b> goes with uncountable nouns. <b>Very</b> cannot come before <b>a few</b> or <b>a little</b>."
+    },
+    {
+      "id": "gv-kc-08-12",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Since Nam started spending every evening at the game arcade, he ______ in maths.",
+      "options": [
+        "falls behind",
+        "fell behind",
+        "has fallen behind",
+        "had fallen behind"
+      ],
+      "correct": 2,
+      "answer": "has fallen behind",
+      "vi": "Từ khi Nam bắt đầu tối nào cũng ở tiệm game, cậu ấy đã bị tụt lại môn toán.",
+      "explanation": "<b>Since + a past starting point</b> describes a situation that began in the past and continues now, so the main clause takes the present perfect: <b>has fallen behind</b>."
+    },
+    {
+      "id": "gv-kc-08-13",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "Nam remembers ______ his wallet on the shop counter, but now it isn't there.",
+      "options": [
+        "to leave",
+        "leaving",
+        "leave",
+        "left"
+      ],
+      "correct": 1,
+      "answer": "leaving",
+      "vi": "Nam nhớ là đã để ví trên quầy cửa hàng, nhưng giờ nó không còn ở đó nữa.",
+      "explanation": "<b>Remember + -ing</b> refers to a memory of something that happened. <b>Remember + to-infinitive</b> means not forgetting to do a future action."
+    },
+    {
+      "id": "gv-kc-08-14",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "I didn't want to go to the concert, but Lan ______ and I ended up buying a ticket.",
+      "options": [
+        "pulled my leg",
+        "caught my eye",
+        "twisted my arm",
+        "held my hand"
+      ],
+      "correct": 2,
+      "answer": "twisted my arm",
+      "vi": "Tôi không muốn đi xem hòa nhạc, nhưng Lan cứ nài ép nên cuối cùng tôi cũng mua vé.",
+      "explanation": "<b>Twist someone's arm</b> means to persuade someone to do something they don't want to do. <b>Pull someone's leg</b> is to joke, <b>catch someone's eye</b> is to attract attention, and <b>hold someone's hand</b> is to support them closely."
+    },
+    {
+      "id": "gv-kc-08-15",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Set your alarm tonight; ______, you will miss the early bus to the museum.",
+      "options": [
+        "otherwise",
+        "therefore",
+        "besides",
+        "although"
+      ],
+      "correct": 0,
+      "answer": "otherwise",
+      "vi": "Tối nay nhớ đặt báo thức, nếu không bạn sẽ lỡ chuyến xe buýt sớm đi bảo tàng.",
+      "explanation": "<b>Otherwise</b> means 'if you don't do that': no alarm, so you miss the bus. <b>Therefore</b> shows a result, <b>besides</b> adds a point, and <b>although</b> introduces a contrast clause, not a separate sentence."
+    },
+    {
+      "id": "gv-kc-08-16",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "The school ______ ends next week, so the swimming pool will be full of students.",
+      "options": [
+        "period",
+        "break",
+        "lesson",
+        "term"
+      ],
+      "correct": 3,
+      "answer": "term",
+      "vi": "Học kỳ sắp kết thúc vào tuần tới nên bể bơi sẽ đầy học sinh.",
+      "explanation": "A <b>term</b> is one of the parts a school year is divided into. A <b>period</b> or <b>lesson</b> lasts under an hour, and a <b>break</b> is the time between lessons."
+    },
+    {
+      "id": "gv-kc-08-17",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "The bookshop has ______ plastic bags, so remember to bring your own.",
+      "options": [
+        "done up",
+        "done away with",
+        "done without",
+        "done in"
+      ],
+      "correct": 1,
+      "answer": "done away with",
+      "vi": "Hiệu sách đã bỏ hẳn túi ni lông, nên nhớ mang túi của mình theo.",
+      "explanation": "<b>Do away with</b> means to get rid of or stop using something. <b>Do up</b> means to fasten or repair, <b>do without</b> means to manage without, and <b>do in</b> means to exhaust."
+    },
+    {
+      "id": "gv-kc-08-18",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If I ______ more pocket money, I would buy that second-hand guitar.",
+      "options": [
+        "have",
+        "had",
+        "would have",
+        "have had"
+      ],
+      "correct": 1,
+      "answer": "had",
+      "vi": "Nếu tôi có nhiều tiền tiêu vặt hơn, tôi sẽ mua cây đàn ghi-ta cũ đó.",
+      "explanation": "A second conditional (unreal present) takes the past simple in the if-clause and <b>would + verb</b> in the main clause: <b>If I had</b>… I would buy."
+    },
+    {
+      "id": "gv-kc-08-19",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Lan ______ chess with her grandfather every Sunday afternoon.",
+      "options": [
+        "plays",
+        "does",
+        "goes",
+        "makes"
+      ],
+      "correct": 0,
+      "answer": "plays",
+      "vi": "Chiều Chủ nhật nào Lan cũng chơi cờ vua với ông.",
+      "explanation": "We <b>play</b> games like chess and football. <b>Do</b> goes with activities like yoga or homework, <b>go</b> with -ing sports like swimming, and <b>make</b> does not collocate with games."
+    },
+    {
+      "id": "gv-kc-08-20",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "Either Nam or his sister ______ going to buy the tickets this afternoon.",
+      "options": [
+        "are",
+        "am",
+        "be",
+        "is"
+      ],
+      "correct": 3,
+      "answer": "is",
+      "vi": "Hoặc Nam hoặc chị của cậu ấy sẽ đi mua vé chiều nay.",
+      "explanation": "With <b>either… or</b>, the verb agrees with the nearer subject, <b>his sister</b>, so it is singular: <b>is</b>."
+    },
+    {
+      "id": "gv-kc-08-21",
+      "level": "kc",
+      "focus": "participle",
+      "q": "The novel ______ by our English teacher turned out to be much funnier than I expected.",
+      "options": [
+        "recommending",
+        "to recommend",
+        "recommend",
+        "recommended"
+      ],
+      "correct": 3,
+      "answer": "recommended",
+      "vi": "Cuốn tiểu thuyết được cô giáo tiếng Anh giới thiệu hóa ra vui hơn tôi tưởng nhiều.",
+      "explanation": "A past participle replaces a passive relative clause: the novel <b>(which was) recommended</b> by our teacher. The -ing form would mean the novel itself was recommending something."
+    },
+    {
+      "id": "gv-kc-08-22",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Nam can't go to football practice tonight because he has too much ______ to finish.",
+      "options": [
+        "classwork",
+        "housework",
+        "homework",
+        "paperwork"
+      ],
+      "correct": 2,
+      "answer": "homework",
+      "vi": "Tối nay Nam không đi tập bóng đá được vì có quá nhiều bài tập về nhà phải làm.",
+      "explanation": "<b>Homework</b> is school work done at home. <b>Classwork</b> is done in class, <b>housework</b> is cleaning and cooking, and <b>paperwork</b> is office forms and documents."
+    },
+    {
+      "id": "gv-kc-08-23",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "Nam and Lan often lend ______ their favourite comic books.",
+      "options": [
+        "each other",
+        "themselves",
+        "ourselves",
+        "yourselves"
+      ],
+      "correct": 0,
+      "answer": "each other",
+      "vi": "Nam và Lan thường cho nhau mượn những cuốn truyện tranh yêu thích.",
+      "explanation": "<b>Each other</b> shows that Nam lends to Lan and Lan lends to Nam. <b>Themselves</b> would mean each lends to himself or herself, and <b>ourselves</b> / <b>yourselves</b> do not match the subject."
+    },
+    {
+      "id": "gv-kc-08-24",
+      "level": "kc",
+      "focus": "question-tag",
+      "q": "Let's watch the new animated film on Saturday, ______?",
+      "options": [
+        "will we",
+        "do we",
+        "don't we",
+        "shall we"
+      ],
+      "correct": 3,
+      "answer": "shall we",
+      "vi": "Thứ Bảy mình đi xem bộ phim hoạt hình mới nhé?",
+      "explanation": "A suggestion with <b>Let's</b> takes the tag <b>shall we</b>. <b>Will you</b> follows an imperative, and <b>do / don't we</b> follow present simple statements."
+    },
+    {
+      "id": "gv-kc-08-25",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Nam ______ a comic book in bed when the lights suddenly went out.",
+      "options": [
+        "has read",
+        "was reading",
+        "reads",
+        "has been reading"
+      ],
+      "correct": 1,
+      "answer": "was reading",
+      "vi": "Nam đang đọc truyện tranh trên giường thì đèn bỗng nhiên tắt.",
+      "explanation": "A longer action in progress (<b>was reading</b>) is interrupted by a short past action (the lights went out): past continuous + past simple."
+    }
+  ]
+}

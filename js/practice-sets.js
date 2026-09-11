@@ -3,12 +3,17 @@
 //   📖 Đọc hiểu      readingScreen   js/reading-data.js  (READING_PASSAGES)
 //   ✏️ Điền từ        clozeScreen     js/cloze-data.js    (CLOZE_PASSAGES)
 //   🔍 Tìm lỗi sai    errorsScreen    js/errors-data.js   (ERROR_ITEMS)
+//   🧩 Grammar & Vocabulary  grammarVocabScreen  js/grammar-vocab-data.js (GRAMMAR_VOCAB_ITEMS)
 //
 // Why these three exist: a review of the eleven real PTNK papers against the
 // practice menus found that reading comprehension (24% of a Không chuyên
 // paper, 18% of Chuyên), passage-level cloze / open cloze (10% / 29%) and
 // error identification (8% / 4%) were trained by nothing in the app. Every
-// other section had a menu. These are the gaps, in size order.
+// other section had a menu. These are the gaps, in size order. The fourth,
+// Grammar & Vocabulary, came after the Chuyên tiers: the paper's "Language
+// use" section — one sentence, one blank, four options, every focus mixed —
+// is the largest section of both papers (23% / 31%), and Grammar, Phrases
+// and Collocation each drilled one slice of it, never the mix.
 //
 // Why they run on js/exam.js rather than on three new quiz engines: the
 // engine already draws a passage above a question, grades mcq / tf / text,
@@ -27,8 +32,11 @@
 const PRACTICE_COINS_PER_CORRECT = 5;   // the rate every English practice tab pays
 const PRACTICE_HISTORY_CAP = 100;
 const ERRORS_ROUND_SIZE = 10;
+// Fifteen: a Không chuyên paper sets 11–20 of these, Chuyên 30–50; a round
+// should feel like a paper's section without becoming the whole paper.
+const GRAMMAR_VOCAB_ROUND_SIZE = 15;
 // Minutes: enough to read carefully, short enough to stay a practice.
-const PRACTICE_MINUTES = { reading: { kc: 10, ch: 15 }, cloze: { kc: 8, ch: 10 }, errors: { kc: 8, ch: 8 } };
+const PRACTICE_MINUTES = { reading: { kc: 10, ch: 15 }, cloze: { kc: 8, ch: 10 }, errors: { kc: 8, ch: 8 }, grammarvocab: { kc: 10, ch: 12 } };
 
 function practiceLevelLabel(level) { return level === 'ch' ? 'Chuyên' : 'Không chuyên'; }
 function practiceEsc(s) {
@@ -50,6 +58,7 @@ function practiceHistory(key) {
     if (key === 'readingHistory') { if (!Array.isArray(appState.readingHistory)) appState.readingHistory = []; return appState.readingHistory; }
     if (key === 'clozeHistory') { if (!Array.isArray(appState.clozeHistory)) appState.clozeHistory = []; return appState.clozeHistory; }
     if (key === 'errorsHistory') { if (!Array.isArray(appState.errorsHistory)) appState.errorsHistory = []; return appState.errorsHistory; }
+    if (key === 'grammarVocabHistory') { if (!Array.isArray(appState.grammarVocabHistory)) appState.grammarVocabHistory = []; return appState.grammarVocabHistory; }
     return [];
 }
 function practiceSaveHistory(key, list) {
@@ -57,6 +66,7 @@ function practiceSaveHistory(key, list) {
     if (key === 'readingHistory') appState.readingHistory = list;
     else if (key === 'clozeHistory') appState.clozeHistory = list;
     else if (key === 'errorsHistory') appState.errorsHistory = list;
+    else if (key === 'grammarVocabHistory') appState.grammarVocabHistory = list;
     else return false;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
         try { saveUserData(currentUser, appState); } catch (e) { return false; }
@@ -73,6 +83,7 @@ function practiceBest(key, examId) {
 function readingBank() { return (typeof READING_PASSAGES !== 'undefined' && Array.isArray(READING_PASSAGES)) ? READING_PASSAGES : []; }
 function clozeBank() { return (typeof CLOZE_PASSAGES !== 'undefined' && Array.isArray(CLOZE_PASSAGES)) ? CLOZE_PASSAGES : []; }
 function errorsBank() { return (typeof ERROR_ITEMS !== 'undefined' && Array.isArray(ERROR_ITEMS)) ? ERROR_ITEMS : []; }
+function grammarVocabBank() { return (typeof GRAMMAR_VOCAB_ITEMS !== 'undefined' && Array.isArray(GRAMMAR_VOCAB_ITEMS)) ? GRAMMAR_VOCAB_ITEMS : []; }
 
 const READING_KIND_LABEL = {
     'main-idea': 'Main idea', detail: 'Detail', inference: 'Inference', vocab: 'Vocabulary',
@@ -142,6 +153,56 @@ function errorsLookup(examId) {
     return errorsPaperFromIds(m[1], m[2].split(',').filter(Boolean));
 }
 
+// A Grammar & Vocabulary round: the same id-carrying shape as an error round.
+// The draw is stratified by focus — one item per focus first, then the rest
+// at random — so a round mixes tenses, idioms, phrasal verbs and the rest the
+// way the paper's section does, rather than landing five tense items in a
+// row from a bank where tense is the largest focus.
+const GRAMMAR_VOCAB_FOCUS_LABEL = {
+    tense: 'Tenses', modal: 'Modal verbs', conditional: 'Conditionals & wishes', passive: 'Passive voice',
+    reported: 'Reported speech', relative: 'Relative clauses', 'article-quantifier': 'Articles & quantifiers',
+    preposition: 'Prepositions', 'phrasal-verb': 'Phrasal verbs', idiom: 'Idioms', collocation: 'Collocations',
+    'word-choice': 'Word choice', linking: 'Linking words', comparison: 'Comparison',
+    'gerund-infinitive': 'Gerund or infinitive', inversion: 'Inversion', subjunctive: 'Subjunctive',
+    participle: 'Participle clauses', agreement: 'Subject–verb agreement', pronoun: 'Pronouns',
+    'question-tag': 'Question tags', 'double-blank': 'Two blanks', other: 'Language use',
+};
+function grammarVocabRoundId(level, ids) { return 'gv-round-' + level + ':' + ids.join(','); }
+function grammarVocabDraw(level, rand) {
+    const r = rand || Math.random;
+    const pool = grammarVocabBank().filter(it => it && it.level === level).slice();
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(r() * (i + 1));
+        const t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    const seenFocus = new Set(), first = [], rest = [];
+    for (const it of pool) {
+        if (seenFocus.has(it.focus)) rest.push(it); else { seenFocus.add(it.focus); first.push(it); }
+    }
+    return first.concat(rest).slice(0, GRAMMAR_VOCAB_ROUND_SIZE).map(it => it.id);
+}
+function grammarVocabPaperFromIds(level, ids) {
+    const byId = new Map(grammarVocabBank().map(it => [it.id, it]));
+    const items = ids.map(id => byId.get(id)).filter(Boolean);
+    if (!items.length) return null;
+    return {
+        id: grammarVocabRoundId(level, ids),
+        title: 'Grammar & Vocabulary · ' + practiceLevelLabel(level),
+        subtitle: items.length + ' sentences · choose the option that fits the blank',
+        durationMin: PRACTICE_MINUTES.grammarvocab[level] || 10,
+        questions: items.map((it, i) => ({
+            n: i + 1, type: 'mcq', section: GRAMMAR_VOCAB_FOCUS_LABEL[it.focus] || 'Language use',
+            q: it.q, options: it.options, correct: it.correct,
+            explanation: it.explanation + (it.vi ? '<br><i>' + practiceEsc(it.vi) + '</i>' : ''),
+        })),
+    };
+}
+function grammarVocabLookup(examId) {
+    const m = /^gv-round-(kc|ch):(.+)$/.exec(String(examId || ''));
+    if (!m) return null;
+    return grammarVocabPaperFromIds(m[1], m[2].split(',').filter(Boolean));
+}
+
 // ---- the three sets ------------------------------------------------------------
 function practiceSet(key, screen, lookup, home) {
     return {
@@ -164,6 +225,7 @@ if (typeof EXAM_SETS !== 'undefined') {
     EXAM_SETS.cloze = practiceSet('clozeHistory', 'clozeScreen',
         (id) => clozePaper(clozeBank().find(p => p && p.id === id)), () => renderClozeHome());
     EXAM_SETS.errors = practiceSet('errorsHistory', 'errorsScreen', errorsLookup, () => renderErrorsHome());
+    EXAM_SETS.grammarvocab = practiceSet('grammarVocabHistory', 'grammarVocabScreen', grammarVocabLookup, () => renderGrammarVocabHome());
 }
 
 // ---- which item next --------------------------------------------------------------
@@ -179,7 +241,7 @@ function practiceAcedIds(key) {
 }
 function practiceLevelFor(key, aced) {
     const set = aced || practiceAcedIds(key);
-    for (const id of set) if (/^(rd|cl)-kc-|^er-round-kc/.test(id)) return 'ch';
+    for (const id of set) if (/^(rd|cl)-kc-|^(er|gv)-round-kc/.test(id)) return 'ch';
     return 'kc';
 }
 function practicePick(items, key, rand) {
@@ -213,6 +275,9 @@ function startErrorsPractice() {
     // 10/10 Không chuyên round in the history moves the child up.
     startErrorsRound(practiceLevelFor('errorsHistory'));
 }
+function startGrammarVocabPractice() {
+    startGrammarVocabRound(practiceLevelFor('grammarVocabHistory'));
+}
 
 // ---- starting ----------------------------------------------------------------------
 // Each pins its set first: a daily-task deep link lands here cold.
@@ -224,6 +289,12 @@ function startErrorsRound(level) {
     if (!ids.length) return;
     // No confirm: a ten-item round is short, and "Bắt đầu" was the tap.
     if (typeof startExam === 'function') startExam(errorsRoundId(lv, ids), 'errors');
+}
+function startGrammarVocabRound(level) {
+    const lv = level === 'ch' ? 'ch' : 'kc';
+    const ids = grammarVocabDraw(lv);
+    if (!ids.length) return;
+    if (typeof startExam === 'function') startExam(grammarVocabRoundId(lv, ids), 'grammarvocab');
 }
 
 // ---- home screens --------------------------------------------------------------------
@@ -295,6 +366,18 @@ function renderErrorsHomeHTML() {
     });
 }
 
+function renderGrammarVocabHomeHTML() {
+    const bank = grammarVocabBank();
+    if (!bank.length) return practiceEmptyHTML('grammar and vocabulary items');
+    const level = practiceLevelFor('grammarVocabHistory');
+    const n = bank.filter(it => it.level === level).length;
+    return practiceHomeHTML({
+        set: 'grammarvocab', key: 'grammarVocabHistory', items: bank, icon: '🧩', title: 'Grammar & Vocabulary', start: 'startGrammarVocabPractice',
+        blurb: 'One sentence, one blank, four options — tenses, modals, idioms, phrasal verbs, collocations and word choice, mixed the way an exam mixes them',
+        unit: (_, lv) => `${GRAMMAR_VOCAB_ROUND_SIZE} random sentences from ${n} · ${PRACTICE_MINUTES.grammarvocab[lv]} min`,
+    });
+}
+
 function practiceRenderHome(setId, screenId, html) {
     if (typeof examSelectSet === 'function') examSelectSet(setId);
     const screen = (typeof document !== 'undefined') ? document.getElementById(screenId) : null;
@@ -305,17 +388,20 @@ function practiceRenderHome(setId, screenId, html) {
 function renderReadingHome() { practiceRenderHome('reading', 'readingScreen', renderReadingHomeHTML()); }
 function renderClozeHome() { practiceRenderHome('cloze', 'clozeScreen', renderClozeHomeHTML()); }
 function renderErrorsHome() { practiceRenderHome('errors', 'errorsScreen', renderErrorsHomeHTML()); }
+function renderGrammarVocabHome() { practiceRenderHome('grammarvocab', 'grammarVocabScreen', renderGrammarVocabHomeHTML()); }
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        PRACTICE_COINS_PER_CORRECT, PRACTICE_HISTORY_CAP, ERRORS_ROUND_SIZE, PRACTICE_MINUTES, READING_KIND_LABEL,
-        readingBank, clozeBank, errorsBank, readingPaper, clozePaper,
+        PRACTICE_COINS_PER_CORRECT, PRACTICE_HISTORY_CAP, ERRORS_ROUND_SIZE, GRAMMAR_VOCAB_ROUND_SIZE, PRACTICE_MINUTES, READING_KIND_LABEL,
+        GRAMMAR_VOCAB_FOCUS_LABEL,
+        readingBank, clozeBank, errorsBank, grammarVocabBank, readingPaper, clozePaper,
         errorsRoundId, errorsDraw, errorsPaperFromIds, errorsLookup,
+        grammarVocabRoundId, grammarVocabDraw, grammarVocabPaperFromIds, grammarVocabLookup,
         practiceHistory, practiceSaveHistory, practiceBest,
-        startReadingPassage, startClozePassage, startErrorsRound,
-        practiceAcedIds, practiceLevelFor, practicePick, startReadingPractice, startClozePractice, startErrorsPractice,
+        startReadingPassage, startClozePassage, startErrorsRound, startGrammarVocabRound,
+        practiceAcedIds, practiceLevelFor, practicePick, startReadingPractice, startClozePractice, startErrorsPractice, startGrammarVocabPractice,
         practiceHomeHTML,
-        renderReadingHomeHTML, renderClozeHomeHTML, renderErrorsHomeHTML,
-        renderReadingHome, renderClozeHome, renderErrorsHome, practiceLevelLabel, practiceEsc,
+        renderReadingHomeHTML, renderClozeHomeHTML, renderErrorsHomeHTML, renderGrammarVocabHomeHTML,
+        renderReadingHome, renderClozeHome, renderErrorsHome, renderGrammarVocabHome, practiceLevelLabel, practiceEsc,
     };
 }

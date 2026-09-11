@@ -1,0 +1,406 @@
+{
+  "file": "17",
+  "level": "ch",
+  "items": [
+    {
+      "id": "gv-ch-17-1",
+      "level": "ch",
+      "focus": "tense",
+      "q": "By the end of this decade, the carmaker ______ more than half of its plants to fully automated lines.",
+      "options": [
+        "has converted",
+        "will convert",
+        "is converting",
+        "will have converted"
+      ],
+      "correct": 3,
+      "answer": "will have converted",
+      "vi": "Đến cuối thập kỷ này, hãng xe sẽ chuyển đổi xong hơn một nửa số nhà máy của mình sang dây chuyền hoàn toàn tự động.",
+      "explanation": "<b>By the end of this decade</b> marks a future deadline before which the action will be complete, so the future perfect <b>will have converted</b> is needed; the present perfect and present continuous describe the present, and the plain future ignores the deadline."
+    },
+    {
+      "id": "gv-ch-17-2",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "In an effort to curb obesity, the government has decided to ______ a levy on sugary drinks from next April.",
+      "options": [
+        "inflict",
+        "impose",
+        "impart",
+        "install"
+      ],
+      "correct": 1,
+      "answer": "impose",
+      "vi": "Nhằm kiềm chế béo phì, chính phủ đã quyết định áp một khoản thuế lên đồ uống có đường từ tháng Tư năm sau.",
+      "explanation": "A government <b>imposes</b> a tax, levy or ban. You <b>inflict</b> pain or damage, <b>impart</b> knowledge or a flavour, and <b>install</b> equipment or software."
+    },
+    {
+      "id": "gv-ch-17-3",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "If the shares keep sliding, you may be wiser to ______ now than to wait years for a recovery that may never come.",
+      "options": [
+        "cut corners",
+        "cut a long story short",
+        "cut your losses",
+        "cut your teeth"
+      ],
+      "correct": 2,
+      "answer": "cut your losses",
+      "vi": "Nếu cổ phiếu tiếp tục trượt giá, có lẽ bạn nên cắt lỗ ngay bây giờ thay vì chờ đợi nhiều năm cho một sự phục hồi có thể chẳng bao giờ đến.",
+      "explanation": "To <b>cut your losses</b> is to abandon a failing venture before it costs you more. <b>Cut corners</b> means to do something cheaply or carelessly, <b>cut a long story short</b> introduces a summary, and <b>cut your teeth</b> means to gain first experience."
+    },
+    {
+      "id": "gv-ch-17-4",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Regulators must ______ a balance between protecting consumers and leaving room for innovation in the fintech sector.",
+      "options": [
+        "strike",
+        "hit",
+        "beat",
+        "knock"
+      ],
+      "correct": 0,
+      "answer": "strike",
+      "vi": "Các cơ quan quản lý phải tìm được sự cân bằng giữa việc bảo vệ người tiêu dùng và tạo dư địa cho đổi mới trong lĩnh vực công nghệ tài chính.",
+      "explanation": "The fixed collocation is <b>strike a balance</b> (also strike a deal, strike a chord). <b>Hit</b>, <b>beat</b> and <b>knock</b> share the sense of striking but never combine with <b>balance</b>."
+    },
+    {
+      "id": "gv-ch-17-5",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "Once the outcry over the product recall had ______, the company quietly relaunched the toy under a new name.",
+      "options": [
+        "died out",
+        "died away",
+        "died down",
+        "died off"
+      ],
+      "correct": 2,
+      "answer": "died down",
+      "vi": "Khi làn sóng phẫn nộ về vụ thu hồi sản phẩm đã lắng xuống, công ty lặng lẽ tung lại món đồ chơi dưới một cái tên mới.",
+      "explanation": "Anger, excitement or controversy <b>dies down</b> (becomes less intense). <b>Die out</b> is to disappear completely like a species, <b>die away</b> is used of a sound fading, and <b>die off</b> means to die one after another."
+    },
+    {
+      "id": "gv-ch-17-6",
+      "level": "ch",
+      "focus": "relative",
+      "q": "The economist ______ forecasts the ministry relied on has admitted that her model ignored energy prices entirely.",
+      "options": [
+        "whom",
+        "which",
+        "whose",
+        "that"
+      ],
+      "correct": 2,
+      "answer": "whose",
+      "vi": "Nhà kinh tế có các dự báo mà bộ đã dựa vào thừa nhận rằng mô hình của bà hoàn toàn bỏ qua giá năng lượng.",
+      "explanation": "The forecasts belong to the economist, so the possessive relative <b>whose</b> is required before the noun <b>forecasts</b>; <b>whom</b>, <b>which</b> and <b>that</b> cannot show possession."
+    },
+    {
+      "id": "gv-ch-17-7",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Several hospitals have ______ a strict no-visitor policy during the flu season to protect vulnerable patients.",
+      "options": [
+        "adapted",
+        "adjusted",
+        "accommodated",
+        "adopted"
+      ],
+      "correct": 3,
+      "answer": "adopted",
+      "vi": "Nhiều bệnh viện đã áp dụng chính sách cấm thăm bệnh nghiêm ngặt trong mùa cúm để bảo vệ những bệnh nhân dễ tổn thương.",
+      "explanation": "To <b>adopt</b> a policy is to start using it. <b>Adapt</b> and <b>adjust</b> mean to modify something that already exists, and <b>accommodate</b> means to make room for or satisfy someone's needs."
+    },
+    {
+      "id": "gv-ch-17-8",
+      "level": "ch",
+      "focus": "inversion",
+      "q": "______ had the central bank cut interest rates than the currency began to slide against the dollar.",
+      "options": [
+        "Hardly",
+        "No sooner",
+        "Scarcely",
+        "Not until"
+      ],
+      "correct": 1,
+      "answer": "No sooner",
+      "vi": "Ngân hàng trung ương vừa mới cắt giảm lãi suất thì đồng nội tệ đã bắt đầu trượt giá so với đô la.",
+      "explanation": "The second clause begins with <b>than</b>, which pairs only with <b>No sooner</b> (+ inverted past perfect). <b>Hardly</b> and <b>Scarcely</b> pair with <b>when</b>, and <b>Not until</b> would need a different structure."
+    },
+    {
+      "id": "gv-ch-17-9",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Before signing up for any 'free' trial, shoppers should always ______, since a monthly fee usually kicks in after thirty days.",
+      "options": [
+        "read between the lines",
+        "read the fine print",
+        "read the riot act",
+        "read them like a book"
+      ],
+      "correct": 1,
+      "answer": "read the fine print",
+      "vi": "Trước khi đăng ký bất kỳ gói dùng thử 'miễn phí' nào, người mua nên luôn đọc kỹ các điều khoản in nhỏ, vì thường sau ba mươi ngày sẽ bắt đầu bị tính phí hằng tháng.",
+      "explanation": "To <b>read the fine print</b> is to check the small, easily missed conditions of a contract. <b>Read between the lines</b> means to infer a hidden meaning, <b>read the riot act</b> means to reprimand someone sharply, and <b>read someone like a book</b> means to understand their thoughts easily."
+    },
+    {
+      "id": "gv-ch-17-10",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Tracking down the so-called miracle cure turned out to be a wild ______ chase that ______ the family thousands of dollars.",
+      "options": [
+        "duck / charged",
+        "fox / paid",
+        "goose / cost",
+        "hare / spent"
+      ],
+      "correct": 2,
+      "answer": "goose / cost",
+      "vi": "Việc săn lùng cái gọi là thần dược hóa ra là một cuộc truy tìm vô vọng khiến gia đình tốn hàng nghìn đô la.",
+      "explanation": "The idiom for a hopeless search is <b>a wild goose chase</b>, and something that makes you lose money <b>costs</b> you that amount. A chase cannot <b>charge</b>, <b>pay</b> or <b>spend</b> money on someone's behalf."
+    },
+    {
+      "id": "gv-ch-17-11",
+      "level": "ch",
+      "focus": "modal",
+      "q": "The patient ______ the medication as prescribed — his blood tests show no trace of it whatsoever.",
+      "options": [
+        "shouldn't have taken",
+        "needn't have taken",
+        "must have taken",
+        "can't have taken"
+      ],
+      "correct": 3,
+      "answer": "can't have taken",
+      "vi": "Bệnh nhân không thể nào đã uống thuốc theo đơn — xét nghiệm máu của anh ta không cho thấy chút dấu vết nào của thuốc.",
+      "explanation": "The blood tests make it logically impossible that he took the drug, and a confident negative deduction about the past is <b>can't have</b> + past participle. <b>Shouldn't have</b> criticises, <b>needn't have</b> says it was unnecessary, and <b>must have</b> would assert the opposite of what the evidence shows."
+    },
+    {
+      "id": "gv-ch-17-12",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Researchers ______ a large-scale trial across twelve countries to test whether the vaccine protects adults over seventy.",
+      "options": [
+        "conducted",
+        "directed",
+        "governed",
+        "steered"
+      ],
+      "correct": 0,
+      "answer": "conducted",
+      "vi": "Các nhà nghiên cứu đã tiến hành một thử nghiệm quy mô lớn tại mười hai quốc gia để kiểm tra liệu vắc-xin có bảo vệ người trên bảy mươi tuổi hay không.",
+      "explanation": "You <b>conduct</b> a trial, survey, experiment or investigation. <b>Direct</b> is used of films, traffic or an organisation, <b>govern</b> of countries or rules, and <b>steer</b> of vehicles or a conversation."
+    },
+    {
+      "id": "gv-ch-17-13",
+      "level": "ch",
+      "focus": "linking",
+      "q": "Sales of organic food have doubled in five years, ______ the number of certified organic farms has barely changed.",
+      "options": [
+        "despite",
+        "consequently",
+        "whereas",
+        "otherwise"
+      ],
+      "correct": 2,
+      "answer": "whereas",
+      "vi": "Doanh số thực phẩm hữu cơ đã tăng gấp đôi trong năm năm, trong khi số trang trại được chứng nhận hữu cơ hầu như không thay đổi.",
+      "explanation": "The two clauses contrast, and <b>whereas</b> is the conjunction that joins two contrasting clauses. <b>Despite</b> must be followed by a noun or -ing form, while <b>consequently</b> (result) and <b>otherwise</b> (if not) give the wrong meaning."
+    },
+    {
+      "id": "gv-ch-17-14",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Antibiotic resistance ______ a far greater threat to public health than most consumers realise.",
+      "options": [
+        "puts",
+        "poses",
+        "places",
+        "sets"
+      ],
+      "correct": 1,
+      "answer": "poses",
+      "vi": "Tình trạng kháng kháng sinh đặt ra mối đe dọa với sức khỏe cộng đồng lớn hơn nhiều so với những gì hầu hết người tiêu dùng nhận thấy.",
+      "explanation": "The collocation is <b>pose a threat</b> (also pose a risk, pose a question). <b>Put</b>, <b>place</b> and <b>set</b> do not combine with <b>threat</b>, though you can <b>put</b> someone <b>at risk</b>."
+    },
+    {
+      "id": "gv-ch-17-15",
+      "level": "ch",
+      "focus": "subjunctive",
+      "q": "The auditors recommended that every branch ______ its accounts to head office by the end of each quarter.",
+      "options": [
+        "submit",
+        "submits",
+        "submitted",
+        "will submit"
+      ],
+      "correct": 0,
+      "answer": "submit",
+      "vi": "Các kiểm toán viên khuyến nghị rằng mỗi chi nhánh phải nộp sổ sách kế toán về trụ sở chính trước cuối mỗi quý.",
+      "explanation": "After <b>recommend / suggest / insist that</b>, the verb takes the subjunctive base form: <b>every branch submit</b>. The -s form, the past and <b>will</b> are all ruled out in this structure."
+    },
+    {
+      "id": "gv-ch-17-16",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Rather than admit that the failed product launch was his own doing, the manager ______ in front of the whole board.",
+      "options": [
+        "threw down the gauntlet",
+        "threw in the towel",
+        "threw caution to the wind",
+        "threw his assistant under the bus"
+      ],
+      "correct": 3,
+      "answer": "threw his assistant under the bus",
+      "vi": "Thay vì thừa nhận vụ ra mắt sản phẩm thất bại là do chính mình, người quản lý đã đổ hết trách nhiệm lên trợ lý của mình trước toàn thể hội đồng quản trị.",
+      "explanation": "To <b>throw someone under the bus</b> is to blame or sacrifice a colleague to protect yourself. <b>Throw down the gauntlet</b> is to issue a challenge, <b>throw in the towel</b> is to give up, and <b>throw caution to the wind</b> is to act recklessly."
+    },
+    {
+      "id": "gv-ch-17-17",
+      "level": "ch",
+      "focus": "gerund-infinitive",
+      "q": "Many retailers now regret ______ so heavily in city-centre stores just before online shopping took off.",
+      "options": [
+        "to invest",
+        "investing",
+        "invest",
+        "to have invested"
+      ],
+      "correct": 1,
+      "answer": "investing",
+      "vi": "Nhiều nhà bán lẻ giờ đây hối tiếc vì đã đầu tư quá mạnh vào các cửa hàng ở trung tâm thành phố ngay trước khi mua sắm trực tuyến bùng nổ.",
+      "explanation": "<b>Regret + -ing</b> means to be sorry about something already done, which fits an investment made in the past. <b>Regret to + infinitive</b> only introduces bad news (we regret to inform you), and the bare infinitive is impossible here."
+    },
+    {
+      "id": "gv-ch-17-18",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Parliament ______ a law last month requiring supermarkets to print the unit price on every shelf label.",
+      "options": [
+        "enforced",
+        "entailed",
+        "enabled",
+        "enacted"
+      ],
+      "correct": 3,
+      "answer": "enacted",
+      "vi": "Tháng trước, Quốc hội đã ban hành một đạo luật yêu cầu các siêu thị in đơn giá trên mọi nhãn kệ hàng.",
+      "explanation": "A legislature <b>enacts</b> (passes) a law. <b>Enforce</b> is what police or regulators do to make people obey a law that already exists, <b>entail</b> means to involve as a necessary part, and <b>enable</b> means to make possible."
+    },
+    {
+      "id": "gv-ch-17-19",
+      "level": "ch",
+      "focus": "phrasal-verb",
+      "q": "The trade talks ______ for almost three years, costing exporters billions in lost orders.",
+      "options": [
+        "dragged out",
+        "dragged in",
+        "dragged on",
+        "dragged along"
+      ],
+      "correct": 2,
+      "answer": "dragged on",
+      "vi": "Các cuộc đàm phán thương mại kéo dài lê thê gần ba năm, khiến các nhà xuất khẩu mất hàng tỷ đô la đơn hàng.",
+      "explanation": "Something tedious that lasts far longer than it should <b>drags on</b> (no object). <b>Drag out</b> needs an object (they dragged the talks out), <b>drag in</b> means to involve someone unnecessarily, and <b>drag along</b> means to bring someone unwillingly."
+    },
+    {
+      "id": "gv-ch-17-20",
+      "level": "ch",
+      "focus": "participle",
+      "q": "______ with last year's figures, the hospital's average waiting time has fallen by almost a third.",
+      "options": [
+        "Compared",
+        "Comparing",
+        "To compare",
+        "Having compared"
+      ],
+      "correct": 0,
+      "answer": "Compared",
+      "vi": "So với số liệu năm ngoái, thời gian chờ trung bình của bệnh viện đã giảm gần một phần ba.",
+      "explanation": "The waiting time is the thing being compared, so the passive past participle <b>Compared with</b> is correct. <b>Comparing</b> and <b>Having compared</b> would make the waiting time the one doing the comparing, and <b>To compare</b> expresses purpose."
+    },
+    {
+      "id": "gv-ch-17-21",
+      "level": "ch",
+      "focus": "idiom",
+      "q": "Trying to work out why the price of eggs had doubled, the reporter ______ of feed costs, tariffs and bird flu.",
+      "options": [
+        "went off the deep end",
+        "went down a rabbit hole",
+        "went round in circles",
+        "went up the wall"
+      ],
+      "correct": 1,
+      "answer": "went down a rabbit hole",
+      "vi": "Cố tìm hiểu vì sao giá trứng tăng gấp đôi, phóng viên đã sa vào mê cung của chi phí thức ăn chăn nuôi, thuế quan và cúm gia cầm.",
+      "explanation": "To go <b>down a rabbit hole</b> is to become absorbed in an ever more complicated topic, and only this idiom can be followed by <b>of</b> + the topic. <b>Go off the deep end</b> is to lose your temper, <b>go round in circles</b> is to make no progress, and <b>go up the wall</b> is to become very annoyed."
+    },
+    {
+      "id": "gv-ch-17-22",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "The rural clinic ______ its doors last spring if the local council hadn't stepped in with an emergency grant.",
+      "options": [
+        "would close",
+        "had closed",
+        "would have closed",
+        "will have closed"
+      ],
+      "correct": 2,
+      "answer": "would have closed",
+      "vi": "Phòng khám nông thôn hẳn đã phải đóng cửa vào mùa xuân năm ngoái nếu hội đồng địa phương không kịp thời hỗ trợ một khoản trợ cấp khẩn cấp.",
+      "explanation": "An unreal past condition (<b>if the council hadn't stepped in</b>) with a past result (<b>last spring</b>) is a third conditional: <b>would have closed</b>. <b>Would close</b> is the second conditional, and <b>had closed</b> belongs in the if-clause, not the result."
+    },
+    {
+      "id": "gv-ch-17-23",
+      "level": "ch",
+      "focus": "word-choice",
+      "q": "Only trained nurses are permitted to ______ the vaccine, which has to be injected slowly into the upper arm.",
+      "options": [
+        "prescribe",
+        "apply",
+        "undergo",
+        "administer"
+      ],
+      "correct": 3,
+      "answer": "administer",
+      "vi": "Chỉ những y tá đã qua đào tạo mới được phép tiêm vắc-xin này, loại vắc-xin phải được tiêm chậm vào bắp tay.",
+      "explanation": "To <b>administer</b> a drug or vaccine is to give it to the patient. Doctors <b>prescribe</b> medicine on paper, you <b>apply</b> a cream to the skin, and it is the patient who <b>undergoes</b> a treatment."
+    },
+    {
+      "id": "gv-ch-17-24",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "Mask factories ran around the clock, yet they still could not ______ the demand during the first weeks of the outbreak.",
+      "options": [
+        "meet",
+        "reach",
+        "hit",
+        "catch"
+      ],
+      "correct": 0,
+      "answer": "meet",
+      "vi": "Các nhà máy khẩu trang chạy suốt ngày đêm nhưng vẫn không thể đáp ứng nhu cầu trong những tuần đầu của đợt bùng phát dịch.",
+      "explanation": "Demand, a deadline, a target or a need is <b>met</b>. You <b>reach</b> or <b>hit</b> a target or a level and <b>catch</b> a bus or a cold, but none of these combine with <b>demand</b>."
+    },
+    {
+      "id": "gv-ch-17-25",
+      "level": "ch",
+      "focus": "double-blank",
+      "q": "Lawyers were asked to ______ up a contract that would ______ either side from walking away before the merger was complete.",
+      "options": [
+        "set / avoid",
+        "draw / prevent",
+        "make / refuse",
+        "put / deny"
+      ],
+      "correct": 1,
+      "answer": "draw / prevent",
+      "vi": "Các luật sư được yêu cầu soạn thảo một hợp đồng ngăn không cho bên nào rút lui trước khi vụ sáp nhập hoàn tất.",
+      "explanation": "A contract or plan is <b>drawn up</b> (written in detail), and <b>prevent someone from</b> doing something is the pattern that takes <b>from</b>. <b>Avoid</b>, <b>refuse</b> and <b>deny</b> are never followed by <b>someone from</b>, and <b>set up</b>, <b>make up</b> and <b>put up</b> a contract are wrong."
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "file": "07",
+  "level": "kc",
+  "items": [
+    {
+      "id": "gv-kc-07-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Lan: Where's Nam? / Minh: He ______ for a job interview at the moment, so don't disturb him.",
+      "options": [
+        "prepares",
+        "is preparing",
+        "has prepared",
+        "prepared"
+      ],
+      "correct": 1,
+      "answer": "is preparing",
+      "vi": "Lan: Nam đâu rồi? / Minh: Bạn ấy đang chuẩn bị cho buổi phỏng vấn xin việc lúc này, nên đừng làm phiền.",
+      "explanation": "<b>At the moment</b> signals an action happening right now, so the present continuous <b>is preparing</b> is needed; the simple present, present perfect and past do not describe an ongoing action at the time of speaking."
+    },
+    {
+      "id": "gv-kc-07-2",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Our garden party was cancelled because of a sudden ______ that flooded the lawn in minutes.",
+      "options": [
+        "downpour",
+        "drizzle",
+        "mist",
+        "frost"
+      ],
+      "correct": 0,
+      "answer": "downpour",
+      "vi": "Bữa tiệc ngoài vườn của chúng tôi bị hủy vì một trận mưa như trút bất ngờ làm ngập bãi cỏ chỉ trong vài phút.",
+      "explanation": "A <b>downpour</b> is a sudden, very heavy fall of rain — the only option that could flood a lawn in minutes. <b>Drizzle</b> is very light rain, <b>mist</b> is thin fog, and <b>frost</b> is ice on cold surfaces."
+    },
+    {
+      "id": "gv-kc-07-3",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "My brother has to ______ a decision about which career to follow before he finishes school.",
+      "options": [
+        "do",
+        "have",
+        "make",
+        "get"
+      ],
+      "correct": 2,
+      "answer": "make",
+      "vi": "Anh trai tôi phải đưa ra quyết định về nghề nghiệp sẽ theo đuổi trước khi học xong.",
+      "explanation": "The fixed collocation is <b>make a decision</b>. <b>Do</b>, <b>have</b> and <b>get</b> do not combine with <b>decision</b> in this meaning."
+    },
+    {
+      "id": "gv-kc-07-4",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Nam: Should I take the job in Da Nang or stay here? / Lan: ______ is that you need a steady income, so take it.",
+      "options": [
+        "The last straw",
+        "The tip of the iceberg",
+        "The eleventh hour",
+        "The bottom line"
+      ],
+      "correct": 3,
+      "answer": "The bottom line",
+      "vi": "Nam: Mình nên nhận việc ở Đà Nẵng hay ở lại đây? / Lan: Điều cốt lõi là cậu cần một nguồn thu nhập ổn định, nên nhận đi.",
+      "explanation": "<b>The bottom line</b> means the most important fact that decides a matter. <b>The last straw</b> is the final problem that makes you lose patience, <b>the tip of the iceberg</b> is a small visible part of a bigger problem, and <b>the eleventh hour</b> is the last possible moment."
+    },
+    {
+      "id": "gv-kc-07-5",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Lan: Why isn't Minh at school anymore? / Nam: He decided to ______ of school to help his father at the shop.",
+      "options": [
+        "drop out",
+        "drop off",
+        "drop in",
+        "drop by"
+      ],
+      "correct": 0,
+      "answer": "drop out",
+      "vi": "Lan: Sao Minh không còn đi học nữa? / Nam: Cậu ấy quyết định bỏ học để phụ bố ở cửa hàng.",
+      "explanation": "<b>Drop out of</b> school means to leave before finishing. <b>Drop off</b> means to fall asleep or deliver someone, while <b>drop in</b> and <b>drop by</b> mean to pay a short visit — none takes <b>of school</b>."
+    },
+    {
+      "id": "gv-kc-07-6",
+      "level": "kc",
+      "focus": "modal",
+      "q": "You ______ such an expensive present; just coming to my birthday party was enough.",
+      "options": [
+        "mustn't have bought",
+        "can't have bought",
+        "needn't have bought",
+        "won't have bought"
+      ],
+      "correct": 2,
+      "answer": "needn't have bought",
+      "vi": "Bạn không cần phải mua món quà đắt tiền như vậy đâu; chỉ cần đến dự sinh nhật mình là đủ rồi.",
+      "explanation": "<b>Needn't have + past participle</b> says that something was done but was not necessary. <b>Can't have</b> expresses a past deduction, <b>won't have</b> is future perfect, and <b>mustn't have</b> is not used for a past action that was unnecessary."
+    },
+    {
+      "id": "gv-kc-07-7",
+      "level": "kc",
+      "focus": "relative",
+      "q": "Do you remember the year ______ our family first moved to Ho Chi Minh City?",
+      "options": [
+        "where",
+        "whom",
+        "which",
+        "when"
+      ],
+      "correct": 3,
+      "answer": "when",
+      "vi": "Bạn có nhớ năm mà gia đình chúng ta lần đầu chuyển đến Thành phố Hồ Chí Minh không?",
+      "explanation": "<b>When</b> is the relative adverb for a time noun such as <b>the year</b>. <b>Where</b> refers to a place, <b>whom</b> to a person, and <b>which</b> would need a preposition (<b>in which</b>) to follow <b>the year</b>."
+    },
+    {
+      "id": "gv-kc-07-8",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Dad drove to work very slowly because of the thick ______ on the road this morning.",
+      "options": [
+        "hail",
+        "thunder",
+        "drought",
+        "fog"
+      ],
+      "correct": 3,
+      "answer": "fog",
+      "vi": "Sáng nay bố lái xe đi làm rất chậm vì sương mù dày đặc trên đường.",
+      "explanation": "<b>Thick fog</b> makes it hard to see, so drivers slow down. <b>Hail</b> is frozen rain, <b>thunder</b> is the sound of a storm, and <b>drought</b> is a long period without rain — none is described as <b>thick</b> on the road."
+    },
+    {
+      "id": "gv-kc-07-9",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By the time we got to Hoa's house, the party ______.",
+      "options": [
+        "has already started",
+        "had already started",
+        "was already starting",
+        "already starts"
+      ],
+      "correct": 1,
+      "answer": "had already started",
+      "vi": "Lúc chúng tôi đến nhà Hoa thì bữa tiệc đã bắt đầu rồi.",
+      "explanation": "<b>By the time + past simple</b> describes an action that was completed before another past action, so the past perfect <b>had already started</b> is required."
+    },
+    {
+      "id": "gv-kc-07-10",
+      "level": "kc",
+      "focus": "article-quantifier",
+      "q": "There isn't ______ milk left in the fridge, so could you buy some on the way home?",
+      "options": [
+        "much",
+        "many",
+        "a few",
+        "few"
+      ],
+      "correct": 0,
+      "answer": "much",
+      "vi": "Trong tủ lạnh không còn nhiều sữa, nên bạn mua thêm trên đường về nhà được không?",
+      "explanation": "<b>Milk</b> is uncountable, so it takes <b>much</b> in a negative sentence. <b>Many</b>, <b>a few</b> and <b>few</b> are only used with plural countable nouns."
+    },
+    {
+      "id": "gv-kc-07-11",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Put on your coat, or you will ______ a cold waiting for the bus in this wind.",
+      "options": [
+        "catch",
+        "take",
+        "hold",
+        "bring"
+      ],
+      "correct": 0,
+      "answer": "catch",
+      "vi": "Mặc áo khoác vào đi, không thì bạn sẽ bị cảm lạnh khi đứng đợi xe buýt trong gió này.",
+      "explanation": "The fixed collocation is <b>catch a cold</b> (become ill with one). <b>Take</b>, <b>hold</b> and <b>bring</b> do not combine with <b>a cold</b> in this meaning."
+    },
+    {
+      "id": "gv-kc-07-12",
+      "level": "kc",
+      "focus": "gerund-infinitive",
+      "q": "My aunt is used to ______ up early because she runs a stall at the market.",
+      "options": [
+        "get",
+        "to get",
+        "got",
+        "getting"
+      ],
+      "correct": 3,
+      "answer": "getting",
+      "vi": "Dì tôi đã quen với việc dậy sớm vì dì bán hàng ở chợ.",
+      "explanation": "<b>Be used to</b> (= be accustomed to) is followed by a noun or a gerund: <b>used to getting up</b>. The to-infinitive (<b>used to get up</b>) only follows <b>used to</b> without <b>be</b>, when it describes a past habit."
+    },
+    {
+      "id": "gv-kc-07-13",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "My uncle's farm lost most of its rice this year because of the long ______.",
+      "options": [
+        "flood",
+        "drought",
+        "hail",
+        "lightning"
+      ],
+      "correct": 1,
+      "answer": "drought",
+      "vi": "Nông trại của chú tôi mất gần hết lúa năm nay vì đợt hạn hán kéo dài.",
+      "explanation": "A <b>drought</b> is a long period with no rain, which dries up crops, and it is the only option naturally described as <b>long</b>. A <b>flood</b> is too much water, while <b>hail</b> and <b>lightning</b> are short events in a storm."
+    },
+    {
+      "id": "gv-kc-07-14",
+      "level": "kc",
+      "focus": "linking",
+      "q": "Nam wants to become a doctor, ______ his twin brother dreams of opening a restaurant.",
+      "options": [
+        "whereas",
+        "however",
+        "therefore",
+        "so that"
+      ],
+      "correct": 0,
+      "answer": "whereas",
+      "vi": "Nam muốn trở thành bác sĩ, trong khi người anh sinh đôi của cậu ấy lại mơ mở một nhà hàng.",
+      "explanation": "<b>Whereas</b> is a conjunction that contrasts two clauses in one sentence. <b>However</b> needs a full stop or semicolon before it, <b>therefore</b> shows a result, and <b>so that</b> shows purpose."
+    },
+    {
+      "id": "gv-kc-07-15",
+      "level": "kc",
+      "focus": "phrasal-verb",
+      "q": "Could you ______ my little sister from school today? I have a job interview at three.",
+      "options": [
+        "drop off",
+        "take up",
+        "pick up",
+        "bring up"
+      ],
+      "correct": 2,
+      "answer": "pick up",
+      "vi": "Hôm nay bạn đón em gái mình ở trường giúp được không? Mình có buổi phỏng vấn xin việc lúc ba giờ.",
+      "explanation": "<b>Pick up</b> someone <b>from</b> a place means to collect them. <b>Drop off</b> is the opposite (leave someone <b>at</b> a place), <b>take up</b> means start a hobby, and <b>bring up</b> means raise a child or mention a topic."
+    },
+    {
+      "id": "gv-kc-07-16",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If I ______ you, I would apply for the job at the new hotel before somebody else does.",
+      "options": [
+        "am",
+        "had been",
+        "will be",
+        "were"
+      ],
+      "correct": 3,
+      "answer": "were",
+      "vi": "Nếu tôi là bạn, tôi sẽ nộp đơn xin việc ở khách sạn mới trước khi người khác nộp.",
+      "explanation": "The second conditional gives advice about an unreal present situation: <b>If I were you, I would...</b>. <b>Am</b> and <b>will be</b> belong to the first conditional, and <b>had been</b> would need <b>would have applied</b>."
+    },
+    {
+      "id": "gv-kc-07-17",
+      "level": "kc",
+      "focus": "idiom",
+      "q": "Lan: I want to save up for a new laptop. / Nam: Then you'll have to ______ and stop buying bubble tea every day.",
+      "options": [
+        "hold your horses",
+        "tighten your belt",
+        "keep your chin up",
+        "bite your tongue"
+      ],
+      "correct": 1,
+      "answer": "tighten your belt",
+      "vi": "Lan: Mình muốn để dành tiền mua laptop mới. / Nam: Vậy thì cậu phải thắt lưng buộc bụng và ngừng mua trà sữa mỗi ngày.",
+      "explanation": "<b>Tighten your belt</b> means to spend less money because you have less of it. <b>Hold your horses</b> means wait, <b>keep your chin up</b> means stay cheerful, and <b>bite your tongue</b> means stop yourself from speaking."
+    },
+    {
+      "id": "gv-kc-07-18",
+      "level": "kc",
+      "focus": "passive",
+      "q": "The invitations for the party ______ to all our classmates yesterday.",
+      "options": [
+        "sent",
+        "have been sent",
+        "were sent",
+        "are sent"
+      ],
+      "correct": 2,
+      "answer": "were sent",
+      "vi": "Thiệp mời dự tiệc đã được gửi tới tất cả các bạn cùng lớp hôm qua.",
+      "explanation": "The invitations receive the action, so the passive is needed, and <b>yesterday</b> fixes the past simple: <b>were sent</b>. <b>Have been sent</b> cannot go with a finished past time, and <b>sent</b> alone is active."
+    },
+    {
+      "id": "gv-kc-07-19",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "After the rain stopped, a bright ______ stretched across the sky above our house.",
+      "options": [
+        "thunder",
+        "lightning",
+        "hail",
+        "rainbow"
+      ],
+      "correct": 3,
+      "answer": "rainbow",
+      "vi": "Sau khi mưa tạnh, một chiếc cầu vồng rực rỡ trải dài trên bầu trời phía trên nhà chúng tôi.",
+      "explanation": "A <b>rainbow</b> is the coloured arc that appears in the sky after rain. <b>Thunder</b> is a sound, <b>lightning</b> is a sudden flash during a storm, and <b>hail</b> is frozen rain — none <b>stretches across the sky</b> after the rain has stopped."
+    },
+    {
+      "id": "gv-kc-07-20",
+      "level": "kc",
+      "focus": "reported",
+      "q": "Mai said that she ______ her grandparents in the countryside the following weekend.",
+      "options": [
+        "would visit",
+        "will visit",
+        "visits",
+        "has visited"
+      ],
+      "correct": 0,
+      "answer": "would visit",
+      "vi": "Mai nói rằng cô ấy sẽ về thăm ông bà ở quê vào cuối tuần sau đó.",
+      "explanation": "After a past reporting verb (<b>said</b>), <b>will</b> shifts back to <b>would</b>, and <b>the following weekend</b> confirms reported speech. The other options keep a present tense that does not match <b>said</b>."
+    },
+    {
+      "id": "gv-kc-07-21",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "My cousins are going to ______ a party for Grandma's seventieth birthday next month.",
+      "options": [
+        "make",
+        "do",
+        "throw",
+        "put"
+      ],
+      "correct": 2,
+      "answer": "throw",
+      "vi": "Các anh chị họ của tôi sẽ tổ chức một bữa tiệc mừng sinh nhật lần thứ bảy mươi của bà vào tháng sau.",
+      "explanation": "In English you <b>throw</b> (or have/hold) <b>a party</b>. <b>Make a party</b>, <b>do a party</b> and <b>put a party</b> are not English collocations."
+    },
+    {
+      "id": "gv-kc-07-22",
+      "level": "kc",
+      "focus": "tense",
+      "q": "My father ______ at the same bank since he left college, and he still enjoys it.",
+      "options": [
+        "works",
+        "has worked",
+        "is working",
+        "worked"
+      ],
+      "correct": 1,
+      "answer": "has worked",
+      "vi": "Bố tôi đã làm việc ở cùng một ngân hàng kể từ khi rời trường cao đẳng, và bố vẫn thích công việc đó.",
+      "explanation": "<b>Since</b> + a past starting point with a situation that continues to now takes the present perfect: <b>has worked</b>. The simple present, present continuous and past simple do not link a past start to the present."
+    },
+    {
+      "id": "gv-kc-07-23",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "At the class reunion, I finally had time to catch up ______ my old friends.",
+      "options": [
+        "on",
+        "to",
+        "at",
+        "with"
+      ],
+      "correct": 3,
+      "answer": "with",
+      "vi": "Ở buổi họp lớp, cuối cùng tôi cũng có thời gian hàn huyên với bạn bè cũ.",
+      "explanation": "<b>Catch up with</b> someone means to talk to them and find out their news. <b>Catch up on</b> is used with things you missed (work, sleep), and <b>to</b> and <b>at</b> do not follow <b>catch up</b>."
+    },
+    {
+      "id": "gv-kc-07-24",
+      "level": "kc",
+      "focus": "word-choice",
+      "q": "Check the weather ______ before you invite everyone to the beach on Sunday.",
+      "options": [
+        "forecast",
+        "climate",
+        "temperature",
+        "season"
+      ],
+      "correct": 0,
+      "answer": "forecast",
+      "vi": "Hãy xem dự báo thời tiết trước khi mời mọi người đi biển vào Chủ nhật.",
+      "explanation": "A <b>weather forecast</b> is a prediction of the coming weather, which is what you check before planning a trip. <b>Climate</b> is the usual weather of a region over years, <b>temperature</b> is only how hot or cold it is, and <b>season</b> is a part of the year."
+    },
+    {
+      "id": "gv-kc-07-25",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Living in the city is ______ more expensive than living in our hometown, so I might move back after graduation.",
+      "options": [
+        "very",
+        "too",
+        "far",
+        "so"
+      ],
+      "correct": 2,
+      "answer": "far",
+      "vi": "Sống ở thành phố đắt đỏ hơn nhiều so với sống ở quê, nên có lẽ tôi sẽ chuyển về sau khi tốt nghiệp.",
+      "explanation": "A comparative (<b>more expensive</b>) can be strengthened with <b>far</b>, <b>much</b> or <b>a lot</b>. <b>Very</b>, <b>too</b> and <b>so</b> modify plain adjectives, not comparatives."
+    }
+  ]
+}

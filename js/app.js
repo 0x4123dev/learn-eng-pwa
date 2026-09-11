@@ -1367,6 +1367,7 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     readingScreen: 'learn',
     clozeScreen: 'learn',
     errorsScreen: 'learn',
+    grammarVocabScreen: 'learn',
     examScreen: 'exam'
 });
 
@@ -1608,6 +1609,7 @@ function switchScreen(screenId) {
             else if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
             else if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
             else if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
+            else if (screenId === 'grammarVocabScreen' && typeof renderGrammarVocabHome === 'function') renderGrammarVocabHome();
             else if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
             else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
             else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
@@ -1643,6 +1645,7 @@ function switchScreen(screenId) {
     if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
     if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
     if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
+    if (screenId === 'grammarVocabScreen' && typeof renderGrammarVocabHome === 'function') renderGrammarVocabHome();
     if (screenId === 'profileScreen') renderProfile();
 
     // Do this after rendering: Home replaces its pet hero contents, and scroll
