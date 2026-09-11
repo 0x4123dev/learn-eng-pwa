@@ -1678,6 +1678,35 @@ function switchScreen(screenId) {
         if (typeof abandonUnitPractice === 'function') abandonUnitPractice();
     }
 
+    // Guard: the Grade 4 owed-words drill (js/retrydrill.js, key 'units').
+    // Nothing typed is lost — each word is cleared the moment it is fixed —
+    // but the drill itself used to outlive a tap on the bottom bar: it kept
+    // isRetryDrillActive() true from whatever tab came next, which holds app
+    // updates back (_busyWithTimedActivity) until some other drill replaced
+    // it. Same shape as the Toán branch above.
+    if (screenId !== 'gradeFourScreen' &&
+        typeof retryDrillKey === 'function' && retryDrillKey() === 'units') {
+        if (!confirm('You are practising the words you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
+    }
+
+    // Guard: a live Verbs speed run. Its overlay hides the bottom bar, so like
+    // the Night Raid this is a backstop — a switchScreen() from code (a deep
+    // link, a restored checkpoint) used to change the screen under the
+    // overlay, re-show the bar behind it and leave the 100 ms clock running.
+    if (screenId !== 'speedChallengeScreen' &&
+        typeof isSpeedGameActive === 'function' && isSpeedGameActive()) {
+        const done = (typeof speedState !== 'undefined' && speedState && Array.isArray(speedState.verbResults))
+            ? speedState.verbResults.length : 0;
+        if (!confirm((done ? 'You are ' + done + ' verbs into this speed run.' : 'You are in the middle of a speed run.')
+                   + '\nIf you leave now, this run will not be scored.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonSpeedGame === 'function') abandonSpeedGame();
+    }
+
     // Guard: warn before leaving an in-progress Rewrite practice.
     if (screenId !== 'rewriteScreen' &&
         typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {
@@ -1889,6 +1918,7 @@ const _BUSY_CHECKS = [
     // over it (js/lessons.js). The lessonScreen check below is the same
     // thing said without the helpers, from before they existed.
     'isLessonActive', 'isLessonOnScreen',
+    'isSpeedGameActive',
 ];
 function _busyWithTimedActivity() {
     try {
