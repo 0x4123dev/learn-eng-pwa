@@ -73,10 +73,13 @@ const header = `// math-data-hk2.js — Toán 7 Học kì 2, ngân hàng luyện
 // Chương 6 và 7 được nhân ba ngày 2026-09-11 bởi các tác giả song song, mỗi
 // tệp bổ sung được một người giải mù kiểm lại từng đáp án.
 // ${Object.keys(perCh).map(ch => `Chương ${ch}: ${perCh[ch]} câu`).join(' · ')} — tổng ${all.length}.
+//
+// Ghi ở dạng nén (không thụt lề): chỉ máy đọc tệp này, thụt lề chỉ tốn
+// dung lượng tải về mà không được gì.
 
 `;
-const chapters = 'const MATH_CHAPTERS_HK2 = ' + JSON.stringify(base.chapters, null, 2) + ';\n\n';
-const questions = 'const MATH_QUESTIONS_HK2 = ' + JSON.stringify(all, null, 1) + ';\n\n';
+const chapters = 'const MATH_CHAPTERS_HK2 = ' + JSON.stringify(base.chapters) + ';\n\n';
+const questions = 'const MATH_QUESTIONS_HK2 = ' + JSON.stringify(all) + ';\n\n';
 const tail = `// Câu chỉ có một đáp án số thì để bé TỰ TÍNH rồi nhập, không chọn trong bốn
 // phương án: một câu tính toán mà đáp án nằm sẵn trước mắt thì không còn đo
 // được bé có tính được hay không. Ở đây bất kỳ câu nào có đáp án là đúng một
