@@ -193,7 +193,7 @@ suite('PTNK: the home screen', () => {
   test('papers are grouped by year, newest first, KC before Chuyên', () => {
     const { ctx } = world();
     const html = ctx.renderPtnkHomeHTML();
-    const y2024 = html.indexOf('Năm 2024'), y2022 = html.indexOf('Năm 2022');
+    const y2024 = html.indexOf('>2024<'), y2022 = html.indexOf('>2022<');
     assert.truthy(y2024 !== -1 && y2022 !== -1 && y2024 < y2022, 'newest year first');
     assert.truthy(html.indexOf("startPtnkExam('ptnk-2022-chuyen')") !== -1);
     assert.truthy(html.indexOf("startPtnkExam('ptnk-2024-kc')") !== -1);
@@ -204,20 +204,20 @@ suite('PTNK: the home screen', () => {
     const html = ctx.renderPtnkHomeHTML();
     const kc = html.slice(html.indexOf('ptnk-2024-kc'), html.indexOf('ptnk-2024-kc') + 900);
     const ch = html.slice(html.indexOf('ptnk-2022-chuyen'), html.indexOf('ptnk-2022-chuyen') + 900);
-    assert.truthy(kc.includes('Đáp án tham khảo'), 'a solved key must be labelled');
-    assert.falsy(ch.includes('Đáp án tham khảo'), 'an official key must not be');
+    assert.truthy(kc.includes('Unofficial key'), 'a solved key must be labelled');
+    assert.falsy(ch.includes('Unofficial key'), 'an official key must not be');
   });
 
   test('the rate and the bonus are stated on the home, not discovered', () => {
     const { ctx } = world();
     const html = ctx.renderPtnkHomeHTML();
-    assert.truthy(html.includes('5 xu mỗi câu đúng') && html.includes('50 xu'));
+    assert.truthy(html.includes('5 coins per correct answer') && html.includes('+50'));
   });
 
   test('with no bank, the home shows a retry rather than an empty list', () => {
     const { ctx } = world();
     vm.runInContext('PTNK_EXAMS.length = 0;', ctx);
-    assert.truthy(ctx.renderPtnkHomeHTML().includes('Thử lại'));
+    assert.truthy(ctx.renderPtnkHomeHTML().includes('Try again'));
   });
 });
 

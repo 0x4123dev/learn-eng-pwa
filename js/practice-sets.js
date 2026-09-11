@@ -75,9 +75,9 @@ function clozeBank() { return (typeof CLOZE_PASSAGES !== 'undefined' && Array.is
 function errorsBank() { return (typeof ERROR_ITEMS !== 'undefined' && Array.isArray(ERROR_ITEMS)) ? ERROR_ITEMS : []; }
 
 const READING_KIND_LABEL = {
-    'main-idea': 'Ý chính', detail: 'Chi tiết', inference: 'Suy luận', vocab: 'Từ vựng',
-    reference: 'Tham chiếu', purpose: 'Mục đích', tfng: 'True / False / Not Given',
-    section: 'Đoạn nào?', gap: 'Điền đoạn',
+    'main-idea': 'Main idea', detail: 'Detail', inference: 'Inference', vocab: 'Vocabulary',
+    reference: 'Reference', purpose: 'Purpose', tfng: 'True / False / Not Given',
+    section: 'Which section?', gap: 'Missing sentence',
 };
 
 // A passage → the paper the engine runs. Every question carries the passage,
@@ -88,7 +88,7 @@ function readingPaper(ps) {
     return {
         id: ps.id,
         title: ps.title,
-        subtitle: 'Đọc hiểu · ' + practiceLevelLabel(ps.level) + ' · ' + practiceEsc(ps.topic),
+        subtitle: 'Reading · ' + practiceLevelLabel(ps.level) + ' · ' + practiceEsc(ps.topic),
         durationMin: PRACTICE_MINUTES.reading[ps.level] || 10,
         questions: ps.questions.map((q, i) => Object.assign({}, q, {
             n: i + 1, passage: ps.passage, section: READING_KIND_LABEL[q.kind] || 'Đọc hiểu',
@@ -100,7 +100,7 @@ function clozePaper(ps) {
     return {
         id: ps.id,
         title: ps.title,
-        subtitle: (ps.mode === 'open' ? 'Điền từ (tự viết)' : 'Điền từ (trắc nghiệm)') + ' · ' + practiceLevelLabel(ps.level) + ' · ' + practiceEsc(ps.topic),
+        subtitle: (ps.mode === 'open' ? 'Open cloze' : 'Cloze') + ' · ' + practiceLevelLabel(ps.level) + ' · ' + practiceEsc(ps.topic),
         durationMin: PRACTICE_MINUTES.cloze[ps.level] || 8,
         questions: ps.questions.map((q, i) => Object.assign({}, q, {
             n: i + 1, passage: ps.passage, section: ps.mode === 'open' ? 'Open cloze' : 'Cloze',
@@ -126,13 +126,13 @@ function errorsPaperFromIds(level, ids) {
     if (!items.length) return null;
     return {
         id: errorsRoundId(level, ids),
-        title: 'Tìm lỗi sai · ' + practiceLevelLabel(level),
-        subtitle: items.length + ' câu · một trong bốn phần gạch chân là sai',
+        title: 'Error Correction · ' + practiceLevelLabel(level),
+        subtitle: items.length + ' sentences · one of the four underlined parts is wrong',
         durationMin: PRACTICE_MINUTES.errors[level] || 8,
         questions: items.map((it, i) => ({
-            n: i + 1, type: 'mcq', section: 'Tìm lỗi sai',
+            n: i + 1, type: 'mcq', section: 'Error correction',
             q: it.q, options: it.options, correct: it.correct,
-            explanation: '<b>Sửa:</b> ' + practiceEsc(it.correction) + '<br>' + it.explanation,
+            explanation: '<b>Correction:</b> ' + practiceEsc(it.correction) + '<br>' + it.explanation,
         })),
     };
 }
@@ -155,7 +155,7 @@ function practiceSet(key, screen, lookup, home) {
         perfectBonus: 0,                         // the English practice tabs pay per answer only
         syncActivity: true,                      // a daily task depends on the upload
         home: home,
-        homeLabel: '← Danh sách',
+        homeLabel: '← Back to list',
     };
 }
 if (typeof EXAM_SETS !== 'undefined') {
@@ -181,13 +181,13 @@ function startErrorsRound(level) {
 // ---- home screens --------------------------------------------------------------------
 function practiceEmptyHTML(what) {
     return '<div class="lazy-loading" role="status" style="text-align:center">'
-        + '<p>Chưa tải được ' + practiceEsc(what) + '. Con kiểm tra mạng rồi thử lại nhé.</p>'
-        + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
+        + '<p>The ' + practiceEsc(what) + ' did not load. Check the connection and try again.</p>'
+        + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Try again</button>'
         + '</div>';
 }
 function practiceHistoryButton(setId, key) {
     const n = practiceHistory(key).length;
-    return `<button class="exam-history-btn" onclick="examSelectSet('${setId}'); renderExamHistory()">📜 Lịch sử ${n ? `(${n})` : ''}</button>`;
+    return `<button class="exam-history-btn" onclick="examSelectSet('${setId}'); renderExamHistory()">📜 History ${n ? `(${n})` : ''}</button>`;
 }
 // Passages listed under two level headings, each card with its best score.
 function practicePassageCardsHTML(list, key, startFn, meta) {
@@ -202,52 +202,52 @@ function practicePassageCardsHTML(list, key, startFn, meta) {
                 <div class="exam-card-info">
                     <div class="exam-card-title">${practiceEsc(p.title)}</div>
                     <div class="exam-card-meta">${meta(p)}</div>
-                    ${best !== null ? `<div class="exam-card-best">Tốt nhất: ${best}%${best === 100 ? ' 🌟' : ''}</div>` : ''}
+                    ${best !== null ? `<div class="exam-card-best">Best: ${best}%${best === 100 ? ' 🌟' : ''}</div>` : ''}
                 </div>
                 <div class="exam-card-go">›</div>
             </button>`;
         }).join('');
-        return `<h3 class="topic-detail-list-title ptnk-year">${label} · ${items.length} bài</h3>${cards}`;
+        return `<h3 class="topic-detail-list-title ptnk-year">${label} · ${items.length}</h3>${cards}`;
     }).join('');
 }
 
 function renderReadingHomeHTML() {
     const bank = readingBank();
-    if (!bank.length) return practiceEmptyHTML('bộ bài đọc');
+    if (!bank.length) return practiceEmptyHTML('reading passages');
     return `
         <div class="exam-header">
-            <h1 class="exam-title">📖 Đọc hiểu</h1>
-            <p class="exam-subtitle">${bank.length} bài đọc theo dạng đề PTNK — ý chính, chi tiết, suy luận, True/False/Not Given, ghép đoạn · ${PRACTICE_COINS_PER_CORRECT} xu mỗi câu đúng</p>
+            <h1 class="exam-title">📖 Reading</h1>
+            <p class="exam-subtitle">${bank.length} passages in the PTNK paper's formats — main idea, detail, inference, True/False/Not Given, matching · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="exam-list">${practicePassageCardsHTML(bank, 'readingHistory', 'startReadingPassage',
-            p => `⏱️ ${PRACTICE_MINUTES.reading[p.level] || 10} phút · ${p.questions.length} câu · ${practiceEsc(p.topic)}`)}</div>
+            p => `⏱️ ${PRACTICE_MINUTES.reading[p.level] || 10} min · ${p.questions.length} questions · ${practiceEsc(p.topic)}`)}</div>
         ${practiceHistoryButton('reading', 'readingHistory')}`;
 }
 function renderClozeHomeHTML() {
     const bank = clozeBank();
-    if (!bank.length) return practiceEmptyHTML('bộ bài điền từ');
+    if (!bank.length) return practiceEmptyHTML('cloze texts');
     return `
         <div class="exam-header">
-            <h1 class="exam-title">✏️ Điền từ</h1>
-            <p class="exam-subtitle">${bank.length} đoạn văn, mỗi đoạn 10 chỗ trống — trắc nghiệm hoặc tự viết một từ, đúng dạng cloze / open cloze của đề PTNK · ${PRACTICE_COINS_PER_CORRECT} xu mỗi câu đúng</p>
+            <h1 class="exam-title">✏️ Cloze</h1>
+            <p class="exam-subtitle">${bank.length} texts with ten blanks each — multiple choice or type one word, the PTNK cloze and open-cloze formats · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="exam-list">${practicePassageCardsHTML(bank, 'clozeHistory', 'startClozePassage',
-            p => `⏱️ ${PRACTICE_MINUTES.cloze[p.level] || 8} phút · 10 chỗ trống · ${p.mode === 'open' ? 'tự viết' : 'trắc nghiệm'} · ${practiceEsc(p.topic)}`)}</div>
+            p => `⏱️ ${PRACTICE_MINUTES.cloze[p.level] || 8} min · 10 blanks · ${p.mode === 'open' ? 'typed' : 'multiple choice'} · ${practiceEsc(p.topic)}`)}</div>
         ${practiceHistoryButton('cloze', 'clozeHistory')}`;
 }
 function renderErrorsHomeHTML() {
     const bank = errorsBank();
-    if (!bank.length) return practiceEmptyHTML('bộ câu tìm lỗi');
+    if (!bank.length) return practiceEmptyHTML('error-correction items');
     const n = (lv) => bank.filter(it => it.level === lv).length;
     const button = (lv, icon, label) => `<button class="phrases-cta" onclick="startErrorsRound('${lv}')">
             <span class="phrases-cta-icon">${icon}</span>
-            <span class="phrases-cta-text"><strong>${label}</strong><small>${ERRORS_ROUND_SIZE} câu ngẫu nhiên từ ${n(lv)} câu · ${PRACTICE_MINUTES.errors[lv]} phút</small></span>
+            <span class="phrases-cta-text"><strong>${label}</strong><small>${ERRORS_ROUND_SIZE} random items from ${n(lv)} · ${PRACTICE_MINUTES.errors[lv]} min</small></span>
             <span class="phrases-cta-arrow">›</span>
         </button>`;
     return `
         <div class="exam-header">
-            <h1 class="exam-title">🔍 Tìm lỗi sai</h1>
-            <p class="exam-subtitle">Một câu, bốn phần gạch chân, một phần sai — dạng Error identification của đề PTNK · ${PRACTICE_COINS_PER_CORRECT} xu mỗi câu đúng</p>
+            <h1 class="exam-title">🔍 Error Correction</h1>
+            <p class="exam-subtitle">One sentence, four underlined parts, one of them wrong — the PTNK error-identification format · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="phrases-wrap">
             ${button('kc', '📘', 'Không chuyên')}

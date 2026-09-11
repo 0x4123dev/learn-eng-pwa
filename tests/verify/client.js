@@ -508,7 +508,7 @@ function screenPlaybook() {
         must(text.includes(bank[0].title), 'the first paper is listed by its real title: ' + bank[0].title);
         must(wiredTo(el, 'startPtnkExam').length === bank.length,
           'every paper in the bank has a button (' + wiredTo(el, 'startPtnkExam').length + '/' + bank.length + ')');
-        const years = (text.match(/Năm \d{4}/g) || []);
+        const years = (h.el('ptnkScreen').innerHTML.match(/ptnk-year">\d{4}</g) || []);
         must(years.length >= 2, 'papers are grouped under year headings');
         h.sandbox.startExam(bank[0].id, 'ptnk');
         must(h.sandbox.isExamActive(), 'the paper did not start');

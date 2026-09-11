@@ -103,6 +103,7 @@ suite('practice sets: three sets, three screens', () => {
     assert.equal(s.questions.length, 3);
     assert.truthy(s.questions.every(q => q.passage && q.passage.includes('garden')), 'every question must carry the passage');
     assert.equal(s.questions[1].section, 'True / False / Not Given');
+    assert.equal(s.questions[0].section, 'Main idea');
     assert.equal(s.durationMin, 10, 'a kc reading passage is 10 minutes');
     ctx.abandonExam();
   });
@@ -150,7 +151,7 @@ suite('practice sets: error rounds are drawn, and rebuilt from their id', () => 
     const s = ctx.__state();
     assert.truthy(/^er-round-kc:er-kc-01-\d(,er-kc-01-\d)*$/.test(s.examId), s.examId);
     assert.equal(s.questions.length, 3);
-    assert.truthy(s.questions[0].explanation.includes('<b>Sửa:</b>'), 'the explanation leads with the correction');
+    assert.truthy(s.questions[0].explanation.includes('<b>Correction:</b>'), 'the explanation leads with the correction');
     ctx.abandonExam();
   });
 
@@ -203,7 +204,7 @@ suite('practice sets: history and coins stay per menu', () => {
     assert.equal(ctx.practiceBest('readingHistory', 'rd-kc-01-1'), 100);
     assert.equal(ctx.practiceBest('readingHistory', 'rd-ch-06-2'), null);
     assert.equal(ctx.practiceBest('clozeHistory', 'rd-kc-01-1'), null);
-    assert.truthy(ctx.renderReadingHomeHTML().includes('Tốt nhất: 100%'));
+    assert.truthy(ctx.renderReadingHomeHTML().includes('Best: 100%'));
   });
 
   test('a finished round asks the app to sync', () => {
@@ -222,20 +223,20 @@ suite('practice sets: homes', () => {
     assert.truthy(r.indexOf('Không chuyên') < r.indexOf('Chuyên'));
     assert.truthy(r.includes("startReadingPassage('rd-kc-01-1')") && r.includes("startReadingPassage('rd-ch-06-2')"));
     const c = ctx.renderClozeHomeHTML();
-    assert.truthy(c.includes("startClozePassage('cl-kc-02-1')") && c.includes('tự viết') && c.includes('trắc nghiệm'));
+    assert.truthy(c.includes("startClozePassage('cl-kc-02-1')") && c.includes('typed') && c.includes('multiple choice'));
   });
 
   test('the errors home offers one round per level with the pool size', () => {
     const { ctx } = world();
     const h = ctx.renderErrorsHomeHTML();
     assert.truthy(h.includes("startErrorsRound('kc')") && h.includes("startErrorsRound('ch')"));
-    assert.truthy(h.includes('từ 3 câu') && h.includes('từ 1 câu'));
+    assert.truthy(h.includes('from 3 ·') && h.includes('from 1 ·'));
   });
 
   test('with no bank each home shows a retry, never an empty list', () => {
     const { ctx } = world();
     vm.runInContext('READING_PASSAGES.length = 0; CLOZE_PASSAGES.length = 0; ERROR_ITEMS.length = 0;', ctx);
-    for (const fn of ['renderReadingHomeHTML', 'renderClozeHomeHTML', 'renderErrorsHomeHTML']) assert.truthy(ctx[fn]().includes('Thử lại'), fn);
+    for (const fn of ['renderReadingHomeHTML', 'renderClozeHomeHTML', 'renderErrorsHomeHTML']) assert.truthy(ctx[fn]().includes('Try again'), fn);
   });
 });
 

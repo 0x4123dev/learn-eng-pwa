@@ -59,7 +59,7 @@ if (typeof EXAM_SETS !== 'undefined') {
         perfectBonus: PTNK_PERFECT_BONUS,
         syncActivity: true,
         home: () => renderPtnkHome(),
-        homeLabel: '← PTNK',
+        homeLabel: '← PTNK Exams',
     };
 }
 
@@ -84,9 +84,9 @@ function ptnkCardHTML(ex) {
             <div class="exam-card-info">
                 <div class="exam-card-title">${ptnkEsc(ex.title)}</div>
                 <div class="exam-card-sub">${ptnkEsc(ex.subtitle)}</div>
-                <div class="exam-card-meta">⏱️ ${ex.durationMin} phút · ${ex.questions.length} câu · <span class="ptnk-track">${ptnkTrackLabel(ex.track)}</span>${solved ? ' · <span class="ptnk-key-note" title="Đề này không có đáp án chính thức; đáp án do hệ thống giải và kiểm tra chéo.">Đáp án tham khảo</span>' : ''}</div>
-                ${Array.isArray(ex.omitted) && ex.omitted.length ? `<div class="ptnk-omitted">⚠️ Lược bỏ: ${ptnkEsc(ex.omitted.join('; '))}</div>` : ''}
-                ${best !== null ? `<div class="exam-card-best">Tốt nhất: ${best}/${ex.questions.length}${best === ex.questions.length ? ' 🌟' : ''}</div>` : ''}
+                <div class="exam-card-meta">⏱️ ${ex.durationMin} min · ${ex.questions.length} questions · <span class="ptnk-track">${ptnkTrackLabel(ex.track)}</span>${solved ? ' · <span class="ptnk-key-note" title="No official key was published for this paper; the answers were solved and cross-checked.">Unofficial key</span>' : ''}</div>
+                ${Array.isArray(ex.omitted) && ex.omitted.length ? `<div class="ptnk-omitted">⚠️ Omitted: ${ptnkEsc(ex.omitted.join('; '))}</div>` : ''}
+                ${best !== null ? `<div class="exam-card-best">Best: ${best}/${ex.questions.length}${best === ex.questions.length ? ' 🌟' : ''}</div>` : ''}
             </div>
             <div class="exam-card-go">›</div>
         </button>`;
@@ -98,26 +98,26 @@ function renderPtnkHomeHTML() {
     const bank = ptnkBank();
     if (!bank.length) {
         return '<div class="lazy-loading" role="status" style="text-align:center">'
-            + '<p>Chưa tải được bộ đề PTNK. Con kiểm tra mạng rồi thử lại nhé.</p>'
-            + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
+            + '<p>The PTNK papers did not load. Check the connection and try again.</p>'
+            + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Try again</button>'
             + '</div>';
     }
     const years = {};
     bank.forEach(ex => { (years[ex.year] = years[ex.year] || []).push(ex); });
     const groups = Object.keys(years).map(Number).sort((a, b) => b - a).map(y => {
         const papers = years[y].slice().sort((a, b) => (a.track === 'kc' ? 0 : 1) - (b.track === 'kc' ? 0 : 1));
-        return `<h3 class="topic-detail-list-title ptnk-year">Năm ${y}</h3>${papers.map(ptnkCardHTML).join('')}`;
+        return `<h3 class="topic-detail-list-title ptnk-year">${y}</h3>${papers.map(ptnkCardHTML).join('')}`;
     }).join('');
     const history = ptnkHistory();
     const done = new Set(history.filter(h => h && h.total && h.score === h.total).map(h => h.examId)).size;
     return `
         <div class="exam-header">
-            <h1 class="exam-title">🏫 PTNK</h1>
-            <p class="exam-subtitle">${bank.length} đề thi thật vào lớp 10 Phổ thông Năng khiếu · ${PTNK_COINS_PER_CORRECT} xu mỗi câu đúng · thưởng ${PTNK_PERFECT_BONUS} xu khi đúng 100%${done ? ` · đã đúng 100% ${done} đề` : ''}</p>
+            <h1 class="exam-title">🏫 PTNK Exams</h1>
+            <p class="exam-subtitle">${bank.length} real grade-10 entrance papers · ${PTNK_COINS_PER_CORRECT} coins per correct answer · +${PTNK_PERFECT_BONUS} for a perfect paper${done ? ` · ${done} paper${done === 1 ? '' : 's'} at 100%` : ''}</p>
         </div>
         <div class="exam-list">${groups}</div>
         <button class="exam-history-btn" onclick="examSelectSet('ptnk'); renderExamHistory()">
-            📜 Lịch sử ${history.length ? `(${history.length})` : ''}
+            📜 History ${history.length ? `(${history.length})` : ''}
         </button>`;
 }
 
