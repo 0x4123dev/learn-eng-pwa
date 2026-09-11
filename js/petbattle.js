@@ -399,6 +399,8 @@ function openPetBattle() {
   renderPetBattle();
   refreshPetBattle();
   _pbStartPolling();
+  // Battles this profile finished elsewhere — or never watched finish.
+  pbReconcileHistory();
 }
 // Everything this module holds for ONE child. The profile switcher calls this,
 // because a live battle must not survive into the next account: two children
@@ -420,6 +422,9 @@ function pbForgetProfile() {
   _pbLastTurn = 0;
   _pbHires = [];
   _pbHistoryOpen = -1;
+  // A reconcile still in flight belongs to the previous child: its answer is
+  // dropped by the currentUser check, and the next child must get their own.
+  _pbReconciling = null;
   const screen = typeof document !== 'undefined' ? document.getElementById('petBattleScreen') : null;
   if (screen) { screen.innerHTML = ''; delete screen.dataset.pbLobbySig; }
 }
@@ -1454,7 +1459,10 @@ function startPetBattleGame(view) {
       return _pbSendTurn(view.id, turn);
     },
     onSeenTurn: (n) => { _pbLastTurn = Math.max(_pbLastTurn, n); },
-    onFinish: (result) => finishPetBattle(result),
+    // The battle id travels with the result so the history entry can be
+    // matched against the server row later (pbReconcileHistory) instead of
+    // being guessed from a name and a timestamp.
+    onFinish: (result) => finishPetBattle(Object.assign({ battleId: view.id }, result || {})),
   });
   _pbGame.start();
 }
@@ -1503,6 +1511,156 @@ function _pbCupLadderHTML(earned) {
     </div>`;
 }
 
+// What a finished battle pays: 20 for fighting, +30 for the win, +15 for a
+// draw. Losing costs nothing. ONE definition, because two code paths pay it —
+// finishPetBattle for the phone that watched the last shot land, and
+// pbReconcileHistory for the profile that was not there.
+function _pbBattleCoins(won, draw) {
+  return 20 + (won ? 30 : draw ? 15 : 0);
+}
+
+// ---- history reconcile: the server remembers, the phone catches up ----
+//
+// finishPetBattle runs on the client that OBSERVES the end of the battle. Two
+// children on one phone: A battles B from A's profile, and B's profile — not
+// signed in, not polling — never sees the last shot. B's history had no entry
+// and B was never paid. The server row (battles + battle_turns) is the truth,
+// so on every lobby open and after every login the profile reads it back and
+// merges what it missed.
+//
+// Merge rules, in order:
+//   1. An entry with the same battleId is the same battle — skip.
+//   2. An entry with NO battleId (written before ids were recorded) whose
+//      foe name matches and whose date is within a minute of the server's
+//      finished_at is the same battle — adopt the id, skip.
+//   3. Otherwise this profile never saw it: rebuild the entry from the server
+//      row and its turns, pay exactly what finishPetBattle would have paid,
+//      flag it `reconciled: true`.
+// The cup is NOT counted here a second time: the trophy cabinet reconciles
+// against the server's lifetime win count with its own one-way rule
+// (js/cups.js applyServerWins), which is idempotent whichever of the two
+// reconciles lands first.
+//
+// `?since` is the newest finished_at already merged, kept per profile in
+// appState, so a steady-state open costs the server a handful of rows.
+let _pbReconciling = null;       // the in-flight promise; callers share it
+function pbReconcileHistory() {
+  if (_pbReconciling) return _pbReconciling;
+  const p = _pbReconcileHistoryOnce()
+    .catch(() => null)
+    // Only clear OUR slot: pbForgetProfile may have replaced it with the next
+    // child's request while this one was in flight.
+    .then((r) => { if (_pbReconciling === p) _pbReconciling = null; return r; });
+  _pbReconciling = p;
+  return p;
+}
+async function _pbReconcileHistoryOnce() {
+  if (typeof appState === 'undefined' || !appState) return null;
+  // Applied to the profile that ASKED. A switch while the request is in
+  // flight must not pay the next child for the previous child's battles.
+  const who = (typeof currentUser !== 'undefined') ? currentUser : null;
+  const since = Math.max(0, Math.trunc(Number(appState.petBattleHistorySyncedAt) || 0));
+  const r = await _pbApi('battle/history' + (since ? '?since=' + since : ''));
+  if (!r || !r.ok || !r.data || !Array.isArray(r.data.battles)) return null;   // offline: no change
+  const now = (typeof currentUser !== 'undefined') ? currentUser : null;
+  if (now !== who || typeof appState === 'undefined' || !appState) return null;
+  return _pbMergeHistory(r.data);
+}
+
+// The server's viewer-relative battle (+ turns) as the entry finishPetBattle
+// would have written had this phone been watching.
+function _pbHistoryEntryFromServer(b) {
+  const myId = b.me.id;
+  const draw = !!b.draw || !b.winnerId;
+  const won = !draw && b.winnerId === myId;
+  const seed = Number(b.seed) || 0;
+  const num = (v) => Math.max(0, Math.trunc(Number(v) || 0));
+  const rounds = (Array.isArray(b.turns) ? b.turns : []).map((t) => {
+    const turnNo = Math.max(1, num(t.turnNo) || 1);
+    const round = Math.ceil(turnNo / 2);
+    let wind = 0;
+    try {
+      if (typeof BattleCalc !== 'undefined' && BattleCalc && BattleCalc.windForRound) wind = BattleCalc.windForRound(seed, round);
+    } catch (e) { wind = 0; }
+    return {
+      mine: t.userId === myId, round, turnNo,
+      shots: num(t.shots), angle: Number(t.angle) || 0, power: Number(t.power) || 0,
+      wind, damage: num(t.damage),
+    };
+  });
+  const mine = rounds.filter(r => r.mine);
+  const theirs = rounds.filter(r => !r.mine);
+  const sum = (list, k) => list.reduce((n, r) => n + (r[k] || 0), 0);
+  return {
+    battleId: num(b.id),
+    won, draw, myHp: num(b.me.hp), foeHp: num(b.foe.hp), foe: b.foe.name || '?',
+    date: num(b.finishedAt) || Date.now(),
+    coins: _pbBattleCoins(won, draw),
+    myLevel: num(b.me.level) || 1, foeLevel: num(b.foe.level) || 1,
+    shotsFired: sum(mine, 'shots'),
+    hits: mine.filter(r => r.damage > 0).length,
+    volleys: mine.length,
+    damageDealt: sum(mine, 'damage'),
+    damageTaken: sum(theirs, 'damage'),
+    rounds,
+    reconciled: true,
+  };
+}
+
+function _pbMergeHistory(data) {
+  if (!Array.isArray(appState.petBattleHistory)) appState.petBattleHistory = [];
+  const list = appState.petBattleHistory;
+  let newest = Math.max(0, Math.trunc(Number(appState.petBattleHistorySyncedAt) || 0));
+  let added = 0, coins = 0, wonUnseen = 0;
+  for (const b of data.battles) {
+    if (!b || b.status !== 'done' || !b.me || !b.foe) continue;
+    const id = Math.trunc(Number(b.id)) || 0;
+    if (!id) continue;
+    newest = Math.max(newest, Math.trunc(Number(b.finishedAt) || 0));
+    // 1. same id — already recorded (live, or by an earlier reconcile)
+    let entry = list.find(e => e && Math.trunc(Number(e.battleId)) === id);
+    // 2. a pre-id entry: same foe, same minute
+    if (!entry) {
+      const at = Number(b.finishedAt) || 0;
+      entry = list.find(e => e && !e.battleId && e.foe === b.foe.name
+        && Math.abs((Number(e.date) || 0) - at) <= 60 * 1000);
+      if (entry) entry.battleId = id;
+    }
+    if (entry) continue;
+    // 3. never seen here: record it and pay it, once
+    const built = _pbHistoryEntryFromServer(b);
+    appState.coins = Math.max(0, Math.trunc(Number(appState.coins) || 0)) + built.coins;
+    coins += built.coins;
+    if (built.won) wonUnseen++;
+    list.push(built);
+    added++;
+  }
+  if (added) {
+    // Newest first, like unshift kept it; an expanded row may have moved.
+    list.sort((a, b) => (Number(b.date) || 0) - (Number(a.date) || 0));
+    if (list.length > 100) list.length = 100;
+    _pbHistoryOpen = -1;
+  }
+  appState.petBattleHistorySyncedAt = newest;
+  // The trophy: through the cabinet's own one-way rule against the server's
+  // lifetime count, so it cannot be shelved twice however the two reconciles
+  // interleave. Only when that rule is absent (a stripped test sandbox) does
+  // the count of unseen wins become cups directly.
+  if (typeof applyServerWins === 'function' && Number.isFinite(Number(data.wins))) {
+    try { applyServerWins(data.wins); } catch (e) {}
+  } else if (wonUnseen && typeof awardCup === 'function') {
+    try { awardCup(wonUnseen); } catch (e) {}
+  }
+  if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+    try { saveUserData(currentUser, appState); } catch (e) {}
+  }
+  if (added) {
+    if (typeof EngAuth !== 'undefined' && EngAuth.syncNow) { try { EngAuth.syncNow(); } catch (e) {} }
+    if (!_pbGame && !_pbShowingResult) { try { renderPetBattle(); } catch (e) {} }
+  }
+  return { added, coins, wins: wonUnseen };
+}
+
 // Battle over: BOTH players are paid (losing costs nothing).
 function finishPetBattle(result) {
   // Both castles standing on equal HP with the ammo gone. It is neither a win
@@ -1510,7 +1668,7 @@ function finishPetBattle(result) {
   // did to BOTH children — wrote two losses into two histories for one battle.
   const draw = !!(result && result.draw);
   const won = !draw && !!result.won;
-  const coins = 20 + (won ? 30 : draw ? 15 : 0);
+  const coins = _pbBattleCoins(won, draw);
   // A trophy has to mean a real friend was beaten, so it is awarded here and
   // nowhere else.
   if (won && typeof awardCup === 'function') { try { awardCup(1); } catch (e) {} }
@@ -1526,7 +1684,12 @@ function finishPetBattle(result) {
     const mine = rounds.filter(r => r.mine);
     const theirs = rounds.filter(r => !r.mine);
     const sum = (list, k) => list.reduce((n, r) => n + (r[k] || 0), 0);
+    // The server's id for this battle. pbReconcileHistory matches on it, so
+    // the same battle read back from the server is recognised — and not paid
+    // a second time.
+    const battleId = Math.trunc(Number(result.battleId)) || 0;
     appState.petBattleHistory.unshift({
+      battleId: battleId || undefined,
       won, draw, myHp: result.myHp, foeHp: result.foeHp, foe: result.foeName, date, coins,
       myLevel: result.myLevel || 1, foeLevel: result.foeLevel || 1,
       shotsFired: sum(mine, 'shots'),
@@ -1570,6 +1733,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     openPetBattle, closePetBattle, pbForgetProfile, refreshPetBattle, renderPetBattle,
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
+    pbReconcileHistory, _pbMergeHistory, _pbHistoryEntryFromServer, _pbBattleCoins,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
     _pbRandomArenaCard, _pbSceneInvite,

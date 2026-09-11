@@ -1704,6 +1704,51 @@ async function verifyClient() {
       return '2 friend rows, each wired to challengePetFriend()';
     });
 
+  await R.check('play-pet-battle-history-from-server',
+    'Đấu trường: trận đã đấu trên hồ sơ khác vẫn hiện trong 📜 Lịch sử đấu, và được trả xu',
+    async () => {
+      const h = mountApp();
+      loginTestUser(h, { coins: 100, dogLevel: 4 });
+      // The server remembers a battle this profile never watched finish: the
+      // other child on this phone fought it from THEIR profile.
+      const serverBattle = {
+        id: 77, status: 'done', seed: 5, winnerId: 1, draw: false, finishedAt: Date.now() - 60000,
+        me: { id: 1, name: 'Bé', level: 4, hp: 60 }, foe: { id: 22, name: 'Oleole', level: 6, hp: 0 },
+        turns: [{ turnNo: 1, userId: 1, shots: 3, damage: 40, angle: 45, power: 70 },
+                { turnNo: 2, userId: 22, shots: 2, damage: 40, angle: 50, power: 60 },
+                { turnNo: 3, userId: 1, shots: 3, damage: 60, angle: 45, power: 70 }],
+      };
+      let historyCalls = 0;
+      stubServer(h, (p) => {
+        if (p === 'battle') return { ok: true, data: { ammo: 2, readyAt: 0, stats: { wins: 1, losses: 0 }, battle: null } };
+        if (p.startsWith('battle/history')) { historyCalls++; return { ok: true, data: { battles: [serverBattle], wins: 1, now: Date.now() } }; }
+        return { ok: false, data: null };
+      });
+      h.run("_friendsData = { friends: [{userId:22,username:'Oleole'}], incoming: [], outgoing: [] }");
+      h.sandbox.openPetBattle();
+      await settle(10);
+      must(historyCalls >= 1, 'opening the lobby asks the server for the finished battles');
+      const hist = h.state().petBattleHistory || [];
+      mustEqual(hist.length, 1, 'the battle the profile never watched is in its history');
+      mustEqual(hist[0].battleId, 77, 'keyed by the server id');
+      must(hist[0].won === true && hist[0].reconciled === true, 'recorded as a win, flagged reconciled');
+      mustEqual(hist[0].damageDealt, 100, 'damage dealt rebuilt from the turns');
+      mustEqual(hist[0].damageTaken, 40, 'damage taken rebuilt from the turns');
+      mustEqual(h.state().coins, 150, 'paid 20 + 30 for the win, exactly what a watching phone pays');
+      mustEqual((h.state().cups || {}).won, 1, 'the trophy is on the shelf');
+      const el = h.el('petBattleScreen');
+      const text = squash(el.textContent);
+      must(text.includes('Oleole') && /60\s*❤️\s*–\s*0\s*❤️/.test(text), 'the history panel shows the battle: Oleole, 60 ❤️ – 0 ❤️');
+      // Idempotent: a second open pays nothing more and adds nothing more.
+      h.sandbox.closePetBattle();
+      h.sandbox.openPetBattle();
+      await settle(10);
+      mustEqual((h.state().petBattleHistory || []).length, 1, 'still one entry after a second reconcile');
+      mustEqual(h.state().coins, 150, 'and not paid twice');
+      mustEqual((h.state().cups || {}).won, 1, 'and not a second cup');
+      return 'battle #77 vs Oleole merged from the server, paid 50 xu + 1 cup once; second open: no change';
+    });
+
   await R.check('play-night-raid-target-list',
     'Cướp Đêm: mở nhà của bé, rồi mở danh sách nhà để cướp',
     async () => {
