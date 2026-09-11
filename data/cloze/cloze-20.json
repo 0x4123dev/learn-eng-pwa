@@ -1,0 +1,737 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-20-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "When the Reef Turns White",
+   "topic": "coral bleaching",
+   "passage": "Not until the summer of 1998 (1)____ marine biologists fully grasp how quickly a reef can die. That year an unusually strong El Niño pushed sea temperatures a degree or two (2)____ their normal maximum across much of the tropics, and reefs from East Africa to the Maldives lost their colour within weeks. The colour, it turns out, was never the coral's own. It belongs to microscopic algae living inside each polyp, (3)____ supply their host with most of its food in exchange for shelter. Under heat stress the polyp expels them, and the bare white skeleton shows through the tissue. A bleached coral is not yet a dead one; provided (4)____ the water cools soon enough, the algae can return and the partnership resumes. What worries researchers is the frequency (5)____ which these events now occur. A reef that once had a decade to recover between heatwaves may now have three or four years, hardly enough for slow-growing species to rebuild. (6)____ it not for a handful of unusually tolerant colonies, some reefs would already have vanished altogether. Scientists have begun cross-breeding these survivors in the hope of producing corals able to cope (7)____ warmer seas, though nobody pretends this will work at the scale required. Reef tourism, on (8)____ many island economies depend, is watching nervously. (9)____ the scale of the damage, one might expect bleaching to dominate environmental news; in fact it receives far less attention than deforestation. Only when a reef has gone entirely (10)____ people tend to notice what they have lost.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "<b>Not until</b> at the start of a sentence forces inversion with an auxiliary: <i>Not until 1998 did biologists grasp</i>. <b>Have</b> or <b>could</b> would need a different verb form and would not match the past-tense narrative."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "above",
+      "over",
+      "beyond",
+      "past"
+     ],
+     "answer": "above",
+     "explanation": "Temperatures rise <b>above</b> (or over, beyond, past) a maximum. <b>Than</b> is tempting after 'a degree or two' but needs a comparative such as <i>higher</i>, which is absent."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "A non-defining relative clause after a comma takes <b>which</b> for the algae. <b>That</b> cannot follow a comma in a non-defining clause, and <b>who</b> is reserved for people."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "<b>Provided that</b> introduces a condition: on condition that the water cools. <b>If</b> or <b>when</b> cannot follow <i>provided</i>, which already carries the conditional meaning."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "with",
+      "at"
+     ],
+     "answer": "with",
+     "explanation": "Events occur <b>with</b> (or at) a certain frequency, so the relative clause is <i>the frequency with which they occur</i>. <b>In</b> and <b>by</b> do not collocate with <i>frequency</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "Were",
+      "were"
+     ],
+     "answer": "Were",
+     "explanation": "<b>Were it not for</b> is the inverted form of <i>if it were not for</i>, an unreal condition whose result is <i>would already have vanished</i>. <b>Was</b> is not used in this inverted subjunctive, and <b>Had</b> would need <i>had it not been for</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "with"
+     ],
+     "answer": "with",
+     "explanation": "The phrasal verb is <b>cope with</b> a difficulty. <b>In</b> would describe where the corals live, not what they can withstand, and <i>cope</i> never takes <b>to</b>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "The preposition is fronted before the relative pronoun: <i>tourism, on <b>which</b> economies depend</i>. <b>That</b> can never follow a preposition, and <b>whom</b> is only for people."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "Given",
+      "given",
+      "Considering",
+      "considering"
+     ],
+     "answer": "Given",
+     "explanation": "<b>Given</b> (or considering) the scale of the damage means 'taking it into account', which is what leads one to expect heavy coverage. <b>Despite</b> would reverse the logic: the expectation follows from the damage rather than in spite of it."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "do"
+     ],
+     "answer": "do",
+     "explanation": "A fronted <b>Only when</b> clause triggers inversion in the main clause: <i>only when it has gone do people notice</i>. <b>Then</b> is a tempting filler but leaves the sentence without the required auxiliary before <i>people</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-20-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "Penny Universities",
+   "topic": "the origin of coffee houses",
+   "passage": "Legend has it that coffee was discovered by an Ethiopian goatherd (1)____ animals grew unusually lively after chewing red berries from a certain bush. Whatever the truth of the tale, the drink had reached the ports of Yemen by the fifteenth century, where Sufi monks used it to stay awake (2)____ their night-time devotions. From there it travelled north to Cairo, Damascus and Istanbul, and it was in these cities that the coffee house (3)____ such was born. Unlike the tavern, it sold nothing that clouded the mind; unlike the mosque, it demanded no particular conduct. Men of every rank could sit for hours over a single cup, playing chess, listening to storytellers or, (4)____ the authorities feared most, discussing politics. Several sultans tried to (5)____ the coffee houses down, and each time they reopened within months. When the habit reached London in the 1650s, it (6)____ hold with astonishing speed: by 1700 the city is thought to have had several hundred such establishments, each one attracting its own clientele. Merchants gathered at one, poets at another, and it was out of a coffee house near the Thames (7)____ the insurance market Lloyd's eventually grew. A penny bought admission and a cup, which is (8)____ the coffee houses came to be called 'penny universities'. Their decline in the eighteenth century, historians agree, had (9)____ to do with the quality of the coffee, which had if anything improved, than with the rise of private clubs and the growing popularity of tea. (10)____, the idea they embodied — a public room where strangers could talk as equals — has never quite gone away.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "<b>Whose</b> links the goatherd to his animals as a possessive relative: <i>a goatherd whose animals grew lively</i>. <b>Who</b> would leave <i>animals</i> without a possessor and produce two subjects in a row."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "during",
+      "through",
+      "throughout",
+      "for"
+     ],
+     "answer": "during",
+     "explanation": "The monks stayed awake <b>during</b> (or through, throughout, for) their devotions, a period of time. <b>While</b> is a conjunction and needs a clause with a verb, not a noun phrase."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "<b>As such</b> means 'in the proper sense of the word': the coffee house as such, as opposed to earlier informal gatherings. <b>Like</b> or <b>for</b> cannot combine with <i>such</i> here."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "what"
+     ],
+     "answer": "what",
+     "explanation": "<b>What the authorities feared most</b> is a nominal relative clause standing for 'the thing they feared most'. <b>Which</b> would need a noun before it to refer back to, and there is none."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "close",
+      "shut"
+     ],
+     "answer": "close",
+     "explanation": "The phrasal verb <b>close down</b> (or shut down) means to stop a business operating. <b>Put down</b> or <b>break down</b> do not apply to an establishment, and <b>ban</b> does not take <i>down</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "took"
+     ],
+     "answer": "took",
+     "explanation": "A habit or idea <b>takes hold</b> when it becomes established. <b>Got</b> or <b>caught</b> hold would mean physically grasping something, which is not the sense here."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "This is a cleft sentence: <i>it was out of a coffee house <b>that</b> Lloyd's grew</i>. <b>Which</b> is wrong because the emphasised element is a prepositional phrase, not a noun that a relative clause could modify, and <b>where</b> would double the place meaning already given by <i>out of</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "why",
+      "how"
+     ],
+     "answer": "why",
+     "explanation": "<b>Which is why</b> (or how) introduces the consequence of the penny price: it explains the nickname. <b>Because</b> cannot follow <i>which is</i>, and <b>that</b> would not express the reason."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "less"
+     ],
+     "answer": "less",
+     "explanation": "<b>Less to do with X than with Y</b> ranks the two causes, and the aside 'which had if anything improved' rules out the coffee as the reason, so <b>less</b> is the only logical choice. <b>More</b> would make the improved coffee the main cause of the decline."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "Nevertheless",
+      "nevertheless",
+      "However",
+      "however",
+      "Nonetheless",
+      "nonetheless",
+      "Still",
+      "still",
+      "Yet",
+      "yet"
+     ],
+     "answer": "Nevertheless",
+     "explanation": "The final sentence contrasts the decline of the coffee house with the survival of its idea, so a concessive linker such as <b>Nevertheless</b>, however or yet is needed. <b>Therefore</b> or <b>Moreover</b> would present the survival as a consequence or an addition, not a contrast."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-20-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "Rebuilding the Past",
+   "topic": "how memory works",
+   "passage": "Most of us imagine memory (1)____ a kind of recording, stored somewhere in the brain and played back on demand. Neuroscientists have spent decades demonstrating that nothing could be (2)____ from the truth. A memory is not retrieved so much as rebuilt, assembled afresh each time from fragments scattered across different regions, and every rebuilding introduces small changes. This explains why two people (3)____ witnessed the same event can give sincere but contradictory accounts of it years later. It also explains why memories can be planted: tell someone often (4)____ that they once got lost in a shopping centre as a child, and a surprising number will eventually 'remember' the episode in vivid detail. Sleep plays a role that was underestimated (5)____ recently. During the deeper stages of the night, the hippocampus appears to replay the day's experiences to the cortex, gradually transferring (6)____ has been judged important into long-term storage. Deprive a student of sleep after a day of revision and (7)____ of what was learned will be lost by morning. Forgetting, meanwhile, is not simply a failure of the system (8)____ part of its design. A brain that kept everything would drown in irrelevant detail, unable to tell a lasting principle from a passing coincidence. Had our ancestors remembered every leaf on every tree, they might never (9)____ recognised the one that was poisonous. The art of memory, in (10)____ words, lies less in holding on than in knowing what to let go.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "<b>Imagine X as Y</b> means to picture X in the form of Y. <b>Like</b> is tempting but after <i>imagine</i> it would compare memory to a recording rather than define what people take it to be, and <b>to be</b> is two words."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "further",
+      "farther"
+     ],
+     "answer": "further",
+     "explanation": "<b>Nothing could be further from the truth</b> is a fixed expression of strong denial, and British usage also allows <i>farther</i>. <b>Far</b> is not comparative, and <b>away</b> would need <i>further</i> in front of it."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "who",
+      "that"
+     ],
+     "answer": "who",
+     "explanation": "A defining relative clause about people takes <b>who</b> (or that): <i>two people who witnessed the same event</i>. <b>Which</b> is not used for people, and <b>whom</b> is wrong because the pronoun is the subject of <i>witnessed</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "enough"
+     ],
+     "answer": "enough",
+     "explanation": "<b>Often enough</b> means 'sufficiently often', with <i>enough</i> following the adverb it modifies. <b>Too</b> would have to come before <i>often</i> and would give the wrong meaning, and <b>very</b> cannot follow the adverb."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "until",
+      "till"
+     ],
+     "answer": "until",
+     "explanation": "<b>Until recently</b> marks the end point of the period during which the role was underestimated. <b>Since</b> would mean the opposite, that the underestimation began recently, and <b>before</b> is not used with <i>recently</i> in this way."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "what",
+      "whatever"
+     ],
+     "answer": "what",
+     "explanation": "<b>What has been judged important</b> is a nominal clause meaning 'the things that have been judged important', and <i>whatever</i> is also possible. <b>Which</b> or <b>that</b> would need a noun before them to refer to."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "much",
+      "most",
+      "some",
+      "part",
+      "half"
+     ],
+     "answer": "much",
+     "explanation": "A quantifier is needed before <b>of what was learned</b>: much, most, some, part or half. <b>Many</b> is wrong because <i>what was learned</i> is uncountable, and <b>all</b> overstates a claim the passage presents as a partial loss."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "but"
+     ],
+     "answer": "but",
+     "explanation": "<b>Not simply X but Y</b> corrects one description with another: not a failure but part of the design. <b>And</b> would make forgetting both a failure and a design feature, and <b>rather</b> would need <i>but rather</i> here."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "have"
+     ],
+     "answer": "have",
+     "explanation": "The inverted third conditional <i>Had our ancestors remembered</i> requires a perfect modal in the result: <i>might never <b>have</b> recognised</i>. <b>Had</b> after <i>might</i> is impossible, and <b>be</b> would make the sentence passive without an agent."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "other"
+     ],
+     "answer": "other",
+     "explanation": "<b>In other words</b> signals that the writer is restating the argument more simply. <b>Another</b> is singular and cannot precede the plural <i>words</i>, and <b>short</b> would be <i>in short</i> without <i>words</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-20-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "A Light with No One to Keep It",
+   "topic": "the lighthouse keepers",
+   "passage": "For the best part of two centuries, the lights (1)____ guarded Britain's coast were tended by men who lived beside them. The job was passed from father to son more often than (2)____, and a keeper's children grew up knowing the rhythm of the lamp better than the rhythm of the school bell. On the rock stations — towers built straight out of the sea, miles from the nearest land — three men would share a space no larger than a modest flat for weeks (3)____ end. Boredom was the enemy quite (4)____ much as the weather. Keepers carved, knitted, built ships in bottles, and kept diaries in which the arrival of the relief boat is recorded with an enthusiasm normally reserved (5)____ great victories. No sooner had a storm blown itself out (6)____ the men would be scrubbing salt from the glass, since a dirty lens could dim the beam by a third. The relationship between keepers and the ships they protected was oddly one-sided: sailors depended on the light absolutely, yet few of them ever gave a thought to (7)____ was up there keeping it lit. Automation began in the 1960s and was complete by the end of the century, (8)____ which point the last keepers were quietly pensioned off. Some welcomed retirement; others, (9)____ to the solitude, found the noise of ordinary life almost unbearable. Today the towers still stand and the lamps still turn, but nobody watches them do it. (10)____ many of the old keepers, that is the saddest part: a light with no one to keep it.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "that",
+      "which"
+     ],
+     "answer": "that",
+     "explanation": "A defining relative clause identifies which lights are meant: <i>the lights <b>that</b> guarded the coast</i>, and <i>which</i> is equally correct without a comma. <b>Who</b> is impossible because lights are not people, and <b>what</b> cannot introduce a relative clause after a noun."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "not"
+     ],
+     "answer": "not",
+     "explanation": "<b>More often than not</b> is a fixed phrase meaning 'usually'. <b>Ever</b> would give <i>more often than ever</i>, a comparison with the past that makes no sense for an inherited job, and <b>never</b> is not used in this idiom."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "<b>For weeks on end</b> means for many weeks without a break. <b>At</b> or <b>in</b> do not form this idiom, and <i>without end</i> would need a different structure."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The comparison of equality is <b>as much as</b>, here strengthened by <i>quite</i>: boredom was quite as much of an enemy as the weather. <b>So</b> is used only in negative comparisons (<i>not so much as</i>), and <b>too</b> would need <i>too much</i> without the following <i>as</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "Something is <b>reserved for</b> a purpose or occasion: enthusiasm reserved for great victories. <b>To</b> would suggest handing the enthusiasm over to the victories, and <b>on</b> does not collocate with <i>reserved</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<b>No sooner had ... than</b> is the inverted pattern for two events in quick succession. <b>When</b> belongs with <i>hardly had ... when</i>, and <b>then</b> is a spelling trap that turns the sentence into nonsense."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "who",
+      "whoever"
+     ],
+     "answer": "who",
+     "explanation": "After the preposition <i>to</i>, the clause <i>who was up there</i> is a nominal clause acting as its object, so <b>who</b> (or whoever) is the subject of <i>was</i>. <b>Whom</b> is tempting after a preposition but is wrong because the pronoun is a subject, not an object, and <b>which</b> is not used for people."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>At which point</b> means 'and at that moment', a relative phrase with a fronted preposition. <b>By</b> or <b>from</b> would imply a deadline or a starting point rather than the moment the pensioning happened."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "accustomed",
+      "used",
+      "attached"
+     ],
+     "answer": "accustomed",
+     "explanation": "<b>Accustomed to</b> (or used to, attached to) the solitude explains why ordinary noise became unbearable. <b>Adapted</b> to the solitude is possible in isolation, but the contrast with those who welcomed retirement points to habit, and <b>keen</b> or <b>fond</b> take <i>on</i> and <i>of</i>, not <i>to</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "For",
+      "for",
+      "To",
+      "to"
+     ],
+     "answer": "For",
+     "explanation": "<b>For</b> (or to) many of the old keepers introduces the people in whose view something is true. <b>With</b> would describe accompaniment, and <b>Among</b> would need a different verb, since <i>that is the saddest part among them</i> does not work."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-20-5",
+   "level": "ch",
+   "mode": "open",
+   "title": "Roads That Held an Empire",
+   "topic": "ancient road builders",
+   "passage": "Long before the Romans laid their first paved mile, other civilisations had learned that (1)____ a state could move its soldiers and grain, it could hold its territory. The Persians built a royal road stretching some 2,500 kilometres from Susa to the Aegean, along (2)____ relays of mounted messengers could carry a message in a week that would have taken a traveller on foot three months. The Inca, (3)____ had neither the wheel nor iron tools, nevertheless strung more than 30,000 kilometres of roads across the Andes. Their routes came complete with rope bridges swaying above gorges and storehouses spaced a day's walk (4)____. It is the Romans, however, (5)____ roads have left the deepest mark on the modern map. Their engineers dug a trench, packed it with layers of stone, gravel and sand, and finished the surface with a slight curve so that rain would run (6)____ rather than pool. So well were these roads made (7)____ several remain in use two thousand years later, and the routes of countless European motorways still follow them. What is often forgotten is the cost (8)____ which they were built. Much of the labour was carried out by soldiers between campaigns, and much of the rest by slaves and conquered peoples who had little choice (9)____ the matter. A road, in other words, was never simply a convenience; it was a statement that the land it crossed now belonged to (10)____ had built it.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "if",
+      "once",
+      "when",
+      "where",
+      "provided",
+      "providing"
+     ],
+     "answer": "if",
+     "explanation": "The clause states a condition: <b>if</b> (or once, when, where, provided) a state could move its soldiers, it could hold its territory. <b>Unless</b> would reverse the logic, and <b>that</b> is already used before the blank and cannot be repeated."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "The preposition <i>along</i> is fronted before the relative pronoun for the road: <i>along <b>which</b> messengers could carry</i>. <b>That</b> can never follow a preposition, and <b>where</b> would clash with <i>along</i>, which already gives the place meaning."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "who"
+     ],
+     "answer": "who",
+     "explanation": "A non-defining relative clause after a comma about a people takes <b>who</b>. <b>That</b> is impossible after a comma in this type of clause, and <b>which</b> is not used for people."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "apart"
+     ],
+     "answer": "apart",
+     "explanation": "Things placed at regular intervals are <b>spaced</b> a certain distance <b>apart</b>. <b>Away</b> would need a reference point (<i>away from something</i>), and <b>between</b> cannot end the phrase without an object."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "In this cleft sentence the emphasised noun <i>the Romans</i> is linked to <i>roads</i> by the possessive relative <b>whose</b>. <b>Who</b> would leave <i>roads</i> as a second subject with no connection, and <b>that</b> would make the Romans, not their roads, leave the mark."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "off",
+      "away"
+     ],
+     "answer": "off",
+     "explanation": "Water <b>runs off</b> (or away from) a curved surface instead of collecting on it, which is the contrast with <i>pool</i>. <b>Out</b> would mean the rain was used up, and <b>down</b> alone leaves unclear where it goes."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "<b>So well were these roads made that</b> is the inverted form of <i>so ... that</i>, expressing result. <b>Which</b> cannot introduce the result clause, and <b>as</b> would turn the sentence into a comparison with no second term."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "Something is built <b>at</b> a cost, so the relative phrase is <i>the cost at which they were built</i>. <b>For</b> is tempting because we pay for things, but the idiom for a price or sacrifice is <i>at a cost</i>, not <i>for a cost</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "The fixed phrase is <b>to have little choice in the matter</b>. <b>About</b> or <b>over</b> can follow <i>choice</i> in other contexts, but the idiom with <i>the matter</i> takes <i>in</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "whoever"
+     ],
+     "answer": "whoever",
+     "explanation": "<b>Whoever had built it</b> is a nominal clause meaning 'the people who had built it', and <i>whoever</i> is the subject of <i>had built</i>. <b>Whomever</b> is a common trap after the preposition <i>to</i>, but the case is decided inside the clause, where the pronoun is a subject, and <b>who</b> alone cannot follow a preposition in this sense."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-20-6",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "The Dance in the Dark Hive",
+   "topic": "the language of bees",
+   "passage": "In the early twentieth century an Austrian zoologist named Karl von Frisch (1)____ out to discover how a honeybee returning from a rich patch of flowers manages to tell her sisters where it is. He painted tiny dots on the backs of individual bees and watched them for hours through the glass wall of an observation hive. (2)____ he saw was a dance. A forager that had found food close to the hive ran in a tight circle, turning first one way and then the other; one that had flown further performed a figure of eight, waggling her abdomen (3)____ time she crossed the middle line. The length of the waggle, von Frisch worked out, corresponds to the distance of the food, and the angle of the run relative to the vertical comb tells the others the direction (4)____ the sun. The system is (5)____ precise that bees can be sent to a dish of sugar water several hundred metres away that none of them has ever seen. Not everyone was convinced. Critics argued that the bees were simply following a scent picked (6)____ from the dancer's body. It took decades of increasingly ingenious experiments, including a robot bee that danced without any scent at all, to (7)____ the matter beyond reasonable doubt. Von Frisch was eventually awarded a Nobel Prize (8)____ the work, sharing it in 1973 with two other pioneers of animal behaviour. (9)____ the dance can properly be called a language remains a matter of definition, since it has no grammar and refers only to the here and now. Even so, it is the only known case (10)____ a creature other than a human passes on abstract information about something that is out of sight.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "set",
+      "took",
+      "put",
+      "made"
+     ],
+     "correct": 0,
+     "explanation": "<b>Set out to do</b> something means to begin with a definite aim. <i>Put out</i> means to extinguish or publish, <i>made out</i> means to manage to see, and <i>took out</i> means to remove."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "Which",
+      "What",
+      "That",
+      "Whatever"
+     ],
+     "correct": 1,
+     "explanation": "<b>What he saw</b> is a nominal clause meaning 'the thing he saw' and acts as the subject of <i>was</i>. <i>Which</i> and <i>that</i> need a noun to refer back to, and <i>whatever</i> would wrongly suggest that anything at all he saw counted as a dance."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "whole",
+      "same",
+      "each",
+      "all"
+     ],
+     "correct": 2,
+     "explanation": "<b>Each time she crossed</b> means on every crossing. <i>All the time</i> would need <i>the</i> and means continuously, <i>whole</i> needs <i>the whole time</i>, and <i>same</i> would need <i>the same time as</i>."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "to",
+      "at",
+      "for",
+      "of"
+     ],
+     "correct": 3,
+     "explanation": "We speak of <b>the direction of</b> a landmark: the direction of the sun. <i>To</i> is used after verbs of movement (<i>fly to</i>), <i>at</i> after verbs of pointing, and <i>for</i> would mean 'on behalf of'."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "so",
+      "very",
+      "such",
+      "too"
+     ],
+     "correct": 0,
+     "explanation": "<b>So precise that</b> is the result pattern with an adjective. <i>Such</i> needs a noun (<i>such a precise system</i>), <i>too</i> would need <i>to</i> and would give the wrong meaning, and <i>very</i> cannot be followed by a <i>that</i> clause."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "out",
+      "up",
+      "off",
+      "over"
+     ],
+     "correct": 1,
+     "explanation": "A scent is <b>picked up</b> from a surface, meaning detected or acquired. <i>Picked out</i> means chosen, <i>picked off</i> means removed one by one, and <i>picked over</i> means sorted through."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "lay",
+      "bring",
+      "put",
+      "set"
+     ],
+     "correct": 2,
+     "explanation": "The collocation is <b>put a matter beyond doubt</b>. <i>Set</i> and <i>lay</i> are tempting because they also mean 'place', but neither forms this idiom, and <i>bring</i> would be <i>bring into doubt</i>, the opposite meaning."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "of",
+      "on",
+      "about",
+      "for"
+     ],
+     "correct": 3,
+     "explanation": "A prize is awarded <b>for</b> an achievement. <i>Of</i> would express possession, while <i>on</i> and <i>about</i> would describe the subject of a talk or book, not the reason for an award."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "Whether",
+      "Although",
+      "Unless",
+      "If"
+     ],
+     "correct": 0,
+     "explanation": "A clause acting as the subject of <i>remains</i> must begin with <b>whether</b>. <i>If</i> can replace <i>whether</i> only after a verb, never as the subject of a sentence, and <i>although</i> and <i>unless</i> would leave the main verb without a subject."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "where",
+      "what",
+      "which",
+      "that"
+     ],
+     "correct": 0,
+     "explanation": "After <i>case</i> a relative clause describing a situation takes <b>where</b>, equivalent to <i>in which</i>. <i>Which</i> and <i>that</i> would make the creature's action into a description of the case itself with no preposition, and <i>what</i> cannot follow a noun."
+    }
+   ]
+  }
+ ]
+}

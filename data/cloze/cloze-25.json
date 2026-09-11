@@ -1,0 +1,622 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-25-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Wires Beneath the Waves",
+   "topic": "the deep-sea cables",
+   "passage": "Few (1)____ the people who tap a message to a friend on another continent ever pause to wonder how it gets there. Satellites, most of them would guess; in fact, well over ninety per cent of the world's international traffic travels through cables no thicker than a garden hose, lying on the ocean floor. Not (2)____ the first telegraph line was hauled across the Atlantic in the 1850s did anyone believe such a thing could work, and even then the first attempt failed within weeks. Had the engineers of that era given (3)____ after that failure, the modern internet might have taken a very different shape. Instead they tried again, and by the end of the century a web of copper wires had been laid across the seabed, linking the continents (4)____ one another. The cables of today carry light rather than electric pulses, but the way they are installed has changed surprisingly (5)____. A specially built ship pays the cable out slowly from an enormous drum, sometimes travelling for weeks (6)____ ever seeing land. Near the coast, (7)____ fishing nets and anchors pose the greatest danger, the cable is buried in a trench; further out it simply rests on the bottom. Repairs, (8)____ they are needed, are carried out by grappling for the broken end and hauling it to the surface. It is slow, expensive work, (9)____ is why cable companies guard the routes of their lines so jealously. So dependent (10)____ we become on this hidden network that a single cut can leave an entire island nation offline for days.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "of"
+     ],
+     "answer": "of",
+     "explanation": "<b>Few of the people who…</b> — a quantifier followed by a definite noun phrase needs <i>of</i>. <i>Among</i> would need a different structure (<i>few among them</i>) and <i>from</i> is not used with quantifiers."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "until",
+      "till"
+     ],
+     "answer": "until",
+     "explanation": "The inverted <i>did anyone believe</i> later in the sentence signals a fronted negative time phrase: <b>Not until</b> (or <i>till</i>) <i>X did anyone believe</i>. <i>Not when</i> and <i>not before</i> are not used to trigger this inversion."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "up",
+      "in"
+     ],
+     "answer": "up",
+     "explanation": "To <b>give up</b> is to abandon an effort, which is what <i>after that failure</i> and <i>Instead they tried again</i> point to; <i>give in</i> (surrender) is also acceptable. <i>Give out</i> means to run out or distribute and does not fit."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "to",
+      "with"
+     ],
+     "answer": "to",
+     "explanation": "You <b>link</b> one thing <b>to</b> (or <i>with</i>) another. <i>Between</i> would need a plural object on its own (<i>linking the continents between them</i> is not idiomatic) and <i>by</i> would describe the means, not the partner."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "little"
+     ],
+     "answer": "little",
+     "explanation": "<b>Changed surprisingly little</b> — the following sentence describes the same slow drum-and-ship method, so the contrast is that the technology moved on but the method did not. <i>Few</i> is for countable nouns and <i>less</i> needs a comparison."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "without"
+     ],
+     "answer": "without",
+     "explanation": "<b>Without ever seeing land</b> — <i>without</i> + -ing is the standard way to say something does not happen during an action. <i>Before</i> would suggest the ship eventually sees land at a specific point, and <i>never</i> cannot precede <i>ever</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "where",
+      "because",
+      "since",
+      "as"
+     ],
+     "answer": "where",
+     "explanation": "The clause explains why the cable is buried <i>near the coast</i>: the relative adverb <b>where</b> (= a place in which nets and anchors are the danger) fits, and a reason linker (<i>because</i>, <i>since</i>, <i>as</i>) is equally defensible. <i>Which</i> fails because <i>fishing nets and anchors</i> already fill the subject slot of the clause."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "when",
+      "whenever",
+      "if",
+      "where"
+     ],
+     "answer": "when",
+     "explanation": "<b>Repairs, when they are needed, are…</b> — a conditional-time linker inside commas; <i>whenever</i>, <i>if</i> and <i>where</i> are equally defensible. <i>While</i> fails because repairs do not happen during the need, they follow it, and <i>which</i> cannot introduce a clause with its own subject <i>they</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "A sentence relative: after a comma, <b>which is why</b> refers back to the whole idea that the work is slow and expensive. <i>That is why</i> would need a full stop before it, and <i>what</i> cannot refer back to a preceding clause."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "have",
+      "did"
+     ],
+     "answer": "have",
+     "explanation": "A fronted <i>So + adjective</i> forces subject–auxiliary inversion: <b>So dependent have we become… that</b>. Present perfect matches the present result <i>can leave</i>; <i>did we become</i> is grammatical too, but <i>are we become</i> and <i>were we become</i> are not English."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-25-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "From Shade to Shower",
+   "topic": "the history of the umbrella",
+   "passage": "The umbrella is such an ordinary object that it is easy to forget how recently it became one. For most of its history it was not a shield against rain (1)____ against the sun, as its name, taken from the Latin word for shade, still reminds us. Carvings from ancient Egypt and Assyria show servants holding broad canopies (2)____ the heads of kings, and in those societies to walk beneath one was a mark of rank that no commoner would have dared (3)____ claim. It was in China, several centuries later, that someone (4)____ on the idea of oiling the paper so that the canopy would repel water, and the device we know today began to take shape. Europe, however, was slow to adopt it. Well (5)____ the eighteenth century, an Englishman seen carrying an umbrella still risked being jeered at by coachmen, who feared, not (6)____ reason, that a portable roof might cost them their customers. One London merchant is said to have endured thirty years of mockery before the habit finally (7)____ on. What changed public opinion was not fashion so much as arithmetic: asked to choose (8)____ a daily cab fare and a few shillings for a folding frame, a sensible person eventually chose the frame. (9)____ the steel rib was patented in the 1850s, the umbrella became lighter, cheaper and far more reliable, and by the end of the century no respectable household was without several. Had it never crossed from the sun to the rain, the umbrella (10)____ still be a ceremonial curiosity rather than the most borrowed and most forgotten object in the world.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "but"
+     ],
+     "answer": "but",
+     "explanation": "The correlative pair is <b>not… but…</b>: <i>not a shield against rain but against the sun</i>. <i>Nor</i> would deny both, and <i>or</i> would leave the sentence undecided, which contradicts the explanation about the Latin word for shade."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "over",
+      "above"
+     ],
+     "answer": "over",
+     "explanation": "A canopy is held <b>over</b> (or <i>above</i>) someone's head to shade it. <i>On</i> would put the canopy in contact with the head, and <i>upon</i> the same, which is not how a servant shades a king."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "<i>Dare</i> as a main verb takes a <b>to</b>-infinitive: <i>would have dared to claim</i>. <i>Of</i> and <i>for</i> cannot follow <i>dared</i> before a verb."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "hit",
+      "chanced",
+      "stumbled"
+     ],
+     "answer": "hit",
+     "explanation": "To <b>hit on</b> (or <i>chance on</i>, <i>stumble on</i>) an idea is to think of it suddenly. <i>Came on</i> is not used for ideas — the phrasal verb would be <i>came up with</i>, which needs different prepositions."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "into"
+     ],
+     "answer": "into",
+     "explanation": "<b>Well into the eighteenth century</b> means a good way through that century, which the adverb <i>still</i> confirms. <i>Before</i> would clash with <i>still</i>, and <i>in</i> cannot follow <i>well</i> as an intensifier."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "without"
+     ],
+     "answer": "without",
+     "explanation": "<b>Not without reason</b> is a fixed understatement meaning 'with some justification'. <i>Not for reason</i> and <i>not by reason</i> are not idioms."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "caught"
+     ],
+     "answer": "caught",
+     "explanation": "A fashion or habit <b>catches on</b> when it becomes popular; the past narrative needs <i>caught</i>. <i>Took on</i> means to acquire or employ, and <i>went on</i> means continued, neither of which makes sense after thirty years of mockery."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "between"
+     ],
+     "answer": "between",
+     "explanation": "You <b>choose between</b> two alternatives joined by <i>and</i>. <i>Among</i> is for three or more, and <i>from</i> would need a single group noun rather than <i>X and Y</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "Once",
+      "once",
+      "When",
+      "when",
+      "After",
+      "after"
+     ],
+     "answer": "Once",
+     "explanation": "<b>Once</b> (or <i>when</i>, <i>after</i>) <i>the steel rib was patented, the umbrella became lighter</i> — a time linker showing one event followed the other. <i>Since</i> would need a present-perfect main clause, and <i>while</i> suggests the two things happened over the same period."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "might",
+      "would",
+      "could"
+     ],
+     "answer": "might",
+     "explanation": "A mixed conditional: an inverted past-unreal condition (<i>Had it never crossed…</i>) with a present result, so the main clause needs <b>might</b>/<i>would</i>/<i>could</i> + <i>still be</i>. <i>Will</i> and <i>may</i> belong to real conditionals and clash with the unreal <i>Had it never</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-25-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "Carried Arm to Arm",
+   "topic": "how vaccines spread",
+   "passage": "When a country doctor in rural England announced in 1798 that matter taken from a cowpox sore could protect a person against smallpox, the reaction was far from unanimous. Some physicians dismissed the claim (1)____ of hand; others, more cautiously, asked for proof. What eventually won the argument was less the doctor's writing (2)____ the simple fact that the vaccinated did not fall ill when smallpox next visited their villages. Within a decade the practice had spread across Europe, carried largely by letters and by dried scraps of cotton thread (3)____ had been soaked in the fluid. (4)____ far the greatest obstacle was distance. The living material lost its power after a few weeks, so a shipment that set (5)____ from Lisbon might be useless by the time it reached Brazil. The solution, when it came, was as ingenious as it was uncomfortable. A group of orphans was put aboard a ship, and every ten days or so the fluid was passed from the arm of one child to that of the (6)____, keeping it alive across the whole Atlantic crossing. By such means the vaccine reached the Americas and, later, the Philippines and China. (7)____ we may now think of the ethics of using children as containers, the expedition is estimated to have protected hundreds of thousands of people. Not everywhere, though, did the idea take root so easily. In some regions it was resisted (8)____ religious grounds; in others, local healers saw it as a threat to their livelihood. Only where governments made vaccination compulsory, and (9)____ so within living memory of an epidemic, did the numbers climb quickly. It was, in other words, fear rather than reason (10)____ did most of the persuading.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "To dismiss something <b>out of hand</b> is to reject it without considering it, which contrasts with the cautious physicians who asked for proof. <i>Off hand</i> exists but is written without <i>of</i> and means 'without preparation'."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<i>Less</i> earlier in the clause sets up a comparison that must be completed with <b>than</b>: <i>less the doctor's writing than the simple fact</i>. <i>But</i> would need <i>not… but</i>, and <i>as</i> pairs with <i>as much</i>, not <i>less</i>."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "which",
+      "that"
+     ],
+     "answer": "which",
+     "explanation": "A defining relative clause about <i>scraps of cotton thread</i>: <b>which</b> or <i>that</i> acts as subject of <i>had been soaked</i>. <i>Where</i> cannot be the subject of a verb, and <i>they</i> would make a run-on sentence."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "By",
+      "by"
+     ],
+     "answer": "By",
+     "explanation": "<b>By far the greatest</b> is the fixed way to intensify a superlative. <i>So far</i> means 'up to now' and <i>as far</i> needs <i>as</i> to complete it."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "out",
+      "off",
+      "sail"
+     ],
+     "answer": "out",
+     "explanation": "A shipment <b>sets out</b> (or <i>sets off</i>, or, being on a ship, <i>sets sail</i>) <i>from</i> a port. <i>Set up</i> means to establish, and <i>set forth</i> is rare and needs no <i>from</i> in this sense."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "next",
+      "other"
+     ],
+     "answer": "next",
+     "explanation": "With a whole group of children passing the fluid along in turn, <i>from one child to that of the</i> <b>next</b> is the precise word; the idiom <i>from one to the other</i> is also accepted. <i>Another</i> cannot follow <i>the</i>, and <i>same</i> would defeat the purpose."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "Whatever",
+      "whatever",
+      "However",
+      "however"
+     ],
+     "answer": "Whatever",
+     "explanation": "<b>Whatever we may now think of the ethics…</b> is a concessive clause: no matter what our opinion is, the result stands; <i>however we may think</i> is an accepted variant. <i>Although</i> would need a full statement (<i>although we may now disapprove</i>), and <i>whichever</i> needs a noun to choose from."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "Something is resisted, refused or defended <b>on</b> <i>religious grounds</i> — <i>grounds</i> meaning 'reasons' always takes <i>on</i>. <i>For</i> and <i>by</i> are not used with this noun in this sense."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "<b>Did so</b> is the pro-verb standing for <i>made vaccination compulsory</i>, keeping the past tense of <i>made</i>. <i>Were so</i> and <i>had so</i> cannot replace an action verb in this way."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "that",
+      "which"
+     ],
+     "answer": "that",
+     "explanation": "A cleft sentence: <i>It was fear rather than reason</i> <b>that</b> <i>did most of the persuading</i>; British usage also allows <i>which</i>. <i>What</i> is impossible after a cleft <i>It was X</i>, and <i>who</i> would need a person."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-25-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "Before There Were Books",
+   "topic": "the first libraries",
+   "passage": "Long before there were books, there were libraries. The rooms (1)____ the rulers of Mesopotamia stored their clay tablets some four thousand years ago were not places of quiet reading but of administration: records of grain, tax and treaties, filed in baskets and labelled by subject. (2)____ was only gradually that such collections came to hold poems and prayers as well, and gradually again that anyone thought of them as worth preserving for their own sake. The most celebrated ancient library, at Alexandria, was founded (3)____ the express purpose of gathering every text in the known world. Ships that docked in the harbour were searched, and (4)____ scrolls they carried were copied before the originals — or, according to one story, the copies — were handed back. No trace of the building survives, and scholars still argue (5)____ whether it burned in a single fire or simply faded from neglect over centuries. What is certain is that its scholars invented much of what we take for (6)____ in a library today: shelving by author, alphabetical lists, and the idea that a text has a correct version worth arguing over. Elsewhere, libraries grew up wherever wealth and writing met. Chinese emperors employed armies of copyists; monasteries in medieval Europe chained their few precious volumes to the desks (7)____ they be stolen. Not until printing made books cheap did the notion of a library open (8)____ the public seem anything other than absurd. Even then, the earliest public collections were funded by private donors, most of (9)____ expected a statue in return. The free lending library that we now take as normal is, in historical terms, barely a moment old, and (10)____ we lose it, the loss would be felt long before anyone could explain how it had happened.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "where",
+      "wherein"
+     ],
+     "answer": "where",
+     "explanation": "The clause describes what happened inside <i>the rooms</i>, so the relative adverb <b>where</b> (= in which) is needed. <i>Which</i> would have to be the object of <i>stored</i>, but <i>their clay tablets</i> already fills that slot."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "It",
+      "it"
+     ],
+     "answer": "It",
+     "explanation": "A cleft sentence emphasising the adverb: <b>It was only gradually that…</b>. <i>There</i> is used to introduce a noun that exists, not to front an adverb, and <i>This</i> would have nothing to refer back to."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "with",
+      "for"
+     ],
+     "answer": "with",
+     "explanation": "Something is founded <b>with</b> (or <i>for</i>) <i>the express purpose of</i> doing something. <i>On purpose</i> is a different idiom meaning 'deliberately' and cannot take <i>the express… of</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "any",
+      "whatever",
+      "the",
+      "all",
+      "what"
+     ],
+     "answer": "any",
+     "explanation": "<b>Any scrolls they carried</b> — a determiner meaning every one there happened to be; <i>whatever</i>, <i>what</i>, <i>the</i> and <i>all</i> give the same sense. <i>Some</i> would suggest only a selection was copied, which contradicts the aim of gathering every text, and <i>every</i> needs a singular noun."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "over",
+      "about"
+     ],
+     "answer": "over",
+     "explanation": "People <b>argue over</b> or <i>argue about</i> a question. <i>Argue on</i> is not idiomatic before <i>whether</i>, and <i>argue for</i> means to support one side rather than to debate."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "granted"
+     ],
+     "answer": "granted",
+     "explanation": "<b>Take something for granted</b> means to assume it without noticing it — the shelving and lists nobody thinks about. <i>Take for certain</i> and <i>take for given</i> are not fixed expressions."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "lest"
+     ],
+     "answer": "lest",
+     "explanation": "The bare subjunctive <i>they be stolen</i> is the clue: only <b>lest</b> (= for fear that) takes this form. <i>In case</i> is two words and would need <i>they were stolen</i>; <i>unless</i> would reverse the meaning."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "A place is <b>open to the public</b>. <i>Open for the public</i> is not the collocation, and <i>open with</i> would mean the public was the first item on the programme."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "whom"
+     ],
+     "answer": "whom",
+     "explanation": "After a preposition in a non-defining relative clause about people, the pronoun must be the object form: <i>most of</i> <b>whom</b>. <i>Who</i> cannot follow <i>of</i>, and <i>which</i> is for things, not donors."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "should",
+      "if"
+     ],
+     "answer": "should",
+     "explanation": "<b>Should we lose it</b> is the inverted form of <i>if we should lose it</i>, a remote future condition, and matches the <i>would be felt</i> result; plain <i>if</i> is also accepted. <i>Were</i> would need <i>to</i> (<i>were we to lose it</i>) and <i>had</i> would need a past participle."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-25-5",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "Cold on Demand",
+   "topic": "the ice trade",
+   "passage": "In the winter of 1806 a young Boston merchant loaded a ship with blocks of frozen pond water and sent it to the Caribbean. His neighbours thought he had (1)____ his mind. Who, they asked, would pay for something that fell out of the sky for nothing every winter and melted the moment you turned your back? The first voyage lost money, as did several after it, and the merchant spent time in a debtors' prison before the business (2)____ began to pay. What turned it around was not the ice itself but everything (3)____ it: insulated ice-houses at the ports, sawdust packing that slowed the melt, and horse-drawn cutters that scored a frozen lake into neat squares in a fraction of the time hand saws took. By the 1830s, ice from New England was (4)____ unloaded in Calcutta after a four-month voyage, and had become, improbably, one of the region's largest exports by weight. (5)____ the trade grew, it changed habits far from the lakes where it started. Doctors prescribed ice for fevers; brewers found they could work through the summer; fishermen could send their catch inland instead of salting it. The people who cut the ice, (6)____, worked in brutal cold for a season's wages and were often laid (7)____ the moment the lake was cleared. The end came quickly. Once artificial refrigeration became reliable, no one saw any (8)____ in waiting for the weather, and by the 1920s the last of the great ice-houses had been pulled down. It is tempting to dismiss the whole episode as a curiosity, (9)____ it was the ice trade that taught the world to expect cold on demand, and (10)____ that expectation, the modern kitchen would look very different.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "left",
+      "missed",
+      "lost",
+      "dropped"
+     ],
+     "correct": 2,
+     "explanation": "To have <b>lost one's mind</b> is to have gone mad, which is what the neighbours' mocking question implies. <i>Left</i>, <i>missed</i> and <i>dropped</i> do not combine with <i>mind</i> to mean this."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "lastly",
+      "latterly",
+      "lately",
+      "finally"
+     ],
+     "correct": 3,
+     "explanation": "<b>Finally</b> marks the long-awaited moment after repeated losses. <i>Lastly</i> introduces the last item in a list, <i>latterly</i> means 'in recent times' and <i>lately</i> needs a present-perfect verb."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "around",
+      "beside",
+      "along",
+      "across"
+     ],
+     "correct": 0,
+     "explanation": "<i>Everything</i> <b>around</b> <i>it</i> means the whole system that surrounded the product — the colon then lists that system. <i>Beside</i> is merely physical position, and <i>along</i> and <i>across</i> describe movement or extent."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "formerly",
+      "routinely",
+      "lately",
+      "shortly"
+     ],
+     "correct": 1,
+     "explanation": "<b>Routinely unloaded</b> — the point is that a once-absurd voyage had become ordinary. <i>Formerly</i> would place it in an earlier period, <i>lately</i> needs the present perfect and <i>shortly</i> means 'soon'."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "Whereas",
+      "Until",
+      "As",
+      "Whether"
+     ],
+     "correct": 2,
+     "explanation": "<b>As the trade grew, it changed habits</b> — two developments running together over time. <i>Whereas</i> sets up a contrast, <i>until</i> would stop the change when the trade grew, and <i>whether</i> needs an alternative."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "moreover",
+      "therefore",
+      "likewise",
+      "however"
+     ],
+     "correct": 3,
+     "explanation": "The sentence contrasts the workers' hardship with the benefits just listed, so the connector is <b>however</b>. <i>Moreover</i> and <i>likewise</i> would add another benefit, and <i>therefore</i> would make the hardship a consequence of the benefits."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "off",
+      "out",
+      "down",
+      "up"
+     ],
+     "correct": 0,
+     "explanation": "Workers are <b>laid off</b> when there is no more work for them, which is what happens once the lake is cleared. <i>Laid out</i> means arranged or spent, <i>laid down</i> means set as a rule, and <i>laid up</i> means confined by illness."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "reason",
+      "point",
+      "need",
+      "cause"
+     ],
+     "correct": 1,
+     "explanation": "<b>See any point in</b> doing something is the collocation for judging whether it is worthwhile. <i>Reason</i> and <i>cause</i> take <i>for</i> or <i>to</i>, not <i>in</i> + -ing, and <i>need</i> would take <i>to wait</i>."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "so",
+      "for",
+      "yet",
+      "nor"
+     ],
+     "correct": 2,
+     "explanation": "<b>Yet</b> introduces the objection to dismissing the episode: it was, in fact, important. <i>So</i> and <i>for</i> would present the importance as a result or a reason for dismissing it, which is illogical, and <i>nor</i> needs a preceding negative."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "beyond",
+      "unlike",
+      "without",
+      "despite"
+     ],
+     "correct": 2,
+     "explanation": "<b>Without that expectation, the kitchen would look different</b> — a hidden conditional (= if that expectation did not exist). <i>Despite</i> would mean the expectation opposes the change, and <i>beyond</i> and <i>unlike</i> do not express a condition."
+    }
+   ]
+  }
+ ]
+}

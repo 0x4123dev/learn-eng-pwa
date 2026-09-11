@@ -1,0 +1,748 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-19-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "From Bitter Drink to Penny Bar",
+   "topic": "the history of chocolate",
+   "passage": "Long before chocolate became a bar wrapped in foil, it was a bitter drink. The peoples of ancient Mesoamerica roasted cacao seeds, ground them into a paste and whisked the result (1)____ water until it foamed. So highly (2)____ the seeds prized that they doubled as currency: a handful could buy a rabbit, and a sack, so the story goes, a slave. When Spanish sailors first tasted the drink in the sixteenth century, they found it revolting; only (3)____ sugar and cinnamon had been stirred in did it win favour at court. For the next two hundred years chocolate remained a luxury, (4)____ to the wealthy few who could afford the imported beans and the servants needed to prepare them. (5)____ changed everything was a Dutch chemist's press, which in 1828 squeezed the fat out of the beans and left a dry powder that dissolved easily. Not long (6)____, an English firm discovered that adding the fat back to sweetened powder produced a paste that could be moulded, and the solid bar was born. Had that press never been invented, chocolate might (7)____ have stayed a drink for the rich. Instead, factories sprang (8)____ across Europe, each competing to produce a smoother, cheaper product, and within a generation a treat once reserved for kings was being sold to children for a penny. It is worth remembering, (9)____, that the cacao tree itself still grows only in a narrow belt near the equator, and that the farmers who tend it have seldom shared in the fortunes made (10)____ their beans.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "with",
+      "in"
+     ],
+     "answer": "with",
+     "explanation": "You whisk one thing <b>with</b> another to combine them; cooks also say <i>whisk the paste in water</i>, so <b>in</b> is accepted. <i>By</i> would name the tool, not the liquid, and <i>to</i> is not used after <i>whisk</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "were"
+     ],
+     "answer": "were",
+     "explanation": "A fronted <i>So + adverb</i> forces inversion: <b>So highly were the seeds prized that</b>. The plural subject <i>seeds</i> and the past narrative rule out <i>was</i> and <i>are</i>."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "when",
+      "after",
+      "once"
+     ],
+     "answer": "when",
+     "explanation": "<b>Only when/after/once</b> + clause, fronted, triggers the inversion <i>did it win</i>. <i>Only if</i> would state a condition rather than the moment it happened, and <i>until</i> would contradict <i>only</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "confined",
+      "restricted",
+      "limited"
+     ],
+     "answer": "confined",
+     "explanation": "A reduced passive clause: a luxury <b>confined/restricted/limited to</b> a small group. <i>Reserved</i> would need <i>for</i>, and <i>only</i> cannot take <i>to</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "What"
+     ],
+     "answer": "What",
+     "explanation": "A wh-cleft sentence: <b>What changed everything was</b> a press. <i>That</i> and <i>Which</i> cannot open a sentence as a free relative meaning 'the thing that'."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "afterwards",
+      "afterward",
+      "after",
+      "later"
+     ],
+     "answer": "afterwards",
+     "explanation": "<b>Not long afterwards/after/later</b> is the fixed time phrase for 'soon after that'. <i>Then</i> or <i>next</i> cannot follow <i>not long</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "well",
+      "otherwise",
+      "easily"
+     ],
+     "answer": "well",
+     "explanation": "<b>Might well have</b> strengthens a past possibility; <i>otherwise</i> and <i>easily</i> also fit the unreal past after <i>Had that press never been invented</i>. <i>Never</i> would reverse the meaning, and <i>not</i> would make the bar the surprising outcome."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "The phrasal verb <b>spring up</b> means to appear suddenly in large numbers. <i>Spring out</i> describes leaping from a hiding place, not new factories opening."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "however",
+      "though",
+      "nevertheless",
+      "nonetheless"
+     ],
+     "answer": "however",
+     "explanation": "Set off by commas mid-sentence, the contrast linker must be an adverb: <b>however/though/nevertheless</b>. <i>But</i> and <i>although</i> are conjunctions and cannot sit between commas after the verb."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "from",
+      "on"
+     ],
+     "answer": "from",
+     "explanation": "A fortune is <b>made from</b> a product, marking its source; <i>fortunes made on</i> a commodity is also idiomatic. <i>Made of</i> describes the material something consists of, and <i>made by</i> would turn the beans into the earners."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-19-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Pull of the Moon",
+   "topic": "how tides work",
+   "passage": "Anyone who has spent a day at the beach will have noticed the sea creeping up the sand and then, some hours later, drawing back again. Few people, (1)____, could explain why. The answer lies not in the wind or the weather but in the moon, (2)____ gravity tugs at the oceans as it circles the Earth. The water on the side nearest the moon is pulled towards it and bulges outward; (3)____ surprisingly, a second bulge forms on the far side, where the Earth itself is drawn away from the water left behind. As the planet turns beneath these two bulges, (4)____ point on the coast passes through both of them once a day, which is why most shores see two high tides roughly twelve hours (5)____. The sun exerts a pull of its own, though a weaker one, and when the sun and moon line up at full and new moon their forces combine to produce the exceptionally high 'spring' tides, a name that has nothing to do (6)____ the season. Local geography complicates the picture (7)____ further: a funnel-shaped bay can amplify the rise to more than fifteen metres, whereas an enclosed sea may barely register a change (8)____ all. Sailors have relied on tide tables for centuries, and rightly (9)____, for a harbour that is deep at noon can be a mudflat by dusk. Not until the seventeenth century, however, (10)____ anyone able to set out the mathematics behind a rhythm that fishermen had trusted since the dawn of navigation.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "however",
+      "though"
+     ],
+     "answer": "however",
+     "explanation": "A contrast adverb between commas after the subject: <b>Few people, however/though, could explain</b>. <i>But</i> is a conjunction and cannot be parenthetical here; <i>despite</i> needs a noun."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "The relative pronoun shows possession: the moon, <b>whose gravity</b> tugs at the oceans. <i>Which</i> would need <i>the gravity of which</i>, and <i>its</i> cannot introduce a relative clause."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "more",
+      "perhaps",
+      "rather"
+     ],
+     "answer": "more",
+     "explanation": "<b>More surprisingly</b> introduces the less expected of two facts; <i>perhaps</i> and <i>rather</i> also modify the sentence adverb naturally. <i>Most</i> would need <i>the</i> and a set of three, and <i>very</i> does not sit before <i>surprisingly</i> as a comment adverb."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "every",
+      "each",
+      "any"
+     ],
+     "answer": "every",
+     "explanation": "A singular determiner before <i>point</i> with the singular verb <i>passes</i>: <b>every/each/any point</b>. <i>All</i> would need <i>points pass</i>, and <i>the</i> would refer to one specific point."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "apart"
+     ],
+     "answer": "apart",
+     "explanation": "An interval between two events is expressed as <b>twelve hours apart</b>. <i>Away</i> describes distance from a place, and <i>later</i> would need <i>than</i> to compare the two tides."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "with"
+     ],
+     "answer": "with",
+     "explanation": "The fixed expression is <b>have nothing to do with</b> something. <i>About</i> and <i>for</i> never complete this idiom."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "still",
+      "even",
+      "yet"
+     ],
+     "answer": "still",
+     "explanation": "<b>Still/even/yet further</b> intensifies a comparative adverb. <i>More</i> cannot precede <i>further</i>, which is already comparative, and <i>much</i> would need <i>much further</i> without the verb object between."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>Barely ... at all</b> is the emphatic negative phrase. <i>In all</i> means 'in total' and <i>of all</i> follows a superlative, so neither fits after <i>a change</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "so"
+     ],
+     "answer": "so",
+     "explanation": "<b>And rightly so</b> is a set phrase meaning 'and they were right to'. <i>Too</i> or <i>then</i> would not stand in for the whole previous clause the way <i>so</i> does."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "was"
+     ],
+     "answer": "was",
+     "explanation": "A fronted <i>Not until</i> phrase inverts subject and auxiliary: <b>Not until the seventeenth century was anyone able</b>. <i>Did</i> would need a bare verb, but the sentence continues with <i>able</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-19-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "Hobby Horses and Boneshakers",
+   "topic": "the first bicycles",
+   "passage": "The bicycle as we know it did not spring fully formed from a single inventor's workshop; (1)____ the contrary, it took the best part of a century to evolve. The earliest ancestor, built in Germany in 1817, had no pedals (2)____: the rider sat astride a wooden beam and pushed himself along with his feet, rather (3)____ a child does on a balance bike today. It was nicknamed the 'hobby horse', and for a few summers fashionable young men raced along city pavements, much to the annoyance of pedestrians. Pedals were not attached to the front wheel (4)____ the 1860s, when a French mechanic hit (5)____ the idea while repairing one of the old machines. His 'boneshaker', so called (6)____ of the punishing ride its iron tyres delivered over cobbles, sold in the thousands. Then designers reasoned that a bigger front wheel would cover more ground per turn of the pedals, and wheels grew until they stood taller (7)____ the rider. These 'high-wheelers' were fast but perilous: a stone in the road could pitch a man (8)____ over the handlebars. Had it not been (9)____ the invention of the chain drive in the 1880s, which allowed two wheels of equal size, cycling might have remained a sport for daring athletes. As it was, the 'safety bicycle', fitted with inflatable rubber tyres, brought cheap, independent travel within (10)____ of ordinary workers and, notably, of women, whose freedom to roam it enlarged more than any law had done.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "The linking phrase is <b>on the contrary</b>, used to reject the idea just stated. <i>In contrast</i> exists, but <i>in the contrary</i> does not."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "whatsoever"
+     ],
+     "answer": "whatsoever",
+     "explanation": "After a negative noun phrase, <b>no pedals whatsoever</b> adds emphasis in a single word. The familiar <i>at all</i> means the same but is two words, so it cannot fill one blank."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "as",
+      "like"
+     ],
+     "answer": "as",
+     "explanation": "A comparison followed by a full clause (<i>a child does</i>) takes the conjunction <b>as</b>; <i>like</i> before a clause is informal but widely accepted. <i>Than</i> needs a comparative, and <i>so</i> makes no sense after <i>rather</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "until",
+      "till",
+      "before"
+     ],
+     "answer": "until",
+     "explanation": "<b>Not ... until/before the 1860s</b> places the first occurrence at that decade. <i>Since</i> would need a present perfect verb, and <i>in</i> would clash with the negative <i>were not attached</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "upon",
+      "on"
+     ],
+     "answer": "upon",
+     "explanation": "The phrasal verb <b>hit upon/on an idea</b> means to think of it suddenly. <i>Hit at</i> or <i>hit with</i> would describe striking something physically."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "because"
+     ],
+     "answer": "because",
+     "explanation": "Before a noun phrase the reason is given by <b>because of</b>. <i>Due</i> would need <i>to</i>, not <i>of</i>, and <i>as</i> or <i>since</i> must introduce a full clause."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "The comparative <i>taller</i> is completed by <b>than</b>. <i>Over</i> or <i>above</i> would describe position, not a comparison of height."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "headlong",
+      "straight",
+      "right",
+      "clean"
+     ],
+     "answer": "headlong",
+     "explanation": "An adverb intensifying the direction of a fall: <b>pitch someone headlong/straight/right/clean over</b>. <i>Down</i> would contradict <i>over</i>, and <i>forward</i> does not combine with <i>over the handlebars</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "The inverted conditional is <b>Had it not been for</b> + noun, meaning 'without'. <i>Of</i> and <i>by</i> do not form this idiom."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "reach"
+     ],
+     "answer": "reach",
+     "explanation": "<b>Within reach of</b> someone means affordable or obtainable for them. <i>Within range of</i> refers to distance or weapons, and <i>within grasp</i> takes a possessive, not <i>of</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-19-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "A City That Ought Not to Exist",
+   "topic": "a city built on water",
+   "passage": "Venice ought not to exist. (1)____ sensible planner would choose a marsh of shifting mud, flooded twice a day, as the site for a great city, yet that is precisely where refugees fleeing invaders in the fifth century chose to settle. Safety, not comfort, was what they were (2)____; the lagoon's shallow channels, known only to locals, kept enemy fleets (3)____ bay. To build on such ground the settlers drove millions of wooden piles into the mud, packed so tightly (4)____ they formed a raft on which stone could rest. Deprived of oxygen beneath the silt, the timber never rotted; (5)____ anything, it hardened over the centuries into something resembling stone. On this improbable foundation rose palaces, churches and a trading empire that at its height (6)____ stretch from the Adriatic to the Black Sea. The city's very success, however, has come at a (7)____. Wells sunk in the twentieth century drew water from beneath the lagoon and the ground sank; meanwhile the sea has been rising. High water, once a nuisance a few times a winter, now floods the main square dozens of times a year, and (8)____ recently as 2019 it reached a level not seen for half a century. A vast barrier of movable gates has been built at the lagoon's mouth to hold the sea (9)____, but engineers concede that it buys time rather than a permanent solution. Whether the city that defied the sea for fifteen hundred years can go (10)____ doing so is a question Venetians would rather not dwell on.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "No"
+     ],
+     "answer": "No",
+     "explanation": "The negative determiner <b>No sensible planner would</b> makes the whole statement emphatic without a separate <i>not</i>. <i>Any</i> would need a negative verb, and <i>None</i> cannot directly precede a noun."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "after",
+      "seeking",
+      "pursuing"
+     ],
+     "answer": "after",
+     "explanation": "<b>Be after something</b> is the idiom for wanting or seeking it; <i>seeking</i> and <i>pursuing</i> express the same idea as verbs. <i>Looking</i> would need <i>for</i>, and <i>wanting</i> is not used this way in a cleft."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "The collocation is <b>keep something at bay</b>, meaning prevent it from coming close. <i>In</i> or <i>to bay</i> would break the idiom."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "<b>So tightly that</b> introduces the result of the degree. <i>As</i> after <i>so</i> forms a comparison, not a result, and <i>which</i> would need a noun to refer back to."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "if"
+     ],
+     "answer": "if",
+     "explanation": "<b>If anything</b> means 'on the contrary, to a small degree', correcting the expectation that the wood weakened. <i>Of anything</i> and <i>for anything</i> are not linking phrases."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "would",
+      "could"
+     ],
+     "answer": "would",
+     "explanation": "A modal describing a past state of affairs: the empire <b>would/could stretch</b> so far at its peak. <i>Had</i> would need <i>stretched</i>, and <i>did</i> is not used for an unstressed statement of fact here."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "price",
+      "cost"
+     ],
+     "answer": "price",
+     "explanation": "<b>Come at a price/cost</b> means to bring disadvantages with it. <i>Fee</i> and <i>charge</i> refer to sums actually paid, not to consequences."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "<b>As recently as 2019</b> stresses how short a time ago something happened. <i>So recently as</i> is not used in the affirmative, and <i>more recently</i> cannot pair with <i>as</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "back",
+      "off",
+      "out"
+     ],
+     "answer": "back",
+     "explanation": "<b>Hold back/off/out</b> the sea means stop it advancing. <i>Hold up</i> means delay or support, and <i>hold down</i> means keep under control, neither of which fits a barrier."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "<b>Go on doing something</b> means continue. <i>Go through</i> and <i>go over</i> mean experience or review, and <i>keep</i> is not available after <i>can go</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-19-5",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Rumble on the Sofa",
+   "topic": "why cats purr",
+   "passage": "Anyone who has shared a sofa with a cat knows the sound: a low, steady rumble that seems to come from nowhere in particular. What is far (1)____ obvious is how cats produce it, and (2)____ they do so at all. For much of the last century scientists assumed the noise came from blood rushing through a vein in the chest; only in the 1990s was it shown that the muscles of the larynx twitch around twenty-five times a second, opening and closing the airway (3)____ the cat breathes in and out. As for the purpose, the obvious answer, contentment, turns (4)____ to be only part of the story. Cats purr when they are injured, when they are frightened at the vet's and even when they are dying, which hardly suggests pleasure. One theory (5)____ that the frequency of a purr lies within the range known to stimulate bone growth and healing in mammals, so a cat may, in effect, be treating itself. Another points out that kittens purr while feeding, (6)____ signalling to their mother that all is well and keeping her calm enough to lie still. Whichever explanation proves correct, (7)____ is certain that cats have learned to exploit the sound. Researchers have found that a cat wanting food embeds a high-pitched cry, not unlike a baby's, within its purr, and that owners respond to it (8)____ realising why. Far from being a simple expression of happiness, (9)____, the purr appears to be a tool, refined over thousands of years of living (10)____ us, for getting exactly what a cat wants.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type the one word that fits.",
+     "accept": [
+      "less"
+     ],
+     "answer": "less",
+     "explanation": "The contrast is between the familiar sound and its unexplained cause, so <b>far less obvious</b> is needed. <i>More</i> would claim the mechanism is easier to see than the sound itself, the opposite of the point."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type the one word that fits.",
+     "accept": [
+      "why"
+     ],
+     "answer": "why",
+     "explanation": "The second embedded question asks for the reason, which the rest of the passage then explores: <b>why they do so at all</b>. <i>Whether</i> would question whether purring happens, which nobody doubts."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type the one word that fits.",
+     "accept": [
+      "as",
+      "while",
+      "when",
+      "whenever"
+     ],
+     "answer": "as",
+     "explanation": "A time conjunction linking two simultaneous actions: the airway opens <b>as/while/when the cat breathes</b>. <i>During</i> is a preposition and cannot take a clause, and <i>because</i> would state a cause instead of a time."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type the one word that fits.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>Turn out to be</b> means prove to be in the end. <i>Turn up</i> means arrive, and <i>turn into</i> would need a noun rather than <i>to be</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type the one word that fits.",
+     "accept": [
+      "holds",
+      "suggests",
+      "proposes",
+      "argues",
+      "claims",
+      "maintains",
+      "says",
+      "is"
+     ],
+     "answer": "holds",
+     "explanation": "A theory <b>holds/suggests/proposes that</b> something is the case; the plain <i>is that</i> also works. The verb must be singular present after <i>One theory</i>, so <i>hold</i> or <i>held</i> would break agreement or tense."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type the one word that fits.",
+     "accept": [
+      "thereby",
+      "thus",
+      "perhaps",
+      "possibly",
+      "apparently"
+     ],
+     "answer": "thereby",
+     "explanation": "<b>Thereby/thus signalling</b> introduces the result of the action just described; <i>perhaps</i> or <i>possibly</i> softens it. <i>Therefore</i> is not used before an -ing participle in this position."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type the one word that fits.",
+     "accept": [
+      "it"
+     ],
+     "answer": "it",
+     "explanation": "Anticipatory <b>it</b> stands for the that-clause: <i>it is certain that cats have learned</i>. <i>This</i> or <i>there</i> cannot introduce a delayed that-clause subject this way."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type the one word that fits.",
+     "accept": [
+      "without"
+     ],
+     "answer": "without",
+     "explanation": "<b>Without realising</b> is the preposition plus -ing pattern meaning 'not knowing'. <i>Before</i> would claim they later work it out, and <i>not</i> cannot stand alone before a participle here."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type the one word that fits.",
+     "accept": [
+      "then",
+      "therefore",
+      "thus"
+     ],
+     "answer": "then",
+     "explanation": "A concluding adverb between commas draws the passage together: <b>then/therefore/thus</b>. <i>However</i> would signal a contrast with the previous sentence, which actually supports this one."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type the one word that fits.",
+     "accept": [
+      "with",
+      "alongside",
+      "among",
+      "amongst",
+      "beside"
+     ],
+     "answer": "with",
+     "explanation": "<b>Living with/alongside/among</b> people describes sharing their homes. <i>Living by us</i> would mean simply nearby, and <i>living on us</i> would make cats parasites."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-19-6",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "Rags, Pulp and the Printed Page",
+   "topic": "the story of paper",
+   "passage": "Few inventions have been taken so thoroughly for (1)____ as paper. The credit for it is usually given to a Chinese court official in the second century, though scraps found in tombs suggest that people had been making something similar for two hundred years before he described the method (2)____ writing. The recipe was simple enough: rags, bark and old fishing nets were soaked, beaten to a pulp and spread thinly over a screen to dry. What was not simple was keeping the method secret, and for six centuries China (3)____ in doing so. The knowledge is said to have leaked out only when Chinese papermakers were taken prisoner after a battle in Central Asia in 751 and agreed to teach their captors (4)____ exchange for their freedom. From there the craft moved slowly westward, reaching Spain in the twelfth century and England not (5)____ the fifteenth. Europeans were at first suspicious of the new material, which seemed flimsy (6)____ with parchment made from animal skin; some officials even banned its use for legal documents. Printing put (7)____ to that. Once a press could turn out hundreds of pages an hour, no amount of sheep could keep (8)____ with demand, and paper mills spread along every river fast enough to drive a waterwheel. The shift to wood pulp in the nineteenth century (9)____ prices down further still, and with cheap paper came cheap newspapers, cheap novels and, (10)____ the first time, the expectation that an ordinary person could read.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "granted",
+      "sure",
+      "given",
+      "known"
+     ],
+     "correct": 0,
+     "explanation": "<b>Take something for granted</b> means to stop noticing its value. <i>Given</i>, <i>known</i> and <i>sure</i> all express certainty but none forms this idiom with <i>take for</i>."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "by",
+      "in",
+      "on",
+      "at"
+     ],
+     "correct": 1,
+     "explanation": "Something recorded on paper is described <b>in writing</b>. <i>By writing</i> would describe the means of doing some other action, and <i>on</i> or <i>at writing</i> are not used."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "achieved",
+      "accomplished",
+      "succeeded",
+      "managed"
+     ],
+     "correct": 2,
+     "explanation": "Only <b>succeed</b> takes <i>in + -ing</i>. <i>Managed</i> needs a to-infinitive, while <i>achieved</i> and <i>accomplished</i> take a direct object."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "on",
+      "at",
+      "for",
+      "in"
+     ],
+     "correct": 3,
+     "explanation": "The fixed phrase is <b>in exchange for</b>. <i>On</i>, <i>at</i> and <i>for exchange</i> do not form the idiom, although <i>for</i> is tempting because it appears later in the phrase."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "until",
+      "from",
+      "by",
+      "since"
+     ],
+     "correct": 0,
+     "explanation": "<b>Not until the fifteenth</b> century means it arrived only then. <i>Not by</i> would set a deadline that was missed, and <i>since</i> or <i>from</i> mark a starting point rather than a delayed arrival."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "contrasted",
+      "compared",
+      "opposed",
+      "measured"
+     ],
+     "correct": 1,
+     "explanation": "<b>Compared with</b> introduces the standard against which paper seemed flimsy. <i>Contrasted with</i> stresses difference rather than a scale, and <i>opposed</i> or <i>measured with</i> are not used for judging quality."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "end",
+      "rest",
+      "paid",
+      "stop"
+     ],
+     "correct": 2,
+     "explanation": "<b>Put paid to something</b> is an idiom meaning to finish it off completely. <i>Put a stop to</i> and <i>put an end to</i> exist but each needs an article, and <i>put to rest</i> has a different word order."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "on",
+      "in",
+      "out",
+      "up"
+     ],
+     "correct": 3,
+     "explanation": "<b>Keep up with demand</b> means supply as fast as it is needed. <i>Keep on with</i> means continue an activity, <i>keep in with</i> means stay friendly with someone, and <i>keep out</i> means exclude."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "drove",
+      "dropped",
+      "lowered",
+      "fell"
+     ],
+     "correct": 0,
+     "explanation": "The phrasal verb <b>drive prices down</b> means force them lower. <i>Fell</i> is intransitive and cannot take an object, <i>dropped</i> does not combine with <i>down</i>, and <i>lowered ... down</i> repeats the idea."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "for",
+      "on",
+      "at",
+      "in"
+     ],
+     "correct": 0,
+     "explanation": "The set phrase is <b>for the first time</b>. <i>At first</i> exists without <i>the ... time</i>, and <i>in</i> or <i>on the first time</i> are not English idioms."
+    }
+   ]
+  }
+ ]
+}

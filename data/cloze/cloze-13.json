@@ -1,0 +1,696 @@
+{
+ "passages": [
+  {
+   "id": "cl-kc-13-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Balconies Full of Pots",
+   "topic": "a garden in the city",
+   "passage": "When my grandmother moved to the tenth floor of a block of flats, everyone thought she would miss her old garden terribly. She had spent forty years growing vegetables in the countryside, and the city seemed a strange place (1)____ someone like her. For the first few weeks she said very little. Then one morning she came home with three bags of soil and a box of seeds, and (2)____ the end of the day the balcony was full of pots. My mother was worried that the neighbours would complain (3)____ the mess, but the opposite happened. The old man next door asked if he could grow tomatoes too, and soon the family on the floor below joined (4)____. By summer, half the building had turned its balconies into tiny farms. My grandmother, (5)____ had never used a phone for anything but calls, now sends photos of her chillies to a group chat with twenty members. She gives advice on how to water the plants in the hot season, and she never gets tired (6)____ answering questions. Last month the building manager put up a notice (7)____ everyone for the greenery, and he even suggested a shared garden on the roof. (8)____ the project goes ahead, my grandmother will certainly be in charge. I asked her whether she still missed the countryside. She looked at the rows of green leaves and said she had (9)____ felt so at home. It turns out that a garden does not need a great deal of land; it only needs someone who refuses to (10)____ up.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "for",
+      "with",
+      "of",
+      "at"
+     ],
+     "correct": 0,
+     "explanation": "We say a place is strange, difficult or perfect <b>for</b> somebody, meaning it suits or does not suit them. <i>Of</i>, <i>with</i> and <i>at</i> do not follow <i>a strange place</i> in this sense."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "in",
+      "by",
+      "until",
+      "at"
+     ],
+     "correct": 1,
+     "explanation": "<b>By the end of the day</b> means not later than that point, which is what the sentence describes. <i>Until</i> would mean the balcony stayed full only up to that time, and <i>at</i> or <i>in</i> do not combine with <i>the end of the day</i> here."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "on",
+      "with",
+      "about",
+      "for"
+     ],
+     "correct": 2,
+     "explanation": "The verb is <b>complain about</b> something. You can complain <i>to</i> a person, but the problem itself always takes <i>about</i>."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "up",
+      "out",
+      "on",
+      "in"
+     ],
+     "correct": 3,
+     "explanation": "<b>Join in</b> means to take part in an activity that others have started. <i>Join up</i> means to enlist in the army, and <i>join on</i> or <i>join out</i> are not phrasal verbs."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "who",
+      "whom",
+      "whose",
+      "which"
+     ],
+     "correct": 0,
+     "explanation": "The relative clause has its own subject role, so we need <b>who</b> for a person. <i>Whom</i> is only for an object, <i>whose</i> needs a noun after it, and <i>which</i> is for things."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "from",
+      "of",
+      "at",
+      "with"
+     ],
+     "correct": 1,
+     "explanation": "<b>Get tired of doing</b> something means to lose patience with it. <i>Tired from</i> describes the cause of physical tiredness, and <i>with</i> and <i>at</i> do not follow <i>tired</i> before an -ing form."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "thank",
+      "thanks",
+      "thanking",
+      "thanked"
+     ],
+     "correct": 2,
+     "explanation": "A present participle clause describes the notice: <i>a notice <b>thanking</b> everyone</i>. <i>Thanked</i> would make the notice the receiver of thanks, and the bare verb <i>thank</i> or the noun <i>thanks</i> cannot follow <i>a notice</i> directly."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "Although",
+      "Whether",
+      "Unless",
+      "If"
+     ],
+     "correct": 3,
+     "explanation": "The sentence is a first conditional: <b>if</b> the plan happens, she will lead it. <i>Unless</i> would reverse the meaning, <i>although</i> expects a contrast, and <i>whether</i> cannot introduce a condition."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "never",
+      "already",
+      "yet",
+      "ever"
+     ],
+     "correct": 0,
+     "explanation": "<i>She had <b>never</b> felt so at home</i> means this was the happiest she had been anywhere. <i>Ever</i> is used in questions, and <i>already</i> and <i>yet</i> do not fit the meaning."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "give",
+      "put",
+      "keep",
+      "turn"
+     ],
+     "correct": 0,
+     "explanation": "<b>Give up</b> means to stop trying, which is what a gardener must refuse to do. <i>Keep up</i>, <i>turn up</i> and <i>put up</i> exist but have different meanings."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-13-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Kitten Under the Car",
+   "topic": "a rescued kitten",
+   "passage": "It was raining hard on the evening my brother found the kitten. He was cycling home from football practice (1)____ he heard a thin cry coming from under a parked car. At first he thought it was a bird, but when he bent down he saw two frightened eyes staring back (2)____ him. The kitten was so small that it fitted in one hand, and it was shaking with cold. My brother wrapped it in his jacket and rode the rest of the way with one hand, (3)____ is something my parents have told him never to do again. When he walked into the kitchen, my mother was about to shout at him for being late. Then she saw the tiny grey head and forgot everything else. We dried the kitten with a towel and gave it (4)____ warm milk, although the vet later told us that milk is not really good for cats. That night nobody (5)____ asleep before midnight, because the kitten cried every time we put it down. The next day we took it to the animal clinic, (6)____ it was checked, given an injection and declared healthy. The vet asked whether we planned to keep it. My father said no at once, but he was the one who spent the whole weekend building a little bed (7)____ of an old box. We named her Mưa, which means rain, (8)____ of the weather on the night she was found. She has now lived with us for six months and has grown into a confident cat (9)____ favourite place is the middle of the sofa. My brother still says he did not really rescue her. (10)____ his opinion, she rescued him.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "until",
+      "when",
+      "while",
+      "since"
+     ],
+     "correct": 1,
+     "explanation": "A past continuous action is interrupted by a short past simple one: <i>he was cycling <b>when</b> he heard</i>. <i>While</i> introduces the longer action, not the short one, and <i>until</i> and <i>since</i> give the wrong time meaning."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "at",
+      "for",
+      "to",
+      "on"
+     ],
+     "correct": 0,
+     "explanation": "You <b>stare at</b> somebody or something. The other prepositions never follow <i>stare</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "what",
+      "that",
+      "who",
+      "which"
+     ],
+     "correct": 3,
+     "explanation": "After a comma, <b>which</b> can refer back to a whole action (riding with one hand). <i>That</i> cannot be used after a comma in this way, <i>what</i> is not a relative pronoun, and <i>who</i> is for people."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "many",
+      "any",
+      "some",
+      "few"
+     ],
+     "correct": 2,
+     "explanation": "<i>Milk</i> is uncountable and the sentence is positive, so <b>some</b> is the quantifier. <i>Any</i> is for questions and negatives, and <i>few</i> and <i>many</i> only go with countable nouns."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "went",
+      "fell",
+      "got",
+      "came"
+     ],
+     "correct": 1,
+     "explanation": "The fixed expression is <b>fall asleep</b>. <i>Go to sleep</i> exists, but <i>go asleep</i>, <i>get asleep</i> and <i>come asleep</i> do not."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "where",
+      "which",
+      "when",
+      "that"
+     ],
+     "correct": 0,
+     "explanation": "The clause tells us what happened <b>at</b> the clinic, so the relative adverb <b>where</b> is needed. <i>Which</i> or <i>that</i> would need to be the subject or object of the clause, and <i>when</i> is for a time."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "up",
+      "away",
+      "off",
+      "out"
+     ],
+     "correct": 3,
+     "explanation": "Something is made or built <b>out of</b> the material it comes from. <i>Up</i>, <i>off</i> and <i>away</i> do not combine with <i>of</i> to show material."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "instead",
+      "in case",
+      "because",
+      "in spite"
+     ],
+     "correct": 2,
+     "explanation": "<b>Because of</b> gives the reason for the name. <i>Instead of</i> and <i>in spite of</i> would give the wrong meaning, and <i>in case of</i> is used for possible future events."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "who",
+      "whose",
+      "that",
+      "which"
+     ],
+     "correct": 1,
+     "explanation": "A noun (<i>favourite place</i>) follows the blank, so the possessive relative <b>whose</b> is needed. <i>Who</i>, <i>which</i> and <i>that</i> would have to be followed by a verb."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "On",
+      "By",
+      "At",
+      "In"
+     ],
+     "correct": 3,
+     "explanation": "The fixed phrase is <b>in my opinion</b> / <b>in his opinion</b>. The other prepositions are never used with <i>opinion</i> in this way."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-13-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Before the Sun Comes Up",
+   "topic": "my uncle the fisherman",
+   "passage": "My uncle Tám has been a fisherman (1)____ he was fourteen, and he says the sea has taught him more than any teacher. He lives in a small coastal town about three hours south of our city, and every summer I spend two weeks (2)____ him. His day starts long before sunrise. While the rest of the town is still asleep, he is already checking the nets and listening to the weather report (3)____ the radio. If the wind is (4)____ strong to go out, he stays at home and repairs equipment instead. He learned this lesson the hard way, after a storm nearly sank his boat twenty years ago. Once we are out on the water, my uncle hardly speaks. He keeps an (5)____ on the colour of the sea and the movement of the birds, and somehow he knows exactly where to throw the nets. I used to think this was luck, but now I understand it is the result of years of paying (6)____ to small details. The fish we catch are sold at the market the same morning. My aunt (7)____ care of the money, because my uncle admits he is hopeless with numbers. Life is not easy for fishermen these days. There are (8)____ fish than there were when my uncle was young, and the price of fuel keeps going up. Some of his friends have already given up and moved to the city to work in factories. My uncle refuses to do the same. He says that if he could choose again, he (9)____ still pick the sea. Whenever I ask him why, he simply points at the horizon, (10)____ the sun is coming up over the water, and says nothing at all.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "from",
+      "when",
+      "since",
+      "for"
+     ],
+     "correct": 2,
+     "explanation": "The present perfect with a starting point (<i>he was fourteen</i>) takes <b>since</b>. <i>For</i> needs a length of time, and <i>from</i> or <i>when</i> do not work with <i>has been</i> here."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "to",
+      "by",
+      "at",
+      "with"
+     ],
+     "correct": 3,
+     "explanation": "You <b>spend time with</b> a person. <i>At</i> would need a place, and <i>by</i> or <i>to</i> do not follow <i>spend two weeks</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "on",
+      "at",
+      "by",
+      "in"
+     ],
+     "correct": 0,
+     "explanation": "Programmes are <b>on the radio</b> or <b>on television</b>. <i>In</i>, <i>at</i> and <i>by</i> are not used for broadcasts."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "so",
+      "too",
+      "very",
+      "enough"
+     ],
+     "correct": 1,
+     "explanation": "The pattern <b>too</b> + adjective + <i>to</i> + verb shows that something is more than acceptable: <i>too strong to go out</i>. <i>Very</i> and <i>so</i> cannot be followed directly by <i>to</i> + verb, and <i>enough</i> comes after the adjective."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "mind",
+      "hand",
+      "eye",
+      "ear"
+     ],
+     "correct": 2,
+     "explanation": "<b>Keep an eye on</b> something means to watch it carefully. <i>Keep an ear</i>, <i>keep a hand</i> and <i>keep a mind on</i> are not English expressions."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "interest",
+      "care",
+      "notice",
+      "attention"
+     ],
+     "correct": 3,
+     "explanation": "The collocation is <b>pay attention to</b>. We <i>take notice of</i> and <i>take care of</i>, and <i>interest</i> is not paid to something."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "takes",
+      "gets",
+      "makes",
+      "keeps"
+     ],
+     "correct": 0,
+     "explanation": "The collocation is <b>take care of</b> something. <i>Make</i>, <i>get</i> and <i>keep</i> do not combine with <i>care of</i>."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "less",
+      "fewer",
+      "little",
+      "few"
+     ],
+     "correct": 1,
+     "explanation": "<i>Fish</i> is countable here and the sentence compares with <i>than</i>, so the comparative <b>fewer</b> is needed. <i>Less</i> is for uncountable nouns, and <i>little</i> and <i>few</i> are not comparatives."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "can",
+      "shall",
+      "would",
+      "will"
+     ],
+     "correct": 2,
+     "explanation": "The <i>if</i>-clause uses <i>could</i>, so this is a second conditional and the main clause takes <b>would</b>. <i>Will</i>, <i>shall</i> and <i>can</i> belong to real, first-conditional sentences."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "which",
+      "when",
+      "where",
+      "that"
+     ],
+     "correct": 2,
+     "explanation": "The clause describes what is happening <b>at</b> the horizon, so the relative adverb <b>where</b> is correct. <i>Which</i> or <i>that</i> would need to be the subject of <i>is coming up</i>, which does not make sense."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-13-4",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "When the Final Bell Rang",
+   "topic": "the last day of term",
+   "passage": "Nobody does much work on the last day of term, and this year was no exception. Our teacher had promised that we would watch a film if we finished cleaning the classroom (1)____ ten o'clock, so for once everybody arrived early. Desks were pushed against the wall, the floor was swept, and Minh found a sandwich at the back of a cupboard that must have been there (2)____ March. By half past nine the room looked (3)____ cleaner than it had all year. The film was one I had seen before, but I did not mind (4)____ it again with the whole class laughing at the same moments. Afterwards we signed each other's notebooks. Some people wrote long messages; others just drew a face and their name. I noticed that even the students (5)____ had argued all year were suddenly friendly with each other. At lunchtime the head teacher made a speech about summer being a time to rest and read. Not (6)____ of us were listening, to be honest, because the ice-cream van had just parked outside the gate. In the afternoon there was a football match between the teachers and the students. The teachers lost 5–1, (7)____ they claimed the referee was on our side. When the final bell rang, nobody rushed to leave. We stood around in the yard, (8)____ our goodbyes and promising to meet up in the holidays. I know from experience that (9)____ of those promises will be kept, but it did not matter. Walking home, I felt happy and a little sad (10)____ the same time, which I suppose is exactly how the last day of anything should feel.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "until",
+      "on",
+      "at",
+      "by"
+     ],
+     "correct": 3,
+     "explanation": "A deadline for finishing something is expressed with <b>by</b>: <i>finish it by ten</i>. <i>Until</i> describes how long an action continues, and <i>at</i> would mean the exact moment of finishing, not a limit."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "for",
+      "from",
+      "since",
+      "ago"
+     ],
+     "correct": 2,
+     "explanation": "<i>Must have been there</i> is a perfect form and <i>March</i> is a point in time, so <b>since</b> is needed. <i>For</i> needs a length of time, and <i>ago</i> follows the time expression."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "so",
+      "much",
+      "more",
+      "very"
+     ],
+     "correct": 1,
+     "explanation": "A comparative such as <i>cleaner</i> is strengthened with <b>much</b> (or <i>far</i>). <i>Very</i> and <i>so</i> go with the plain adjective, and <i>more cleaner</i> is a double comparative."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "watching",
+      "watch",
+      "to watch",
+      "watched"
+     ],
+     "correct": 0,
+     "explanation": "<b>Mind</b> is followed by an -ing form: <i>I did not mind watching</i>. It never takes an infinitive or a bare verb."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "whose",
+      "which",
+      "whom",
+      "who"
+     ],
+     "correct": 3,
+     "explanation": "The relative pronoun is the subject of <i>had argued</i> and refers to people, so <b>who</b> is correct. <i>Whom</i> is only for an object, <i>whose</i> needs a noun after it, and <i>which</i> is for things."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "little",
+      "much",
+      "many",
+      "few"
+     ],
+     "correct": 2,
+     "explanation": "<i>Us</i> refers to countable people and the phrase is negative, so <b>not many of us</b> is the natural form. <i>Much</i> and <i>little</i> are for uncountable nouns, and <i>not few</i> is not used."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "despite",
+      "although",
+      "because",
+      "unless"
+     ],
+     "correct": 1,
+     "explanation": "Losing the match and blaming the referee are a contrast, so <b>although</b> is needed. <i>Despite</i> cannot be followed by a subject and verb, and <i>because</i> and <i>unless</i> give the wrong meaning."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "saying",
+      "speaking",
+      "telling",
+      "talking"
+     ],
+     "correct": 0,
+     "explanation": "The collocation is <b>say goodbye</b> / <b>say our goodbyes</b>. <i>Tell</i> needs a person as its object, and <i>speak</i> and <i>talk</i> are not used with <i>goodbye</i>."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "less",
+      "fewer",
+      "little",
+      "few"
+     ],
+     "correct": 3,
+     "explanation": "<i>Promises</i> are countable and the writer means <i>not many</i>, so <b>few of those promises</b> is right. <i>Little</i> is for uncountable nouns, and <i>less</i> and <i>fewer</i> are comparatives with nothing to compare."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "by",
+      "at",
+      "on",
+      "in"
+     ],
+     "correct": 1,
+     "explanation": "The fixed phrase is <b>at the same time</b>. <i>In</i>, <i>on</i> and <i>by</i> are never used with <i>the same time</i> in this meaning."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-13-5",
+   "level": "kc",
+   "mode": "open",
+   "title": "Paid for with Washed Cups",
+   "topic": "a new phone",
+   "passage": "For two years my phone had a cracked screen, a battery that died by lunchtime and a camera (1)____ turned every photo slightly green. My friends laughed at it, but I did not want to ask my parents for a new one. So last spring I made a plan. I found a weekend job at my aunt's café and started saving every đồng I earned. It took (2)____ longer than I expected. Some weeks there were so (3)____ customers that my aunt could not give me any hours. Other weeks I was so busy I barely had time to eat. By August I had finally saved (4)____ money for the phone I wanted. The first thing I did was take a photo of my aunt's café, a proper one without the green colour. Having a new phone has changed a few things. I no longer worry about the battery (5)____ out in the middle of the day, and my photos actually look like the places I visited. But the biggest change is not about the phone itself. I (6)____ care of it far more carefully than I ever did with the old one, because I know exactly how many hours of washing cups it cost. My little brother has already asked if he can have my old phone. I told him yes, (7)____ condition that he promises to keep it away from water. He agreed at once, (8)____ I doubt he will remember by next week. My parents were surprised that I had managed to save so (9)____ on my own. My father said he would have helped if I had asked, and I believe him. Still, I am glad I did it myself. (10)____ you buy something with your own money, you understand its real value.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "which",
+      "that"
+     ],
+     "answer": "which",
+     "explanation": "A defining relative clause about a thing (<i>a camera</i>) takes <b>which</b> or <b>that</b> as its subject. <i>Who</i> fails because a camera is not a person, and <i>what</i> is never a relative pronoun."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "much",
+      "far",
+      "even",
+      "rather",
+      "way",
+      "slightly",
+      "somewhat",
+      "considerably",
+      "significantly"
+     ],
+     "answer": "much",
+     "explanation": "A comparative (<i>longer</i>) is strengthened with <b>much</b> or <b>far</b> (<i>even</i>, <i>rather</i>, <i>slightly</i> and <i>somewhat</i> also work). <i>Very</i> fails because it only modifies the plain adjective: <i>very long</i>, never <i>very longer</i>."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "few"
+     ],
+     "answer": "few",
+     "explanation": "<i>Customers</i> are countable, so <b>so few customers that</b> is the pattern. <i>Little</i> fails because it is only used with uncountable nouns."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "enough",
+      "the",
+      "sufficient"
+     ],
+     "answer": "enough",
+     "explanation": "<b>Enough</b> goes before a noun to show the amount needed: <i>enough money for the phone</i>. <i>Much</i> fails because <i>saved much money</i> is not used in a positive statement, and <i>many</i> fails because <i>money</i> is uncountable."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "running",
+      "giving"
+     ],
+     "answer": "running",
+     "explanation": "A battery <b>runs out</b> when its power is finished, and after <i>worry about the battery</i> the verb takes the -ing form. <i>Going out</i> fails because it is used for lights and fires, not for a battery."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "take"
+     ],
+     "answer": "take",
+     "explanation": "The collocation is <b>take care of</b> something, in the present simple because it is a habit. <i>Make</i> fails because <i>make care</i> is not English, and <i>keep</i> fails because <i>keep care of</i> is not a phrase."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "The fixed expression is <b>on condition that</b>, meaning <i>only if</i>. <i>In</i> or <i>under</i> fail because they do not form this phrase before <i>condition that</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "but",
+      "although",
+      "though",
+      "yet"
+     ],
+     "answer": "but",
+     "explanation": "The two halves contrast (he agreed, the writer doubts him), so a contrast linker such as <b>but</b>, <b>although</b> or <b>though</b> is needed. <i>So</i> and <i>because</i> fail because they express result or reason, not contrast."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "much"
+     ],
+     "answer": "much",
+     "explanation": "After <i>save so</i> with no noun, the quantity of money is expressed with <b>much</b>: <i>save so much</i>. <i>Many</i> fails because money is uncountable, and <i>a lot</i> is two words."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "When",
+      "when",
+      "If",
+      "if",
+      "Once",
+      "once",
+      "Whenever",
+      "whenever"
+     ],
+     "answer": "When",
+     "explanation": "A general truth uses a zero conditional: <b>when</b> (or <i>if</i>, <i>once</i>) + present, present. <i>Because</i> fails because the sentence describes a condition, not a reason, and <i>although</i> fails because there is no contrast."
+    }
+   ]
+  }
+ ]
+}

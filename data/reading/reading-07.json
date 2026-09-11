@@ -1,305 +1,305 @@
 {
-  "passages": [
+ "passages": [
+  {
+   "id": "rd-ch-07-1",
+   "level": "ch",
+   "title": "The Long Apprenticeship: A Short History of Bookbinding",
+   "topic": "history of a craft",
+   "words": 506,
+   "passage": "<b>A.</b> For most of antiquity a book was a scroll: a strip of papyrus wound round a rod, read by unrolling with one hand and rolling up with the other. The codex — sheets folded, stacked and sewn through the fold — appeared in the Roman world in the first centuries of our era, and by the fourth century it had all but supplanted the scroll. It was easier to carry, easier to consult and, crucially for the early Church, easier to search for a particular passage. In this period binding was not a trade at all. The monk who copied a text usually sewed it as well, in the same room and with the same patience.<br><br><b>B.</b> The medieval binding that emerged from those monasteries was built to outlast its makers. Sheets of parchment were sewn onto stout cords, the cords were laced into oak boards, and the boards were covered in leather, often with brass clasps to hold the whole thing shut. The clasps were not a security measure: parchment swells and buckles in damp air, and only constant pressure keeps it flat. Decoration was pressed into the leather with heated tools, at first without colour and then, from the late fifteenth century, in gold — a technique that reached Venice from the Islamic world and spread north with astonishing speed.<br><br><b>C.</b> Printing altered the craft more than any invention before or since. A press could turn out a thousand identical copies in weeks, and no monastery could sew them. Binding became a separate business, carried on in town workshops with their own guilds, apprentices and jealously guarded secrets. Books were usually sold as loose gatherings of printed sheets; the buyer took them to a binder and chose the covering, so that a gentleman's library would match from shelf to shelf. Wooden boards gave way to pasteboard, sheepskin to cheaper calf, and a binding took days rather than months.<br><br><b>D.</b> The nineteenth century split the craft in two. Publishers began issuing books ready bound in cloth, and machines were built to make the cover separately and glue it to the sewn block — a method known as case binding, which is still how most hardbacks are produced. The trade binder became a factory worker. At the same time a small group of craftsmen reacted against the machine, reviving hand sewing, tooling and the use of fine leathers, and insisting that a book could be a work of art in its own right. The two branches have never rejoined.<br><br><b>E.</b> It might have been expected that the screen would finish off what the machine had started. The reverse has happened. As reading migrates to devices, the printed book has become an object people choose deliberately, and demand for hand-bound volumes, restored manuscripts and one-off artist's books has grown rather than shrunk. Training has not become any shorter, though. As one binder put it to me, you learn to sew in a week and to judge the grain of a piece of leather in ten years.",
+   "questions": [
     {
-      "id": "rd-ch-07-1",
-      "level": "ch",
-      "title": "The Long Apprenticeship: A Short History of Bookbinding",
-      "topic": "history of a craft",
-      "words": 506,
-      "passage": "<b>A.</b> For most of antiquity a book was a scroll: a strip of papyrus wound round a rod, read by unrolling with one hand and rolling up with the other. The codex — sheets folded, stacked and sewn through the fold — appeared in the Roman world in the first centuries of our era, and by the fourth century it had all but supplanted the scroll. It was easier to carry, easier to consult and, crucially for the early Church, easier to search for a particular passage. In this period binding was not a trade at all. The monk who copied a text usually sewed it as well, in the same room and with the same patience.<br><br><b>B.</b> The medieval binding that emerged from those monasteries was built to outlast its makers. Sheets of parchment were sewn onto stout cords, the cords were laced into oak boards, and the boards were covered in leather, often with brass clasps to hold the whole thing shut. The clasps were not a security measure: parchment swells and buckles in damp air, and only constant pressure keeps it flat. Decoration was pressed into the leather with heated tools, at first without colour and then, from the late fifteenth century, in gold — a technique that reached Venice from the Islamic world and spread north with astonishing speed.<br><br><b>C.</b> Printing altered the craft more than any invention before or since. A press could turn out a thousand identical copies in weeks, and no monastery could sew them. Binding became a separate business, carried on in town workshops with their own guilds, apprentices and jealously guarded secrets. Books were usually sold as loose gatherings of printed sheets; the buyer took them to a binder and chose the covering, so that a gentleman's library would match from shelf to shelf. Wooden boards gave way to pasteboard, sheepskin to cheaper calf, and a binding took days rather than months.<br><br><b>D.</b> The nineteenth century split the craft in two. Publishers began issuing books ready bound in cloth, and machines were built to make the cover separately and glue it to the sewn block — a method known as case binding, which is still how most hardbacks are produced. The trade binder became a factory worker. At the same time a small group of craftsmen reacted against the machine, reviving hand sewing, tooling and the use of fine leathers, and insisting that a book could be a work of art in its own right. The two branches have never rejoined.<br><br><b>E.</b> It might have been expected that the screen would finish off what the machine had started. The reverse has happened. As reading migrates to devices, the printed book has become an object people choose deliberately, and demand for hand-bound volumes, restored manuscripts and one-off artist's books has grown rather than shrunk. Training has not become any shorter, though. As one binder put it to me, you learn to sew in a week and to judge the grain of a piece of leather in ten years.",
-      "questions": [
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) explains the real purpose of the clasps on medieval books?",
-          "accept": [
-            "B"
-          ],
-          "answer": "B",
-          "explanation": "Section B says the clasps \"were not a security measure\": parchment buckles in damp air and only constant pressure keeps it flat."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) gives a reason why buyers preferred books that had not yet been bound?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "Section C explains that books were sold as loose sheets so the buyer could choose the covering and make a whole library \"match from shelf to shelf\"."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) states that a division within the craft has proved permanent?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "Section D describes the craft splitting into factory binding and art binding and ends: \"The two branches have never rejoined.\""
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) describes an outcome that is the opposite of what people expected?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "Section E opens with what \"might have been expected\" — that screens would kill the craft — and then says \"The reverse has happened.\""
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "What is the passage mainly about?",
-          "options": [
-            "The technical steps involved in binding a book by hand",
-            "How bookbinding has been reshaped by each new technology over the centuries",
-            "Why hand-bound books are worth more than machine-made ones",
-            "The role of monasteries in preserving classical literature"
-          ],
-          "correct": 1,
-          "explanation": "Each section pairs a technological change — the codex, printing, the binding machine, the screen — with what it did to the craft. The other options are single details or are not argued at all."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What does the binder's remark at the end of Section E suggest about the craft?",
-          "options": [
-            "Sewing is the hardest skill a new binder has to master.",
-            "The mechanical steps are quickly learned, but the judgement behind them takes years.",
-            "Most apprentices abandon the trade before they finish training.",
-            "Leather has been largely abandoned by modern binders."
-          ],
-          "correct": 1,
-          "explanation": "\"A week\" for sewing against \"ten years\" for judging leather contrasts a mechanical action with an act of judgement; the remark says nothing about apprentices leaving or leather disappearing."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "The word \"supplanted\" in Section A is closest in meaning to",
-          "options": [
-            "supported",
-            "replaced",
-            "imitated",
-            "preserved"
-          ],
-          "correct": 1,
-          "explanation": "The codex \"had all but supplanted the scroll\" by the fourth century — that is, it had almost entirely taken the scroll's place."
-        },
-        {
-          "kind": "tfng",
-          "type": "mcq",
-          "q": "Gold tooling was invented by binders in Venice.",
-          "options": [
-            "True",
-            "False",
-            "Not Given"
-          ],
-          "correct": 1,
-          "explanation": "Section B says the technique \"reached Venice from the Islamic world\" — Venice was where it entered Europe, not where it was invented."
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains the real purpose of the clasps on medieval books?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B says the clasps \"were not a security measure\": parchment buckles in damp air and only constant pressure keeps it flat."
     },
     {
-      "id": "rd-ch-07-2",
-      "level": "ch",
-      "title": "How Verbs Turn into Grammar",
-      "topic": "linguistics",
-      "words": 560,
-      "passage": "Ask an English speaker what \"will\" means and the answer comes at once: it marks the future. Yet a thousand years ago the verb <i>willan</i> meant to want, and \"I will\" was a statement about desire rather than about time. [1] Linguists call this process grammaticalisation — the slow drift by which a word with a meaning of its own becomes a piece of machinery for expressing tense, number, negation or possession.<br><br>The process follows a recognisable path. A full lexical word — a verb, a noun, an adverb — begins to appear regularly in one fixed construction, where its original meaning fades and a more abstract one takes over. [2] Consider \"going to\". In its future sense it is routinely reduced to \"gonna\", but in its literal sense it never is: \"I'm gonna leave\" is ordinary speech, whereas \"I'm gonna the shops\" is impossible. The pronunciation has split exactly where the meaning has.<br><br>Why do languages keep doing this? One answer is that grammar wears out. Like a coin that loses its stamp through handling, a marker used in every sentence eventually becomes too faint to notice. [3] French negation shows the cycle in full. Old French said no with <i>ne</i> alone; <i>pas</i>, literally \"a step\", was added for emphasis, as in \"I won't go a step\"; in time <i>pas</i> became compulsory, and in today's spoken French it is <i>ne</i> that has quietly dropped out, leaving the former intensifier to do the whole job.<br><br>What is most striking is how alike the routes are across languages that have never been in contact. Verbs meaning \"go\" have become future markers in West Africa, in the Pacific and in Europe. Nouns for body parts — \"back\", \"head\", \"belly\" — have turned into prepositions meaning behind, on top of and inside on several continents independently. [4] Movement towards a place is, after all, a natural picture of intention, and a head is a natural picture of \"above\"; the metaphors are available to any mind, so any language may take them up.<br><br>None of this is visible to the people doing it. [5] It follows that the grammar in a textbook is not a set of laws but a snapshot of a river: accurate for the moment the photograph was taken, and already slightly out of date by the time it is printed.<br><br><b>A.</b> Speakers who want to be emphatic reach for a fresher expression, and in time that too is worn smooth by use.<br><b>B.</b> Borrowed words behave quite differently, usually keeping their foreign pronunciation for several generations before they are absorbed.<br><b>C.</b> The change did not happen overnight: in sentences such as \"I will go\", wanting and intending overlap so closely that a listener could hear a claim about the future where the speaker had meant one about desire.<br><b>D.</b> Nobody decides that a verb should become a tense marker; the shift is the sum of millions of tiny reinterpretations, each of which felt at the time like no change at all.<br><b>E.</b> Its pronunciation then erodes, since speakers spend little effort on elements that carry little information of their own.<br><b>F.</b> For this reason many schools now teach the history of grammar alongside its present-day rules.<br><b>G.</b> Such regularity suggests that the changes are driven not by the accidents of history but by the way human minds handle meaning.",
-      "questions": [
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which piece (A–G) fits gap [1]?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "The gap sits between the old meaning of <i>willan</i> (to want) and the label \"this process\"; C explains how \"wanting\" was reheard as \"future\", which is the process being named."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which piece (A–G) fits gap [2]?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "\"Its pronunciation then erodes\" continues the ordered path (\"begins to appear… then…\") and sets up the \"going to\" / \"gonna\" example that follows."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which piece (A–G) fits gap [3]?",
-          "accept": [
-            "A"
-          ],
-          "answer": "A",
-          "explanation": "After the worn coin image, A supplies the speakers' response — reaching for a fresher, emphatic form — which is exactly what <i>pas</i> was in the French example that follows."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which piece (A–G) fits gap [4]?",
-          "accept": [
-            "G"
-          ],
-          "answer": "G",
-          "explanation": "\"Such regularity\" refers back to the same routes appearing on several continents, and \"the way human minds handle meaning\" is then illustrated by the metaphors of movement and \"head\"."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which piece (A–G) fits gap [5]?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "D expands \"None of this is visible to the people doing it\" — nobody decides, the change is millions of unnoticed reinterpretations — and \"It follows that…\" then draws the conclusion."
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "Which statement best expresses the main idea of the passage?",
-          "options": [
-            "English grammar has borrowed most of its structures from French.",
-            "Ordinary words gradually and unconsciously turn into grammatical markers, following similar paths in many languages.",
-            "Textbooks should stop teaching grammar rules because they are always out of date.",
-            "Pronunciation changes faster than meaning in every living language."
-          ],
-          "correct": 1,
-          "explanation": "The passage names grammaticalisation, traces its path, explains why it recurs and shows that the routes are shared across unrelated languages. Nothing recommends abandoning textbooks, and French is only one example."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What can be inferred about the French word <i>pas</i> from paragraph 3?",
-          "options": [
-            "In negative sentences it no longer carries any sense of \"a step\".",
-            "It was borrowed into French from a neighbouring language.",
-            "It is used only in formal written French.",
-            "It has recently been replaced by <i>ne</i> in everyday speech."
-          ],
-          "correct": 0,
-          "explanation": "The writer calls <i>pas</i> \"the former intensifier\" that now does \"the whole job\" of negation; having become pure grammar, it has lost its literal meaning — the very process the passage describes. The passage says <i>ne</i>, not <i>pas</i>, has dropped out."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "The word \"erodes\" in piece E is closest in meaning to",
-          "options": [
-            "becomes louder",
-            "wears away gradually",
-            "changes suddenly",
-            "is written down"
-          ],
-          "correct": 1,
-          "explanation": "Pronunciation \"erodes\" because speakers spend little effort on it — it is gradually worn down, as \"going to\" is worn down to \"gonna\"."
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) gives a reason why buyers preferred books that had not yet been bound?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C explains that books were sold as loose sheets so the buyer could choose the covering and make a whole library \"match from shelf to shelf\"."
     },
     {
-      "id": "rd-ch-07-3",
-      "level": "ch",
-      "title": "Counting the Unseen",
-      "topic": "wildlife conservation",
-      "words": 526,
-      "passage": "<b>A.</b> You cannot protect what you cannot count, and for most of the last century counting wild animals meant seeing them. Surveyors walked fixed lines through the bush noting every nest, tallied tracks in fresh snow, or flew over herds in light aircraft. For animals that live in the open this worked tolerably well. For the rest — a nocturnal cat in a mountain forest, a fish in a turbid river, a frog that calls for two nights a year — the published figures were often little more than guesses dressed up in decimals. More than one species declared extinct turned out simply to be one that nobody had looked for hard enough.<br><br><b>B.</b> The first tool to change this was almost absurdly simple: a camera strapped to a tree, triggered by movement and body heat. Left for weeks, it records whatever walks past, by day or by night, without a human within miles. Where animals carry individual markings — the stripes of a tiger, the rosettes of a leopard, the notched fin of a dolphin — each photograph can be matched to a known individual, and statisticians can estimate the whole population from how often familiar faces reappear. The results upended settled beliefs. A forest written off as empty of large predators proved to hold a breeding population; a reserve celebrated for its tigers held a fraction of the number printed in its brochure.<br><br><b>C.</b> The second tool does not need to see the animal at all. Every creature sheds skin cells, scales, mucus and waste into its surroundings, and a litre of river water, filtered and sequenced, yields a list of the species that have passed upstream in the previous few days. Environmental DNA, as the method is called, has found rare newts in ponds where a decade of netting had found nothing, and it can flag an invasive fish long before it is common enough to catch. Its limits are real, though. It says that a species is present, not how many there are, and because DNA drifts with the current, \"where\" is only approximate.<br><br><b>D.</b> Better numbers, it turns out, do not automatically produce better decisions. When a survey reveals fewer animals than everyone believed, funders may read the result as failure and withdraw; when it reveals more, a ministry may conclude that the species needs no protection after all and open the forest to logging. One field biologist told me, not entirely joking, that the most useful figure her organisation ever published was a slightly optimistic one. The new tools have made that kind of usefulness impossible.<br><br><b>E.</b> The next generation of methods is already in the field: microphones that log every call in a forest, software that sorts a million images in an afternoon, village volunteers who maintain the cameras and are paid for each verified sighting. What none of these can do is explain. A camera will tell you that a population has halved in five years; it will not tell you whether the cause is poaching, disease, a new road or a drought a hundred miles away. The count is where the work begins, not where it ends.",
-      "questions": [
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) describes a method that can detect a threat before it has become serious?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "Section C says environmental DNA \"can flag an invasive fish long before it is common enough to catch\"."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) explains how researchers tell one animal from another?",
-          "accept": [
-            "B"
-          ],
-          "answer": "B",
-          "explanation": "Section B describes individual markings — stripes, rosettes, a notched fin — that let each photograph be matched to a known animal."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) gives an example of accurate information leading to a harmful decision?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "Section D describes a ministry reading a higher count as proof that a species needs no protection and opening the forest to logging."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) argues that knowing the size of a population is not the same as understanding it?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "Section E says the new tools cannot \"explain\": a camera shows that a population has halved but not why, so \"the count is where the work begins\"."
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "What is the writer's main point?",
-          "options": [
-            "Camera traps have solved the problem of counting rare species.",
-            "New survey methods have transformed how wildlife is counted, but counting alone does not protect it.",
-            "Conservation organisations routinely exaggerate the numbers they publish.",
-            "Environmental DNA is more reliable than camera trapping."
-          ],
-          "correct": 1,
-          "explanation": "Sections B and C present the new tools, D and E show that better data bring their own difficulties and cannot explain decline. The passage does not rank the two methods and does not accuse organisations in general."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What does the field biologist's remark in Section D imply?",
-          "options": [
-            "Her organisation deliberately falsified its data for many years.",
-            "An inflated estimate once did more for her cause than an accurate one would have.",
-            "Optimistic estimates are generally closer to the truth than pessimistic ones.",
-            "She wishes the new counting methods had never been introduced."
-          ],
-          "correct": 1,
-          "explanation": "\"The most useful figure… was a slightly optimistic one\" concedes that a generous number once helped — \"useful\" for winning support, not for accuracy. \"Not entirely joking\" and \"slightly\" rule out years of deliberate fraud, and nothing says she regrets the tools."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "The word \"turbid\" in Section A is closest in meaning to",
-          "options": [
-            "fast-flowing",
-            "cloudy",
-            "shallow",
-            "frozen"
-          ],
-          "correct": 1,
-          "explanation": "The river is listed among places where animals cannot be seen, alongside a forest at night; a turbid river is one whose water is thick with mud or silt."
-        },
-        {
-          "kind": "tfng",
-          "type": "mcq",
-          "q": "Environmental DNA sampling can tell researchers how many individuals of a species live in a river.",
-          "options": [
-            "True",
-            "False",
-            "Not Given"
-          ],
-          "correct": 1,
-          "explanation": "Section C states the method's limit directly: \"It says that a species is present, not how many there are.\""
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) states that a division within the craft has proved permanent?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D describes the craft splitting into factory binding and art binding and ends: \"The two branches have never rejoined.\""
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes an outcome that is the opposite of what people expected?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E opens with what \"might have been expected\" — that screens would kill the craft — and then says \"The reverse has happened.\""
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "What is the passage mainly about?",
+     "options": [
+      "Why hand-bound books are worth more than machine-made ones",
+      "The role of monasteries in preserving classical literature",
+      "The technical steps involved in binding a book by hand",
+      "How bookbinding has been reshaped by each new technology over the centuries"
+     ],
+     "correct": 3,
+     "explanation": "Each section pairs a technological change — the codex, printing, the binding machine, the screen — with what it did to the craft. The other options are single details or are not argued at all."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the binder's remark at the end of Section E suggest about the craft?",
+     "options": [
+      "Leather has been largely abandoned by modern binders.",
+      "Sewing is the hardest skill a new binder has to master.",
+      "The mechanical steps are quickly learned, but the judgement behind them takes years.",
+      "Most apprentices abandon the trade before they finish training."
+     ],
+     "correct": 2,
+     "explanation": "\"A week\" for sewing against \"ten years\" for judging leather contrasts a mechanical action with an act of judgement; the remark says nothing about apprentices leaving or leather disappearing."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"supplanted\" in Section A is closest in meaning to",
+     "options": [
+      "supported",
+      "replaced",
+      "imitated",
+      "preserved"
+     ],
+     "correct": 1,
+     "explanation": "The codex \"had all but supplanted the scroll\" by the fourth century — that is, it had almost entirely taken the scroll's place."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "Gold tooling was invented by binders in Venice.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "Section B says the technique \"reached Venice from the Islamic world\" — Venice was where it entered Europe, not where it was invented."
     }
-  ]
+   ]
+  },
+  {
+   "id": "rd-ch-07-2",
+   "level": "ch",
+   "title": "How Verbs Turn into Grammar",
+   "topic": "linguistics",
+   "words": 560,
+   "passage": "Ask an English speaker what \"will\" means and the answer comes at once: it marks the future. Yet a thousand years ago the verb <i>willan</i> meant to want, and \"I will\" was a statement about desire rather than about time. [1] Linguists call this process grammaticalisation — the slow drift by which a word with a meaning of its own becomes a piece of machinery for expressing tense, number, negation or possession.<br><br>The process follows a recognisable path. A full lexical word — a verb, a noun, an adverb — begins to appear regularly in one fixed construction, where its original meaning fades and a more abstract one takes over. [2] Consider \"going to\". In its future sense it is routinely reduced to \"gonna\", but in its literal sense it never is: \"I'm gonna leave\" is ordinary speech, whereas \"I'm gonna the shops\" is impossible. The pronunciation has split exactly where the meaning has.<br><br>Why do languages keep doing this? One answer is that grammar wears out. Like a coin that loses its stamp through handling, a marker used in every sentence eventually becomes too faint to notice. [3] French negation shows the cycle in full. Old French said no with <i>ne</i> alone; <i>pas</i>, literally \"a step\", was added for emphasis, as in \"I won't go a step\"; in time <i>pas</i> became compulsory, and in today's spoken French it is <i>ne</i> that has quietly dropped out, leaving the former intensifier to do the whole job.<br><br>What is most striking is how alike the routes are across languages that have never been in contact. Verbs meaning \"go\" have become future markers in West Africa, in the Pacific and in Europe. Nouns for body parts — \"back\", \"head\", \"belly\" — have turned into prepositions meaning behind, on top of and inside on several continents independently. [4] Movement towards a place is, after all, a natural picture of intention, and a head is a natural picture of \"above\"; the metaphors are available to any mind, so any language may take them up.<br><br>None of this is visible to the people doing it. [5] It follows that the grammar in a textbook is not a set of laws but a snapshot of a river: accurate for the moment the photograph was taken, and already slightly out of date by the time it is printed.<br><br><b>A.</b> Speakers who want to be emphatic reach for a fresher expression, and in time that too is worn smooth by use.<br><b>B.</b> Borrowed words behave quite differently, usually keeping their foreign pronunciation for several generations before they are absorbed.<br><b>C.</b> The change did not happen overnight: in sentences such as \"I will go\", wanting and intending overlap so closely that a listener could hear a claim about the future where the speaker had meant one about desire.<br><b>D.</b> Nobody decides that a verb should become a tense marker; the shift is the sum of millions of tiny reinterpretations, each of which felt at the time like no change at all.<br><b>E.</b> Its pronunciation then erodes, since speakers spend little effort on elements that carry little information of their own.<br><b>F.</b> For this reason many schools now teach the history of grammar alongside its present-day rules.<br><b>G.</b> Such regularity suggests that the changes are driven not by the accidents of history but by the way human minds handle meaning.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [1]?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "The gap sits between the old meaning of <i>willan</i> (to want) and the label \"this process\"; C explains how \"wanting\" was reheard as \"future\", which is the process being named."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [2]?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "\"Its pronunciation then erodes\" continues the ordered path (\"begins to appear… then…\") and sets up the \"going to\" / \"gonna\" example that follows."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [3]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "After the worn coin image, A supplies the speakers' response — reaching for a fresher, emphatic form — which is exactly what <i>pas</i> was in the French example that follows."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [4]?",
+     "accept": [
+      "G"
+     ],
+     "answer": "G",
+     "explanation": "\"Such regularity\" refers back to the same routes appearing on several continents, and \"the way human minds handle meaning\" is then illustrated by the metaphors of movement and \"head\"."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [5]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "D expands \"None of this is visible to the people doing it\" — nobody decides, the change is millions of unnoticed reinterpretations — and \"It follows that…\" then draws the conclusion."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which statement best expresses the main idea of the passage?",
+     "options": [
+      "Textbooks should stop teaching grammar rules because they are always out of date.",
+      "Pronunciation changes faster than meaning in every living language.",
+      "English grammar has borrowed most of its structures from French.",
+      "Ordinary words gradually and unconsciously turn into grammatical markers, following similar paths in many languages."
+     ],
+     "correct": 3,
+     "explanation": "The passage names grammaticalisation, traces its path, explains why it recurs and shows that the routes are shared across unrelated languages. Nothing recommends abandoning textbooks, and French is only one example."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What can be inferred about the French word <i>pas</i> from paragraph 3?",
+     "options": [
+      "In negative sentences it no longer carries any sense of \"a step\".",
+      "It was borrowed into French from a neighbouring language.",
+      "It is used only in formal written French.",
+      "It has recently been replaced by <i>ne</i> in everyday speech."
+     ],
+     "correct": 0,
+     "explanation": "The writer calls <i>pas</i> \"the former intensifier\" that now does \"the whole job\" of negation; having become pure grammar, it has lost its literal meaning — the very process the passage describes. The passage says <i>ne</i>, not <i>pas</i>, has dropped out."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"erodes\" in piece E is closest in meaning to",
+     "options": [
+      "becomes louder",
+      "wears away gradually",
+      "changes suddenly",
+      "is written down"
+     ],
+     "correct": 1,
+     "explanation": "Pronunciation \"erodes\" because speakers spend little effort on it — it is gradually worn down, as \"going to\" is worn down to \"gonna\"."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-07-3",
+   "level": "ch",
+   "title": "Counting the Unseen",
+   "topic": "wildlife conservation",
+   "words": 526,
+   "passage": "<b>A.</b> You cannot protect what you cannot count, and for most of the last century counting wild animals meant seeing them. Surveyors walked fixed lines through the bush noting every nest, tallied tracks in fresh snow, or flew over herds in light aircraft. For animals that live in the open this worked tolerably well. For the rest — a nocturnal cat in a mountain forest, a fish in a turbid river, a frog that calls for two nights a year — the published figures were often little more than guesses dressed up in decimals. More than one species declared extinct turned out simply to be one that nobody had looked for hard enough.<br><br><b>B.</b> The first tool to change this was almost absurdly simple: a camera strapped to a tree, triggered by movement and body heat. Left for weeks, it records whatever walks past, by day or by night, without a human within miles. Where animals carry individual markings — the stripes of a tiger, the rosettes of a leopard, the notched fin of a dolphin — each photograph can be matched to a known individual, and statisticians can estimate the whole population from how often familiar faces reappear. The results upended settled beliefs. A forest written off as empty of large predators proved to hold a breeding population; a reserve celebrated for its tigers held a fraction of the number printed in its brochure.<br><br><b>C.</b> The second tool does not need to see the animal at all. Every creature sheds skin cells, scales, mucus and waste into its surroundings, and a litre of river water, filtered and sequenced, yields a list of the species that have passed upstream in the previous few days. Environmental DNA, as the method is called, has found rare newts in ponds where a decade of netting had found nothing, and it can flag an invasive fish long before it is common enough to catch. Its limits are real, though. It says that a species is present, not how many there are, and because DNA drifts with the current, \"where\" is only approximate.<br><br><b>D.</b> Better numbers, it turns out, do not automatically produce better decisions. When a survey reveals fewer animals than everyone believed, funders may read the result as failure and withdraw; when it reveals more, a ministry may conclude that the species needs no protection after all and open the forest to logging. One field biologist told me, not entirely joking, that the most useful figure her organisation ever published was a slightly optimistic one. The new tools have made that kind of usefulness impossible.<br><br><b>E.</b> The next generation of methods is already in the field: microphones that log every call in a forest, software that sorts a million images in an afternoon, village volunteers who maintain the cameras and are paid for each verified sighting. What none of these can do is explain. A camera will tell you that a population has halved in five years; it will not tell you whether the cause is poaching, disease, a new road or a drought a hundred miles away. The count is where the work begins, not where it ends.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes a method that can detect a threat before it has become serious?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C says environmental DNA \"can flag an invasive fish long before it is common enough to catch\"."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains how researchers tell one animal from another?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B describes individual markings — stripes, rosettes, a notched fin — that let each photograph be matched to a known animal."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) gives an example of accurate information leading to a harmful decision?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D describes a ministry reading a higher count as proof that a species needs no protection and opening the forest to logging."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) argues that knowing the size of a population is not the same as understanding it?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E says the new tools cannot \"explain\": a camera shows that a population has halved but not why, so \"the count is where the work begins\"."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "What is the writer's main point?",
+     "options": [
+      "Camera traps have solved the problem of counting rare species.",
+      "New survey methods have transformed how wildlife is counted, but counting alone does not protect it.",
+      "Conservation organisations routinely exaggerate the numbers they publish.",
+      "Environmental DNA is more reliable than camera trapping."
+     ],
+     "correct": 1,
+     "explanation": "Sections B and C present the new tools, D and E show that better data bring their own difficulties and cannot explain decline. The passage does not rank the two methods and does not accuse organisations in general."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the field biologist's remark in Section D imply?",
+     "options": [
+      "An inflated estimate once did more for her cause than an accurate one would have.",
+      "Optimistic estimates are generally closer to the truth than pessimistic ones.",
+      "She wishes the new counting methods had never been introduced.",
+      "Her organisation deliberately falsified its data for many years."
+     ],
+     "correct": 0,
+     "explanation": "\"The most useful figure… was a slightly optimistic one\" concedes that a generous number once helped — \"useful\" for winning support, not for accuracy. \"Not entirely joking\" and \"slightly\" rule out years of deliberate fraud, and nothing says she regrets the tools."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"turbid\" in Section A is closest in meaning to",
+     "options": [
+      "shallow",
+      "frozen",
+      "fast-flowing",
+      "cloudy"
+     ],
+     "correct": 3,
+     "explanation": "The river is listed among places where animals cannot be seen, alongside a forest at night; a turbid river is one whose water is thick with mud or silt."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "Environmental DNA sampling can tell researchers how many individuals of a species live in a river.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "Section C states the method's limit directly: \"It says that a species is present, not how many there are.\""
+    }
+   ]
+  }
+ ]
 }

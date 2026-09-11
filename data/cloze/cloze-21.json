@@ -1,0 +1,714 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-21-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "From Counter to Trolley",
+   "topic": "the rise of the supermarket",
+   "passage": "For most of the nineteenth century, buying food was a slow conversation. A shopper stood at a counter, asked for flour or sugar by the pound, and waited while the grocer weighed and wrapped it. Not (1)____ the early twentieth century did the idea of letting customers help themselves take hold, and even then many shopkeepers dismissed it as an invitation to theft. What changed their minds was arithmetic rather (2)____ trust. A self-service store needed fewer clerks, so its prices could undercut those of the corner shop by a margin (3)____ no loyal customer could ignore for long. Once refrigerated cabinets and the private car became commonplace, the supermarket was able to move to the edge of town, (4)____ land was cheap and parking was plentiful. Had the motor car remained a luxury, the format (5)____ never have spread beyond the wealthiest suburbs. The trolley, patented in the 1930s, was itself a quiet revolution: (6)____ than carrying a basket that grew heavier with every aisle, shoppers could now buy as much as they were willing to push. Critics have long pointed (7)____ that the layout of a modern store is a piece of applied psychology. Milk sits at the back so that customers must walk (8)____ everything else to reach it. Sweets, meanwhile, wait beside the till, (9)____ patience is thinnest and children are loudest. Whether we admire the efficiency or resent the manipulation, few of us can honestly claim to be immune (10)____ it.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "until",
+      "till"
+     ],
+     "answer": "until",
+     "explanation": "<b>Not until</b> + time, followed by inversion (<i>did the idea ... take hold</i>), means the thing happened only at that point. <i>Before</i> or <i>in</i> would not license the inverted <i>did</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<b>Rather than</b> contrasts the real reason (arithmetic) with the rejected one (trust). <i>Rather from</i> or <i>rather to</i> does not exist."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "that",
+      "which"
+     ],
+     "answer": "that",
+     "explanation": "The relative pronoun is the object of <i>ignore</i>: a margin <b>that/which</b> no customer could ignore. <i>What</i> cannot follow a noun it would modify, and <i>where</i> needs a place."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "where"
+     ],
+     "answer": "where",
+     "explanation": "<b>Where</b> introduces a relative clause about a place (<i>the edge of town</i>). <i>Which</i> would need a preposition (<i>in which</i>), and <i>when</i> refers to time."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "would",
+      "might",
+      "could"
+     ],
+     "answer": "would",
+     "explanation": "<i>Had the motor car remained</i> is an inverted third conditional, so the result clause needs a modal + <i>have</i>: <b>would/might/could</b> never have spread. <i>Will</i> or <i>had</i> breaks the pattern."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "rather"
+     ],
+     "answer": "rather",
+     "explanation": "<b>Rather than</b> + -ing (<i>rather than carrying</i>) sets one action against another. <i>Other than</i> means 'apart from', and <i>more than</i> would make no sense with <i>carrying</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>Point out that</b> means draw attention to a fact. <i>Point to</i> takes a noun, not a <i>that</i>-clause, and <i>point at</i> is a physical gesture."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "past",
+      "through",
+      "by"
+     ],
+     "answer": "past",
+     "explanation": "Customers walk <b>past</b> (or <b>through</b>, or <b>by</b>) the other goods to reach the milk; all three mean passing the shelves on the way. <i>Over</i> or <i>across</i> does not fit a row of shelves, and <i>round</i> would suggest avoiding them."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "where",
+      "when"
+     ],
+     "answer": "where",
+     "explanation": "The clause describes the till as the place (<b>where</b>) or the moment (<b>when</b>) patience runs out; both are defensible. <i>Which</i> would need a preposition, and <i>that</i> cannot introduce this kind of adverbial relative clause."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "to",
+      "from"
+     ],
+     "answer": "to",
+     "explanation": "You are <b>immune to</b> an influence (the usual choice); <b>immune from</b> is also accepted, chiefly in the sense of being exempt. <i>Immune of</i> or <i>immune against</i> is not standard."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-21-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "A Very Slow Argument",
+   "topic": "how mountains form",
+   "passage": "Mountains look like the most permanent things on Earth, yet geologically they are among the youngest. The Himalayas, (1)____ instance, began to rise some fifty million years ago, when the landmass that is now India collided with Asia. Neither plate was willing to sink beneath the other, (2)____ the crust between them had nowhere to go but up. The range is still growing by roughly a centimetre a year, though erosion strips away almost as (3)____ material as the collision adds. Not all mountains are born (4)____ this way. Where one plate slides under another, molten rock forces its way to the surface and builds volcanic cones, some of (5)____ reach their full height within a few thousand years. Elsewhere the crust is pulled (6)____ rather than squeezed together, and huge blocks tilt and drop, leaving their neighbours standing as ranges. (7)____ less striking is the fact that the summit of Everest is made of marine limestone, complete with fossils of creatures that once lived on a sea floor. Only by measuring the rock's age and composition (8)____ geologists able to work out how far it had travelled. The lesson is a humbling one. However solid the ground beneath our feet may appear, it is (9)____ the move, and what we call a mountain is simply a moment in a very slow argument (10)____ two pieces of the planet's crust.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "<b>For instance</b> introduces an example. <i>For example</i> is the same idiom, but <i>as instance</i> or <i>in instance</i> is not English."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "so",
+      "and"
+     ],
+     "answer": "so",
+     "explanation": "<b>So</b> links cause (neither plate would sink) to result (the crust went up); plain <b>and</b> is also grammatical, though it states the consequence less clearly. <i>Because</i> would reverse the logic, and <i>but</i> would set up a contrast that is not there."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "much"
+     ],
+     "answer": "much",
+     "explanation": "<i>Material</i> is uncountable, so the comparison is <b>as much ... as</b>. <i>Many</i> needs a plural, and <i>fast</i> would require the noun to be dropped."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "Something happens <b>in</b> this way or in that way. <i>By this way</i> is a common learner error; English uses <i>by</i> only with <i>by means of</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "<b>Some of which</b> refers back to the cones inside a non-defining relative clause. <i>Them</i> would need a new sentence, and <i>that</i> cannot follow a preposition."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "apart"
+     ],
+     "answer": "apart",
+     "explanation": "The crust is pulled <b>apart</b>, the opposite of <i>squeezed together</i>. <i>Away</i> or <i>out</i> does not express separation into two pieces."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "no"
+     ],
+     "answer": "no",
+     "explanation": "<b>No less striking</b> means 'just as striking', and the fronted phrase forces the inversion <i>is the fact</i>. <i>Not less striking</i> is not idiomatic in this position, and <i>more</i> would need <i>than</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "were"
+     ],
+     "answer": "were",
+     "explanation": "<b>Only by ...</b> at the start of a sentence triggers inversion, so the auxiliary comes before the subject: <i>were geologists able</i>. <i>Are</i> clashes with the past tense of the passage, and <i>had</i> cannot go with <i>able</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "<b>On the move</b> means constantly moving. <i>In the move</i> or <i>at the move</i> is not a fixed phrase."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "between"
+     ],
+     "answer": "between",
+     "explanation": "An argument takes place <b>between</b> two parties. <i>Among</i> requires three or more, and <i>of</i> would make the crust the owner of the argument rather than a party to it."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-21-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "When Copying Became Cheap",
+   "topic": "the printing revolution",
+   "passage": "Before the middle of the fifteenth century, every book in Europe was written (1)____ hand, and a single copy of a long work could occupy a scribe for the better part of a year. Books were therefore rare, expensive and, for most people, entirely (2)____ of reach. The press that changed this did not appear from nowhere. Presses for squeezing grapes had existed for centuries, and so (3)____ ink, paper and metal casting; what was new was the idea of combining them with movable type. No sooner (4)____ the first printed Bibles gone on sale than imitators set up workshops in every trading city. Within fifty years, more books had been produced than in the whole of the previous thousand. The consequences were not at all (5)____ the inventor had intended. He had hoped to make a comfortable living; instead he died in debt, and it fell (6)____ others to profit from his method. Ideas that would once have circulated among a handful of scholars could now be read, argued (7)____ and rejected by thousands, and rulers found it far harder to control what their subjects knew. It is tempting to draw a parallel with the internet, and the comparison is (8)____ without merit. In both cases the cost of copying collapsed almost overnight, and in both cases those in authority were the last to grasp what (9)____ happening. Whether the printing press did more good (10)____ harm is a question historians still argue about; that it did a great deal of both is beyond dispute.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "by"
+     ],
+     "answer": "by",
+     "explanation": "Something is written or made <b>by hand</b>. <i>With hand</i> would need an article (<i>with the hand</i>) and is not the idiom; <i>in hand</i> means 'under control'."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>Out of reach</b> means impossible to obtain. <i>Beyond reach</i> exists but takes no <i>of</i>, so <i>beyond</i> cannot fill this blank."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>And so had ink, paper and metal casting</b> repeats the auxiliary of <i>had existed</i> with inversion. <i>Did</i> would suit a simple past, but the verb here is past perfect."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>No sooner had ... than</b> is the inverted past perfect: <i>No sooner had the Bibles gone on sale than</i>. <i>Were</i> cannot combine with <i>gone on sale</i> in this structure, and <i>did</i> would need a bare infinitive."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "what"
+     ],
+     "answer": "what",
+     "explanation": "<b>What the inventor had intended</b> is a nominal relative clause meaning 'the thing he intended'. <i>That</i> and <i>which</i> would need a noun in front of them, and <i>as</i> would require <i>such as</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "<b>It falls to somebody to do something</b> means the task or opportunity passes to them. <i>Fell on</i> suggests a burden landing on someone, and <i>fell for</i> means to be deceived."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "over",
+      "about"
+     ],
+     "answer": "over",
+     "explanation": "Ideas are <b>argued over</b> or <b>argued about</b>, both meaning debated. <i>Argued with</i> takes a person, and <i>argued for</i> would mean supported, which clashes with <i>rejected</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "not"
+     ],
+     "answer": "not",
+     "explanation": "<b>Not without merit</b> is a deliberate double negative meaning 'has some merit'. <i>Never</i> would be too absolute for a hedged claim, and <i>hardly without</i> is not idiomatic."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "was"
+     ],
+     "answer": "was",
+     "explanation": "<i>Grasp what was happening</i> uses a past continuous inside indirect speech, matching <i>were the last</i>. <i>Is</i> ignores the tense of the reporting verb, and <i>had</i> would need a past participle."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<b>More good than harm</b> completes the comparative <i>more</i>. <i>Or</i> would turn the phrase into a plain choice and leave <i>more</i> unfinished."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-21-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Contagious Reflex",
+   "topic": "why we yawn",
+   "passage": "Everybody yawns, and almost nobody knows why. The oldest explanation, that a yawn draws extra oxygen into the blood, sounds sensible but does not stand (1)____ to testing: volunteers who breathe pure oxygen yawn just as often as those who do not. A more recent theory holds that yawning cools the brain, which works best (2)____ a narrow range of temperature. Supporters point out that people yawn more in warm rooms and hardly (3)____ all when a cold pack is pressed against their forehead. Yet even this does not explain the strangest feature of yawning: (4)____ easily it spreads. Read the word, watch a stranger yawn, or merely think about yawning, and the (5)____ are that you will yawn yourself within a minute or two. Dogs catch yawns from their owners, and chimpanzees from one another, (6)____ suggests that the reflex is tied to empathy in some way. Children under four rarely catch a yawn, and (7)____ do adults who score low on tests of social sensitivity. Had yawning no social function at all, it (8)____ be hard to see why it should be so contagious. Some researchers now suspect that a shared yawn once helped a group keep its members alert at the same time, so that nobody was (9)____ their guard when danger came. It is, admittedly, a difficult idea to prove. What is certain is that the more you try (10)____ to yawn, the more likely you are to do exactly that.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "<b>Stand up to testing</b> means survive it. <i>Stand out</i> means be noticeable, and <i>stand in</i> means substitute."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "within",
+      "in",
+      "inside"
+     ],
+     "answer": "within",
+     "explanation": "The brain works best <b>within</b> (or <b>in/inside</b>) a narrow range. <i>Between</i> would need two named limits, and <i>at</i> suits a single point, not a range."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>Hardly at all</b> means almost never. No other preposition combines with <i>all</i> to make this intensifier; <i>hardly in all</i> is meaningless."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "how"
+     ],
+     "answer": "how",
+     "explanation": "After the colon the writer names the feature: <b>how easily</b> it spreads, an exclamation-style clause. <i>Which</i> or <i>that</i> would need a verb and subject before <i>easily</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "chances",
+      "odds"
+     ],
+     "answer": "chances",
+     "explanation": "<b>The chances are that</b> and <b>the odds are that</b> both mean 'it is probable that'. <i>Likelihood</i> is singular and would need <i>is</i>, so it cannot go with <i>are</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "<b>Which</b> refers back to the whole preceding statement (the fact that animals catch yawns). <i>That</i> cannot introduce a non-defining clause, and <i>it</i> would need a new sentence."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "nor",
+      "neither"
+     ],
+     "answer": "nor",
+     "explanation": "After a negative (<i>rarely catch</i>), <b>and nor do / and neither do</b> adds another subject with inversion. <i>So do</i> would wrongly make the adults agree with a positive statement, and <i>also</i> cannot invert."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "would",
+      "might",
+      "could"
+     ],
+     "answer": "would",
+     "explanation": "<i>Had yawning no social function</i> is an inverted conditional, so the result needs a past-form modal: it <b>would</b> (or <b>might/could</b>) be hard to see. <i>Will</i> breaks the hypothetical sense, and <i>had</i> cannot precede <i>be</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "off"
+     ],
+     "answer": "off",
+     "explanation": "To be caught <b>off</b> one's guard means unprepared. <i>On</i> one's guard means the opposite, and would contradict <i>when danger came</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "not"
+     ],
+     "answer": "not",
+     "explanation": "The blank negates the infinitive: <i>try <b>not</b> to yawn</i>. <i>Never</i> would sit before <i>try</i>, and <i>hard</i> would make the sentence say the opposite of what the ending needs."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-21-5",
+   "level": "ch",
+   "mode": "open",
+   "title": "Worth Its Weight in Gold",
+   "topic": "the silk trade",
+   "passage": "For centuries the secret of silk was guarded (1)____ jealously as any state secret has ever been. Chinese law made it a capital offence to carry silkworm eggs beyond the frontier, and foreign merchants were kept (2)____ the dark about how the thread was produced; some believed it was combed from the leaves of trees. What they did know was that the cloth fetched extraordinary prices at the far end of a route that ran (3)____ thousands of miles of desert and mountain. Few traders travelled the whole way. Instead the bales changed hands at oasis towns, each middleman adding his margin, so that (4)____ the time a length of silk reached Rome it was worth its weight in gold. The Romans, for their (5)____, worried that the trade was draining the empire of silver, and moralists complained that the fabric was too revealing to be decent. (6)____ was the demand, however, that neither cost nor disapproval made any difference. The monopoly finally broke in the sixth century, when, (7)____ to a well-known story, two monks smuggled eggs to Constantinople hidden inside hollow walking sticks. Whether or not the tale is true, silk was soon being woven in the eastern Mediterranean, and prices, (8)____ had once rivalled gold, fell steadily. The overland route declined too, not because the goods lost their appeal but because ships proved cheaper and safer. It is worth remembering that what we now call the Silk Road was never a single road (9)____ a shifting web of tracks, and that silk was only one of many things, among them paper, glass, religions and diseases, that passed (10)____ it.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The comparison is <b>as jealously as</b> any secret has been guarded. <i>So jealously as</i> is possible only after a negative, and <i>more</i> would need <i>than</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "To be kept <b>in the dark</b> means to be left uninformed. <i>At the dark</i> or <i>on the dark</i> is not an idiom."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "across",
+      "through",
+      "over"
+     ],
+     "answer": "across",
+     "explanation": "A route runs <b>across</b>, <b>through</b> or <b>over</b> thousands of miles of terrain. <i>Along</i> would need a line such as a river or coast, and <i>for</i> does not fit with <i>of desert and mountain</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "by"
+     ],
+     "answer": "by",
+     "explanation": "<b>By the time</b> means 'at the point when'. <i>At the time</i> refers to a specific moment already known, and <i>in the time</i> would need a duration."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "part"
+     ],
+     "answer": "part",
+     "explanation": "<b>For their part</b> means 'as far as they were concerned'. <i>For their side</i> or <i>for their turn</i> is not idiomatic; <i>in turn</i> exists but takes <i>in</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "such"
+     ],
+     "answer": "such",
+     "explanation": "<b>Such was the demand that</b> is a fronted, inverted result clause meaning the demand was so great that. <i>So</i> would need an adjective (<i>so great was</i>), and <i>great</i> alone cannot start the sentence without <i>so</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "according"
+     ],
+     "answer": "according",
+     "explanation": "<b>According to a story</b> attributes the claim to its source. <i>Referring to</i> would make the monks do the referring, and <i>due to</i> gives a cause, not a source."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "The non-defining clause <i>which had once rivalled gold</i> adds information about <i>prices</i>. <i>That</i> cannot follow a comma in a non-defining clause, and <i>what</i> would need no antecedent."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "but"
+     ],
+     "answer": "but",
+     "explanation": "<b>Never a single road but a shifting web</b>: after a negative, <i>but</i> means 'rather'. <i>And</i> would list two things that are supposedly both true, and <i>or</i> offers a choice the writer is not making."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "along",
+      "down",
+      "through"
+     ],
+     "answer": "along",
+     "explanation": "Goods, ideas and diseases passed <b>along</b>, <b>down</b> or <b>through</b> the route. <i>Across</i> would mean crossing it from side to side, and <i>by</i> would mean going past it."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-21-6",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "Neighbours After Dark",
+   "topic": "urban foxes",
+   "passage": "Anyone who walks through a British city after dark is likely, sooner or later, to (1)____ across a fox. The animals began moving into towns in the 1930s, when new suburbs with large gardens spread into the countryside they had always (2)____. Far (3)____ being driven out, the foxes simply stayed put and found that their new neighbours were generous. A city fox rarely needs to hunt: bins, bird tables and food left out for cats provide most of what it eats, and the (4)____ is made up of worms, beetles and fallen fruit. Their numbers have risen steadily ever (5)____, and some cities now support several dozen adults per square kilometre. Opinion about them is sharply (6)____. Some residents leave out scraps and give the visitors names; others complain of torn rubbish bags, dug-up lawns and the unearthly screaming heard on winter nights during the mating season. Attempts to reduce the population (7)____ trapping have repeatedly failed, because a vacant territory is claimed by a newcomer within weeks. Wildlife officers now (8)____ that the sensible response is to make homes less inviting rather than to remove the animals. Foxes, they point out, pose (9)____ threat to people, and cases of aggression are almost unknown. Whether we regard them (10)____ pests or as a welcome touch of wildness in the city, they are clearly here to stay.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "fall",
+      "walk",
+      "bump",
+      "come"
+     ],
+     "correct": 3,
+     "explanation": "<b>Come across</b> means meet by chance. <i>Bump into</i> has the same meaning but takes <i>into</i>, not <i>across</i>; <i>fall</i> and <i>walk</i> do not form this phrasal verb."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "lived",
+      "dwelt",
+      "inhabited",
+      "stayed"
+     ],
+     "correct": 2,
+     "explanation": "Only <b>inhabited</b> is transitive, so it can take <i>the countryside</i> as a direct object. <i>Lived</i>, <i>dwelt</i> and <i>stayed</i> would all need <i>in</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "away",
+      "from",
+      "beyond",
+      "off"
+     ],
+     "correct": 1,
+     "explanation": "<b>Far from being driven out</b> means 'not at all driven out; on the contrary'. <i>Far off</i>, <i>far away</i> and <i>far beyond</i> describe distance and cannot introduce this contrast."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "rest",
+      "others",
+      "remaining",
+      "left"
+     ],
+     "correct": 0,
+     "explanation": "<b>The rest</b> is the fixed noun for the remaining portion. <i>The others</i> would need a plural verb, and <i>remaining</i> and <i>left</i> are not nouns."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "then",
+      "before",
+      "after",
+      "since"
+     ],
+     "correct": 3,
+     "explanation": "<b>Ever since</b> means from that time to the present, which suits the present perfect <i>have risen</i>. <i>Ever after</i> belongs to fairy tales, and <i>then</i> or <i>before</i> does not pair with <i>ever</i> here."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "separated",
+      "parted",
+      "divided",
+      "broken"
+     ],
+     "correct": 2,
+     "explanation": "Opinion is <b>sharply divided</b> when people disagree strongly. <i>Separated</i>, <i>parted</i> and <i>broken</i> apply to physical things or relationships, not to public opinion."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "of",
+      "by",
+      "with",
+      "from"
+     ],
+     "correct": 1,
+     "explanation": "A goal is achieved <b>by</b> + method (<i>by trapping</i>). <i>With</i> takes a tool, not an activity; <i>from</i> and <i>of</i> do not express means."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "insist",
+      "consist",
+      "resist",
+      "persist"
+     ],
+     "correct": 0,
+     "explanation": "<b>Insist that</b> introduces a firmly held view. <i>Persist</i> takes <i>in</i>, <i>consist</i> takes <i>of</i>, and <i>resist</i> takes a noun; none of them is followed by a <i>that</i>-clause."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "few",
+      "small",
+      "less",
+      "little"
+     ],
+     "correct": 3,
+     "explanation": "<i>Threat</i> here is uncountable, so <b>little threat</b> means almost none. <i>Few</i> needs a plural, <i>small</i> would need an article, and <i>less</i> requires a comparison."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "for",
+      "as",
+      "to",
+      "like"
+     ],
+     "correct": 1,
+     "explanation": "The pattern is <b>regard something as</b>, echoed later by <i>or as a welcome touch</i>. <i>Like</i> compares, <i>for</i> suits <i>mistake ... for</i>, and <i>to</i> does not follow <i>regard</i>."
+    }
+   ]
+  }
+ ]
+}

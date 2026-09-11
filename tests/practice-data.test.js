@@ -31,9 +31,10 @@ const files = (dir, re) => fs.readdirSync(path.join(ROOT, dir)).filter(f => re.t
 
 suite('practice banks: every source file holds to the contract', () => {
   for (const [kind, dir, re] of [['reading', 'data/reading', /^reading-\d{2}\.json$/], ['cloze', 'data/cloze', /^cloze-\d{2}\.json$/], ['errors', 'data/errors', /^errors-\d{2}\.json$/]]) {
-    test(`${kind}: all files valid, ten authors delivered`, () => {
+    test(`${kind}: all files valid, twenty-five authors delivered`, () => {
+      // 01–10 were the first batch; 11–25 tripled the bank.
       const fs_ = files(dir, re);
-      assert.equal(fs_.length, 10, `${kind}: expected 10 files, found ${fs_.length}`);
+      assert.equal(fs_.length, 25, `${kind}: expected 25 files, found ${fs_.length}`);
       for (const f of fs_) {
         const problems = validate(kind, path.join(ROOT, dir, f));
         assert.deepEqual(problems, [], `${dir}/${f}: ${problems.slice(0, 4).join(' | ')}`);
@@ -56,9 +57,14 @@ suite('practice banks: every source file holds to the contract', () => {
 
   test('both levels are well stocked', () => {
     const lv = (bank, l) => bank.filter(x => x.level === l).length;
-    assert.truthy(lv(READING_PASSAGES, 'kc') >= 12 && lv(READING_PASSAGES, 'ch') >= 12, `reading kc=${lv(READING_PASSAGES, 'kc')} ch=${lv(READING_PASSAGES, 'ch')}`);
-    assert.truthy(lv(CLOZE_PASSAGES, 'kc') >= 16 && lv(CLOZE_PASSAGES, 'ch') >= 16, `cloze kc=${lv(CLOZE_PASSAGES, 'kc')} ch=${lv(CLOZE_PASSAGES, 'ch')}`);
-    assert.truthy(lv(ERROR_ITEMS, 'kc') >= 120 && lv(ERROR_ITEMS, 'ch') >= 120, `errors kc=${lv(ERROR_ITEMS, 'kc')} ch=${lv(ERROR_ITEMS, 'ch')}`);
+    // Tripled on 2026-09-11: 90 passages, 120 texts, 900 items. The floors sit
+    // a little under the counts so a single dropped file is caught, not one
+    // trimmed item.
+    assert.truthy(lv(READING_PASSAGES, 'kc') >= 40 && lv(READING_PASSAGES, 'ch') >= 40, `reading kc=${lv(READING_PASSAGES, 'kc')} ch=${lv(READING_PASSAGES, 'ch')}`);
+    assert.truthy(lv(CLOZE_PASSAGES, 'kc') >= 55 && lv(CLOZE_PASSAGES, 'ch') >= 55, `cloze kc=${lv(CLOZE_PASSAGES, 'kc')} ch=${lv(CLOZE_PASSAGES, 'ch')}`);
+    assert.truthy(lv(ERROR_ITEMS, 'kc') >= 420 && lv(ERROR_ITEMS, 'ch') >= 420, `errors kc=${lv(ERROR_ITEMS, 'kc')} ch=${lv(ERROR_ITEMS, 'ch')}`);
+    assert.truthy(READING_PASSAGES.length >= 90 && CLOZE_PASSAGES.length >= 120 && ERROR_ITEMS.length >= 900,
+      `totals reading=${READING_PASSAGES.length} cloze=${CLOZE_PASSAGES.length} errors=${ERROR_ITEMS.length}`);
   });
 });
 
@@ -112,6 +118,46 @@ suite('practice banks: format parity with the real PTNK papers', () => {
       const its = ERROR_ITEMS.filter(i => i.level === lv);
       assert.truthy(its.every(i => i.options.length === 4 && /\(A\)[\s\S]*\(B\)[\s\S]*\(C\)[\s\S]*\(D\)/.test(i.q)), lv + ': four inline segments');
       assert.truthy(new Set(its.map(i => i.focus)).size >= 8, lv + ': error types are varied');
+    }
+  });
+});
+
+suite('practice banks: the key does not give itself away', () => {
+  // The engine draws options in file order — no shuffle. A verifier found
+  // whole cloze texts with every key at A: a child who always tapped A scored
+  // 100% and learned nothing. Per item set the keys must be spread.
+  function slots(qs) { const c = [0, 0, 0, 0]; qs.forEach(q => { c[q.correct]++; }); return c; }
+
+  test('no cloze text puts more than 6 of its 10 keys in one slot', () => {
+    const bad = [];
+    for (const p of CLOZE_PASSAGES) {
+      if (p.mode !== 'mcq') continue;
+      const c = slots(p.questions);
+      if (Math.max(...c) > 6) bad.push(p.id + ' ' + JSON.stringify(c));
+    }
+    assert.deepEqual(bad, [], 'a text whose answer is nearly always the same letter');
+  });
+
+  test('no reading passage puts all its MCQ keys in one slot', () => {
+    const bad = [];
+    for (const p of READING_PASSAGES) {
+      const mcq = p.questions.filter(q => q.type === 'mcq' && q.options.length === 4);
+      if (mcq.length < 4) continue;
+      const c = slots(mcq);
+      if (Math.max(...c) >= mcq.length - 0) bad.push(p.id + ' ' + JSON.stringify(c));
+    }
+    assert.deepEqual(bad, []);
+  });
+
+  test('across each bank and level, every slot carries at least 15% of the keys', () => {
+    for (const [name, qs] of [
+      ['cloze', CLOZE_PASSAGES.filter(p => p.mode === 'mcq').flatMap(p => p.questions)],
+      ['reading', READING_PASSAGES.flatMap(p => p.questions).filter(q => q.type === 'mcq' && q.options.length === 4)],
+      ['errors', ERROR_ITEMS],
+    ]) {
+      const c = slots(qs);
+      const min = Math.min(...c);
+      assert.truthy(min >= qs.length * 0.15, `${name}: slots ${JSON.stringify(c)} of ${qs.length} — a slot under 15% is a tell`);
     }
   });
 });

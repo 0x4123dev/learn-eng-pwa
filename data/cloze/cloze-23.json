@@ -1,0 +1,730 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-23-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "What Happens Inside a Loaf",
+   "topic": "the science of bread",
+   "passage": "Bread looks like the simplest of foods, yet what goes on inside a loaf is anything but simple. When flour is mixed with water, two proteins that had been lying dormant in the grain begin to link together, forming a stretchy network known (1)____ gluten. Knead the dough and the network tightens; leave it alone and it relaxes. Bakers speak of 'developing' the dough, and it is this network, (2)____ than the yeast, that decides whether the finished loaf will hold its shape. The yeast, for its part, feeds on the sugars in the flour and gives (3)____ carbon dioxide, which the gluten traps in thousands of tiny pockets. Had the network been weak, the gas would simply have escaped, and the loaf would have come out of the oven as flat as a biscuit. It is only when the dough goes into the oven (4)____ the real drama begins. In the first few minutes the trapped gas expands rapidly, a process bakers refer to (5)____ oven spring, and the loaf can grow by a third before the crust sets. Meanwhile the starch absorbs water and stiffens, and the sugars on the surface turn brown, releasing the smell that draws people into a bakery (6)____ the street. Not until the last century (7)____ scientists understand these reactions in detail; before that, the craft was passed on by hand. Even now, a good baker relies (8)____ much on touch as on thermometers. (9)____ the bread has cooled, one final change takes place: the starch slowly recrystallises, which is (10)____ a loaf goes stale even when it is kept perfectly dry.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The passive collocation is <b>known as</b> + a name. <i>Known for</i> would introduce a quality something is famous for, and <i>known by</i> needs a person who knows."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "rather",
+      "more"
+     ],
+     "answer": "rather",
+     "explanation": "<b>X rather than Y</b> sets one candidate against another inside the cleft sentence; <i>more than the yeast</i> (to a greater degree than the yeast) is an equally natural comparison of degree. <i>Other than</i> means <i>apart from</i>, and <i>less than</i> would credit the yeast instead."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "off",
+      "out"
+     ],
+     "answer": "off",
+     "explanation": "To <b>give off</b> a gas or smell is to release it; <i>give out</i> is also used of heat and gas. <i>Give up</i> means to abandon and <i>give away</i> means to donate, neither of which fits."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "The cleft structure <b>It is only when … that …</b> needs <i>that</i> to introduce the main clause. <i>Which</i> or <i>when</i> would leave the sentence without a main clause at all."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "You <b>refer to</b> something <b>as</b> a name. <i>Refer to it by</i> is possible only with <i>by the name of</i>, and <i>refer to it for</i> means consult it for information."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "from",
+      "off",
+      "across",
+      "down"
+     ],
+     "answer": "from",
+     "explanation": "People are drawn <b>into</b> the bakery <b>from</b> the street, the place they start; <i>off the street</i> is the informal equivalent, and <i>across</i>/<i>down the street</i> also fit by placing the bakery relative to the passer-by. <i>To the street</i> would reverse the direction, and <i>in the street</i> is an awkward description of where a shop is."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "After fronted <b>Not until …</b> the subject and auxiliary invert, so <i>did scientists understand</i> is required. <i>Have</i> would clash with <i>the last century</i>, a finished period, and without inversion the sentence is ungrammatical."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The comparison of equality is <b>as much on X as on Y</b>, so the first <i>as</i> is needed. <i>So much</i> is only used in this pattern after a negative, and <i>too much</i> would mean excessively."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "once",
+      "after",
+      "when"
+     ],
+     "answer": "once",
+     "explanation": "<b>Once</b> (or <i>after</i>, <i>when</i>) the bread has cooled introduces the moment the final change starts. <i>Until</i> would make the change stop at that point, and <i>while</i> would place it during the cooling rather than after it."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "why"
+     ],
+     "answer": "why",
+     "explanation": "<b>Which is why</b> presents the recrystallising as the reason for the loaf going stale. <i>Which is how</i> would describe a method, and <i>which is because</i> reverses cause and effect."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-23-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "Farming on the Slopes of Fire",
+   "topic": "volcanic soil",
+   "passage": "Few landscapes look less promising for farming than the slopes of a volcano, yet some of the most densely settled countryside on earth lies precisely there. The explanation, (1)____ it turns out, is in the ash. When a volcano erupts, it throws out rock that has been ground into fine particles, each of them rich (2)____ potassium, phosphorus and a dozen other minerals that plants crave. Ordinary soil takes centuries to build (3)____ such reserves; a single eruption can deliver them in an afternoon. No sooner (4)____ the ash cooled than rain begins to break it down, releasing the minerals in a form that roots can absorb. The result is land so fertile that farmers on the flanks of certain volcanoes harvest three crops a year, (5)____ their neighbours a valley away manage only one. It is hardly surprising, (6)____, that people keep returning to places that have been destroyed more than once within living memory. The risk is real, but so (7)____ the reward, and for a family with little land the choice is not a difficult one. Governments have tried to move such communities to safer ground, usually (8)____ little success; the villagers drift back within a generation. Geologists like to point (9)____ that the very ash which buried a town in one century may be feeding its orchards in the next. Had the mountain never erupted, the valley (10)____ today be as poor as any other in the region.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The parenthetical comment is <b>as it turns out</b>, meaning <i>as we discover</i>. <i>So it turns out</i> would have to stand as its own clause, and <i>if it turns out</i> makes the explanation uncertain, which the passage does not intend."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "Something is <b>rich in</b> the minerals it contains. <i>Rich with</i> is occasionally seen in literary style but not with a list of chemical elements, and <i>rich of</i> does not exist."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "To <b>build up</b> reserves is to accumulate them gradually. <i>Build on</i> means to use something as a foundation, and <i>build in</i> means to include as a fixed part."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "has",
+      "is"
+     ],
+     "answer": "has",
+     "explanation": "The inverted <b>No sooner has X happened than Y happens</b> describes a general, repeated sequence, so the present perfect <i>has</i> is needed after the fronted adverb; <i>no sooner is the ash cooled</i>, treating <i>cooled</i> as a state, is also possible. <i>Had</i> would shift the whole account into a single past occasion, which the present tense <i>begins</i> rules out."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "while",
+      "whereas",
+      "whilst",
+      "though",
+      "although"
+     ],
+     "answer": "while",
+     "explanation": "<b>While</b> or <b>whereas</b> sets the three harvests against the neighbours' single one; concessive <i>though</i>/<i>although</i> makes the same contrast. <i>But</i> cannot follow a comma inside this sentence without a subject change, and <i>because</i> would make the neighbours' poor harvest the cause of the good one."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "then",
+      "therefore",
+      "perhaps"
+     ],
+     "answer": "then",
+     "explanation": "<b>Then</b> (or <i>therefore</i>) between commas draws the conclusion from the fertility just described; a hedging <i>perhaps</i> also fits the slot. <i>However</i> would signal a contrast, and <i>too</i> would add a second surprising thing when none has been mentioned."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "is"
+     ],
+     "answer": "is",
+     "explanation": "<b>So + auxiliary + subject</b> repeats the previous verb for a new subject: <i>the risk is real, but so is the reward</i>. <i>Does</i> would need a full verb to stand in for, and <i>are</i> disagrees with the singular <i>reward</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "with"
+     ],
+     "answer": "with",
+     "explanation": "An attempt is made <b>with little success</b>; the preposition describes the result that accompanies the action. <i>In success</i> and <i>at success</i> are not English, and <i>for little success</i> would mean the success was the aim."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "To <b>point out</b> that something is true is to draw attention to it. <i>Point to</i> takes a noun, not a <i>that</i>-clause, and <i>point at</i> is a physical gesture."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "would",
+      "might",
+      "could"
+     ],
+     "answer": "would",
+     "explanation": "This is a mixed conditional: a past condition (<i>had the mountain never erupted</i>) with a present result marked by <i>today</i>, so <b>would</b> (or the more tentative <i>might</i>/<i>could</i>) + bare infinitive is needed. <i>Would have been</i> would place the result in the past, which <i>today</i> contradicts, and <i>will</i> cannot follow an unreal condition."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-23-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Business of Birdsong",
+   "topic": "why birds sing",
+   "passage": "Anyone who has been woken by a blackbird at four in the morning might reasonably ask what the bird thinks it is doing. For a long time the answer seemed obvious: birds sing because they are happy. Only in the last century (1)____ scientists begin to test that assumption, and what they found was far more interesting. Song, it turns out, is mostly a matter of business. A male sings, first of all, to lay (2)____ to a territory; every phrase is a warning to rivals that the trees around him are already taken. He sings, secondly, to attract a mate, and here the quality of the performance matters a great deal. Females of many species prefer males (3)____ repertoires are larger, on the grounds that a bird which has learned many songs has probably lived long enough to do so. The dawn chorus, (4)____, is less a celebration than a daily announcement that the singer has made it through the night. (5)____ does the story end there. Young birds learn their songs much as children learn speech, by listening to adults and then practising, badly (6)____ first, until the phrases come out cleanly. A chick raised in silence will grow up with a thin, incomplete song, (7)____ matter how healthy it is. Some species even develop local dialects, so that a bird from one valley can be told (8)____ from one a few miles away. Whether birds take any pleasure in all this is a question science cannot answer. (9)____ we can say is that the singing is neither idle nor accidental, and that the blackbird outside the window is doing far more (10)____ simply greeting the sun.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "A fronted restrictive phrase such as <b>Only in the last century</b> forces inversion, so the auxiliary <i>did</i> must come before <i>scientists</i>. <i>Have</i> is tempting because of <i>the last century</i>, but the following verb <i>begin</i> is a bare infinitive and the account continues in the past."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "claim"
+     ],
+     "answer": "claim",
+     "explanation": "To <b>lay claim to</b> something is to assert that it is yours, which is exactly what a territorial song does. <i>Lay hold of</i> means to seize physically, and <i>lay title to</i> is not a fixed expression."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "The relative pronoun shows possession: the repertoires belong to the males, so <b>whose</b> is needed. <i>Which</i> and <i>that</i> would require <i>repertoires</i> to be the subject of the clause without an owner, and <i>of which</i> is two words in the wrong order here."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "then",
+      "therefore"
+     ],
+     "answer": "then",
+     "explanation": "<b>Then</b> (or <i>therefore</i>) between commas signals that this sentence sums up the two reasons just given. <i>However</i> would contradict them, and <i>too</i> would add the chorus as a further example rather than a conclusion."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "nor",
+      "neither"
+     ],
+     "answer": "nor",
+     "explanation": "<b>Nor does the story end there</b> is an inverted negative adding a further point after previous negatives. <i>Not</i> cannot begin a clause with an auxiliary inverted like this, and <i>never</i> would mean the story is endless."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "The fixed phrase is <b>at first</b>, meaning in the early stages. <i>In first</i> and <i>on first</i> do not exist as adverbials, and <i>from first</i> would need <i>the</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "no"
+     ],
+     "answer": "no",
+     "explanation": "<b>No matter how</b> + adjective means regardless of how healthy it is. <i>Not matter</i> is ungrammatical, and <i>whatever</i> cannot be followed by <i>matter how</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "apart"
+     ],
+     "answer": "apart",
+     "explanation": "To <b>tell one thing apart from</b> another is to distinguish them. <i>Tell off</i> means to scold, and <i>tell away</i> is not an English phrasal verb."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "what",
+      "all"
+     ],
+     "answer": "what",
+     "explanation": "<b>What we can say is …</b> is a pseudo-cleft that puts the whole statement in focus; <i>All we can say</i> works the same way with a hint of limitation. <i>That we can say</i> is not a noun clause, and <i>Which</i> needs an antecedent."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "The comparative <b>far more than</b> requires <i>than</i>. <i>Far more as</i> is not a comparison, and <i>far more of</i> would need a noun rather than an <i>-ing</i> form after it."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-23-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "A Room for Strangers",
+   "topic": "the history of tea houses",
+   "passage": "Long before coffee reached Europe, the tea house had already become a fixture of city life across much of Asia. The earliest ones, (1)____ far as records show, were little more than roadside stalls where travellers could rest and refill a flask. Within a few centuries, however, they had grown (2)____ something much grander: rooms with painted screens, musicians in the corner and a proprietor who knew every customer by name. Merchants struck deals there, poets exchanged verses, and matchmakers arranged marriages over a pot that (3)____ be refilled a dozen times before anyone stood up to leave. What made the tea house unusual was that it belonged to nobody in particular. A scholar and a porter might sit at neighbouring tables, (4)____ they would never have shared a room anywhere else. Rulers were not always comfortable with this. More than one emperor tried to close the tea houses (5)____ the grounds that too much talk was going on inside them, and more than one failed, (6)____ a city deprived of its tea houses quickly became restless. Only when the trade routes shifted (7)____ the great tea houses begin to decline; rival drinks arrived, and the young preferred novelty. Yet the institution never quite disappeared. In many cities today the old houses are being restored, (8)____ least in part by people who have never drunk tea from a lidded cup in their lives. Had the tea house merely sold tea, it would have vanished long (9)____. It survived because it sold something rarer: a place (10)____ strangers could sit as equals.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "as",
+      "so"
+     ],
+     "answer": "as",
+     "explanation": "<b>As far as records show</b> limits the claim to what the evidence supports; <i>so far as</i> is an accepted variant. <i>Too far as</i> and <i>how far as</i> are not fixed expressions."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "into"
+     ],
+     "answer": "into",
+     "explanation": "To <b>grow into</b> something is to develop until you become it. <i>Grow to</i> is used with an infinitive (<i>grow to love</i>) or a size, and <i>grow up</i> is used of children, not institutions."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "might",
+      "could",
+      "would"
+     ],
+     "answer": "might",
+     "explanation": "The pot <b>might</b> (or <i>could</i>, <i>would</i>) be refilled: a past habit or possibility described from the narrator's viewpoint. <i>May</i> and <i>can</i> are present forms that clash with the past narrative, and <i>must</i> would turn a custom into an obligation."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "though",
+      "although",
+      "whereas",
+      "while",
+      "whilst",
+      "when"
+     ],
+     "answer": "though",
+     "explanation": "The clause contrasts what happened inside the tea house with what would never happen outside it, so a concessive or contrastive linker (<b>though</b>, <i>although</i>, <i>whereas</i>, <i>while</i>, or contrastive <i>when</i>) is needed. <i>Because</i> would make the sharing a result of the refusal, and <i>so</i> gets the logic backwards."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "on",
+      "upon"
+     ],
+     "answer": "on",
+     "explanation": "The justification for an action is given <b>on the grounds that</b>. <i>For the grounds</i> and <i>with the grounds</i> are not English, and <i>in the grounds</i> would refer to the land around a building."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "for",
+      "because",
+      "since",
+      "as"
+     ],
+     "answer": "for",
+     "explanation": "The clause explains why the emperors failed, so a reason linker is required: literary <b>for</b>, or <i>because</i>, <i>since</i>, <i>as</i>. <i>So</i> would make the restlessness a consequence of the failure rather than its cause, and <i>while</i> would introduce a contrast that is not there."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "After a fronted <b>Only when …</b> clause, the main clause inverts: <i>did the great tea houses begin</i>. <i>Had</i> would need a past participle rather than <i>begin</i>, and the uninverted <i>the tea houses began</i> cannot follow the fronted phrase."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>At least in part</b> means partly, if not more. <i>In least</i> and <i>for least</i> do not exist, and <i>not least</i> would mean especially, which does not fit before <i>in part</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "ago",
+      "since",
+      "before"
+     ],
+     "answer": "ago",
+     "explanation": "<b>Long ago</b> (or <i>long since</i>, <i>long before</i>) places the imagined disappearance well in the past, completing the third conditional. <i>Long after</i> would need a reference event, and <i>long already</i> is not English."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "where"
+     ],
+     "answer": "where",
+     "explanation": "The relative adverb <b>where</b> links <i>a place</i> to the clause that describes what happens in it. <i>Which</i> would need a preposition (<i>in which</i>), and <i>that</i> cannot replace <i>in which</i> after <i>place</i> when no preposition follows."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-23-5",
+   "level": "ch",
+   "mode": "open",
+   "title": "Men Who Cut Through Hills",
+   "topic": "the tunnel builders",
+   "passage": "When the first railway tunnels were driven through the hills of northern England, nobody involved had done anything like it before. The engineers had drawings; the men who actually cut the rock had (1)____ but their hands, a few tools and an enormous amount of nerve. Work went on around the clock, gangs (2)____ over from one another every twelve hours, and progress was measured in feet. Had the two teams digging from opposite ends missed each other (3)____ even a few yards, the whole scheme would have been a laughing stock. In the event they met almost exactly (4)____ planned, a feat of surveying that still impresses engineers today. The dangers were constant. Water broke in without warning, roofs collapsed, and the candles the men worked (5)____ frequently went out, leaving them in darkness a mile underground. Casualties were high, and it is only recently that historians have begun to put names to those (6)____ lives the tunnels cost. What the men were paid was, by the standards of the day, generous; what they endured (7)____ earn it was not. Contractors pushed relentlessly, since their own fortunes depended (8)____ speed, and inspectors rarely visited. Yet by all accounts morale among the gangs remained remarkably high, partly out of pride in the work and partly because there was nowhere (9)____ to go. The tunnels are still in use. Trains pass through them at speeds their builders could scarcely have imagined, and hardly (10)____ of the passengers gives a thought to how the passage was made.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "nothing",
+      "little"
+     ],
+     "answer": "nothing",
+     "explanation": "<b>Nothing but</b> means only; <i>little but</i> softens it slightly and is also acceptable. <i>Anything but</i> means the opposite of, and <i>everything but</i> would mean the men had all except their hands."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "taking"
+     ],
+     "answer": "taking",
+     "explanation": "To <b>take over from</b> someone is to replace them on duty; the participle <i>taking</i> fits the absolute clause. <i>Handing over</i> describes the gang leaving, not the one arriving, and <i>getting over</i> means recovering."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "by"
+     ],
+     "answer": "by",
+     "explanation": "The margin of an error or difference is expressed with <b>by</b>: <i>missed by a few yards</i>. <i>For a few yards</i> would give a distance travelled, and <i>with a few yards</i> makes no sense of the measurement."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "as",
+      "where"
+     ],
+     "answer": "as",
+     "explanation": "<b>As planned</b> is the reduced form of <i>as it had been planned</i>; <i>where planned</i> stresses the location and is also defensible. <i>Like planned</i> is non-standard, and <i>than planned</i> needs a comparative before it."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "by"
+     ],
+     "answer": "by",
+     "explanation": "You work <b>by</b> candlelight, the source of illumination, so the stranded preposition in the reduced relative clause is <i>by</i>. <i>With</i> would suggest the candles were tools, and <i>under</i> would need the candles to be above the men."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "The lives belonged to the men, so the possessive relative <b>whose</b> is needed: <i>those whose lives the tunnels cost</i>. <i>Which</i> and <i>that</i> cannot show possession, and <i>who</i> would leave <i>lives</i> without a link to <i>those</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "The infinitive of purpose <b>to earn it</b> explains why they endured what they did. <i>For earn</i> is ungrammatical before a verb, and <i>and earn</i> would make the earning a separate hardship."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "on",
+      "upon"
+     ],
+     "answer": "on",
+     "explanation": "The verb is <b>depend on</b> (or the more formal <i>upon</i>). <i>Depend of</i> is a common error borrowed from other languages, and <i>depend from</i> is not English."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "else"
+     ],
+     "answer": "else",
+     "explanation": "<b>Nowhere else</b> means no other place. <i>Nowhere other</i> requires <i>than</i> and a comparison, and <i>nowhere more</i> would need an adjective."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "any"
+     ],
+     "answer": "any",
+     "explanation": "<b>Hardly any of</b> the passengers means almost none, and the singular verb <i>gives</i> treats the group as a quantity. <i>Hardly some</i> and <i>hardly no</i> are ungrammatical, and <i>hardly one of</i> is not idiomatic."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-23-6",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "A Cloud at Ground Level",
+   "topic": "how fog forms",
+   "passage": "Fog is simply a cloud that has lost its way, or rather one that has formed at ground level instead of high above it. Air always holds some water vapour, and the warmer the air, the (1)____ vapour it can carry. When that air cools, it eventually reaches the point (2)____ which it can hold no more, and the surplus condenses into droplets so small that they hang in the air rather than falling. Whether this happens on a clear night, after a shower or over the sea depends (3)____ how the cooling takes place. The most familiar kind forms on calm, cloudless nights, when the ground loses heat to the sky and chills the layer of air (4)____ contact with it. By dawn a valley may be filled to the brim, (5)____ the hilltops around it are already in sunshine. Coastal fog behaves differently: warm, moist air drifts over a cold current and cools from below, sometimes for days (6)____ end. Cities once suffered a third kind, in which smoke provided the particles (7)____ which droplets could gather. So thick did this become at times (8)____ buses had to be led through the streets by men on foot. Fog rarely lasts long once the sun is up, (9)____ the same air that produced it warms again and reabsorbs the droplets. Forecasters can now predict it with fair accuracy, (10)____ a night of fog still brings airports to a standstill more often than most travellers would like.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "much",
+      "more",
+      "many",
+      "most"
+     ],
+     "correct": 1,
+     "explanation": "The double comparative <b>the warmer …, the more …</b> links two changes that rise together. <i>Most</i> is a superlative, and <i>much</i> and <i>many</i> are not comparative forms."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "at",
+      "in",
+      "on",
+      "by"
+     ],
+     "correct": 0,
+     "explanation": "Something happens <b>at</b> a point, so the relative phrase is <i>the point at which</i>. <i>In which</i> would suit a period or a state, and <i>on</i> and <i>by</i> do not collocate with <i>point</i> in this sense."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "of",
+      "in",
+      "from",
+      "on"
+     ],
+     "correct": 3,
+     "explanation": "The verb is <b>depend on</b>, and the preposition is kept before an indirect question (<i>depends on how</i>). <i>Depend of</i> is a frequent learner error, and <i>in</i> and <i>from</i> never follow <i>depend</i>."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "by",
+      "on",
+      "in",
+      "at"
+     ],
+     "correct": 2,
+     "explanation": "Two things touching are <b>in contact with</b> each other. <i>On contact</i> means at the moment of touching, which changes the sense, and <i>at</i> and <i>by</i> do not form the phrase."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "despite",
+      "while",
+      "meanwhile",
+      "during"
+     ],
+     "correct": 1,
+     "explanation": "<b>While</b> introduces a clause that contrasts the foggy valley with the sunny hilltops. <i>During</i> and <i>despite</i> are prepositions and cannot take a clause, and <i>meanwhile</i> is an adverb that cannot join two clauses after a comma."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "on",
+      "at",
+      "in",
+      "to"
+     ],
+     "correct": 0,
+     "explanation": "<b>For days on end</b> means for many days without a break. <i>At an end</i> means finished, <i>in the end</i> means finally, and <i>to end</i> is not an idiom of duration."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "over",
+      "under",
+      "about",
+      "around"
+     ],
+     "correct": 3,
+     "explanation": "Droplets gather <b>around</b> a particle, which acts as a core. <i>About</i> in this sense is archaic, <i>over</i> suggests covering a surface, and <i>under</i> puts the droplets beneath the particle."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "as",
+      "so",
+      "that",
+      "than"
+     ],
+     "correct": 2,
+     "explanation": "The inverted structure <b>So thick did it become that …</b> introduces the result with <i>that</i>. <i>Than</i> belongs with comparatives, <i>as</i> would need <i>as thick as</i>, and a second <i>so</i> has no role here."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "whereas",
+      "since",
+      "so",
+      "unless"
+     ],
+     "correct": 1,
+     "explanation": "The clause explains why fog clears, so a reason linker, <b>since</b>, is needed. <i>So</i> would make the warming a result of the clearing, <i>unless</i> makes it a condition that prevents it, and <i>whereas</i> signals a contrast that is not intended."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "for",
+      "nor",
+      "so",
+      "yet"
+     ],
+     "correct": 3,
+     "explanation": "Good forecasts and airports still stopping are in contrast, which <b>yet</b> expresses after a comma. <i>So</i> and <i>for</i> would present the standstill as a consequence or a reason, and <i>nor</i> needs a preceding negative and inversion."
+    }
+   ]
+  }
+ ]
+}

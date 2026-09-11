@@ -1,0 +1,681 @@
+{
+ "passages": [
+  {
+   "id": "cl-kc-17-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Thirty Students on a Stage",
+   "topic": "a spelling bee",
+   "passage": "Every March our school holds a spelling competition, and this year I decided to enter for the first time. I had been practising (1)____ months, reading long lists of words aloud to my grandmother every evening. She cannot speak much English, (2)____ she was patient enough to check each letter against the list. On the day of the contest, thirty students sat in a row on the stage while the whole school watched (3)____ silence. The rules were simple: if you spelt a word wrongly, you had to leave the stage (4)____ once. In the first round the words were easy, and nobody was eliminated. By the fourth round, (5)____, only eight of us were left. My hands were shaking so badly that I could hardly hold the microphone. Then the judge gave me the word \"necessary\". I knew it well, but I suddenly could not remember (6)____ it had one C or two. I closed my eyes, imagined my grandmother's finger moving along the page, and spelt it slowly. The bell did not ring, (7)____ meant I was correct. In the end I finished third, which is (8)____ better than I had expected. My friend Nam, who had (9)____ practised at all, won the whole thing. He says he simply reads a lot. I have decided that next year I will read more and worry (10)____.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "for",
+      "during",
+      "from",
+      "since"
+     ],
+     "correct": 0,
+     "explanation": "A length of time (<i>months</i>) after a perfect tense takes <b>for</b>. <i>Since</i> needs a starting point, and <i>during</i> names a period, not how long."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "or",
+      "but",
+      "so",
+      "because"
+     ],
+     "correct": 1,
+     "explanation": "The two halves contrast: she cannot speak English, <b>but</b> she still helped. <i>So</i> and <i>because</i> would make one half the cause of the other."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "on",
+      "at",
+      "in",
+      "with"
+     ],
+     "correct": 2,
+     "explanation": "The fixed phrase is <b>in silence</b>. English does not say <i>with silence</i> or <i>at silence</i> for the way people watch."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "for",
+      "in",
+      "on",
+      "at"
+     ],
+     "correct": 3,
+     "explanation": "<b>At once</b> means immediately. <i>In</i>, <i>on</i> and <i>for</i> do not combine with <i>once</i> in this meaning."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "however",
+      "moreover",
+      "otherwise",
+      "therefore"
+     ],
+     "correct": 0,
+     "explanation": "Easy first round, then a hard fourth round: a contrast, so <b>however</b>. <i>Therefore</i> and <i>moreover</i> would add or conclude, not contrast."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "which",
+      "whether",
+      "that",
+      "what"
+     ],
+     "correct": 1,
+     "explanation": "The doubt is between two possibilities (one C or two), so <b>whether</b> introduces the clause. <i>That</i> states a fact; <i>what</i> and <i>which</i> would need a missing noun."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "what",
+      "who",
+      "which",
+      "that"
+     ],
+     "correct": 2,
+     "explanation": "After a comma, <b>which</b> refers back to the whole idea that the bell did not ring. <i>That</i> cannot follow a comma here, and <i>what</i> never refers backwards."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "too",
+      "very",
+      "more",
+      "much"
+     ],
+     "correct": 3,
+     "explanation": "A comparative (<i>better</i>) is strengthened with <b>much</b>. <i>Very</i> goes with a plain adjective, and <i>more better</i> is a double comparative."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "hardly",
+      "almost",
+      "already",
+      "nearly"
+     ],
+     "correct": 0,
+     "explanation": "<b>Hardly ... at all</b> means almost not at all, which fits a boy who just reads. <i>Nearly</i> and <i>almost</i> would say he came close to practising, which makes no sense with <i>at all</i>."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "less",
+      "fewer",
+      "least",
+      "little"
+     ],
+     "correct": 0,
+     "explanation": "<i>Worry</i> is an activity, so the comparative is <b>less</b>. <i>Fewer</i> is for countable nouns, and <i>least</i> is a superlative with nothing to compare to."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-17-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Small Silver Key",
+   "topic": "a lost key",
+   "passage": "Last Tuesday I came home from school and reached into my pocket for my key, but it was not there. I searched my bag twice, took everything (1)____ and shook it, and still found nothing. My parents would not be back (2)____ seven o'clock, so I sat on the step outside and tried to think. I was sure the key (3)____ still be somewhere, because I remembered locking the door that morning. Had it fallen out on the bus? Had somebody (4)____ it up in the playground? I walked back to the bus stop, keeping my eyes (5)____ the pavement the whole way, and asked the woman at the newspaper stall (6)____ she had seen a small silver key. She shook her head kindly. By the time I got home again it was starting to rain, and I was beginning to feel sorry (7)____ myself. Then our neighbour, Mrs Hoa, opened her window. \"Are you looking (8)____ this?\" she called, holding up my key. It had been lying on the path between our houses all afternoon. It must have (9)____ out of my pocket when I ran for the bus. I thanked her about ten times, and she laughed and said I was not the first person on our street to lose a key. Since that day I have kept my key on a long cord (10)____ my neck, and I check it every time I leave the house.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "away",
+      "out",
+      "up",
+      "off"
+     ],
+     "correct": 1,
+     "explanation": "You <b>take</b> things <b>out</b> of a bag to empty it. <i>Take off</i> is for clothes, <i>take away</i> means remove from a place, and <i>take up</i> means start a hobby."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "until",
+      "since",
+      "for",
+      "by"
+     ],
+     "correct": 0,
+     "explanation": "A negative verb with a clock time takes <b>until</b>: not back until seven. <i>By</i> means no later than, <i>since</i> marks a starting point, and <i>for</i> gives a length of time."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "might",
+      "can",
+      "should",
+      "must"
+     ],
+     "correct": 3,
+     "explanation": "<i>I was sure</i> plus a reason calls for the deduction modal <b>must</b>. <i>Might</i> expresses only a possibility, which contradicts being sure."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "put",
+      "given",
+      "picked",
+      "taken"
+     ],
+     "correct": 2,
+     "explanation": "The phrasal verb <b>pick up</b> means lift something from the ground. <i>Take up</i>, <i>put up</i> and <i>give up</i> all exist but mean different things."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "to",
+      "on",
+      "in",
+      "at"
+     ],
+     "correct": 1,
+     "explanation": "The collocation is <b>keep your eyes on</b> something. <i>Look at</i> takes <i>at</i>, but <i>eyes</i> with <i>keep</i> takes <i>on</i>."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "if",
+      "what",
+      "when",
+      "that"
+     ],
+     "correct": 0,
+     "explanation": "A yes/no question reported after <i>asked</i> needs <b>if</b> (or <i>whether</i>). <i>That</i> reports a statement, and <i>what</i> or <i>when</i> would report a wh-question."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "about",
+      "with",
+      "of",
+      "for"
+     ],
+     "correct": 3,
+     "explanation": "The fixed expression is <b>feel sorry for</b> someone. <i>Sorry about</i> is used for an event, never for a person you pity."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "after",
+      "up",
+      "for",
+      "at"
+     ],
+     "correct": 2,
+     "explanation": "<b>Look for</b> means search for. <i>Look at</i> is just to see, <i>look after</i> is to care for, and <i>look up</i> is to check in a book."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "falling",
+      "fallen",
+      "fall",
+      "fell"
+     ],
+     "correct": 1,
+     "explanation": "After <i>must have</i> the verb is a past participle: <b>fallen</b>. <i>Fell</i> is the past simple and cannot follow <i>have</i>."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "along",
+      "over",
+      "across",
+      "around"
+     ],
+     "correct": 3,
+     "explanation": "A cord goes <b>around</b> (or <i>round</i>) your neck, forming a circle. <i>Across</i>, <i>along</i> and <i>over</i> describe a line or a surface, not a loop."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-17-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "A Goat Among the Tomatoes",
+   "topic": "the market on Sunday",
+   "passage": "On Sunday mornings the square in front of the old church (1)____ into a market. Farmers from the villages nearby start arriving before six, and by eight o'clock it is almost impossible to move (2)____ the crowd. My mother goes every week, and I usually go (3)____ her to help carry the bags. She never buys anything from the first stall she sees. Instead, she walks slowly around the whole market, comparing prices at (4)____ stall, before she decides. The sellers know her well, and some of them keep their best tomatoes (5)____ for her. My favourite part is the corner where an old man sells hot corn. There is always a queue, (6)____ it moves quickly, and the smell is worth the wait. Last Sunday, (7)____, something unusual happened. A goat escaped from a truck and ran straight through the middle of the market, knocking over baskets of eggs and a whole table of flowers. Nobody was hurt, but it (8)____ three men nearly twenty minutes to catch it. The flower seller was upset at first, but by the end of the morning she was telling the story to anyone (9)____ would listen, and laughing harder each time. My mother says the market has been in the same place for more than a hundred years, and I hope it will still be there when I (10)____ children of my own.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "gets",
+      "makes",
+      "turns",
+      "becomes"
+     ],
+     "correct": 2,
+     "explanation": "<b>Turn into</b> means change and become something else. <i>Become</i> takes no <i>into</i>, and <i>get into</i> or <i>make into</i> mean something different."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "between",
+      "across",
+      "along",
+      "through"
+     ],
+     "correct": 3,
+     "explanation": "You push your way <b>through</b> a crowd, passing among the people. <i>Across</i> and <i>along</i> describe a surface or a line, and <i>between</i> needs two things."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "with",
+      "to",
+      "along",
+      "by"
+     ],
+     "correct": 0,
+     "explanation": "You go somewhere <b>with</b> a person, meaning together. <i>Go by</i> is for transport, <i>go to</i> is for a place, and <i>along</i> would need <i>with</i> after it."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "whole",
+      "each",
+      "all",
+      "both"
+     ],
+     "correct": 1,
+     "explanation": "A singular noun (<i>stall</i>) after the determiner needs <b>each</b> or <i>every</i>. <i>All</i> and <i>both</i> take plural nouns, and <i>whole</i> would need <i>the</i>."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "out",
+      "on",
+      "back",
+      "off"
+     ],
+     "correct": 2,
+     "explanation": "<b>Keep something back</b> means save it rather than sell it. <i>Keep off</i> means stay away, <i>keep out</i> means do not enter, and <i>keep on</i> means continue."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "unless",
+      "so",
+      "because",
+      "but"
+     ],
+     "correct": 3,
+     "explanation": "A queue sounds bad; that it moves quickly is a contrast, so <b>but</b>. <i>So</i> and <i>because</i> would make the speed a result or a cause of the queue."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "however",
+      "besides",
+      "instead",
+      "therefore"
+     ],
+     "correct": 0,
+     "explanation": "The usual Sundays are contrasted with one unusual Sunday, so <b>however</b>. <i>Therefore</i> gives a result, and <i>besides</i> adds a point."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "needed",
+      "took",
+      "spent",
+      "cost"
+     ],
+     "correct": 1,
+     "explanation": "The pattern is <b>it takes</b> someone a length of time to do something. <i>Spend</i> needs a person as its subject, and <i>cost</i> is about money."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "which",
+      "whose",
+      "who",
+      "whom"
+     ],
+     "correct": 2,
+     "explanation": "The relative pronoun is the subject of <i>would listen</i> and refers to a person, so <b>who</b>. <i>Whom</i> is only for objects, and <i>which</i> is for things."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "will have",
+      "had",
+      "have",
+      "am having"
+     ],
+     "correct": 2,
+     "explanation": "After <i>when</i> in a future time clause, English uses the present simple: <b>when I have</b>. <i>Will have</i> is wrong in a time clause, and <i>had</i> puts it in the past."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-17-4",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Night the Tent Flew",
+   "topic": "a camping mishap",
+   "passage": "Last summer my cousin Minh and I went camping by a lake for the first time. We had borrowed a tent from his uncle, (1)____ warned us to practise putting it up in the garden first. Naturally, we did not listen. We arrived at the campsite late in the afternoon, (2)____ the sun was already low, and spread the tent out on the grass. There were poles, ropes and little metal pegs, but no instructions. After an hour we had built something that looked (3)____ a tent, so we crawled inside, ate our sandwiches and fell asleep. Around midnight the wind (4)____ up. The tent began to shake, and then one side of it simply lifted off the ground. Minh shouted at me to hold the pole (5)____ he searched for the torch. It was pointless. Within minutes the whole thing had collapsed on top of us, and we were lying in the dark wrapped in wet cloth. We spent the rest of the night in the car, (6)____ was uncomfortable but at least dry. In the morning a family in the next tent lent us a hammer and showed us (7)____ to knock the pegs in at an angle. They had clearly done this many times before. We stayed two more nights, and the tent did not move (8)____ an inch. When we returned it, Minh's uncle asked how we (9)____ got on. \"Fine,\" said Minh, \"once we had learned to listen.\" I think it was the most honest thing I have ever heard him say. Next year we are going again, but this time we will practise (10)____ we leave.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "which",
+      "whom",
+      "whose",
+      "who"
+     ],
+     "correct": 3,
+     "explanation": "The relative pronoun is the subject of <i>warned</i> and refers to a person (the uncle), so <b>who</b>. <i>Which</i> is for things, and <i>whom</i> cannot be a subject."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "until",
+      "since",
+      "when",
+      "while"
+     ],
+     "correct": 2,
+     "explanation": "<b>When</b> the sun was already low describes the moment they arrived. <i>Until</i> and <i>since</i> mark the end or start of a period, which is not the meaning here."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "such",
+      "like",
+      "similar",
+      "as"
+     ],
+     "correct": 1,
+     "explanation": "<b>Look like</b> plus a noun means resemble. <i>As</i> would mean in the role of, and <i>similar</i> needs <i>to</i> after it."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "picked",
+      "made",
+      "went",
+      "turned"
+     ],
+     "correct": 0,
+     "explanation": "When the wind gets stronger it <b>picks up</b> (or <i>gets up</i>). <i>Turn up</i> means arrive, and <i>go up</i> is for prices or temperatures."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "during",
+      "meanwhile",
+      "until",
+      "while"
+     ],
+     "correct": 3,
+     "explanation": "Two actions at the same time are joined by <b>while</b> plus a clause. <i>During</i> is a preposition and needs a noun, and <i>meanwhile</i> cannot join two clauses."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "what",
+      "it",
+      "which",
+      "that"
+     ],
+     "correct": 2,
+     "explanation": "After a comma, <b>which</b> adds a comment about the whole fact of sleeping in the car. <i>That</i> is not used after a comma in this way, and <i>it</i> would create two separate sentences."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "why",
+      "how",
+      "that",
+      "what"
+     ],
+     "correct": 1,
+     "explanation": "<i>Show somebody</i> <b>how</b> <i>to do</i> something teaches a method. <i>What to do</i> would need no object after the verb, and <i>that</i> cannot introduce <i>to</i> plus a verb."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "even",
+      "still",
+      "just",
+      "ever"
+     ],
+     "correct": 0,
+     "explanation": "<i>Did not move</i> <b>even</b> <i>an inch</i> stresses the smallest possible amount. <i>Ever</i> and <i>still</i> describe time, not amount."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "have",
+      "were",
+      "did",
+      "had"
+     ],
+     "correct": 3,
+     "explanation": "The uncle's question <i>How did you get on?</i> is reported after a past verb, so it moves back to <b>had got on</b>. <i>Have got</i> keeps the present, and <i>did got</i> is impossible."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "while",
+      "before",
+      "after",
+      "until"
+     ],
+     "correct": 1,
+     "explanation": "The lesson is to practise first and then go, so <b>before</b> we leave. <i>After</i> reverses the order, and <i>until</i> would mean practising non-stop."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-17-5",
+   "level": "kc",
+   "mode": "open",
+   "title": "A Small Shadow on a Bicycle",
+   "topic": "my little brother",
+   "passage": "My little brother Bao is six years old, and he follows me (1)____ the house like a small shadow. Whenever I sit down to do my homework, he climbs onto the chair next to me and asks (2)____ I am doing. I used to find this annoying, (3)____ lately I have started to enjoy it. Last month he decided that he wanted to learn to ride a bicycle. My father was busy, so the job was given (4)____ me. Every afternoon we went to the empty car park behind our building, and I ran beside him holding the back of the seat. He fell off at (5)____ twenty times in the first week. Each time, he sat on the ground for a moment, looked at his knees, and then got back on without a word. I do not think I (6)____ have been so brave at his age. On the tenth day, I let go of the seat without telling him, and he rode all the way to the far wall (7)____ his own. When he realised I was (8)____ longer behind him, he was so surprised that he forgot to use the brakes and rode straight into a bush. He was not hurt, and he laughed (9)____ loudly that two people came out onto their balconies to see what was happening. Now he rides everywhere, and I have to run to keep (10)____ with him. My mother says that one day he will be teaching me things. I think she is probably right.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "around",
+      "round",
+      "about",
+      "through"
+     ],
+     "answer": "around",
+     "explanation": "<b>Follow someone around</b> (or <i>round</i>, <i>about</i>, <i>through</i>) <i>the house</i> means everywhere inside it. <i>In</i> would fit a place but not the idea of following from room to room, and <i>along</i> is for a line such as a road."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "what"
+     ],
+     "answer": "what",
+     "explanation": "The question he asks is <i>What are you doing?</i>, so the reported form keeps <b>what</b>. <i>Which</i> needs a known set of choices, and <i>if</i> would turn it into a yes/no question that makes no sense here."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "but",
+      "yet",
+      "though",
+      "although"
+     ],
+     "answer": "but",
+     "explanation": "The old feeling (annoying) contrasts with the new one (enjoy), so <b>but</b> (or <i>yet</i>, <i>though</i>, <i>although</i>). <i>So</i> would wrongly make the enjoyment a result of the annoyance."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "In the passive, <i>give something</i> <b>to</b> <i>someone</i> keeps its preposition: the job was given <b>to</b> me. <i>For</i> would mean the job was done on my behalf, not handed to me."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "least"
+     ],
+     "answer": "least",
+     "explanation": "<b>At least</b> twenty times means twenty or more. <i>At most</i> would set an upper limit, and <i>at last</i> means finally, which makes no sense with a number."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "would",
+      "could"
+     ],
+     "answer": "would",
+     "explanation": "An imagined past (<i>at his age</i>) takes <b>would</b> (or <i>could</i>) <i>have been</i>. <i>Should have been</i> talks about a duty that was not done, not about an imagined ability."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "The fixed phrase is <b>on</b> <i>his own</i>, meaning without help. <i>By</i> goes with <i>himself</i>, not with <i>his own</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "no"
+     ],
+     "answer": "no",
+     "explanation": "<b>No longer</b> means not any more; with the positive verb <i>was</i>, only <i>no</i> works. <i>Not</i> would need <i>any</i> and a negative verb (<i>was not any longer</i>), and <i>any</i> alone is wrong here."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "so"
+     ],
+     "answer": "so",
+     "explanation": "<b>So</b> plus an adverb (<i>loudly</i>) plus <i>that</i> gives the result. <i>Very</i> and <i>too</i> cannot be followed by a <i>that</i> clause of result."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "<b>Keep up with</b> someone means move as fast as they do. <i>Keep on</i> means continue, and <i>keep away</i> means stay at a distance, which is the opposite idea."
+    }
+   ]
+  }
+ ]
+}

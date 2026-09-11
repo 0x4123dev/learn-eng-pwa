@@ -1,0 +1,403 @@
+{
+ "passages": [
+  {
+   "id": "rd-ch-23-1",
+   "level": "ch",
+   "title": "Rescuing the Silent Screen",
+   "topic": "restoring old films",
+   "words": 507,
+   "passage": "<b>A.</b> Somewhere in a climate-controlled vault outside Amsterdam sits a reel of film that nobody has watched for ninety years. Its cellulose nitrate base has begun to weep a sticky amber residue, and the smell — vinegar, sweet and sharp — tells the archivist what she already suspects: left alone for another decade, the reel would turn into a solid, unspoolable brick. Nitrate stock, used for almost every film made before 1951, is not merely fragile; it is chemically unstable and, given a little heat, spectacularly flammable. Not until the 1930s did studios treat it as anything other than a disposable commercial product, and by then a large share of the silent era had already been melted down for the silver it contained.<br><br><b>B.</b> Restoration begins, unglamorously, with a search. A single title may survive only as scattered fragments: a reel in Prague, a duplicate print in Buenos Aires, a censor's copy in Tokyo with twelve minutes missing. Each must be located, compared frame by frame and ranked according to its quality and its closeness to the original release. Restorers speak of \"elements\" rather than \"copies\", because no two are alike; the version screened in one country might have carried different intertitles, a different ending, or a colour tint that the domestic release never had.<br><br><b>C.</b> Once the best elements are assembled, the physical work starts. Torn perforations are mended by hand under a magnifier. Shrunken film, which may have lost as much as two per cent of its length, is fed through a specially built scanner whose sprockets can be adjusted to fit. Every frame is then digitised at a resolution far higher than any cinema will ever display, so that the rescue itself does not become a fresh source of loss. What emerges is not a film but a mountain of data — several terabytes for a feature of modest length.<br><br><b>D.</b> Here the ethical questions crowd in. Software can remove scratches, steady a wobbling image and erase the flicker that audiences of 1925 took for granted. Had the technology existed then, would the director have used it? Nobody knows, and that is precisely the difficulty. A restoration that removes every trace of age risks producing something the original audience never saw; one that removes nothing leaves the work barely watchable. Most archives now aim for a middle path: mend what is damage, keep what is design. A splice made by the editor stays; a splice made by a careless projectionist goes.<br><br><b>E.</b> The final irony is that the restored digital file is itself less durable than the nitrate it replaces. File formats fall out of use, hard drives fail without warning, and the cost of migrating a large collection every few years is one that few institutions can meet. Several major archives have therefore begun printing their restorations back onto film — polyester this time, stable for centuries — and locking the reels away in the cold. The medium once dismissed as disposable turns out to be the safest place to keep the past.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains why a restorer may have to choose between surviving versions that differ from one another?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B describes the scattered 'elements' of a title, which must be ranked, and notes that versions screened in different countries could carry different intertitles, endings or tinting."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes a decision about which imperfections should be left in place?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D sets out the 'middle path': mend what is damage, keep what is design — the editor's splice stays while the projectionist's goes."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) mentions a reason why many early films were deliberately destroyed?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "Section A says a large share of the silent era 'had already been melted down for the silver it contained' — destruction for profit, not by accident."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) points out that a modern solution has a weakness the old material did not?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E calls it the 'final irony' that the digital file is less durable than nitrate, because formats and drives fail and migration is expensive."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which statement best expresses the main idea of the passage?",
+     "options": [
+      "Digital technology has finally solved the problem of preserving early cinema",
+      "Restoring an old film demands both technical care and difficult judgement, and even the result is not safe",
+      "Nitrate film should never have been used because it is dangerous and unstable",
+      "The most important task for archives is to find every surviving copy of a film"
+     ],
+     "correct": 1,
+     "explanation": "The passage moves from the search and the physical repair (skill) through the ethical questions (judgement) to the irony that the digital result is itself fragile. Options A, C and D each pick up one section only, and A contradicts section E."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply in section A by saying that studios did not treat nitrate as anything other than a disposable commercial product until the 1930s?",
+     "options": [
+      "Attitudes, as much as the material itself, were responsible for the early losses",
+      "Films made after the 1930s are of no interest to restorers",
+      "Studios were forced by law to change how they stored film",
+      "The chemistry of nitrate was not understood until that decade"
+     ],
+     "correct": 0,
+     "explanation": "The sentence links the studios' <b>attitude</b> to the melting-down that followed: films were lost because nobody thought them worth keeping, not only because nitrate decays. Nothing is said about laws or about later films being uninteresting."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The phrase \"crowd in\" in section D is closest in meaning to:",
+     "options": [
+      "are quietly set aside",
+      "are answered one by one",
+      "lose their importance",
+      "become impossible to ignore"
+     ],
+     "correct": 3,
+     "explanation": "Questions that 'crowd in' press forward all at once and demand attention — the section then lists several of them and admits 'nobody knows'. They are neither set aside nor answered."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "Films are digitised at a very high resolution so that cinemas can project them at that resolution.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "Section C says the resolution is 'far higher than any cinema will ever display'; the purpose is to stop the rescue itself becoming a source of loss, not to serve projection."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-23-2",
+   "level": "ch",
+   "title": "The Unwritten Rules of the Line",
+   "topic": "the sociology of queues",
+   "words": 544,
+   "passage": "A queue looks like the simplest of social arrangements: people arrive, they wait, and they are served in the order they came. Yet sociologists who have watched lines — outside bakeries, at bus stops, in hospital corridors — describe something closer to a miniature legal system, complete with rights, offences and punishments, none of which is written down anywhere. [1] What makes this remarkable is that the rules are enforced almost entirely by people who have no authority whatsoever over one another.<br><br>The central principle is that time already spent waiting is a form of property. [2] It is this sense of ownership that explains the fury directed at a queue-jumper, out of all proportion to the minute or two actually lost. The offender has not merely delayed the others; he has, in their eyes, stolen something from them.<br><br>Not every departure from strict order is treated as theft, however. A person who leaves briefly and returns to the same spot is usually tolerated, provided a neighbour has been told. A parent who steps forward to join a child near the front attracts frowns but rarely open protest. [3] Observers have noted that the acceptable size of such a group varies from one country to another, and even from one kind of queue to another: what passes without comment at a cinema would cause an outcry at a petrol station during a shortage.<br><br>Punishment, when it comes, is graduated with surprising precision. It begins with a look, moves to a pointed remark addressed to nobody in particular, and only then becomes a direct challenge. [4] Rarely does anyone call for an official; the queue polices itself, and it prefers to do so quietly, since a loud confrontation costs everybody the calm they were relying on to get through the wait.<br><br>Perhaps the most telling finding concerns what happens when a queue is made invisible. Ticket-number systems and virtual waiting lists remove the physical line, and with it much of the tension — but also much of the solidarity. People no longer glare at latecomers, but nor do they hold a place for a stranger, chat to pass the time or warn a newcomer that the counter is about to close. [5] Whether that trade is worth making is a question the designers seldom stop to ask.<br><br><i>Choose from the sentences A–G the one which fits each gap. There are two extra sentences you do not need to use.</i><br><br><b>A.</b> The rule of thumb seems to be that joining a companion is forgivable so long as the number of people who benefit stays small.<br><b>B.</b> What the system gains in fairness, in other words, it pays for in fellow-feeling.<br><b>C.</b> Bakeries, for that reason, are busiest early in the morning.<br><b>D.</b> Newcomers absorb these conventions within seconds of arriving, and children as young as four can be seen enforcing them.<br><b>E.</b> The escalation is collective: a second speaker is emboldened by the first, and a jumper who shrugs off one remark seldom withstands three.<br><b>F.</b> The first written regulations for orderly queuing were introduced by department stores in the nineteenth century.<br><b>G.</b> The longer someone has stood in line, the more strongly they feel that their place belongs to them and cannot be taken away.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [1]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "The gap follows rules that are 'not written down anywhere'; D's 'these conventions' picks them up, and its image of four-year-olds enforcing them sets up the next sentence about enforcement by people with no authority. F contradicts 'none of which is written down'."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [2]?",
+     "accept": [
+      "G"
+     ],
+     "answer": "G",
+     "explanation": "The paragraph states that waiting time is 'a form of property'; G explains how that feeling grows with time, and the cleft sentence 'It is <b>this sense of ownership</b> that…' refers straight back to it."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [3]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "After the example of a parent joining a child, A gives the general rule about joining a companion, and the next sentence's 'the acceptable size of <b>such a group</b>' depends on A's 'number of people who benefit'."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [4]?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "The paragraph describes punishment rising step by step; E explains that this escalation is a group effort, which leads naturally into 'Rarely does anyone call for an official; the queue polices itself'."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [5]?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "The paragraph weighs less tension against lost solidarity; B sums that up as a gain in fairness paid for in fellow-feeling, and the final sentence calls it 'that trade'."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "What is the passage mainly about?",
+     "options": [
+      "Why queue-jumping is more common in some countries than in others",
+      "How queues are governed by unspoken rules that the people waiting enforce among themselves",
+      "The advantages of ticket-number systems over physical queues",
+      "The history of queuing as a social custom"
+     ],
+     "correct": 1,
+     "explanation": "Every paragraph develops the idea of the queue as a self-policing 'miniature legal system'. National differences and ticket systems are details within that argument, and no history is given."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the final sentence suggest about the designers of virtual queuing systems?",
+     "options": [
+      "They consulted sociologists before building the systems",
+      "They deliberately set out to reduce conversation between strangers",
+      "They have not recognised that their systems remove something of value",
+      "They believe that fairness matters less than speed"
+     ],
+     "correct": 2,
+     "explanation": "Designers 'seldom stop to ask' whether the trade is worth making — the implication is that they have not noticed there is a trade at all, not that they chose it on purpose. Nothing supports options A, C or D."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"graduated\" in paragraph 4 is closest in meaning to:",
+     "options": [
+      "delayed until the end of the wait",
+      "measured in minutes",
+      "handed out by qualified people",
+      "arranged in stages of increasing force"
+     ],
+     "correct": 3,
+     "explanation": "The sentences that follow describe a sequence — a look, then a remark, then a direct challenge — so 'graduated' means arranged in steps of rising severity, not connected with qualifications or timing."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-23-3",
+   "level": "ch",
+   "title": "Reading the Shaking Earth",
+   "topic": "how earthquakes are measured",
+   "words": 504,
+   "passage": "<b>A.</b> Ask most people how big an earthquake was and they will answer with a single number \"on the Richter scale\". The phrase has outlived the thing it describes. Charles Richter's scale, devised in the 1930s for the earthquakes of southern California, was calibrated for one type of instrument at one range of distances, and it saturates: above roughly magnitude 7 it stops distinguishing between a large earthquake and an enormous one, much as a bathroom scale would give the same reading for a car and a lorry. Seismologists abandoned it decades ago, yet the name lives on in headlines, largely because \"moment magnitude\" is a mouthful nobody wants to say.<br><br><b>B.</b> Moment magnitude, the measure now in universal use, is built not on how far a needle swung but on physics. It combines the area of the fault that slipped, the distance it moved and the rigidity of the rock, yielding a figure for the total energy released. Because the scale is logarithmic, each whole step represents roughly thirty-two times more energy, so that a magnitude 8 is not \"twice as strong\" as a magnitude 4 but about a million times more energetic. Had this been widely understood, a great deal of confused reporting might have been avoided.<br><br><b>C.</b> Magnitude, however, tells you what happened at the source, not what happened to you. For that there is a second, older family of scales — intensity scales — which describe effects at a particular place: whether dishes rattled, whether chimneys fell, whether people were thrown from their beds. Intensity is reported in Roman numerals precisely so that nobody confuses it with magnitude. A moderate earthquake directly beneath a city can produce a higher intensity there than a far larger one out at sea, and it is intensity, not magnitude, that engineers consult when they decide how strong a building must be.<br><br><b>D.</b> Neither number could be produced without a global network of seismometers, instruments so sensitive that a large earthquake on one side of the planet is recorded on the other within twenty minutes. Because the waves travel at different speeds through different materials, the pattern of their arrival lets analysts locate the source in three dimensions and say something about the rocks in between. It is from such records, rather than from any direct observation, that almost everything known about the Earth's interior has been deduced; the liquid outer core, for instance, was inferred from the shadow it casts in the arriving waves.<br><br><b>E.</b> What the instruments still cannot do is tell anyone in advance. Early-warning systems exist, but they work by detecting the first, faster waves and racing an alert ahead of the slower, more damaging ones — a margin of seconds, not days. No sooner had one such system given schoolchildren twenty seconds' notice than commentators demanded to know why it had not given twenty hours. The honest answer is that forecasting where stress will next be released remains beyond the science, and those who claim otherwise are usually selling something.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains why one measure is written with a different kind of number from another?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C says intensity is reported in Roman numerals 'precisely so that nobody confuses it with magnitude'."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) gives an example of a comparison that most people would get badly wrong?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B points out that a magnitude 8 is not 'twice as strong' as a magnitude 4 but about a million times more energetic, and blames confused reporting on this misunderstanding."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) mentions a discovery made without anyone seeing the thing discovered?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D says the Earth's interior has been deduced from wave records 'rather than from any direct observation', with the liquid outer core inferred from its shadow."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes a measure that stops working properly at the top of its range?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "Section A explains that Richter's scale 'saturates' above about magnitude 7, unable to separate a large earthquake from an enormous one."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which statement best sums up the passage?",
+     "options": [
+      "Engineers should pay more attention to magnitude when designing buildings",
+      "Early-warning systems will soon be able to forecast earthquakes days ahead",
+      "The Richter scale is still the most reliable way to describe an earthquake",
+      "Earthquakes are described by several distinct scales, each answering a different question, but none of them can predict one"
+     ],
+     "correct": 3,
+     "explanation": "The passage moves through magnitude, intensity and the instruments behind both, then ends on what they cannot do. Option A contradicts section A, C contradicts section C, and D contradicts section E."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What can be inferred about the commentators mentioned in section E?",
+     "options": [
+      "They wanted the system to be switched off",
+      "They had been warned about the earthquake earlier than the schoolchildren",
+      "They misunderstood what an early-warning system is designed to do",
+      "They believed the system had failed to detect the first waves"
+     ],
+     "correct": 2,
+     "explanation": "The system works by racing ahead of slower waves — 'a margin of seconds, not days'. Asking for twenty hours shows the commentators took it for a forecasting tool, which the writer says does not exist. The passage never says the system failed or that anyone wanted it removed."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"saturates\" in section A is closest in meaning to:",
+     "options": [
+      "becomes soaked with water",
+      "reaches a limit beyond which it cannot rise",
+      "gives readings that are too high",
+      "loses accuracy over time"
+     ],
+     "correct": 1,
+     "explanation": "The writer explains the word at once: above magnitude 7 the scale 'stops distinguishing' between large and enormous, like a bathroom scale that reads the same for a car and a lorry — it has hit a ceiling."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "Engineers decide how strong a building must be on the basis of magnitude.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "Section C states the opposite: 'it is intensity, not magnitude, that engineers consult when they decide how strong a building must be'."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-23-4",
+   "level": "ch",
+   "title": "The Long Road of the Peppercorn",
+   "topic": "the trade in spices",
+   "words": 550,
+   "passage": "For most of recorded history, a sack of pepper was worth carrying halfway round the world. The plant grows only in a narrow band of hot, wet coastline, while the demand for it stretched from the kitchens of Rome to the courts of northern China. [1] Between the two lay a chain of intermediaries so long that the people at either end had only the haziest notion of where the other lived, and traders on every link had every reason to keep it that way.<br><br>Ignorance, in fact, was the trade's most valuable commodity. A merchant who knew where cloves grew, or which monsoon carried a ship from Arabia to the Malabar coast in forty days rather than ninety, held an advantage worth more than the cargo itself. [2] Medieval European buyers, for their part, were assured that cinnamon was gathered from the nests of giant birds and that pepper groves were guarded by serpents — tales that conveniently justified the price.<br><br>And the price was extraordinary. In fourteenth-century London a pound of nutmeg could be exchanged for a cow, and a year's wages bought a few handfuls of saffron. [3] Not all of this appetite was culinary; spices were prescribed as medicines, burned as perfumes and displayed at table as proof that the host could afford them, much as an expensive car is parked where the neighbours can see it.<br><br>Such margins were bound to attract someone willing to cut out the middlemen. When Portuguese ships rounded the southern tip of Africa at the end of the fifteenth century, their object was not discovery for its own sake but the source of the pepper. [4] Within a generation the overland routes that had fed the Mediterranean for a thousand years had withered, and the wealth of the cities built on them drained away to the Atlantic coast.<br><br>The ending is one the early merchants would have found hard to credit. Once the growing regions were known, the plants were carried elsewhere: nutmeg to the Caribbean, cloves to East Africa, pepper to Brazil. Supply rose, secrecy became impossible, and the price collapsed. [5] What had once been locked in a merchant's strongbox now sits in a supermarket rack, and the descendants of the men who were told about serpents sprinkle it over their food without a second thought.<br><br><i>Choose from the sentences A–G the one which fits each gap. There are two extra sentences you do not need to use.</i><br><br><b>A.</b> Had they arrived a century earlier, the great trading houses of Venice might have adapted; as it was, the shift came too fast to be answered.<br><b>B.</b> Today Vietnam grows more than a third of the world's pepper.<br><b>C.</b> No single trader ever made the whole journey; the goods passed from hand to hand, and each pair of hands added its share to the price.<br><b>D.</b> The commodity that had once justified voyages across unknown oceans became, within two centuries, something almost too cheap to tax.<br><b>E.</b> Such knowledge was guarded as jealously as any state secret, and passed on, if at all, only within a family.<br><b>F.</b> Salt, by contrast, was available almost everywhere and never counted as a luxury.<br><b>G.</b> Nor did the cost do anything to dampen demand; if anything, scarcity was part of the attraction.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [1]?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "The gap sits between the two distant ends of the trade and the 'chain of intermediaries'; C introduces that chain — goods passing 'from hand to hand', each adding to the price."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [2]?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "E's 'Such knowledge' refers back to knowing where cloves grew and which monsoon to use; its point about secrecy leads into the false tales fed to European buyers 'for their part'."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [3]?",
+     "accept": [
+      "G"
+     ],
+     "answer": "G",
+     "explanation": "After the examples of extraordinary prices, G says the cost did not reduce demand, and the next sentence's 'this appetite' picks up G's 'demand'. F mentions salt, which is never discussed."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [4]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "The Portuguese have just reached the source of the pepper; A's 'they' are the Portuguese, and its point that the shift came too fast to be answered leads to the overland routes withering 'within a generation'."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [5]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "The price has just 'collapsed'; D describes that collapse — too cheap to tax — and the final sentence contrasts the strongbox with the supermarket rack. B is a modern statistic that fits no gap."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply about the tales of giant birds and serpents?",
+     "options": [
+      "They were invented by the Portuguese to discourage rivals",
+      "They described real dangers on the spice routes",
+      "Medieval buyers refused to believe them",
+      "They were spread by people who profited from them"
+     ],
+     "correct": 3,
+     "explanation": "The tales 'conveniently justified the price', in a paragraph about ignorance being the trade's most valuable commodity — the implication is that those selling the spices had every reason to encourage such stories. The Portuguese appear only later, as the ones who broke the system."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "The word \"withered\" in paragraph 4 is closest in meaning to:",
+     "options": [
+      "shrank and lost their importance",
+      "became more expensive to travel",
+      "were officially closed",
+      "were blocked by armies"
+     ],
+     "correct": 0,
+     "explanation": "A route that 'withers' declines like a plant losing its strength; the same sentence says the cities' wealth 'drained away', so the routes faded rather than being closed or fought over."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "Venice was the wealthiest of the cities that depended on the overland spice routes.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 2,
+     "explanation": "Venice is mentioned only through its 'great trading houses' that might have adapted; the passage never compares its wealth with that of other cities on the routes."
+    }
+   ]
+  }
+ ]
+}

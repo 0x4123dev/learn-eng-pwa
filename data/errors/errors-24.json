@@ -1,0 +1,404 @@
+{
+  "items": [
+    {
+      "id": "er-ch-24-1",
+      "level": "ch",
+      "focus": "word-order",
+      "q": "(A) No sooner the rain had stopped than the players (B) ran back onto the pitch, (C) eager to finish the match (D) before darkness fell.",
+      "options": ["No sooner the rain had stopped", "ran back onto the pitch", "eager to finish the match", "before darkness fell"],
+      "correct": 0,
+      "correction": "No sooner had the rain stopped",
+      "explanation": "After a negative adverbial such as <b>No sooner</b> at the start of a sentence, the auxiliary and subject invert: <b>No sooner had the rain stopped than…</b>."
+    },
+    {
+      "id": "er-ch-24-2",
+      "level": "ch",
+      "focus": "other",
+      "q": "The head teacher (A) insisted that every pupil (B) wears a helmet on the cycling trip, (C) however short the route (D) turned out to be.",
+      "options": ["insisted that every pupil", "wears a helmet", "however short the route", "turned out to be"],
+      "correct": 1,
+      "correction": "wear a helmet",
+      "explanation": "After verbs of demand such as <b>insist, suggest, demand</b>, the that-clause takes the subjunctive (base form): <b>insisted that every pupil wear</b>."
+    },
+    {
+      "id": "er-ch-24-3",
+      "level": "ch",
+      "focus": "other",
+      "q": "(A) Walking along the cliff path, (B) the lighthouse came into view, (C) its white tower (D) gleaming against the grey sky.",
+      "options": ["Walking along the cliff path", "the lighthouse came into view", "its white tower", "gleaming against the grey sky"],
+      "correct": 1,
+      "correction": "we saw the lighthouse",
+      "explanation": "A dangling modifier: the participle clause <b>Walking along the cliff path</b> must describe the subject of the main clause, and a lighthouse cannot walk, so the subject has to be the people walking."
+    },
+    {
+      "id": "er-ch-24-4",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "If the council (A) had not raised the sea wall (B) back in the nineties, (C) the harbour would have been under water (D) at every high tide now.",
+      "options": ["had not raised the sea wall", "back in the nineties", "the harbour would have been under water", "at every high tide now"],
+      "correct": 2,
+      "correction": "the harbour would be under water",
+      "explanation": "A mixed conditional pairs a past condition (<b>had not raised</b>) with a present result marked by <b>now</b>, so the main clause needs <b>would be</b>, not the past-result form <b>would have been</b>."
+    },
+    {
+      "id": "er-ch-24-5",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "If only I (A) listened to the guide's warning (B) about the tide, we (C) would not have spent the night (D) stranded on the rocks.",
+      "options": ["listened to the guide's warning", "about the tide", "would not have spent the night", "stranded on the rocks"],
+      "correct": 0,
+      "correction": "had listened to the guide's warning",
+      "explanation": "<b>If only</b> expressing regret about a past event takes the past perfect, matching the past-result clause <b>would not have spent</b>."
+    },
+    {
+      "id": "er-ch-24-6",
+      "level": "ch",
+      "focus": "conjunction",
+      "q": "(A) It was not until the final whistle (B) when the exhausted goalkeeper (C) realised that she had kept (D) a clean sheet all season.",
+      "options": ["It was not until the final whistle", "when the exhausted goalkeeper", "realised that she had kept", "a clean sheet all season"],
+      "correct": 1,
+      "correction": "that the exhausted goalkeeper",
+      "explanation": "The cleft structure <b>It was not until … that …</b> requires <b>that</b> to introduce the second part, not <b>when</b>."
+    },
+    {
+      "id": "er-ch-24-7",
+      "level": "ch",
+      "focus": "quantifier",
+      "q": "The museum guide told us (A) that the medieval scribes (B) had used surprisingly (C) few equipment to produce (D) such intricate manuscripts.",
+      "options": ["that the medieval scribes", "had used surprisingly", "few equipment to produce", "such intricate manuscripts"],
+      "correct": 2,
+      "correction": "little equipment to produce",
+      "explanation": "<b>Equipment</b> is uncountable, so it takes <b>little</b>; <b>few</b> is only used with plural countable nouns."
+    },
+    {
+      "id": "er-ch-24-8",
+      "level": "ch",
+      "focus": "word-order",
+      "q": "The physics lecture (A) covered the theory of relativity (B) at such speed that (C) even the strongest students (D) left with so a vague understanding.",
+      "options": ["covered the theory of relativity", "at such speed that", "even the strongest students", "left with so a vague understanding"],
+      "correct": 3,
+      "correction": "left with such a vague understanding",
+      "explanation": "Before <b>a/an + adjective + noun</b> the intensifier is <b>such</b> (<b>such a vague understanding</b>); <b>so</b> can only go directly before an adjective or adverb."
+    },
+    {
+      "id": "er-ch-24-9",
+      "level": "ch",
+      "focus": "word-order",
+      "q": "(A) Scarcely the plane had left the runway (B) when the passenger beside me (C) began describing every crash (D) he had ever read about.",
+      "options": ["Scarcely the plane had left the runway", "when the passenger beside me", "began describing every crash", "he had ever read about"],
+      "correct": 0,
+      "correction": "Scarcely had the plane left the runway",
+      "explanation": "When <b>Scarcely</b> opens the sentence, subject and auxiliary invert: <b>Scarcely had the plane left … when …</b>."
+    },
+    {
+      "id": "er-ch-24-10",
+      "level": "ch",
+      "focus": "conjunction",
+      "q": "(A) Despite the bakery opens at six, there is (B) always a queue stretching (C) around the corner (D) by half past five.",
+      "options": ["Despite the bakery opens at six", "always a queue stretching", "around the corner", "by half past five"],
+      "correct": 0,
+      "correction": "Although the bakery opens at six",
+      "explanation": "<b>Despite</b> is a preposition and cannot be followed by a full clause with a finite verb; a clause needs the conjunction <b>although</b> (or <b>despite the fact that</b>)."
+    },
+    {
+      "id": "er-ch-24-11",
+      "level": "ch",
+      "focus": "pronoun",
+      "q": "The northern provinces (A) receive heavy monsoon rain (B) throughout the summer, whereas (C) the south it stays (D) largely dry until October.",
+      "options": ["receive heavy monsoon rain", "throughout the summer", "the south it stays", "largely dry until October"],
+      "correct": 2,
+      "correction": "the south stays",
+      "explanation": "A clause cannot have both a noun subject and a pronoun subject repeating it; <b>the south stays</b> already has its subject, so the extra <b>it</b> must go."
+    },
+    {
+      "id": "er-ch-24-12",
+      "level": "ch",
+      "focus": "word-form",
+      "q": "The new coach (A) expects every player (B) to arrive early, (C) to train hard, and (D) showing respect to the referee.",
+      "options": ["expects every player", "to arrive early", "to train hard", "showing respect to the referee"],
+      "correct": 3,
+      "correction": "to show respect to the referee",
+      "explanation": "Items in a list must be parallel: after <b>to arrive</b> and <b>to train</b>, the third item must also be a to-infinitive, <b>to show</b>."
+    },
+    {
+      "id": "er-ch-24-13",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "After months of secret talks, the two rival companies (A) finally signed a deal, (B) doing a compromise (C) on the price of the shared (D) patent licence.",
+      "options": ["finally signed a deal", "doing a compromise", "on the price of the shared", "patent licence"],
+      "correct": 1,
+      "correction": "reaching a compromise",
+      "explanation": "The verb that collocates with <b>compromise</b> is <b>reach</b> (or <b>strike</b>), never <b>do</b>."
+    },
+    {
+      "id": "er-ch-24-14",
+      "level": "ch",
+      "focus": "preposition",
+      "q": "The documentary (A) sheds light on how (B) migrating whales (C) make the most from ocean currents (D) to save energy on their journey south.",
+      "options": ["sheds light on how", "migrating whales", "make the most from ocean currents", "to save energy on their journey south"],
+      "correct": 2,
+      "correction": "make the most of ocean currents",
+      "explanation": "The fixed expression is <b>make the most of something</b>; the preposition <b>of</b> cannot be replaced by <b>from</b>."
+    },
+    {
+      "id": "er-ch-24-15",
+      "level": "ch",
+      "focus": "word-form",
+      "q": "(A) Been badly injured in the first half, the captain (B) was carried off (C) on a stretcher while the crowd (D) fell silent.",
+      "options": ["Been badly injured in the first half", "was carried off", "on a stretcher while the crowd", "fell silent"],
+      "correct": 0,
+      "correction": "Having been badly injured in the first half",
+      "explanation": "A perfect passive participle clause needs <b>Having been + past participle</b>; the bare past participle <b>been</b> cannot open a participle clause on its own."
+    },
+    {
+      "id": "er-ch-24-16",
+      "level": "ch",
+      "focus": "other",
+      "q": "The residents (A) marched to the town hall and (B) demanded that the mayor (C) explains why the promised playground (D) had never been built.",
+      "options": ["marched to the town hall and", "demanded that the mayor", "explains why the promised playground", "had never been built"],
+      "correct": 2,
+      "correction": "explain why the promised playground",
+      "explanation": "<b>Demand that</b> is followed by the subjunctive base form, so the third-person verb has no <b>-s</b>: <b>demanded that the mayor explain</b>."
+    },
+    {
+      "id": "er-ch-24-17",
+      "level": "ch",
+      "focus": "tense",
+      "q": "Only after the last guest (A) had left (B) did we noticed that (C) the birthday cake was still (D) sitting untouched in the fridge.",
+      "options": ["had left", "did we noticed that", "the birthday cake was still", "sitting untouched in the fridge"],
+      "correct": 1,
+      "correction": "did we notice that",
+      "explanation": "In the inverted structure after <b>Only after…</b>, the auxiliary <b>did</b> already carries the past tense, so the main verb stays in the base form: <b>did we notice</b>."
+    },
+    {
+      "id": "er-ch-24-18",
+      "level": "ch",
+      "focus": "tense",
+      "q": "Not only (A) did the storm tear (B) the roof off the barn, (C) but it also (D) was flooding the entire lower field within an hour.",
+      "options": ["did the storm tear", "the roof off the barn", "but it also", "was flooding the entire lower field within an hour"],
+      "correct": 3,
+      "correction": "flooded the entire lower field within an hour",
+      "explanation": "A completed past event, especially one measured by <b>within an hour</b>, takes the past simple <b>flooded</b>, matching <b>did … tear</b> in the first half; the past continuous wrongly presents it as unfinished."
+    },
+    {
+      "id": "er-ch-24-19",
+      "level": "ch",
+      "focus": "conditional",
+      "q": "If Marco (A) were a little more patient with his little cousins, they (B) would not hide his phone yesterday and he would not (C) be searching for it (D) now.",
+      "options": ["were a little more patient with his little cousins", "would not hide his phone yesterday", "be searching for it", "now"],
+      "correct": 1,
+      "correction": "would not have hidden his phone yesterday",
+      "explanation": "In a mixed conditional a present condition (<b>were</b>) can have a past result, but that past result marked by <b>yesterday</b> must use <b>would have + past participle</b>."
+    },
+    {
+      "id": "er-ch-24-20",
+      "level": "ch",
+      "focus": "other",
+      "q": "(A) After tasting the soup, (B) more salt was added by the chef (C) before the bowls were carried (D) out to the waiting diners.",
+      "options": ["After tasting the soup", "more salt was added by the chef", "before the bowls were carried", "out to the waiting diners"],
+      "correct": 1,
+      "correction": "the chef added more salt",
+      "explanation": "The participle clause <b>After tasting the soup</b> dangles: its implied subject (the chef) must be the subject of the main clause, so the passive <b>more salt was added</b> has to become active."
+    },
+    {
+      "id": "er-ch-24-21",
+      "level": "ch",
+      "focus": "comparison",
+      "q": "For most tourists, (A) climbing the volcano at dawn (B) proves far more memorable (C) than to watch the sunrise (D) from the hotel balcony.",
+      "options": ["climbing the volcano at dawn", "proves far more memorable", "than to watch the sunrise", "from the hotel balcony"],
+      "correct": 2,
+      "correction": "than watching the sunrise",
+      "explanation": "The two things compared must have the same form: the gerund <b>climbing</b> must be balanced by the gerund <b>watching</b>, not a to-infinitive."
+    },
+    {
+      "id": "er-ch-24-22",
+      "level": "ch",
+      "focus": "quantifier",
+      "q": "(A) A large amount of volunteers (B) turned up to plant mangroves (C) along the estuary, (D) far more than the organisers had catered for.",
+      "options": ["A large amount of volunteers", "turned up to plant mangroves", "along the estuary", "far more than the organisers had catered for"],
+      "correct": 0,
+      "correction": "A large number of volunteers",
+      "explanation": "<b>Volunteers</b> is a plural countable noun, so the quantifier is <b>a large number of</b>; <b>amount</b> is reserved for uncountable nouns."
+    },
+    {
+      "id": "er-ch-24-23",
+      "level": "ch",
+      "focus": "quantifier",
+      "q": "The chef's new tasting menu (A) has attracted (B) so many praise from critics that (C) tables are booked (D) up to three months in advance.",
+      "options": ["has attracted", "so many praise from critics that", "tables are booked", "up to three months in advance"],
+      "correct": 1,
+      "correction": "so much praise from critics that",
+      "explanation": "<b>Praise</b> is uncountable, so the <b>so … that</b> structure needs <b>so much</b>; <b>so many</b> requires a plural noun."
+    },
+    {
+      "id": "er-ch-24-24",
+      "level": "ch",
+      "focus": "conjunction",
+      "q": "Hardly (A) had the teacher handed out the papers (B) and told everyone (C) to begin writing (D) than the fire alarm went off.",
+      "options": ["had the teacher handed out the papers", "and told everyone", "to begin writing", "than the fire alarm went off"],
+      "correct": 3,
+      "correction": "when the fire alarm went off",
+      "explanation": "<b>Hardly … when</b> is the fixed pair; <b>than</b> belongs only with <b>No sooner … than</b>."
+    },
+    {
+      "id": "er-ch-24-25",
+      "level": "ch",
+      "focus": "agreement",
+      "q": "(A) What surprises me most about the desert are (B) how quickly the temperature drops (C) once the sun (D) has gone down.",
+      "options": ["What surprises me most about the desert are", "how quickly the temperature drops", "once the sun", "has gone down"],
+      "correct": 0,
+      "correction": "What surprises me most about the desert is",
+      "explanation": "In a <b>what</b>-cleft the subject is the whole clause <b>What surprises me most</b>, which is singular, and the complement here is a clause, so the verb must be <b>is</b>."
+    },
+    {
+      "id": "er-ch-24-26",
+      "level": "ch",
+      "focus": "relative",
+      "q": "The exhibition features (A) a set of portraits, (B) the largest of (C) them measures (D) nearly four metres across.",
+      "options": ["a set of portraits", "the largest of", "them measures", "nearly four metres across"],
+      "correct": 2,
+      "correction": "which measures",
+      "explanation": "Two finite clauses cannot be joined by a comma alone; the second clause must be a relative clause with <b>the largest of which</b>, not the pronoun <b>them</b>."
+    },
+    {
+      "id": "er-ch-24-27",
+      "level": "ch",
+      "focus": "reported",
+      "q": "The reporter (A) asked the marathon winner (B) whether she (C) had expected to break the record and (D) what was her next goal.",
+      "options": ["asked the marathon winner", "whether she", "had expected to break the record and", "what was her next goal"],
+      "correct": 3,
+      "correction": "what her next goal was",
+      "explanation": "A reported question keeps statement word order (subject before verb): <b>what her next goal was</b>, not the direct-question order <b>what was her next goal</b>."
+    },
+    {
+      "id": "er-ch-24-28",
+      "level": "ch",
+      "focus": "conjunction",
+      "q": "(A) The expedition pressed on towards the summit (B) although the worsening weather, (C) reaching the ridge (D) just as the blizzard closed in.",
+      "options": ["The expedition pressed on towards the summit", "although the worsening weather", "reaching the ridge", "just as the blizzard closed in"],
+      "correct": 1,
+      "correction": "despite the worsening weather",
+      "explanation": "<b>Although</b> is a conjunction and must introduce a clause with a verb; before a noun phrase like <b>the worsening weather</b> the preposition <b>despite</b> (or <b>in spite of</b>) is required."
+    },
+    {
+      "id": "er-ch-24-29",
+      "level": "ch",
+      "focus": "word-order",
+      "q": "(A) Had been the ferry company warned about the storm earlier, it (B) would have cancelled the crossing (C) and the passengers (D) would have stayed ashore.",
+      "options": ["Had been the ferry company warned about the storm earlier", "would have cancelled the crossing", "and the passengers", "would have stayed ashore"],
+      "correct": 0,
+      "correction": "Had the ferry company been warned about the storm earlier",
+      "explanation": "In an inverted third conditional only the auxiliary <b>had</b> moves in front of the subject; <b>been</b> stays after it: <b>Had the ferry company been warned…</b>."
+    },
+    {
+      "id": "er-ch-24-30",
+      "level": "ch",
+      "focus": "relative",
+      "q": "Little (A) did the villagers suspect (B) that the quiet stranger (C) whom had bought the old mill (D) was a celebrated painter in hiding.",
+      "options": ["did the villagers suspect", "that the quiet stranger", "whom had bought the old mill", "was a celebrated painter in hiding"],
+      "correct": 2,
+      "correction": "who had bought the old mill",
+      "explanation": "The relative pronoun is the subject of <b>had bought</b>, so it must be the subject form <b>who</b>; <b>whom</b> is only used as an object."
+    },
+    {
+      "id": "er-ch-24-31",
+      "level": "ch",
+      "focus": "collocation",
+      "q": "The scandal (A) made serious damage to the minister's reputation, (B) and he was forced to (C) make a public apology (D) within days.",
+      "options": ["made serious damage to the minister's reputation", "and he was forced to", "make a public apology", "within days"],
+      "correct": 0,
+      "correction": "did serious damage to the minister's reputation",
+      "explanation": "<b>Damage</b> collocates with <b>do</b> (or <b>cause</b>), never with <b>make</b>, whereas <b>make an apology</b> in segment C is the correct pairing."
+    },
+    {
+      "id": "er-ch-24-32",
+      "level": "ch",
+      "focus": "preposition",
+      "q": "The committee (A) has agreed to (B) put off with the decision (C) until the full report (D) has been circulated to every member.",
+      "options": ["has agreed to", "put off with the decision", "until the full report", "has been circulated to every member"],
+      "correct": 1,
+      "correction": "put off the decision",
+      "explanation": "The phrasal verb <b>put off</b> (postpone) takes a direct object with no further preposition; <b>with</b> is intrusive."
+    },
+    {
+      "id": "er-ch-24-33",
+      "level": "ch",
+      "focus": "word-form",
+      "q": "The rapid (A) expansion of the city's metro network (B) has led to (C) a noticeable reduce in traffic (D) on the main ring road.",
+      "options": ["expansion of the city's metro network", "has led to", "a noticeable reduce in traffic", "on the main ring road"],
+      "correct": 2,
+      "correction": "a noticeable reduction in traffic",
+      "explanation": "After the article and adjective <b>a noticeable</b> a noun is needed, so the verb <b>reduce</b> must be nominalised to <b>reduction</b>."
+    },
+    {
+      "id": "er-ch-24-34",
+      "level": "ch",
+      "focus": "article",
+      "q": "Throughout the winter the charity (A) provides hot meals (B) in the station car park, (C) regardless of the weather, (D) for homeless and anyone else in need.",
+      "options": ["provides hot meals", "in the station car park", "regardless of the weather", "for homeless and anyone else in need"],
+      "correct": 3,
+      "correction": "for the homeless and anyone else in need",
+      "explanation": "An adjective used to name a whole group of people takes the definite article: <b>the homeless</b>, like <b>the elderly</b> or <b>the unemployed</b>."
+    },
+    {
+      "id": "er-ch-24-35",
+      "level": "ch",
+      "focus": "agreement",
+      "q": "Neither the head chef (A) nor the two apprentices (B) who worked beside him (C) last night (D) was able to explain how the sauce curdled.",
+      "options": ["nor the two apprentices", "who worked beside him", "last night", "was able to explain how the sauce curdled"],
+      "correct": 3,
+      "correction": "were able to explain how the sauce curdled",
+      "explanation": "With <b>neither … nor</b> the verb agrees with the nearer subject, the plural <b>two apprentices</b>, so it must be <b>were</b>."
+    },
+    {
+      "id": "er-ch-24-36",
+      "level": "ch",
+      "focus": "tense",
+      "q": "Looking at the old photographs, (A) my father admitted (B) that he (C) wished he would have travelled more (D) before settling down.",
+      "options": ["my father admitted", "that he", "wished he would have travelled more", "before settling down"],
+      "correct": 2,
+      "correction": "wished he had travelled more",
+      "explanation": "Regret about the past after <b>wish</b> is expressed with the past perfect (<b>wished he had travelled</b>); <b>would have</b> is not used in the wish clause."
+    },
+    {
+      "id": "er-ch-24-37",
+      "level": "ch",
+      "focus": "pronoun",
+      "q": "The twins (A) argued for an hour about (B) whose turn it was to walk the dog, (C) each insisting that (D) each other had walked him less this week.",
+      "options": ["argued for an hour about", "whose turn it was to walk the dog", "each insisting that", "each other had walked him less this week"],
+      "correct": 3,
+      "correction": "the other had walked him less this week",
+      "explanation": "<b>Each other</b> is a reciprocal object pronoun and can never be the subject of a clause; with <b>each</b> already in play, the subject must be <b>the other</b>."
+    },
+    {
+      "id": "er-ch-24-38",
+      "level": "ch",
+      "focus": "tense",
+      "q": "By the time the new bridge (A) will open next spring, the ferry (B) will have carried commuters (C) across the river (D) for almost ninety years.",
+      "options": ["will open next spring", "will have carried commuters", "across the river", "for almost ninety years"],
+      "correct": 0,
+      "correction": "opens next spring",
+      "explanation": "A time clause introduced by <b>by the time</b> takes the present simple for future reference; <b>will</b> belongs only in the main clause (<b>will have carried</b>)."
+    },
+    {
+      "id": "er-ch-24-39",
+      "level": "ch",
+      "focus": "relative",
+      "q": "I (A) would rather you (B) didn't mention the surprise party (C) to my aunt, (D) whom tends to let secrets slip.",
+      "options": ["would rather you", "didn't mention the surprise party", "to my aunt", "whom tends to let secrets slip"],
+      "correct": 3,
+      "correction": "who tends to let secrets slip",
+      "explanation": "The relative pronoun is the subject of <b>tends</b>, so it must be <b>who</b>; <b>whom</b> is the object form and cannot be followed directly by a verb it governs."
+    },
+    {
+      "id": "er-ch-24-40",
+      "level": "ch",
+      "focus": "word-form",
+      "q": "It was (A) such a foggy morning (B) that the pilot (C) had no choice but (D) delaying the take-off by two hours.",
+      "options": ["such a foggy morning", "that the pilot", "had no choice but", "delaying the take-off by two hours"],
+      "correct": 3,
+      "correction": "to delay the take-off by two hours",
+      "explanation": "The expression <b>have no choice but</b> is followed by a to-infinitive (<b>but to delay</b>), not a gerund."
+    }
+  ]
+}

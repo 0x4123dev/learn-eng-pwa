@@ -1,546 +1,546 @@
 {
-  "passages": [
+ "passages": [
+  {
+   "id": "cl-kc-02-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Sunday Mornings with a Camera",
+   "topic": "a new hobby",
+   "passage": "Until last spring, I had never (1)____ much interest in photography. My uncle gave me his old camera when he bought a new one, and at first I left it in a drawer for weeks. Then one rainy Sunday, (2)____ there was nothing else to do, I took it out and walked around our neighbourhood. I was surprised by how (3)____ I enjoyed looking at ordinary things through the lens. A wet street, a cat on a wall, an old man selling bread – everything seemed more interesting than usual.<br><br>Since then, I (4)____ pictures almost every weekend. I have joined an online group (5)____ people share their photos and give each other advice. Some of the comments are quite honest, but I have learned to accept them (6)____ getting upset. My photos are still far from perfect. I often forget to check the light, and sometimes I press the button too early. However, I am (7)____ better than I was six months ago.<br><br>The hobby has changed my routine (8)____ well. I get up earlier, and I notice small details that I used to walk (9)____ without seeing. My mother says I am spending too much time on the camera and not enough on my homework. She may be right, but I think a hobby that makes you look (10)____ carefully at the world than before is worth a few hours a week.",
+   "questions": [
     {
-      "id": "cl-kc-02-1",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "Sunday Mornings with a Camera",
-      "topic": "a new hobby",
-      "passage": "Until last spring, I had never (1)____ much interest in photography. My uncle gave me his old camera when he bought a new one, and at first I left it in a drawer for weeks. Then one rainy Sunday, (2)____ there was nothing else to do, I took it out and walked around our neighbourhood. I was surprised by how (3)____ I enjoyed looking at ordinary things through the lens. A wet street, a cat on a wall, an old man selling bread – everything seemed more interesting than usual.<br><br>Since then, I (4)____ pictures almost every weekend. I have joined an online group (5)____ people share their photos and give each other advice. Some of the comments are quite honest, but I have learned to accept them (6)____ getting upset. My photos are still far from perfect. I often forget to check the light, and sometimes I press the button too early. However, I am (7)____ better than I was six months ago.<br><br>The hobby has changed my routine (8)____ well. I get up earlier, and I notice small details that I used to walk (9)____ without seeing. My mother says I am spending too much time on the camera and not enough on my homework. She may be right, but I think a hobby that makes you look (10)____ carefully at the world than before is worth a few hours a week.",
-      "questions": [
-        {
-          "n": 1,
-          "type": "mcq",
-          "q": "Blank (1): choose the best option.",
-          "options": [
-            "made",
-            "given",
-            "taken",
-            "done"
-          ],
-          "correct": 2,
-          "explanation": "The collocation is <b>take an interest in</b> something. We do not say make, give or do an interest."
-        },
-        {
-          "n": 2,
-          "type": "mcq",
-          "q": "Blank (2): choose the best option.",
-          "options": [
-            "as",
-            "so",
-            "although",
-            "unless"
-          ],
-          "correct": 0,
-          "explanation": "The clause gives the reason for taking the camera out, so a reason linker (<b>as</b> / because) is needed. <b>So</b> introduces a result, <b>although</b> a contrast and <b>unless</b> a condition."
-        },
-        {
-          "n": 3,
-          "type": "mcq",
-          "q": "Blank (3): choose the best option.",
-          "options": [
-            "many",
-            "very",
-            "too",
-            "much"
-          ],
-          "correct": 3,
-          "explanation": "<b>How much I enjoyed</b> measures the degree of a verb. <b>Many</b> goes with countable nouns, and <b>very</b> or <b>too</b> cannot follow how before a subject and verb."
-        },
-        {
-          "n": 4,
-          "type": "mcq",
-          "q": "Blank (4): choose the best option.",
-          "options": [
-            "took",
-            "have taken",
-            "take",
-            "was taking"
-          ],
-          "correct": 1,
-          "explanation": "<b>Since then</b> links a past starting point to now, which calls for the present perfect. A simple past or past continuous would cut the action off in the past."
-        },
-        {
-          "n": 5,
-          "type": "mcq",
-          "q": "Blank (5): choose the best option.",
-          "options": [
-            "which",
-            "whose",
-            "whom",
-            "where"
-          ],
-          "correct": 3,
-          "explanation": "The group is the place in which people share photos, so the relative adverb <b>where</b> fits. <b>Which</b> or <b>whom</b> would need to be the subject or object of the clause, and <b>whose</b> needs a possessed noun."
-        },
-        {
-          "n": 6,
-          "type": "mcq",
-          "q": "Blank (6): choose the best option.",
-          "options": [
-            "without",
-            "despite",
-            "unless",
-            "until"
-          ],
-          "correct": 0,
-          "explanation": "<b>Without + -ing</b> means the second action does not happen. <b>Despite</b> would wrongly suggest the writer does get upset, and <b>unless</b> or <b>until</b> make no sense here."
-        },
-        {
-          "n": 7,
-          "type": "mcq",
-          "q": "Blank (7): choose the best option.",
-          "options": [
-            "going",
-            "making",
-            "getting",
-            "turning"
-          ],
-          "correct": 2,
-          "explanation": "<b>Get better</b> is the everyday way to say improve. <b>Go</b> and <b>turn</b> are used for changes for the worse or for colours (go bad, turn red); <b>make better</b> needs an object."
-        },
-        {
-          "n": 8,
-          "type": "mcq",
-          "q": "Blank (8): choose the best option.",
-          "options": [
-            "so",
-            "as",
-            "too",
-            "also"
-          ],
-          "correct": 1,
-          "explanation": "The fixed phrase <b>as well</b> means also. <b>Too</b> and <b>also</b> already mean also on their own and do not combine with well."
-        },
-        {
-          "n": 9,
-          "type": "mcq",
-          "q": "Blank (9): choose the best option.",
-          "options": [
-            "past",
-            "over",
-            "through",
-            "across"
-          ],
-          "correct": 0,
-          "explanation": "You <b>walk past</b> something when you go by it without stopping. <b>Over</b>, <b>through</b> and <b>across</b> describe going on top of, inside or from one side to the other."
-        },
-        {
-          "n": 10,
-          "type": "mcq",
-          "q": "Blank (10): choose the best option.",
-          "options": [
-            "most",
-            "much",
-            "very",
-            "more"
-          ],
-          "correct": 3,
-          "explanation": "The sentence ends with <b>than before</b>, so a comparative is needed: <b>more carefully</b>. <b>Most</b> is a superlative, and <b>much</b> or <b>very</b> cannot be followed by than."
-        }
-      ]
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the best option.",
+     "options": [
+      "made",
+      "given",
+      "taken",
+      "done"
+     ],
+     "correct": 2,
+     "explanation": "The collocation is <b>take an interest in</b> something. We do not say make, give or do an interest."
     },
     {
-      "id": "cl-kc-02-2",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "The Night the Lanterns Went Up",
-      "topic": "a village festival",
-      "passage": "Every autumn, the village (1)____ my grandmother lives holds a lantern festival. It takes place on the first full moon after the rice harvest, and people from the nearby towns come to watch. This year I was allowed to help with the preparations for the first time.<br><br>The work started a week (2)____ the festival. Every family was (3)____ for making its own lanterns from bamboo and coloured paper, and the children were given the job of painting them. My cousin and I painted fish, birds and stars, (4)____ of them very neat, but nobody seemed to mind. Meanwhile, the men built a wooden stage in the square, and the women prepared enough food to feed the whole village.<br><br>On the evening itself, the square was so crowded (5)____ we could hardly move. There was a drum performance, a dance by the local school, and a long speech by the village head, (6)____ nobody listened to very carefully. At nine o'clock the lanterns were lit and carried down to the river. Hundreds of small lights floated away in the dark, and for a moment everyone (7)____ silent.<br><br>My grandmother told me later that the festival had almost been (8)____ up twenty years ago because so many young people had left the village. Fortunately, a group of teachers decided to keep it going, and now it is more popular (9)____ ever. I hope it continues, and I have already promised to come back next year, (10)____ busy I am.",
-      "questions": [
-        {
-          "n": 1,
-          "type": "mcq",
-          "q": "Blank (1): choose the best option.",
-          "options": [
-            "which",
-            "where",
-            "that",
-            "whose"
-          ],
-          "correct": 1,
-          "explanation": "The relative clause tells us the place in which the grandmother lives, so <b>where</b> is needed. <b>Which</b> or <b>that</b> would need in before them, and <b>whose</b> shows possession."
-        },
-        {
-          "n": 2,
-          "type": "mcq",
-          "q": "Blank (2): choose the best option.",
-          "options": [
-            "ago",
-            "until",
-            "since",
-            "before"
-          ],
-          "correct": 3,
-          "explanation": "<b>A week before the festival</b> gives a point of time measured back from an event. <b>Ago</b> counts back from now and cannot take an object; <b>until</b> and <b>since</b> describe a period, not a starting point."
-        },
-        {
-          "n": 3,
-          "type": "mcq",
-          "q": "Blank (3): choose the best option.",
-          "options": [
-            "responsible",
-            "capable",
-            "interested",
-            "proud"
-          ],
-          "correct": 0,
-          "explanation": "The adjective that takes <b>for</b> and means having the duty to do something is <b>responsible</b>. <b>Capable</b> takes of, <b>interested</b> takes in, and <b>proud</b> takes of."
-        },
-        {
-          "n": 4,
-          "type": "mcq",
-          "q": "Blank (4): choose the best option.",
-          "options": [
-            "no",
-            "neither",
-            "none",
-            "nothing"
-          ],
-          "correct": 2,
-          "explanation": "<b>None of them</b> is the pronoun used before of with a plural group. <b>No</b> must come directly before a noun, <b>neither</b> is for two things only, and <b>nothing</b> cannot take of them."
-        },
-        {
-          "n": 5,
-          "type": "mcq",
-          "q": "Blank (5): choose the best option.",
-          "options": [
-            "that",
-            "which",
-            "as",
-            "than"
-          ],
-          "correct": 0,
-          "explanation": "<b>So + adjective + that</b> expresses a result. <b>As</b> and <b>than</b> belong to comparisons, and <b>which</b> would start a relative clause with no noun to refer to."
-        },
-        {
-          "n": 6,
-          "type": "mcq",
-          "q": "Blank (6): choose the best option.",
-          "options": [
-            "who",
-            "that",
-            "what",
-            "which"
-          ],
-          "correct": 3,
-          "explanation": "The non-defining clause after the comma refers to the speech, a thing, so <b>which</b> is right. <b>Who</b> is for people, <b>that</b> cannot follow a comma in this kind of clause, and <b>what</b> does not refer back to a noun."
-        },
-        {
-          "n": 7,
-          "type": "mcq",
-          "q": "Blank (7): choose the best option.",
-          "options": [
-            "felt",
-            "fell",
-            "made",
-            "held"
-          ],
-          "correct": 1,
-          "explanation": "<b>Fall silent</b> is the collocation for suddenly stopping talking. <b>Felt silent</b> mixes up feel and fall, and <b>made</b> or <b>held</b> would need an object."
-        },
-        {
-          "n": 8,
-          "type": "mcq",
-          "q": "Blank (8): choose the best option.",
-          "options": [
-            "taken",
-            "put",
-            "given",
-            "called"
-          ],
-          "correct": 2,
-          "explanation": "<b>Give up</b> means to stop doing something for good, which fits a festival that nearly ended. <b>Take up</b> means to start, <b>put up</b> means to build or raise, and <b>call up</b> means to telephone."
-        },
-        {
-          "n": 9,
-          "type": "mcq",
-          "q": "Blank (9): choose the best option.",
-          "options": [
-            "as",
-            "then",
-            "that",
-            "than"
-          ],
-          "correct": 3,
-          "explanation": "<b>More popular than ever</b> is a comparative, and comparatives are followed by <b>than</b>. <b>Then</b> is a common misspelling here, and <b>as</b> only pairs with as ... as."
-        },
-        {
-          "n": 10,
-          "type": "mcq",
-          "q": "Blank (10): choose the best option.",
-          "options": [
-            "whatever",
-            "however",
-            "whenever",
-            "although"
-          ],
-          "correct": 1,
-          "explanation": "<b>However + adjective</b> means no matter how, so <b>however busy I am</b> is correct. <b>Whatever</b> and <b>whenever</b> cannot be followed by an adjective, and <b>although</b> needs a full clause after it, not busy I am."
-        }
-      ]
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the best option.",
+     "options": [
+      "so",
+      "although",
+      "unless",
+      "as"
+     ],
+     "correct": 3,
+     "explanation": "The clause gives the reason for taking the camera out, so a reason linker (<b>as</b> / because) is needed. <b>So</b> introduces a result, <b>although</b> a contrast and <b>unless</b> a condition."
     },
     {
-      "id": "cl-kc-02-3",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "Behind the Counter",
-      "topic": "my grandfather's shop",
-      "passage": "My grandfather (1)____ a small hardware shop on the corner of our street for more than forty years. It is not a large place – just one room with shelves that reach the ceiling – but he seems to know exactly (2)____ everything is. If a customer asks for a particular screw, he goes straight to the right box without looking.<br><br>When I was younger, I used to spend Saturday afternoons there. Grandfather (3)____ let me count the coins in the till, and if I did it correctly he gave me a sweet from the jar behind the counter. Later, he taught me how to (4)____ with customers: to greet them, to listen to what they needed, and never to make them feel foolish for asking a simple question.<br><br>These days the shop is much quieter. A big supermarket opened on the main road two years ago, and many people prefer to buy their tools there (5)____ it is cheaper. Grandfather does not complain, (6)____ I know he worries. He still opens at seven every morning and closes at six, (7)____ nobody has come in all afternoon.<br><br>Last month I suggested that he (8)____ sell some things online. He laughed and said he was too old for computers, but he did not say no. So now, every evening, I photograph a few items and put them on a website. We have (9)____ sold much yet, but last week a man from another city ordered three old brass door handles. Grandfather was so pleased that he told every customer (10)____ came in the next day.",
-      "questions": [
-        {
-          "n": 1,
-          "type": "mcq",
-          "q": "Blank (1): choose the best option.",
-          "options": [
-            "runs",
-            "ran",
-            "is running",
-            "has run"
-          ],
-          "correct": 3,
-          "explanation": "<b>For more than forty years</b> describes a period that continues up to now, so the present perfect <b>has run</b> is needed. <b>Ran</b> would mean the shop is closed, and the simple present or present continuous cannot take a for-period."
-        },
-        {
-          "n": 2,
-          "type": "mcq",
-          "q": "Blank (2): choose the best option.",
-          "options": [
-            "when",
-            "where",
-            "which",
-            "whether"
-          ],
-          "correct": 1,
-          "explanation": "He knows the place of every item, so the indirect question needs <b>where</b>. <b>When</b> asks about time, <b>whether</b> asks a yes-or-no question, and <b>which</b> would need a noun after it."
-        },
-        {
-          "n": 3,
-          "type": "mcq",
-          "q": "Blank (3): choose the best option.",
-          "options": [
-            "used",
-            "should",
-            "would",
-            "might"
-          ],
-          "correct": 2,
-          "explanation": "<b>Would + verb</b> describes a repeated past habit, just like used to. <b>Used</b> needs to before the verb, and <b>should</b> or <b>might</b> do not describe habits."
-        },
-        {
-          "n": 4,
-          "type": "mcq",
-          "q": "Blank (4): choose the best option.",
-          "options": [
-            "deal",
-            "treat",
-            "behave",
-            "manage"
-          ],
-          "correct": 0,
-          "explanation": "The phrasal verb <b>deal with</b> people means to handle them. <b>Treat</b> takes a direct object with no with, and <b>behave</b> and <b>manage</b> do not combine with with in this meaning."
-        },
-        {
-          "n": 5,
-          "type": "mcq",
-          "q": "Blank (5): choose the best option.",
-          "options": [
-            "so",
-            "although",
-            "because",
-            "despite"
-          ],
-          "correct": 2,
-          "explanation": "The clause gives the reason people choose the supermarket, so <b>because</b> fits. <b>So</b> introduces a result, <b>although</b> a contrast, and <b>despite</b> must be followed by a noun or -ing, not a clause."
-        },
-        {
-          "n": 6,
-          "type": "mcq",
-          "q": "Blank (6): choose the best option.",
-          "options": [
-            "so",
-            "but",
-            "or",
-            "nor"
-          ],
-          "correct": 1,
-          "explanation": "Not complaining and secretly worrying are a contrast, so <b>but</b> joins them. <b>So</b> would make the worry a result of not complaining, and <b>or</b> or <b>nor</b> offer alternatives."
-        },
-        {
-          "n": 7,
-          "type": "mcq",
-          "q": "Blank (7): choose the best option.",
-          "options": [
-            "even if",
-            "even so",
-            "as if",
-            "in case"
-          ],
-          "correct": 0,
-          "explanation": "<b>Even if</b> means it makes no difference whether nobody has come, which fits keeping the shop open. <b>Even so</b> is an adverb, not a linker, <b>as if</b> compares, and <b>in case</b> gives a precaution."
-        },
-        {
-          "n": 8,
-          "type": "mcq",
-          "q": "Blank (8): choose the best option.",
-          "options": [
-            "would",
-            "will",
-            "must",
-            "should"
-          ],
-          "correct": 3,
-          "explanation": "After <b>suggest that</b>, the verb takes <b>should</b> or the bare form. <b>Would</b> and <b>will</b> do not follow suggest, and <b>must</b> would make it an order, not a suggestion."
-        },
-        {
-          "n": 9,
-          "type": "mcq",
-          "q": "Blank (9): choose the best option.",
-          "options": [
-            "never",
-            "not",
-            "hardly",
-            "no"
-          ],
-          "correct": 1,
-          "explanation": "<b>Have not ... yet</b> is the normal negative present perfect with yet. <b>Never</b> and <b>hardly</b> do not combine with yet, and <b>no</b> cannot stand between have and a past participle."
-        },
-        {
-          "n": 10,
-          "type": "mcq",
-          "q": "Blank (10): choose the best option.",
-          "options": [
-            "which",
-            "whom",
-            "who",
-            "whose"
-          ],
-          "correct": 2,
-          "explanation": "The relative pronoun is the subject of came and refers to people, so <b>who</b> is right. <b>Whom</b> is only an object, <b>which</b> is for things, and <b>whose</b> needs a following noun."
-        }
-      ]
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the best option.",
+     "options": [
+      "much",
+      "many",
+      "very",
+      "too"
+     ],
+     "correct": 0,
+     "explanation": "<b>How much I enjoyed</b> measures the degree of a verb. <b>Many</b> goes with countable nouns, and <b>very</b> or <b>too</b> cannot follow how before a subject and verb."
     },
     {
-      "id": "cl-kc-02-4",
-      "level": "kc",
-      "mode": "open",
-      "title": "The Deep End",
-      "topic": "learning to swim",
-      "passage": "I did not learn to swim (1)____ I was fourteen, which is late in a town full of rivers. My friends had all learned as small children, and I was too embarrassed to admit that I could not. Whenever they went to the lake in summer, I made (2)____ excuse: a cold, a lot of homework, a visit to my aunt.<br><br>Everything changed when my school announced that swimming (3)____ be part of the sports programme the following year. There was no way to avoid it. That evening I told my father the truth, and instead (4)____ laughing, he offered to teach me himself.<br><br>Our first lesson was at the public pool early on a Saturday morning, when hardly anybody was there. I held (5)____ to the edge and refused to let go. My father did not push me. He simply stood in the water next to me and waited (6)____ I was ready. It took twenty minutes. After that, he showed me how to float on my back, and I was amazed to find that the water actually held me (7)____.<br><br>We went every weekend for two months. Some lessons went badly; once I swallowed so much water that I wanted to give (8)____ completely. But little by little I got (9)____ to the feeling of having nothing under my feet. By the end of the summer I could swim the length of the pool, slowly but without stopping.<br><br>When the school lessons began, I was not the best swimmer in the class, but I was no longer the boy who stayed on the bank. And I think my father was even (10)____ proud than I was.",
-      "questions": [
-        {
-          "n": 1,
-          "type": "text",
-          "q": "Blank (1): type ONE word.",
-          "accept": [
-            "until",
-            "till",
-            "before"
-          ],
-          "answer": "until",
-          "explanation": "<b>Not ... until</b> (or till, before) marks the point at which the situation finally changed. <b>When</b> would say he did not learn at the age of fourteen, the opposite of the meaning."
-        },
-        {
-          "n": 2,
-          "type": "text",
-          "q": "Blank (2): type ONE word.",
-          "accept": [
-            "an",
-            "some",
-            "another",
-            "every"
-          ],
-          "answer": "an",
-          "explanation": "<b>Make an excuse</b> is the collocation, and excuse is a countable noun that needs a determiner; <b>some</b>, <b>another</b> or <b>every</b> also work before the list of excuses. <b>The</b> fails because no particular excuse has been mentioned, and <b>up</b> fails because a bare noun cannot follow made up."
-        },
-        {
-          "n": 3,
-          "type": "text",
-          "q": "Blank (3): type ONE word.",
-          "accept": [
-            "would"
-          ],
-          "answer": "would",
-          "explanation": "The announcement is reported after a past verb and refers to <b>the following year</b>, so will shifts back to <b>would</b>. <b>Will</b> breaks the sequence of tenses, and <b>could</b> or <b>might</b> are too uncertain for something there was no way to avoid."
-        },
-        {
-          "n": 4,
-          "type": "text",
-          "q": "Blank (4): type ONE word.",
-          "accept": [
-            "of"
-          ],
-          "answer": "of",
-          "explanation": "<b>Instead of + -ing</b> is the only form: laughing did not happen and teaching did. <b>Instead</b> alone cannot be followed by an -ing form, and <b>than</b> or <b>for</b> do not follow instead."
-        },
-        {
-          "n": 5,
-          "type": "text",
-          "q": "Blank (5): type ONE word.",
-          "accept": [
-            "on",
-            "tight",
-            "tightly",
-            "fast"
-          ],
-          "answer": "on",
-          "explanation": "<b>Hold on to</b> something means to grip it and not let go, which matches refused to let go; <b>held tight / tightly / fast to</b> are also accepted. <b>Held out to</b> or <b>held up to</b> mean offering or lifting, not gripping."
-        },
-        {
-          "n": 6,
-          "type": "text",
-          "q": "Blank (6): type ONE word.",
-          "accept": [
-            "until",
-            "till"
-          ],
-          "answer": "until",
-          "explanation": "<b>Wait until</b> a clause happens is the pattern; till is the same word. <b>For</b> fails because wait for needs a noun or an object plus to-infinitive, not a subject and verb."
-        },
-        {
-          "n": 7,
-          "type": "text",
-          "q": "Blank (7): type ONE word.",
-          "accept": [
-            "up",
-            "afloat"
-          ],
-          "answer": "up",
-          "explanation": "<b>Hold somebody up</b> means to support them so they do not sink, and <b>afloat</b> says the same thing. <b>Down</b> or <b>back</b> would mean the water pushed him under or stopped him, the opposite of floating."
-        },
-        {
-          "n": 8,
-          "type": "text",
-          "q": "Blank (8): type ONE word.",
-          "accept": [
-            "up",
-            "in"
-          ],
-          "answer": "up",
-          "explanation": "<b>Give up</b> means to stop trying; <b>give in</b>, to admit defeat, also fits after a bad lesson. <b>Give out</b> means to distribute or run out, and <b>give away</b> means to hand something to someone."
-        },
-        {
-          "n": 9,
-          "type": "text",
-          "q": "Blank (9): type ONE word.",
-          "accept": [
-            "used",
-            "accustomed"
-          ],
-          "answer": "used",
-          "explanation": "<b>Get used to + noun</b> means to become familiar with something; <b>accustomed</b> is the formal equivalent. <b>Use</b> without -d is a common slip, and <b>close</b> or <b>near</b> would need a physical thing after to."
-        },
-        {
-          "n": 10,
-          "type": "text",
-          "q": "Blank (10): type ONE word.",
-          "accept": [
-            "more"
-          ],
-          "answer": "more",
-          "explanation": "<b>Than</b> later in the sentence shows a comparative, and with proud the comparative is formed with <b>more</b> before the adjective (prouder is also possible, but only without the word proud following). <b>Most</b> is a superlative, and <b>very</b> or <b>so</b> cannot be followed by than."
-        }
-      ]
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the best option.",
+     "options": [
+      "took",
+      "have taken",
+      "take",
+      "was taking"
+     ],
+     "correct": 1,
+     "explanation": "<b>Since then</b> links a past starting point to now, which calls for the present perfect. A simple past or past continuous would cut the action off in the past."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the best option.",
+     "options": [
+      "whose",
+      "whom",
+      "where",
+      "which"
+     ],
+     "correct": 2,
+     "explanation": "The group is the place in which people share photos, so the relative adverb <b>where</b> fits. <b>Which</b> or <b>whom</b> would need to be the subject or object of the clause, and <b>whose</b> needs a possessed noun."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the best option.",
+     "options": [
+      "despite",
+      "unless",
+      "until",
+      "without"
+     ],
+     "correct": 3,
+     "explanation": "<b>Without + -ing</b> means the second action does not happen. <b>Despite</b> would wrongly suggest the writer does get upset, and <b>unless</b> or <b>until</b> make no sense here."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the best option.",
+     "options": [
+      "getting",
+      "turning",
+      "going",
+      "making"
+     ],
+     "correct": 0,
+     "explanation": "<b>Get better</b> is the everyday way to say improve. <b>Go</b> and <b>turn</b> are used for changes for the worse or for colours (go bad, turn red); <b>make better</b> needs an object."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the best option.",
+     "options": [
+      "so",
+      "as",
+      "too",
+      "also"
+     ],
+     "correct": 1,
+     "explanation": "The fixed phrase <b>as well</b> means also. <b>Too</b> and <b>also</b> already mean also on their own and do not combine with well."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the best option.",
+     "options": [
+      "through",
+      "across",
+      "past",
+      "over"
+     ],
+     "correct": 2,
+     "explanation": "You <b>walk past</b> something when you go by it without stopping. <b>Over</b>, <b>through</b> and <b>across</b> describe going on top of, inside or from one side to the other."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the best option.",
+     "options": [
+      "much",
+      "very",
+      "more",
+      "most"
+     ],
+     "correct": 2,
+     "explanation": "The sentence ends with <b>than before</b>, so a comparative is needed: <b>more carefully</b>. <b>Most</b> is a superlative, and <b>much</b> or <b>very</b> cannot be followed by than."
     }
-  ]
+   ]
+  },
+  {
+   "id": "cl-kc-02-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Night the Lanterns Went Up",
+   "topic": "a village festival",
+   "passage": "Every autumn, the village (1)____ my grandmother lives holds a lantern festival. It takes place on the first full moon after the rice harvest, and people from the nearby towns come to watch. This year I was allowed to help with the preparations for the first time.<br><br>The work started a week (2)____ the festival. Every family was (3)____ for making its own lanterns from bamboo and coloured paper, and the children were given the job of painting them. My cousin and I painted fish, birds and stars, (4)____ of them very neat, but nobody seemed to mind. Meanwhile, the men built a wooden stage in the square, and the women prepared enough food to feed the whole village.<br><br>On the evening itself, the square was so crowded (5)____ we could hardly move. There was a drum performance, a dance by the local school, and a long speech by the village head, (6)____ nobody listened to very carefully. At nine o'clock the lanterns were lit and carried down to the river. Hundreds of small lights floated away in the dark, and for a moment everyone (7)____ silent.<br><br>My grandmother told me later that the festival had almost been (8)____ up twenty years ago because so many young people had left the village. Fortunately, a group of teachers decided to keep it going, and now it is more popular (9)____ ever. I hope it continues, and I have already promised to come back next year, (10)____ busy I am.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the best option.",
+     "options": [
+      "that",
+      "whose",
+      "which",
+      "where"
+     ],
+     "correct": 3,
+     "explanation": "The relative clause tells us the place in which the grandmother lives, so <b>where</b> is needed. <b>Which</b> or <b>that</b> would need in before them, and <b>whose</b> shows possession."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the best option.",
+     "options": [
+      "until",
+      "since",
+      "before",
+      "ago"
+     ],
+     "correct": 2,
+     "explanation": "<b>A week before the festival</b> gives a point of time measured back from an event. <b>Ago</b> counts back from now and cannot take an object; <b>until</b> and <b>since</b> describe a period, not a starting point."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the best option.",
+     "options": [
+      "proud",
+      "responsible",
+      "capable",
+      "interested"
+     ],
+     "correct": 1,
+     "explanation": "The adjective that takes <b>for</b> and means having the duty to do something is <b>responsible</b>. <b>Capable</b> takes of, <b>interested</b> takes in, and <b>proud</b> takes of."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the best option.",
+     "options": [
+      "none",
+      "nothing",
+      "no",
+      "neither"
+     ],
+     "correct": 0,
+     "explanation": "<b>None of them</b> is the pronoun used before of with a plural group. <b>No</b> must come directly before a noun, <b>neither</b> is for two things only, and <b>nothing</b> cannot take of them."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the best option.",
+     "options": [
+      "which",
+      "as",
+      "than",
+      "that"
+     ],
+     "correct": 3,
+     "explanation": "<b>So + adjective + that</b> expresses a result. <b>As</b> and <b>than</b> belong to comparisons, and <b>which</b> would start a relative clause with no noun to refer to."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the best option.",
+     "options": [
+      "that",
+      "what",
+      "which",
+      "who"
+     ],
+     "correct": 2,
+     "explanation": "The non-defining clause after the comma refers to the speech, a thing, so <b>which</b> is right. <b>Who</b> is for people, <b>that</b> cannot follow a comma in this kind of clause, and <b>what</b> does not refer back to a noun."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the best option.",
+     "options": [
+      "felt",
+      "fell",
+      "made",
+      "held"
+     ],
+     "correct": 1,
+     "explanation": "<b>Fall silent</b> is the collocation for suddenly stopping talking. <b>Felt silent</b> mixes up feel and fall, and <b>made</b> or <b>held</b> would need an object."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the best option.",
+     "options": [
+      "given",
+      "called",
+      "taken",
+      "put"
+     ],
+     "correct": 0,
+     "explanation": "<b>Give up</b> means to stop doing something for good, which fits a festival that nearly ended. <b>Take up</b> means to start, <b>put up</b> means to build or raise, and <b>call up</b> means to telephone."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the best option.",
+     "options": [
+      "as",
+      "then",
+      "that",
+      "than"
+     ],
+     "correct": 3,
+     "explanation": "<b>More popular than ever</b> is a comparative, and comparatives are followed by <b>than</b>. <b>Then</b> is a common misspelling here, and <b>as</b> only pairs with as ... as."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the best option.",
+     "options": [
+      "whatever",
+      "however",
+      "whenever",
+      "although"
+     ],
+     "correct": 1,
+     "explanation": "<b>However + adjective</b> means no matter how, so <b>however busy I am</b> is correct. <b>Whatever</b> and <b>whenever</b> cannot be followed by an adjective, and <b>although</b> needs a full clause after it, not busy I am."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-02-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Behind the Counter",
+   "topic": "my grandfather's shop",
+   "passage": "My grandfather (1)____ a small hardware shop on the corner of our street for more than forty years. It is not a large place – just one room with shelves that reach the ceiling – but he seems to know exactly (2)____ everything is. If a customer asks for a particular screw, he goes straight to the right box without looking.<br><br>When I was younger, I used to spend Saturday afternoons there. Grandfather (3)____ let me count the coins in the till, and if I did it correctly he gave me a sweet from the jar behind the counter. Later, he taught me how to (4)____ with customers: to greet them, to listen to what they needed, and never to make them feel foolish for asking a simple question.<br><br>These days the shop is much quieter. A big supermarket opened on the main road two years ago, and many people prefer to buy their tools there (5)____ it is cheaper. Grandfather does not complain, (6)____ I know he worries. He still opens at seven every morning and closes at six, (7)____ nobody has come in all afternoon.<br><br>Last month I suggested that he (8)____ sell some things online. He laughed and said he was too old for computers, but he did not say no. So now, every evening, I photograph a few items and put them on a website. We have (9)____ sold much yet, but last week a man from another city ordered three old brass door handles. Grandfather was so pleased that he told every customer (10)____ came in the next day.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the best option.",
+     "options": [
+      "has run",
+      "runs",
+      "ran",
+      "is running"
+     ],
+     "correct": 0,
+     "explanation": "<b>For more than forty years</b> describes a period that continues up to now, so the present perfect <b>has run</b> is needed. <b>Ran</b> would mean the shop is closed, and the simple present or present continuous cannot take a for-period."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the best option.",
+     "options": [
+      "when",
+      "where",
+      "which",
+      "whether"
+     ],
+     "correct": 1,
+     "explanation": "He knows the place of every item, so the indirect question needs <b>where</b>. <b>When</b> asks about time, <b>whether</b> asks a yes-or-no question, and <b>which</b> would need a noun after it."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the best option.",
+     "options": [
+      "used",
+      "should",
+      "would",
+      "might"
+     ],
+     "correct": 2,
+     "explanation": "<b>Would + verb</b> describes a repeated past habit, just like used to. <b>Used</b> needs to before the verb, and <b>should</b> or <b>might</b> do not describe habits."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the best option.",
+     "options": [
+      "treat",
+      "behave",
+      "manage",
+      "deal"
+     ],
+     "correct": 3,
+     "explanation": "The phrasal verb <b>deal with</b> people means to handle them. <b>Treat</b> takes a direct object with no with, and <b>behave</b> and <b>manage</b> do not combine with with in this meaning."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the best option.",
+     "options": [
+      "because",
+      "despite",
+      "so",
+      "although"
+     ],
+     "correct": 0,
+     "explanation": "The clause gives the reason people choose the supermarket, so <b>because</b> fits. <b>So</b> introduces a result, <b>although</b> a contrast, and <b>despite</b> must be followed by a noun or -ing, not a clause."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the best option.",
+     "options": [
+      "so",
+      "but",
+      "or",
+      "nor"
+     ],
+     "correct": 1,
+     "explanation": "Not complaining and secretly worrying are a contrast, so <b>but</b> joins them. <b>So</b> would make the worry a result of not complaining, and <b>or</b> or <b>nor</b> offer alternatives."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the best option.",
+     "options": [
+      "as if",
+      "in case",
+      "even if",
+      "even so"
+     ],
+     "correct": 2,
+     "explanation": "<b>Even if</b> means it makes no difference whether nobody has come, which fits keeping the shop open. <b>Even so</b> is an adverb, not a linker, <b>as if</b> compares, and <b>in case</b> gives a precaution."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the best option.",
+     "options": [
+      "would",
+      "will",
+      "must",
+      "should"
+     ],
+     "correct": 3,
+     "explanation": "After <b>suggest that</b>, the verb takes <b>should</b> or the bare form. <b>Would</b> and <b>will</b> do not follow suggest, and <b>must</b> would make it an order, not a suggestion."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the best option.",
+     "options": [
+      "not",
+      "hardly",
+      "no",
+      "never"
+     ],
+     "correct": 0,
+     "explanation": "<b>Have not ... yet</b> is the normal negative present perfect with yet. <b>Never</b> and <b>hardly</b> do not combine with yet, and <b>no</b> cannot stand between have and a past participle."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the best option.",
+     "options": [
+      "who",
+      "whose",
+      "which",
+      "whom"
+     ],
+     "correct": 0,
+     "explanation": "The relative pronoun is the subject of came and refers to people, so <b>who</b> is right. <b>Whom</b> is only an object, <b>which</b> is for things, and <b>whose</b> needs a following noun."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-02-4",
+   "level": "kc",
+   "mode": "open",
+   "title": "The Deep End",
+   "topic": "learning to swim",
+   "passage": "I did not learn to swim (1)____ I was fourteen, which is late in a town full of rivers. My friends had all learned as small children, and I was too embarrassed to admit that I could not. Whenever they went to the lake in summer, I made (2)____ excuse: a cold, a lot of homework, a visit to my aunt.<br><br>Everything changed when my school announced that swimming (3)____ be part of the sports programme the following year. There was no way to avoid it. That evening I told my father the truth, and instead (4)____ laughing, he offered to teach me himself.<br><br>Our first lesson was at the public pool early on a Saturday morning, when hardly anybody was there. I held (5)____ to the edge and refused to let go. My father did not push me. He simply stood in the water next to me and waited (6)____ I was ready. It took twenty minutes. After that, he showed me how to float on my back, and I was amazed to find that the water actually held me (7)____.<br><br>We went every weekend for two months. Some lessons went badly; once I swallowed so much water that I wanted to give (8)____ completely. But little by little I got (9)____ to the feeling of having nothing under my feet. By the end of the summer I could swim the length of the pool, slowly but without stopping.<br><br>When the school lessons began, I was not the best swimmer in the class, but I was no longer the boy who stayed on the bank. And I think my father was even (10)____ proud than I was.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "until",
+      "till",
+      "before"
+     ],
+     "answer": "until",
+     "explanation": "<b>Not ... until</b> (or till, before) marks the point at which the situation finally changed. <b>When</b> would say he did not learn at the age of fourteen, the opposite of the meaning."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "an",
+      "some",
+      "another",
+      "every"
+     ],
+     "answer": "an",
+     "explanation": "<b>Make an excuse</b> is the collocation, and excuse is a countable noun that needs a determiner; <b>some</b>, <b>another</b> or <b>every</b> also work before the list of excuses. <b>The</b> fails because no particular excuse has been mentioned, and <b>up</b> fails because a bare noun cannot follow made up."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "would"
+     ],
+     "answer": "would",
+     "explanation": "The announcement is reported after a past verb and refers to <b>the following year</b>, so will shifts back to <b>would</b>. <b>Will</b> breaks the sequence of tenses, and <b>could</b> or <b>might</b> are too uncertain for something there was no way to avoid."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "of"
+     ],
+     "answer": "of",
+     "explanation": "<b>Instead of + -ing</b> is the only form: laughing did not happen and teaching did. <b>Instead</b> alone cannot be followed by an -ing form, and <b>than</b> or <b>for</b> do not follow instead."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "on",
+      "tight",
+      "tightly",
+      "fast"
+     ],
+     "answer": "on",
+     "explanation": "<b>Hold on to</b> something means to grip it and not let go, which matches refused to let go; <b>held tight / tightly / fast to</b> are also accepted. <b>Held out to</b> or <b>held up to</b> mean offering or lifting, not gripping."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "until",
+      "till"
+     ],
+     "answer": "until",
+     "explanation": "<b>Wait until</b> a clause happens is the pattern; till is the same word. <b>For</b> fails because wait for needs a noun or an object plus to-infinitive, not a subject and verb."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "up",
+      "afloat"
+     ],
+     "answer": "up",
+     "explanation": "<b>Hold somebody up</b> means to support them so they do not sink, and <b>afloat</b> says the same thing. <b>Down</b> or <b>back</b> would mean the water pushed him under or stopped him, the opposite of floating."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "up",
+      "in"
+     ],
+     "answer": "up",
+     "explanation": "<b>Give up</b> means to stop trying; <b>give in</b>, to admit defeat, also fits after a bad lesson. <b>Give out</b> means to distribute or run out, and <b>give away</b> means to hand something to someone."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "used",
+      "accustomed"
+     ],
+     "answer": "used",
+     "explanation": "<b>Get used to + noun</b> means to become familiar with something; <b>accustomed</b> is the formal equivalent. <b>Use</b> without -d is a common slip, and <b>close</b> or <b>near</b> would need a physical thing after to."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "more"
+     ],
+     "answer": "more",
+     "explanation": "<b>Than</b> later in the sentence shows a comparative, and with proud the comparative is formed with <b>more</b> before the adjective (prouder is also possible, but only without the word proud following). <b>Most</b> is a superlative, and <b>very</b> or <b>so</b> cannot be followed by than."
+    }
+   ]
+  }
+ ]
 }

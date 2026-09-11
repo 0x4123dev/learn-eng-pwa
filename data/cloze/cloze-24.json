@@ -1,0 +1,608 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-24-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Last Steam Trains",
+   "topic": "the last steam trains",
+   "passage": "For more than a century the steam locomotive was the beating heart of the railway, and (1)____ was it more revered than in the small towns whose prosperity depended on the line. Yet by the late 1950s the writing was already (2)____ the wall. Diesel engines, which needed neither a fireman nor hours of preparation before dawn, could be started at the turn of a key, and railway companies, (3)____ accounts had been sliding into the red for years, were quick to see the appeal. No sooner (4)____ the first diesels been delivered than the older engines began to be withdrawn, sometimes with only a few weeks' notice. Crews who had spent thirty years learning to coax a temperamental boiler into life found themselves retrained in a matter of days, and many never (5)____ to terms with the change.<br><br>It was the enthusiasts, rather (6)____ the companies, who saved what could be saved. Had they not raised the money to buy engines that were bound (7)____ the scrapyard, hardly a single one would survive today. Instead, several hundred were rescued and restored, and every summer weekend they can still be seen climbing the steep valleys of preserved lines. Not one of them earns a penny in freight, (8)____ they draw far larger crowds than any diesel ever did. What (9)____ them apart, the volunteers insist, is not nostalgia but craft: a steam engine has to be understood, not merely operated. Whether those skills can be handed (10)____ to a generation that has never smelt coal smoke is another question, and one the last of the old drivers ask with some anxiety.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "nowhere"
+     ],
+     "answer": "nowhere",
+     "explanation": "A negative adverb at the front of a clause forces inversion: <b>nowhere was it more revered than</b>. <i>Never</i> would not fit because the comparison is between places, not times, and <i>there</i> would need normal word order."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "The idiom is <b>the writing is on the wall</b>, meaning that an ending is clearly coming. <i>At</i> or <i>against</i> the wall would describe a physical position and lose the idiom."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "A possessive relative is needed: the companies' accounts, so <b>whose accounts</b>. <i>Which</i> or <i>that</i> cannot show possession, and <i>their</i> would leave the clause with no relative link."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>No sooner had X happened than Y</b> takes the past perfect with subject-auxiliary inversion. <i>Were</i> would give a passive with the wrong tense, and <i>have</i> breaks the past-time sequence."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "came"
+     ],
+     "answer": "came",
+     "explanation": "The collocation is <b>come to terms with</b> something, meaning to accept it. <i>Got</i> or <i>went</i> do not combine with <i>to terms</i>, and the narrative past requires <i>came</i>, not <i>come</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "Inside this cleft sentence, <b>rather than</b> contrasts the enthusiasts with the companies. <i>Then</i> is a common misspelling that refers to time, and <i>not</i> cannot follow <i>rather</i> here."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "<b>Bound for</b> a place means heading towards it, here the scrapyard. <i>Bound to</i> is followed by a verb (bound to fail), not a destination."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "yet",
+      "but",
+      "though",
+      "although"
+     ],
+     "answer": "yet",
+     "explanation": "The two halves contrast, so a concessive linker is needed: <b>yet</b> or <b>but</b> (or <i>though/although</i> introducing the second clause). <i>So</i> would make the crowds a result of earning nothing, which is not the meaning."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "sets"
+     ],
+     "answer": "sets",
+     "explanation": "<b>Set something apart</b> means to make it different or special. <i>Puts</i> and <i>keeps</i> apart would mean physically separating the engines, and the present simple with <i>what</i> requires the -s form."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "down",
+      "on"
+     ],
+     "answer": "down",
+     "explanation": "Skills are <b>handed down</b> (or <b>handed on</b>) to a later generation. <i>Handed over</i> means surrendering something, and <i>handed out</i> means distributing copies."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-24-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Map Makers",
+   "topic": "the map makers",
+   "passage": "Before satellites, a map was only (1)____ good as the people who had walked the ground it showed. Surveyors would set (2)____ at first light with a chain, a compass and a heavy brass instrument for measuring angles, and by nightfall they might have fixed the position of a dozen hills. The work was slow, dangerous and, (3)____ the most part, invisible: nobody thanked a surveyor for a border that ran exactly where it should. So exacting were the standards (4)____ a single error in a baseline measurement could throw out every distance calculated from it for a hundred miles.<br><br>It is easy to forget how (5)____ of the world remained blank until quite recently. Well (6)____ the twentieth century, whole river systems appeared on official maps as dotted lines, an honest admission that no one had followed them to their source. The cartographers themselves were rarely the ones who had done the walking; more (7)____ than not, they were drawing up what explorers, traders and soldiers had reported. All too frequently those reports flatly contradicted (8)____ another, and the man at the drawing board had to decide whom to believe. Little (9)____ they know that their careful guesswork would one day be checked from orbit. When that day came, the surprise was not how much they had got wrong (10)____ how much, armed with nothing more than patience and arithmetic, they had got right.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The equal comparison is <b>only as good as</b> the people. <i>So good as</i> is not used in this positive frame, and <i>too</i> would need a following <i>to</i>-infinitive."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "off",
+      "out",
+      "forth"
+     ],
+     "answer": "off",
+     "explanation": "<b>Set off</b> and <b>set out</b> both mean to begin a journey (the older <i>set forth</i> is also possible). <i>Set up</i> means to establish something, and <i>set about</i> would need an object or an -ing form after it."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "The fixed phrase is <b>for the most part</b>, meaning mostly. <i>In</i> or <i>on</i> the most part are not English expressions."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "The inverted structure <b>So exacting were the standards that...</b> needs <i>that</i> to introduce the result. <i>Which</i> would turn the clause into a relative one with no result meaning."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "much"
+     ],
+     "answer": "much",
+     "explanation": "<i>The world</i> is treated as an uncountable whole, so the quantifier is <b>how much of</b>. <i>Many of</i> requires a plural noun, and <i>most of</i> cannot follow <i>how</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "into"
+     ],
+     "answer": "into",
+     "explanation": "<b>Well into the twentieth century</b> means a long way past its start. <i>Well in</i> is not a time expression, and <i>until</i> would mean the dotted lines stopped exactly then."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "often"
+     ],
+     "answer": "often",
+     "explanation": "The idiom <b>more often than not</b> means usually. <i>Likely</i> gives <i>more likely than not</i>, which describes probability, not frequency of practice, and does not describe what they habitually did."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "one"
+     ],
+     "answer": "one",
+     "explanation": "The reciprocal pronoun is <b>one another</b> (the reports contradicted each other). <i>Each</i> pairs with <i>other</i>, not with <i>another</i>, so <i>each another</i> is impossible."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "<b>Little did they know</b> is a fixed inversion in the past simple. <i>Had</i> would require a past participle (<i>had they known</i>), which changes both tense and meaning."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "but"
+     ],
+     "answer": "but",
+     "explanation": "The pattern <b>not X but Y</b> replaces one idea with another. <i>As</i> would need <i>not so much X as Y</i>, and <i>than</i> would need a comparative before it."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-24-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "Why Rivers Bend",
+   "topic": "why rivers bend",
+   "passage": "Ask a child to draw a river and the chances (1)____ that it will run straight from the mountains to the sea. Real rivers do nothing (2)____ the kind. Left to themselves, they wander, and the wandering is not random (3)____ all: it obeys rules that engineers have spent a century trying to write down.<br><br>The process begins with the smallest irregularity. (4)____ the current meets a patch of softer bank, it eats into it. The water on the outside of the new curve then speeds up, (5)____ the water on the inside slows down and drops the sand it was carrying. The faster water scours the bank (6)____ further, the slower water builds a beach, and so the bend grows. The larger the bend becomes, (7)____ more sharply the river must turn, until eventually the loop is so tight that the water simply breaks through the narrow neck of land and abandons the curve altogether. What is left (8)____ is a crescent-shaped lake, cut off from the stream that made it.<br><br>Engineers who straighten rivers in the name of flood control have learned, often at great (9)____, that a river deprived of its bends will spend its energy elsewhere, cutting deeper or flooding faster. Far (10)____ being a flaw, the meander is the river's way of spending its energy safely, and the wiser planners now leave it alone.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "are"
+     ],
+     "answer": "are",
+     "explanation": "The idiom is <b>the chances are that...</b>, meaning it is likely. <i>Chances</i> is plural, so <i>is</i> fails agreement, and <i>were</i> would clash with the present-tense <i>will run</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "of"
+     ],
+     "answer": "of",
+     "explanation": "<b>Nothing of the kind</b> is a fixed expression meaning not that at all. <i>Like</i> would need <i>nothing like that</i>, and <i>in</i> the kind is not English."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>Not ... at all</b> is the emphatic negative. <i>After all</i> means despite expectations, and <i>in all</i> means in total, neither of which fits here."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "where",
+      "when",
+      "once",
+      "if",
+      "wherever",
+      "whenever",
+      "as"
+     ],
+     "answer": "where",
+     "explanation": "A conditional or place/time conjunction opens the clause: <b>Where</b> (or <i>when/once/if</i>) the current meets softer bank. <i>Which</i> would need a preceding noun to refer to, and <i>while</i> suggests two simultaneous actions rather than a trigger."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "while",
+      "whereas",
+      "whilst",
+      "as",
+      "and"
+     ],
+     "answer": "while",
+     "explanation": "The clause contrasts the outside of the curve with the inside, so <b>while</b> or <b>whereas</b> (or a plain <i>and</i>) fits. <i>But</i> after a comma with this contrast is possible in speech but weak in formal prose, and <i>because</i> would wrongly make one speed the cause of the other."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "still",
+      "even",
+      "yet",
+      "ever",
+      "much"
+     ],
+     "answer": "still",
+     "explanation": "<b>Still further</b> (or <i>even/yet/ever further</i>) intensifies the comparative and shows the scouring going on beyond its earlier extent; <i>much further</i> is also possible. <i>More further</i> is a double comparative, and <i>very</i> cannot modify a comparative."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "the"
+     ],
+     "answer": "the",
+     "explanation": "Correlative comparatives take the shape <b>the larger ..., the more sharply ...</b>. Both halves need the definite article; <i>so</i> or <i>then</i> breaks the pattern."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "behind"
+     ],
+     "answer": "behind",
+     "explanation": "What remains after the river moves away is <b>left behind</b>. <i>Left over</i> refers to an unused remainder of a quantity, such as food, not to a landform abandoned in place."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "cost",
+      "expense"
+     ],
+     "answer": "cost",
+     "explanation": "<b>At great cost</b> or <b>at great expense</b> means with heavy losses. <i>Price</i> is used with <i>pay a high price</i>, not with <i>at great</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "from"
+     ],
+     "answer": "from",
+     "explanation": "<b>Far from being a flaw</b> denies one description before offering another. <i>Far off</i> and <i>far away</i> describe distance and cannot take an -ing complement in this sense."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-24-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Story of the Potato",
+   "topic": "the story of the potato",
+   "passage": "Few foods have travelled (1)____ far, or changed as many lives, as the humble potato. Cultivated for thousands of years in the high valleys of the Andes, it reached Europe in the sixteenth century and was, (2)____ first, regarded with deep suspicion. It grew underground, it was not mentioned in any holy book, and it belonged to a family of plants several members of (3)____ were poisonous. For nearly two hundred years it was fed to animals rather (4)____ to people.<br><br>Only when famine and war had made grain scarce (5)____ governments begin to promote it in earnest. One king is said to have posted guards around his potato fields by day and quietly withdrawn them by night, (6)____ the assumption that peasants would steal anything worth guarding. (7)____ or not the story is true, the strategy it describes worked: within a generation the crop had taken hold across northern Europe, and a peasant family with a small plot could feed itself through the winter.<br><br>The potato's great virtue, that it yields more food per acre than almost any other crop, turned (8)____ to be its great danger as well. Whole regions came to depend on a single variety, so that when disease struck in the 1840s there was nothing to (9)____ back on, and a million people starved. Had those farmers planted the dozens of varieties their Andean predecessors had grown, the blight (10)____ have been no more than a footnote in history rather than a catastrophe.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "as",
+      "so"
+     ],
+     "answer": "as",
+     "explanation": "The comparison is completed by <i>as the humble potato</i>, so the first half needs <b>as far</b> (or, after the negative-sense <i>few</i>, <b>so far</b>). <i>Too</i> and <i>very</i> cannot pair with a following <i>as</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>At first</b> means initially, before attitudes changed. <i>In</i> the first would need a following noun (<i>in the first place</i>), and <i>from</i> first is not idiomatic."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "After a preposition in a relative clause only <b>which</b> is possible: <i>several members of which</i>. <i>That</i> cannot follow a preposition, and <i>them</i> would leave two clauses with no link."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<b>Rather than</b> sets one option against another. <i>Then</i> refers to time and is a spelling trap, and <i>instead</i> would need <i>of</i>, not <i>rather</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "<b>Only when ... did governments begin</b>: a fronted <i>only</i> phrase forces inversion in the main clause. <i>Had</i> would need a participle, and no inversion at all (<i>governments began</i>) is ungrammatical after <i>Only when</i>."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "on"
+     ],
+     "answer": "on",
+     "explanation": "<b>On the assumption that</b> is the standard collocation. <i>In</i> and <i>with</i> the assumption are not idiomatic, and <i>under</i> collocates with <i>the impression</i>, not <i>the assumption</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "whether"
+     ],
+     "answer": "whether",
+     "explanation": "<b>Whether or not</b> introduces a concession covering both possibilities. <i>If</i> cannot be followed directly by <i>or not</i> at the start of a sentence, and <i>even</i> would need <i>if</i> after it."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>Turn out to be</b> means to prove in the end to be. <i>Turn into</i> takes a noun, not a <i>to</i>-infinitive, and <i>turn up</i> means to arrive."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "fall"
+     ],
+     "answer": "fall",
+     "explanation": "<b>Fall back on</b> something means to use it as a reserve when the first choice fails. <i>Go back on</i> means to break a promise, and <i>look back on</i> means to remember."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "might",
+      "would",
+      "could"
+     ],
+     "answer": "might",
+     "explanation": "The inverted <i>Had those farmers planted...</i> is a third conditional, so the main clause needs a past modal plus <i>have</i>: <b>might/would/could have been</b>. <i>May</i> is reserved for open possibilities and <i>will</i> cannot look back at an unreal past."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-24-5",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "The First Hospitals",
+   "topic": "the first hospitals",
+   "passage": "Nobody knows exactly when the first hospital opened its doors, partly because the word itself has meant so many different things. In the ancient world, a temple (1)____ the sick would come to pray was, in a sense, a hospital; so was the roadside shelter where a monastery fed and washed travellers. What these places had in (2)____ was charity rather than medicine. A doctor might visit, but the institution existed to (3)____ for the dying, not to cure them.<br><br>That began to change in the great cities of the medieval Islamic world, (4)____ rulers competed to endow buildings with wards, pharmacies and libraries. Physicians there kept written records of every patient, an idea (5)____ radical at the time that few outside those cities believed it worth the trouble. Patients were separated (6)____ to their illness, and no one, rich or poor, was turned away.<br><br>Europe was slow to catch (7)____. For centuries its hospitals remained crowded, ill-lit places, and a patient who entered one stood a fair chance of leaving it in a coffin. Not (8)____ the nineteenth century, when reformers insisted on clean linen, fresh air and trained nurses, did survival rates begin to climb. Far (9)____ being feared, hospitals came to be trusted, and by the early twentieth century it was in a hospital, not at home, that most people in industrial countries expected to be born.<br><br>It is tempting to think of all this as steady progress. In truth, every stage was (10)____ about by someone deciding that the sick deserved better than they were getting.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "what",
+      "where",
+      "which",
+      "whose"
+     ],
+     "correct": 1,
+     "explanation": "The clause says the sick came to pray <i>in</i> the temple, so a relative adverb of place is needed: <b>where</b>. <i>Which</i> would need a preposition (<i>to which</i>), and <i>what</i> cannot introduce a relative clause."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "common",
+      "general",
+      "particular",
+      "mind"
+     ],
+     "correct": 0,
+     "explanation": "<b>Have something in common</b> means to share a feature. <i>In general</i> and <i>in particular</i> are adverbials that cannot take <i>had</i> as their verb, and <i>had in mind</i> would mean intended."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "look",
+      "tend",
+      "attend",
+      "care"
+     ],
+     "correct": 3,
+     "explanation": "<b>Care for</b> the dying means to look after them. <i>Look for</i> means to search, <i>tend</i> takes a direct object with no <i>for</i>, and <i>attend</i> pairs with <i>to</i>."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "whom",
+      "which",
+      "whose",
+      "who"
+     ],
+     "correct": 2,
+     "explanation": "The rulers belonged to the cities, so the possessive relative <b>whose rulers</b> is required. <i>Who</i> and <i>whom</i> refer to people directly, and <i>which rulers</i> would make no grammatical link with <i>cities</i>."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "very",
+      "so",
+      "such",
+      "too"
+     ],
+     "correct": 1,
+     "explanation": "Before a bare adjective followed by a <i>that</i>-clause, the intensifier is <b>so</b>: <i>so radical that</i>. <i>Such</i> needs a noun phrase, <i>too</i> is followed by an infinitive, and <i>very</i> cannot introduce a result clause."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "according",
+      "due",
+      "owing",
+      "thanks"
+     ],
+     "correct": 0,
+     "explanation": "<b>According to their illness</b> means classified by it. <i>Due to</i>, <i>owing to</i> and <i>thanks to</i> all express cause, which is not the meaning of sorting patients into wards."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "on",
+      "out",
+      "in",
+      "up"
+     ],
+     "correct": 3,
+     "explanation": "<b>Catch up</b> means to reach the level others have already reached. <i>Catch on</i> means to become popular or to understand, and <i>catch out</i> means to expose a mistake."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "since",
+      "after",
+      "until",
+      "before"
+     ],
+     "correct": 2,
+     "explanation": "<b>Not until ... did</b> is the fronted negative that triggers the inversion later in the sentence. <i>Before</i>, <i>since</i> and <i>after</i> do not form this structure with <i>not</i> and would leave the inverted <i>did</i> unexplained."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "apart",
+      "from",
+      "off",
+      "away"
+     ],
+     "correct": 1,
+     "explanation": "<b>Far from being feared</b> means not feared at all but the opposite. <i>Far off</i>, <i>far away</i> and <i>far apart</i> describe physical distance and cannot govern an -ing clause here."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "carried",
+      "come",
+      "taken",
+      "brought"
+     ],
+     "correct": 3,
+     "explanation": "<b>Bring about</b> means to cause, and the passive <i>was brought about by</i> fits. <i>Come about</i> has the same meaning but is intransitive, so it has no passive, and <i>carried/taken about</i> are not phrasal verbs of causing."
+    }
+   ]
+  }
+ ]
+}

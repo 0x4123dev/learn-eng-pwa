@@ -1,0 +1,733 @@
+{
+ "passages": [
+  {
+   "id": "cl-ch-22-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "Behind the Bars",
+   "topic": "the ethics of zoos",
+   "passage": "Whether a zoo can ever be justified is a question that has divided animal lovers for well over a century. Those who defend zoos point (1)____ the species that would by now have vanished altogether had captive breeding programmes not intervened. Critics, (2)____, argue that no enclosure, however spacious, can make (3)____ for the loss of a territory that may once have stretched across hundreds of kilometres. It is the large mammals, rather than the reptiles or the birds, (4)____ appear to suffer most: elephants pacing the same strip of concrete, or a solitary polar bear swimming in endless circles, are sights (5)____ few visitors forget. Not until the 1970s (6)____ the major zoos begin to redesign their enclosures around the needs of the animals rather than the convenience of the public. Since then, a great (7)____ of money has been spent on naturalistic habitats, and the best institutions now devote a large share of their budgets to conservation in the wild. Even so, the accusation that zoos exist chiefly (8)____ entertainment has never entirely gone away. Were every zoo to close tomorrow, the animals already living in them could hardly be released, having never learnt to hunt or to fear predators. The more honest defenders concede that the real question is not (9)____ zoos are ideal but whether they do more good than harm. On (10)____, they insist, the answer is still yes.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "To <b>point to</b> something is to cite it as evidence for your case. <b>At</b> would mean physically indicating with a finger, and <b>out</b> would need an object placed after it (<i>point out the species</i>)."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "however",
+      "meanwhile",
+      "though",
+      "nevertheless",
+      "nonetheless",
+      "conversely"
+     ],
+     "answer": "however",
+     "explanation": "The sentence contrasts the critics with the defenders in the sentence before, so a contrastive adverb set off by commas is needed: <b>however</b>. <b>But</b> is a conjunction and cannot sit between commas after the subject."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "<b>Make up for</b> a loss means to compensate for it. <b>Make for</b> means to head towards or to contribute to, and <b>make out</b> means to discern, so neither fits with <i>for the loss</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "that",
+      "which",
+      "who"
+     ],
+     "answer": "that",
+     "explanation": "This is a cleft sentence, <i>It is the large mammals ... that appear to suffer most</i>, and <b>that</b> is the pronoun that completes it. <b>What</b> cannot introduce the second half of a cleft."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "that",
+      "which"
+     ],
+     "answer": "that",
+     "explanation": "<i>Sights</i> is the object of <i>forget</i> in the relative clause, so a relative pronoun for things is needed: <b>that</b> or <b>which</b>. <b>What</b> would make the clause a noun clause and leave <i>sights</i> without a link."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "did"
+     ],
+     "answer": "did",
+     "explanation": "A sentence opening with <b>Not until</b> inverts subject and auxiliary, and the bare verb <i>begin</i> plus the 1970s time frame call for the past auxiliary <b>did</b>. <b>Had</b> would require <i>begun</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "deal"
+     ],
+     "answer": "deal",
+     "explanation": "The quantifier for an uncountable noun like <i>money</i> is <b>a great deal of</b>. <b>Number</b> pairs only with plural countable nouns, and <b>amount</b> takes <i>large</i> rather than <i>great</i> in idiomatic use."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "for"
+     ],
+     "answer": "for",
+     "explanation": "Something exists <b>for</b> a purpose: <i>exist chiefly for entertainment</i>. <b>As</b> would identify the zoo with entertainment itself, and <b>of</b> does not follow <i>exist</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "whether"
+     ],
+     "answer": "whether",
+     "explanation": "The structure <i>not ... but whether</i> demands a parallel clause, and only <b>whether</b> can introduce an alternative question after <i>the question is</i>. <b>If</b> is not used to complete <i>the question is</i> and breaks the parallel with the second <i>whether</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "balance"
+     ],
+     "answer": "balance",
+     "explanation": "<b>On balance</b> means after weighing the arguments on both sides, which is exactly what the sentence describes. <b>On the whole</b> would carry a similar meaning but needs two words, and <i>on average</i> concerns numbers, not arguments."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-22-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "Making the Picture Stay",
+   "topic": "the first photographs",
+   "passage": "Long before anyone managed to fix an image permanently, people knew that light could draw. A darkened room with a pinhole in one wall throws an upside-down picture of the street onto the opposite wall, and artists had used the trick for centuries (1)____ an aid to sketching. What nobody could do was make the picture stay. The breakthrough, when it finally came in the 1820s, owed as (2)____ to chemistry as to optics: a French inventor discovered that a certain kind of bitumen hardened (3)____ exposed to light, so that the unexposed parts could later be washed away. His first successful view, taken from an upstairs window, required an exposure of several hours, (4)____ is why the sun appears to shine on both sides of the courtyard at once. Within a decade the process had been refined to the point (5)____ a portrait could be taken in a few minutes, though sitters still had to be clamped into position (6)____ they blur. Hardly (7)____ the technique been announced in Paris when studios sprang up in every capital in Europe. Painters were divided: some declared that their art was dead, (8)____ others seized on the camera as a tool. What strikes a modern viewer most about those earliest pictures is not their technical crudeness (9)____ their stillness, for the streets appear emptied of everything that moved. It was not until faster plates arrived that photography (10)____ capture the crowd rather than the buildings it walked past.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "To use something <b>as</b> an aid means to use it in that role. <b>For</b> would need a purpose (<i>for sketching</i>), and <b>like</b> would only compare the trick to an aid instead of saying it was one."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "much"
+     ],
+     "answer": "much",
+     "explanation": "The equal comparison <b>as much to X as to Y</b> means X and Y were equally responsible. <b>Many</b> cannot stand alone without a plural noun, and <i>as well</i> would not be followed by a second <i>as to</i>."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "when",
+      "once",
+      "if",
+      "whenever",
+      "while"
+     ],
+     "answer": "when",
+     "explanation": "A reduced clause <i>when (it was) exposed to light</i> drops the subject and <i>be</i>, leaving the conjunction before the participle. <b>After</b> and <b>by</b> would need a full clause or a gerund (<i>after being exposed</i>)."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "Only <b>which</b> can refer back to a whole preceding clause (the long exposure) and act as subject of <i>is why</i>. <b>That</b> cannot open a non-defining clause after a comma, and <b>this</b> would need a full stop before it."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "where",
+      "that"
+     ],
+     "answer": "where",
+     "explanation": "The collocation is <b>to the point where</b> (or <i>that</i>) something becomes possible. <b>Which</b> would make <i>point</i> the subject or object of the next clause, which it is not."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "lest"
+     ],
+     "answer": "lest",
+     "explanation": "<b>Lest</b> means 'for fear that' and is followed by a bare subjunctive, which explains <i>they blur</i> rather than <i>they blurred</i>. <b>Unless</b> reverses the logic, and <i>in case</i> would be two words."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>Hardly had</b> + subject + past participle ... <i>when</i> is the inverted past perfect pattern for one event following immediately after another. <b>Was</b> cannot pair with <i>been announced</i>, and <b>did</b> would need a bare verb."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "while",
+      "whereas",
+      "whilst",
+      "but",
+      "and"
+     ],
+     "answer": "while",
+     "explanation": "The two groups of painters are set against each other, so a contrastive linker such as <b>while</b> or <b>whereas</b> joins the clauses. <b>However</b> is an adverb and would need a semicolon or a full stop before it."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "but"
+     ],
+     "answer": "but",
+     "explanation": "The pattern <b>not X but Y</b> corrects one idea with another. <b>Rather</b> would need <i>but rather</i> or a preceding comma, and <b>than</b> only works after a comparative such as <i>less</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "could",
+      "would"
+     ],
+     "answer": "could",
+     "explanation": "The cleft <i>It was not until ... that</i> puts the main verb in the past, and ability in the past is expressed by <b>could</b>. <b>Can</b> clashes with the past frame, and <b>began</b> would require <i>to capture</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-22-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "Where the Grass Gives Way",
+   "topic": "how deserts spread",
+   "passage": "Deserts do not advance across the land like an army; they seep. The process (1)____ which fertile ground turns to dust, known as desertification, rarely begins with a shortage of rain. Far more often it begins with too many animals grazing on too little grass, so that the roots which once held the soil (2)____ place are eaten away before they can recover. Once the surface is bare, wind and the occasional cloudburst finish the job, stripping (3)____ the thin layer of topsoil that took centuries to form. What makes the damage so hard to reverse is (4)____ each stage feeds the next: less vegetation means less moisture returned to the air, which in (5)____ means less rain, which means still less vegetation. Farmers on the margins are seldom (6)____ blame; driven by debt or drought, they have little choice but to push their herds onto land that cannot support them. Governments, (7)____ their part, have tended to answer with grand schemes, such as walls of trees planted across entire continents, whose survival rates have often been dismal. Had the same money been spent on fencing, wells and simple crop rotation, the results (8)____ well have been better. There is, (9)____, reason for cautious optimism. Satellite images show that where villagers have been given secure rights to their land, the green has crept back within a generation. The desert, it turns (10)____, can retreat as quietly as it came.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "by",
+      "through",
+      "in"
+     ],
+     "answer": "by",
+     "explanation": "A process is the means <b>by which</b> something happens, so the preposition of means goes before the relative pronoun. <b>Of which</b> would express possession, which makes no sense with <i>process</i> here."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "To hold something <b>in place</b> is to stop it moving. <b>On place</b> is not English, and <i>into place</i> describes movement towards a position rather than keeping it there."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "off",
+      "away"
+     ],
+     "answer": "off",
+     "explanation": "To <b>strip off</b> (or <i>strip away</i>) a layer is to remove it from a surface. <b>Strip out</b> is used for removing contents from inside something, and <b>strip down</b> means to dismantle."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "that"
+     ],
+     "answer": "that",
+     "explanation": "After a pseudo-cleft (<i>What makes ... is</i>), a full clause must be introduced by <b>that</b>. <b>Because</b> is possible in speech but not in formal writing, and <b>how</b> would change the meaning to manner."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "turn"
+     ],
+     "answer": "turn",
+     "explanation": "<b>In turn</b> signals one consequence leading to the next in a chain. <b>In return</b> means as a reward or exchange, and <i>in time</i> would mean 'eventually', which loses the sense of sequence."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "Someone is <b>to blame</b> for a problem; the infinitive here carries a passive meaning. <b>At</b> and <b>for</b> do not follow <i>are seldom</i> with <i>blame</i>."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "for",
+      "on"
+     ],
+     "answer": "for",
+     "explanation": "<b>For their part</b> means 'as far as they are concerned' and introduces what one party did in contrast to another. <b>In their part</b> is not idiomatic, and <b>by</b> would suggest agency rather than viewpoint."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "might",
+      "could",
+      "may"
+     ],
+     "answer": "might",
+     "explanation": "The inverted conditional <i>Had the same money been spent</i> needs a past modal, and <b>might well have</b> expresses a likely but uncertain outcome. <b>Would</b> does not collocate with <i>well</i> in this sense, and <b>should</b> would sound like an obligation."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "nevertheless",
+      "however",
+      "nonetheless",
+      "though",
+      "still"
+     ],
+     "answer": "nevertheless",
+     "explanation": "The gloomy paragraph is followed by good news, so a concessive adverb between commas is required: <b>nevertheless</b>. <b>Despite</b> is a preposition and needs a noun after it, and <b>although</b> introduces a clause."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>It turns out</b> means 'it proves to be the case', an aside inserted between commas. <b>Turns up</b> means to appear unexpectedly, and <b>turns over</b> means to flip, so neither carries the meaning of discovery."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-22-4",
+   "level": "ch",
+   "mode": "open",
+   "title": "The Money on the Table",
+   "topic": "the economics of tipping",
+   "passage": "Economists have long been puzzled by tipping. A customer who leaves money on the table after a meal in a city she will never visit again stands to gain nothing (1)____ doing so, and yet millions of people do exactly that every day. The obvious explanation, that we tip in order to reward good service, does not hold (2)____ under examination, since studies have repeatedly shown only a weak link between the quality of service and the size of the tip. What seems to matter far more is habit, together (3)____ a vague sense of what other people would think of us if we walked out without paying it. From the restaurant's point of view, the custom is convenient (4)____ that it shifts part of the wage bill from the owner to the customer. In some countries, indeed, staff are paid a base rate so low that (5)____ it not for tips they could not live on it at all. Critics argue that this arrangement leaves workers at the mercy (6)____ whoever happens to be sitting at their tables, and there is evidence that tips reflect the customer's mood, and even the server's appearance, quite as much as anything the server actually does. Nor (7)____ the system easy to abolish. Several restaurants that tried replacing tips with higher prices found their customers drifting away, apparently because a menu that looked more expensive put them (8)____ even when the final bill was no larger. It is a curious situation: a practice (9)____ almost nobody defends in theory, yet which almost everybody keeps up in practice. Until customers learn to judge a bill by its total rather than by its parts, tipping is here to (10)____.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "from",
+      "by"
+     ],
+     "answer": "from",
+     "explanation": "You gain something <b>from</b> (or <i>by</i>) an action, so <i>gain nothing from doing so</i>. <b>Of</b> does not follow <i>gain</i>, and <b>for</b> would express purpose rather than result."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "An argument that <b>holds up</b> survives being tested. <b>Hold on</b> means to wait or grip, and <b>hold out</b> means to resist or to last, so neither describes an explanation surviving scrutiny."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "with"
+     ],
+     "answer": "with",
+     "explanation": "<b>Together with</b> adds a second item to the first, like <i>along with</i>. <b>And</b> cannot follow <i>together</i>, and <i>together to</i> is not an English phrase."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "<b>In that</b> means 'for the reason that' and explains why the custom is convenient. <b>So that</b> would express purpose, and <b>because</b> cannot be followed directly by <i>that</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "were"
+     ],
+     "answer": "were",
+     "explanation": "<b>Were it not for</b> is the inverted form of <i>if it were not for</i>, an unreal conditional meaning 'without'. <b>Was</b> is not used in this inverted structure, and <b>if</b> would need <i>it were</i> after it."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "of"
+     ],
+     "answer": "of",
+     "explanation": "To be <b>at the mercy of</b> someone is to be entirely in their power. <b>To</b> and <b>from</b> do not complete this fixed phrase."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "is",
+      "was"
+     ],
+     "answer": "is",
+     "explanation": "A sentence beginning with negative <b>Nor</b> inverts subject and verb, and the passage's present-tense discussion calls for <b>is</b>. <b>Does</b> would need a main verb rather than the adjective <i>easy</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "off"
+     ],
+     "answer": "off",
+     "explanation": "To <b>put someone off</b> is to discourage them; the expensive-looking menu discouraged the customers. <b>Put out</b> means to inconvenience or extinguish, and <b>put down</b> means to insult or to set something down."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "that",
+      "which"
+     ],
+     "answer": "that",
+     "explanation": "<i>Practice</i> is the object of <i>defends</i> in the relative clause, so <b>that</b> or <b>which</b> links it. <b>Who</b> is reserved for people, and <b>what</b> cannot follow a noun as a relative pronoun."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "stay"
+     ],
+     "answer": "stay",
+     "explanation": "The idiom <b>here to stay</b> means permanently established. <b>Remain</b> has the right meaning but is not part of the fixed phrase, and <b>last</b> would need a different structure."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-22-5",
+   "level": "ch",
+   "mode": "open",
+   "title": "When the Bells Learnt to Count",
+   "topic": "the invention of the clock",
+   "passage": "For most of human history, time was something you looked up to see. The sun told you roughly where you were in the day, and the stars did the same at night; for anything finer, people (1)____ to make do with the drip of water through a hole or the slow burning of a marked candle. None of these devices was accurate, and (2)____ did they need to be, since nobody's life depended on the quarter hour. The mechanical clock changed that, though not at (3)____ in the way one might expect. The earliest examples, built for monasteries in the late Middle Ages, had no face and no hands (4)____ all; their only job was to strike a bell so that the monks would know when to pray. It was only later that dials were added, and later (5)____ that the minute hand appeared. What drove the improvement was less curiosity (6)____ commerce: merchants needed to agree on when a market opened, and employers wanted to know how long their workers had actually worked. By the eighteenth century a clock accurate to a few seconds a day (7)____ be bought by anyone with money to spare, and towns began to set their bells by it rather than by the sun. (8)____ earlier generations had fitted their work to the light, their descendants fitted it to the dial. Some historians go so (9)____ as to claim that the clock, not the steam engine, was the true machine of the industrial age. Whether or not that is an exaggeration, it is hard to imagine a factory, a railway or a school timetable without (10)____.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>Had to</b> expresses past necessity and is followed by the bare infinitive <i>make</i>. <b>Must</b> has no past form and cannot be followed by <i>to</i>, and <b>were</b> would need <i>forced</i> or <i>obliged</i> before <i>to</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "nor",
+      "neither"
+     ],
+     "answer": "nor",
+     "explanation": "After a negative statement, <b>nor</b> (or <i>neither</i>) opens an inverted clause: <i>nor did they need to be</i>. <b>Not</b> cannot trigger inversion here, and <b>so</b> is used only after a positive statement."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "first",
+      "all"
+     ],
+     "answer": "first",
+     "explanation": "<b>At first</b> means 'in the early stages', which fits a change that arrived only gradually; <b>not at all in the way one might expect</b> (= 'not in the least') also reads naturally, so both are accepted. <b>At last</b> would mean 'finally', the opposite of what the following sentences describe, and <i>at once</i> means immediately."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>At all</b> strengthens a negative: <i>no hands at all</i>. <b>In all</b> means 'in total', and <b>of</b> would need <i>any</i> or <i>none</i> before it."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "still",
+      "yet"
+     ],
+     "answer": "still",
+     "explanation": "<b>Later still</b> means 'even later', adding a third step to the sequence begun by <i>only later</i>. <b>Again</b> would suggest repetition, and <b>more</b> cannot follow a comparative adverb this way."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "The comparison <b>less X than Y</b> says that Y mattered more than X. <b>But</b> would need <i>not</i> rather than <i>less</i>, and <b>then</b> is a time adverb that has no comparative sense."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "could",
+      "might"
+     ],
+     "answer": "could",
+     "explanation": "The clause states what was possible in the past, so the past ability modal <b>could</b> fits the passive <i>be bought</i>. <b>Can</b> clashes with the eighteenth-century setting, and <b>had</b> would require <i>to be</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "Whereas",
+      "While",
+      "Whilst",
+      "Where"
+     ],
+     "answer": "Whereas",
+     "explanation": "The two halves contrast the old habit with the new, so <b>Whereas</b> (or <i>While</i>) introduces the subordinate clause. <b>Although</b> would imply a concession rather than a plain contrast, and <b>Instead</b> cannot introduce a clause."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "far"
+     ],
+     "answer": "far",
+     "explanation": "<b>Go so far as to</b> + verb means to take an argument to an extreme. <b>Much</b> does not combine with <i>go</i> in this idiom, and <i>so long as</i> means 'provided that'."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "one",
+      "it"
+     ],
+     "answer": "one",
+     "explanation": "<b>One</b> stands in for <i>a clock</i>, the singular countable noun the sentence has been discussing, and <b>it</b> can refer to <i>the clock</i> as an invention. <b>Them</b> would need a plural antecedent, and <b>this</b> would point to the historians' claim instead."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-22-6",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "The Sun That Does Not Rise",
+   "topic": "polar night",
+   "passage": "Above the Arctic Circle there comes a day each autumn (1)____ the sun rises for the last time, skims the horizon and sets, not to return for weeks or even months. This is the polar night, and it is (2)____ no means as uniform as its name suggests. At its southern edge the darkness is really a long twilight, with the sky glowing blue for several hours around noon; only at the pole itself (3)____ the night become truly complete. Those who live through it describe an odd mixture of dread and delight, (4)____ of which they can quite explain. (5)____ from being a season of hibernation, the winter months are busy ones: schools stay open, fishing boats go out, and the towns hang lights along every street to keep the gloom at (6)____. Even so, doctors record a rise in low mood and broken sleep, (7)____ among newcomers who have yet to learn the value of a strict routine. Locals (8)____ by daylight lamps, vitamin pills and, above all, going outside whatever the weather. By the time the sun returns in late January, the community (9)____ without direct sunlight for nearly two months. (10)____ the hardships, few who have watched that first thin sunrise ever describe it as anything but worth the wait.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "where",
+      "which",
+      "when",
+      "what"
+     ],
+     "correct": 2,
+     "explanation": "<i>A day</i> is a time expression, so the relative adverb <b>when</b> introduces the clause describing what happens on it. <b>Which</b> would need <i>on</i> before it, and <b>where</b> is for places."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "at",
+      "in",
+      "on",
+      "by"
+     ],
+     "correct": 3,
+     "explanation": "<b>By no means</b> is the fixed emphatic negative meaning 'not at all'. The other prepositions never combine with <i>no means</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "does",
+      "is",
+      "did",
+      "has"
+     ],
+     "correct": 0,
+     "explanation": "A fronted restrictive <b>only at</b> phrase forces inversion, and the bare verb <i>become</i> in a present-tense description takes the auxiliary <b>does</b>. <b>Is</b> would need <i>becoming</i>, and <b>did</b> breaks the present tense."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "none",
+      "neither",
+      "either",
+      "both"
+     ],
+     "correct": 1,
+     "explanation": "Two feelings were named, so the negative quantifier for two, <b>neither</b>, is required. <b>None</b> is used for three or more, and <b>either</b> needs a negative verb, which <i>can quite explain</i> is not."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "Apart",
+      "Away",
+      "Far",
+      "Aside"
+     ],
+     "correct": 2,
+     "explanation": "<b>Far from being</b> denies one description before offering its opposite. <i>Apart from</i> and <i>aside from</i> mean 'except for', and <b>away</b> cannot precede <i>from being</i> in this sense."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "hand",
+      "length",
+      "large",
+      "bay"
+     ],
+     "correct": 3,
+     "explanation": "To <b>keep something at bay</b> is to stop it coming closer. <i>At hand</i> means nearby, <i>at length</i> means in detail or eventually, and <i>at large</i> means free or in general."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "notably",
+      "namely",
+      "nearly",
+      "lately"
+     ],
+     "correct": 0,
+     "explanation": "<b>Notably</b> singles out the group in which the rise is most marked. <b>Namely</b> would claim that newcomers are the only ones affected, and <b>nearly</b> and <b>lately</b> do not fit before <i>among</i>."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "insist",
+      "swear",
+      "rely",
+      "depend"
+     ],
+     "correct": 1,
+     "explanation": "To <b>swear by</b> something is to trust it completely as a remedy. <b>Insist</b>, <b>rely</b> and <b>depend</b> all take <i>on</i>, not <i>by</i>."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the phrase that fits.",
+     "options": [
+      "had gone",
+      "would have gone",
+      "will have gone",
+      "has gone"
+     ],
+     "correct": 2,
+     "explanation": "<b>By the time</b> + present tense points to a future moment, and the state completed before it takes the future perfect <b>will have gone</b>. <b>Had gone</b> belongs to a past narrative, and <b>would have gone</b> is a conditional."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "However",
+      "Whichever",
+      "Whatever",
+      "Whenever"
+     ],
+     "correct": 2,
+     "explanation": "<b>Whatever the hardships</b> is a concessive phrase meaning 'no matter what the hardships are'. <b>However</b> would need an adjective (<i>however hard</i>), and <b>whichever</b> implies a choice between known items."
+    }
+   ]
+  }
+ ]
+}

@@ -1,84 +1,543 @@
 {
-  "passages": [
+ "passages": [
+  {
+   "id": "cl-kc-05-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Stars, Rain and a Goat",
+   "topic": "a night at camp",
+   "passage": "Every summer my cousins and I spend one night at a camp in the hills behind my grandmother's village. This year the weather forecast (1)____ rain, but we decided to go anyway. We (2)____ up our tent before the sun went down, which turned out to be a wise choice, because the first drops fell while we were still collecting firewood. My uncle, (3)____ has camped there since he was a boy, showed us how to keep the fire burning (4)____ spite of the wet wood. By nine o'clock the rain had stopped and the sky was full of stars. My little cousin Bao, who is only seven, had never seen (5)____ a clear sky in his life and kept asking whether the stars were real. We sat close to the fire and told stories until we could hardly (6)____ our eyes open. Sleeping on the ground is not comfortable, and I woke up several times during the night. At one point I heard a strange noise outside the tent and was (7)____ frightened that I could not move. In the morning we discovered that the noise had been made by a goat (8)____ to my grandmother's neighbour. Everyone laughed at me, but I did not (9)____ it seriously. Before we left, we made sure the fire was completely out and picked up every piece of rubbish. If we (10)____ the place dirty, my uncle would never take us again.",
+   "questions": [
     {
-      "id": "cl-kc-05-1",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "Stars, Rain and a Goat",
-      "topic": "a night at camp",
-      "passage": "Every summer my cousins and I spend one night at a camp in the hills behind my grandmother's village. This year the weather forecast (1)____ rain, but we decided to go anyway. We (2)____ up our tent before the sun went down, which turned out to be a wise choice, because the first drops fell while we were still collecting firewood. My uncle, (3)____ has camped there since he was a boy, showed us how to keep the fire burning (4)____ spite of the wet wood. By nine o'clock the rain had stopped and the sky was full of stars. My little cousin Bao, who is only seven, had never seen (5)____ a clear sky in his life and kept asking whether the stars were real. We sat close to the fire and told stories until we could hardly (6)____ our eyes open. Sleeping on the ground is not comfortable, and I woke up several times during the night. At one point I heard a strange noise outside the tent and was (7)____ frightened that I could not move. In the morning we discovered that the noise had been made by a goat (8)____ to my grandmother's neighbour. Everyone laughed at me, but I did not (9)____ it seriously. Before we left, we made sure the fire was completely out and picked up every piece of rubbish. If we (10)____ the place dirty, my uncle would never take us again.",
-      "questions": [
-        { "n": 1, "type": "mcq", "q": "Blank (1): choose the word that fits.", "options": ["warned", "told", "predicted", "informed"], "correct": 2, "explanation": "A forecast <b>predicts</b> rain: the verb takes the weather directly as its object. <i>Warned</i> needs <i>of/about</i>, and <i>told</i> and <i>informed</i> need a person as their object." },
-        { "n": 2, "type": "mcq", "q": "Blank (2): choose the word that fits.", "options": ["took", "put", "made", "got"], "correct": 1, "explanation": "The phrasal verb for building a tent is <b>put up</b>. <i>Take up</i> means start a hobby, and <i>make up</i> and <i>get up</i> have nothing to do with tents." },
-        { "n": 3, "type": "mcq", "q": "Blank (3): choose the word that fits.", "options": ["which", "whom", "who", "whose"], "correct": 2, "explanation": "The relative pronoun is the subject of <i>has camped</i> and refers to a person, so it must be <b>who</b>. <i>Whom</i> is only for objects, <i>which</i> is for things, and <i>whose</i> shows possession." },
-        { "n": 4, "type": "mcq", "q": "Blank (4): choose the word that fits.", "options": ["in", "on", "at", "by"], "correct": 0, "explanation": "The fixed phrase is <b>in spite of</b>, meaning despite. No other preposition can replace <i>in</i> here." },
-        { "n": 5, "type": "mcq", "q": "Blank (5): choose the word that fits.", "options": ["so", "such", "too", "very"], "correct": 1, "explanation": "Before <i>a</i> + adjective + noun we use <b>such</b>: <i>such a clear sky</i>. <i>So</i>, <i>too</i> and <i>very</i> go directly in front of an adjective, not in front of <i>a</i>." },
-        { "n": 6, "type": "mcq", "q": "Blank (6): choose the word that fits.", "options": ["stay", "keep", "remain", "last"], "correct": 1, "explanation": "You <b>keep your eyes open</b>: <i>keep</i> takes an object and an adjective. <i>Stay</i>, <i>remain</i> and <i>last</i> cannot take <i>our eyes</i> as an object." },
-        { "n": 7, "type": "mcq", "q": "Blank (7): choose the word that fits.", "options": ["too", "very", "so", "such"], "correct": 2, "explanation": "The pattern is <b>so</b> + adjective + <i>that</i> clause: <i>so frightened that I could not move</i>. <i>Such</i> needs a noun, and <i>too</i> and <i>very</i> are not followed by a <i>that</i> clause of result." },
-        { "n": 8, "type": "mcq", "q": "Blank (8): choose the word that fits.", "options": ["belonged", "belonging", "belongs", "belong"], "correct": 1, "explanation": "A reduced relative clause uses the -ing participle: <i>a goat <b>belonging</b> to my grandmother's neighbour</i> = a goat which belonged to her. The finite forms would need <i>which</i> or <i>that</i> before them." },
-        { "n": 9, "type": "mcq", "q": "Blank (9): choose the word that fits.", "options": ["get", "make", "take", "have"], "correct": 2, "explanation": "The collocation is <b>take something seriously</b>. <i>Get</i>, <i>make</i> and <i>have</i> do not combine with <i>seriously</i> in this way." },
-        { "n": 10, "type": "mcq", "q": "Blank (10): choose the word that fits.", "options": ["leave", "left", "leaving", "leaves"], "correct": 1, "explanation": "The main clause has <i>would never take</i>, so this is a second conditional and the <i>if</i> clause needs the past simple <b>left</b>. Present forms would belong to a first conditional with <i>will</i>." }
-      ]
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "informed",
+      "warned",
+      "told",
+      "predicted"
+     ],
+     "correct": 3,
+     "explanation": "A forecast <b>predicts</b> rain: the verb takes the weather directly as its object. <i>Warned</i> needs <i>of/about</i>, and <i>told</i> and <i>informed</i> need a person as their object."
     },
     {
-      "id": "cl-kc-05-2",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "Five Books at a Time",
-      "topic": "a library card",
-      "passage": "Until last month I had never been inside the public library in our district. My English teacher kept telling us that the library had (1)____ of graded readers, so one Saturday I finally went to have a look. To borrow anything you need a card, and getting one is not (2)____ difficult as I had expected. I (3)____ in a short form with my name, address and school, and a librarian checked my student card. She explained that members (4)____ borrow up to five books at a time and keep them for three weeks. If a book is returned late, you (5)____ pay a small fine for each day. I chose two novels and a book about space, (6)____ I had wanted to read since I saw a film about the planets. The librarian told me that the reading room on the second floor is (7)____ quietest place in the building, and she was right. I sat there for two hours (8)____ anybody disturbing me. Since then I have been going back every weekend. Sometimes I meet my friend Hoa there, and we test each other (9)____ new words from the books we have read. My mother says it is the best thing I have done all year, and I think she may (10)____ right. The card cost nothing, but it has already given me a new habit.",
-      "questions": [
-        { "n": 1, "type": "mcq", "q": "Blank (1): choose the word that fits.", "options": ["much", "plenty", "many", "several"], "correct": 1, "explanation": "<b>Plenty of</b> works before any noun and means a large number. <i>Much of</i>, <i>many of</i> and <i>several of</i> need <i>the</i> or a pronoun after them (<i>many of the readers</i>)." },
-        { "n": 2, "type": "mcq", "q": "Blank (2): choose the word that fits.", "options": ["as", "that", "such", "too"], "correct": 0, "explanation": "The comparison of equality is <b>as</b> + adjective + <i>as</i>, and after <i>not</i> the first <i>as</i> still fits. <i>That</i>, <i>such</i> and <i>too</i> cannot be followed by the second <i>as</i>." },
-        { "n": 3, "type": "mcq", "q": "Blank (3): choose the word that fits.", "options": ["wrote", "filled", "completed", "put"], "correct": 1, "explanation": "You <b>fill in</b> a form. <i>Completed</i> would need no <i>in</i>, and <i>wrote in</i> and <i>put in</i> do not describe filling a form." },
-        { "n": 4, "type": "mcq", "q": "Blank (4): choose the word that fits.", "options": ["must", "need", "can", "should"], "correct": 2, "explanation": "The sentence describes what members are allowed to do, so the modal is <b>can</b>. <i>Must</i> and <i>should</i> would make borrowing five books an obligation, and <i>need</i> is not followed by a bare verb in an affirmative sentence." },
-        { "n": 5, "type": "mcq", "q": "Blank (5): choose the word that fits.", "options": ["have", "ought", "must", "need"], "correct": 2, "explanation": "A rule that cannot be avoided uses <b>must</b> + bare verb. <i>Have</i> and <i>ought</i> would need <i>to pay</i>, and <i>need pay</i> is not used in an affirmative sentence." },
-        { "n": 6, "type": "mcq", "q": "Blank (6): choose the word that fits.", "options": ["that", "which", "what", "whom"], "correct": 1, "explanation": "After a comma, a non-defining relative clause about a thing takes <b>which</b>. <i>That</i> is not used after a comma, <i>what</i> is not a relative pronoun here, and <i>whom</i> is for people." },
-        { "n": 7, "type": "mcq", "q": "Blank (7): choose the word that fits.", "options": ["a", "the", "an", "every"], "correct": 1, "explanation": "A superlative such as <i>quietest</i> is normally preceded by <b>the</b>. <i>A</i>, <i>an</i> and <i>every</i> do not go with a superlative that picks out one place." },
-        { "n": 8, "type": "mcq", "q": "Blank (8): choose the word that fits.", "options": ["with", "without", "except", "besides"], "correct": 1, "explanation": "The meaning is that nobody disturbed the writer, which is expressed by <b>without</b> + -ing. <i>With anybody disturbing me</i> means the opposite, and <i>except</i> and <i>besides</i> do not fit the -ing phrase." },
-        { "n": 9, "type": "mcq", "q": "Blank (9): choose the word that fits.", "options": ["in", "for", "on", "about"], "correct": 2, "explanation": "You <b>test somebody on</b> the material they have learned. <i>In</i>, <i>for</i> and <i>about</i> do not follow <i>test</i> in this meaning." },
-        { "n": 10, "type": "mcq", "q": "Blank (10): choose the word that fits.", "options": ["is", "been", "be", "being"], "correct": 2, "explanation": "After a modal verb such as <i>may</i> we need the bare infinitive <b>be</b>. <i>Is</i>, <i>been</i> and <i>being</i> cannot follow a modal directly." }
-      ]
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "got",
+      "took",
+      "put",
+      "made"
+     ],
+     "correct": 2,
+     "explanation": "The phrasal verb for building a tent is <b>put up</b>. <i>Take up</i> means start a hobby, and <i>make up</i> and <i>get up</i> have nothing to do with tents."
     },
     {
-      "id": "cl-kc-05-3",
-      "level": "kc",
-      "mode": "mcq",
-      "title": "Desks in a Circle",
-      "topic": "the first day of term",
-      "passage": "I always feel nervous on the first day of term, even though I have been going to the same school (1)____ six years. This September was different, because our class had been moved to a new building on the other side of the playground. I arrived early, (2)____ I could find my classroom without asking anyone. The corridor was so long that I walked past the door twice (3)____ I noticed the number. Inside, the desks were arranged in a circle rather than in rows, (4)____ meant we could all see each other. Our new form teacher, Mr Tuan, greeted us at the door and asked us to (5)____ ourselves up in alphabetical order. That took a surprisingly long time, as nobody could remember (6)____ to spell the other students' surnames. After that he handed out the timetable and explained the rules. We are not (7)____ to use our phones in class, but we may bring them to school for emergencies. At break my old friends and I went to look at the new library, which is twice (8)____ size of the old one. By the end of the day I had stopped worrying. Nothing had gone wrong, and I had even made a new friend (9)____ sits next to me in maths. Perhaps next year I will not feel nervous (10)____ all.",
-      "questions": [
-        { "n": 1, "type": "mcq", "q": "Blank (1): choose the word that fits.", "options": ["since", "for", "during", "in"], "correct": 1, "explanation": "With the present perfect continuous, a length of time (<i>six years</i>) takes <b>for</b>. <i>Since</i> needs a starting point such as <i>2020</i>, and <i>during</i> and <i>in</i> do not measure how long an action has continued." },
-        { "n": 2, "type": "mcq", "q": "Blank (2): choose the word that fits.", "options": ["because", "so", "although", "unless"], "correct": 1, "explanation": "Arriving early was done in order to find the room, so the linker of purpose is <b>so</b> (that). <i>Because</i> would give the reason, and <i>although</i> and <i>unless</i> make no sense here." },
-        { "n": 3, "type": "mcq", "q": "Blank (3): choose the word that fits.", "options": ["after", "before", "while", "since"], "correct": 1, "explanation": "The writer walked past the door and only then noticed the number, so the two actions are joined by <b>before</b>. <i>After</i> reverses the order, and <i>while</i> and <i>since</i> do not fit the sequence." },
-        { "n": 4, "type": "mcq", "q": "Blank (4): choose the word that fits.", "options": ["that", "which", "what", "who"], "correct": 1, "explanation": "A relative clause that comments on the whole previous idea, after a comma, uses <b>which</b>. <i>That</i> cannot follow a comma this way, <i>what</i> is not a relative pronoun, and <i>who</i> refers to people." },
-        { "n": 5, "type": "mcq", "q": "Blank (5): choose the word that fits.", "options": ["stand", "line", "put", "set"], "correct": 1, "explanation": "The phrasal verb is <b>line up</b>: to form a line. <i>Set up</i> means organise or prepare, and <i>stand</i> and <i>put</i> do not combine with <i>ourselves up</i> to describe forming a line." },
-        { "n": 6, "type": "mcq", "q": "Blank (6): choose the word that fits.", "options": ["what", "how", "which", "where"], "correct": 1, "explanation": "The question word before <i>to spell</i> must be <b>how</b>, because spelling is a way of doing something. <i>What</i>, <i>which</i> and <i>where</i> would need a different structure or make no sense." },
-        { "n": 7, "type": "mcq", "q": "Blank (7): choose the word that fits.", "options": ["let", "allowed", "made", "forced"], "correct": 1, "explanation": "Permission in the passive is <b>be allowed to</b>. <i>Let</i> is not used in the passive with <i>to</i>, and <i>made</i> and <i>forced</i> would mean somebody obliged the students to use phones." },
-        { "n": 8, "type": "mcq", "q": "Blank (8): choose the word that fits.", "options": ["the", "a", "its", "that"], "correct": 0, "explanation": "The comparison is <i>twice <b>the</b> size of</i>. <i>A</i>, <i>its</i> and <i>that</i> do not form this fixed pattern with <i>twice</i>." },
-        { "n": 9, "type": "mcq", "q": "Blank (9): choose the word that fits.", "options": ["which", "whom", "who", "whose"], "correct": 2, "explanation": "The pronoun is the subject of <i>sits</i> and refers to a person, so it must be <b>who</b>. <i>Whom</i> is an object form, <i>which</i> is for things, and <i>whose</i> shows possession." },
-        { "n": 10, "type": "mcq", "q": "Blank (10): choose the word that fits.", "options": ["in", "at", "of", "on"], "correct": 1, "explanation": "The fixed phrase <b>not ... at all</b> adds emphasis to a negative. No other preposition combines with <i>all</i> in this meaning." }
-      ]
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "whom",
+      "who",
+      "whose",
+      "which"
+     ],
+     "correct": 1,
+     "explanation": "The relative pronoun is the subject of <i>has camped</i> and refers to a person, so it must be <b>who</b>. <i>Whom</i> is only for objects, <i>which</i> is for things, and <i>whose</i> shows possession."
     },
     {
-      "id": "cl-kc-05-4",
-      "level": "kc",
-      "mode": "open",
-      "title": "Two Days Without a Screen",
-      "topic": "a broken phone",
-      "passage": "Last Tuesday my phone fell (1)____ of my pocket on the stairs at school, and the screen broke into a hundred tiny pieces. It still switched on, but I could hardly read anything. My first thought was that my parents would be angry, (2)____ the phone was a birthday present from them only three months before. I decided to tell them straight away rather (3)____ hide it, and I am glad I did. My father looked at the screen, sighed, and said that accidents happen to everyone. The next day we (4)____ it to a small repair shop near the market. The man there told us that a new screen would cost about a third of the price of the phone and that it would be ready (5)____ two days. While I was waiting, I discovered how much I depend (6)____ my phone. I could not check the time, message my friends or look (7)____ words in my dictionary app. On the other hand, I finished my homework faster than usual and went to bed earlier. When I picked the phone up on Thursday, it looked (8)____ if nothing had ever happened to it. My father made me buy a proper case (9)____ that it would not happen again. I have learned a lesson (10)____ I hope I will not need to learn twice.",
-      "questions": [
-        { "n": 1, "type": "text", "q": "Blank (1): type one word.", "accept": ["out"], "answer": "out", "explanation": "Something falls <b>out of</b> a pocket; the two-part preposition <i>out of</i> shows movement from inside. <i>Off</i> or <i>from</i> cannot be followed by <i>of</i> here." },
-        { "n": 2, "type": "text", "q": "Blank (2): type one word.", "accept": ["because", "as", "since", "for"], "answer": "because", "explanation": "The second clause gives the reason the parents might be angry, so a reason linker such as <b>because</b> (or <i>as</i>, <i>since</i>) fits. <i>So</i> would reverse cause and result, and <i>but</i> would make the two ideas contrast, which they do not." },
-        { "n": 3, "type": "text", "q": "Blank (3): type one word.", "accept": ["than"], "answer": "than", "explanation": "The fixed pattern is <b>rather than</b> + bare verb: <i>tell them rather than hide it</i>. <i>Then</i> is a common misspelling, and <i>instead</i> would need <i>of hiding</i>." },
-        { "n": 4, "type": "text", "q": "Blank (4): type one word.", "accept": ["took", "brought", "carried"], "answer": "took", "explanation": "You <b>take</b> something <i>to</i> a shop, and the narrative is in the past simple, so <i>took</i>. <i>Went</i> fails because it cannot have <i>it</i> as an object, and the present form <i>take</i> breaks the past narrative." },
-        { "n": 5, "type": "text", "q": "Blank (5): type one word.", "accept": ["in", "within", "after"], "answer": "in", "explanation": "A future point measured from now is expressed with <b>in</b> two days (or <i>within</i>). <i>For two days</i> would describe a duration, not the moment the phone is ready." },
-        { "n": 6, "type": "text", "q": "Blank (6): type one word.", "accept": ["on", "upon"], "answer": "on", "explanation": "The verb takes a fixed preposition: <b>depend on</b> (or the more formal <i>upon</i>). <i>Of</i> is a common mistake, influenced by <i>independent of</i>, but <i>depend of</i> is not English." },
-        { "n": 7, "type": "text", "q": "Blank (7): type one word.", "accept": ["up"], "answer": "up", "explanation": "To search for a word in a dictionary is to <b>look it up</b>. <i>Look for</i> means to try to find something lost, and <i>look at</i> only means to direct your eyes." },
-        { "n": 8, "type": "text", "q": "Blank (8): type one word.", "accept": ["as"], "answer": "as", "explanation": "The comparison with an imagined situation is <b>as if</b> + past perfect. <i>Like if</i> is not standard English, and <i>even if</i> would change the meaning." },
-        { "n": 9, "type": "text", "q": "Blank (9): type one word.", "accept": ["so"], "answer": "so", "explanation": "Purpose is expressed by <b>so that</b> + clause: he made me buy a case so that it would not happen again. <i>In order that</i> is two words, and <i>because that</i> is not English." },
-        { "n": 10, "type": "text", "q": "Blank (10): type one word.", "accept": ["which", "that"], "answer": "which", "explanation": "A defining relative clause about a thing (<i>a lesson</i>) with no comma takes <b>which</b> or <i>that</i>. <i>What</i> cannot follow a noun as a relative pronoun, and <i>who</i> is for people." }
-      ]
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "in",
+      "on",
+      "at",
+      "by"
+     ],
+     "correct": 0,
+     "explanation": "The fixed phrase is <b>in spite of</b>, meaning despite. No other preposition can replace <i>in</i> here."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "too",
+      "very",
+      "so",
+      "such"
+     ],
+     "correct": 3,
+     "explanation": "Before <i>a</i> + adjective + noun we use <b>such</b>: <i>such a clear sky</i>. <i>So</i>, <i>too</i> and <i>very</i> go directly in front of an adjective, not in front of <i>a</i>."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "last",
+      "stay",
+      "keep",
+      "remain"
+     ],
+     "correct": 2,
+     "explanation": "You <b>keep your eyes open</b>: <i>keep</i> takes an object and an adjective. <i>Stay</i>, <i>remain</i> and <i>last</i> cannot take <i>our eyes</i> as an object."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "very",
+      "so",
+      "such",
+      "too"
+     ],
+     "correct": 1,
+     "explanation": "The pattern is <b>so</b> + adjective + <i>that</i> clause: <i>so frightened that I could not move</i>. <i>Such</i> needs a noun, and <i>too</i> and <i>very</i> are not followed by a <i>that</i> clause of result."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "belonging",
+      "belongs",
+      "belong",
+      "belonged"
+     ],
+     "correct": 0,
+     "explanation": "A reduced relative clause uses the -ing participle: <i>a goat <b>belonging</b> to my grandmother's neighbour</i> = a goat which belonged to her. The finite forms would need <i>which</i> or <i>that</i> before them."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "have",
+      "get",
+      "make",
+      "take"
+     ],
+     "correct": 3,
+     "explanation": "The collocation is <b>take something seriously</b>. <i>Get</i>, <i>make</i> and <i>have</i> do not combine with <i>seriously</i> in this way."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "leave",
+      "left",
+      "leaving",
+      "leaves"
+     ],
+     "correct": 1,
+     "explanation": "The main clause has <i>would never take</i>, so this is a second conditional and the <i>if</i> clause needs the past simple <b>left</b>. Present forms would belong to a first conditional with <i>will</i>."
     }
-  ]
+   ]
+  },
+  {
+   "id": "cl-kc-05-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Five Books at a Time",
+   "topic": "a library card",
+   "passage": "Until last month I had never been inside the public library in our district. My English teacher kept telling us that the library had (1)____ of graded readers, so one Saturday I finally went to have a look. To borrow anything you need a card, and getting one is not (2)____ difficult as I had expected. I (3)____ in a short form with my name, address and school, and a librarian checked my student card. She explained that members (4)____ borrow up to five books at a time and keep them for three weeks. If a book is returned late, you (5)____ pay a small fine for each day. I chose two novels and a book about space, (6)____ I had wanted to read since I saw a film about the planets. The librarian told me that the reading room on the second floor is (7)____ quietest place in the building, and she was right. I sat there for two hours (8)____ anybody disturbing me. Since then I have been going back every weekend. Sometimes I meet my friend Hoa there, and we test each other (9)____ new words from the books we have read. My mother says it is the best thing I have done all year, and I think she may (10)____ right. The card cost nothing, but it has already given me a new habit.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "several",
+      "much",
+      "plenty",
+      "many"
+     ],
+     "correct": 2,
+     "explanation": "<b>Plenty of</b> works before any noun and means a large number. <i>Much of</i>, <i>many of</i> and <i>several of</i> need <i>the</i> or a pronoun after them (<i>many of the readers</i>)."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "that",
+      "such",
+      "too",
+      "as"
+     ],
+     "correct": 3,
+     "explanation": "The comparison of equality is <b>as</b> + adjective + <i>as</i>, and after <i>not</i> the first <i>as</i> still fits. <i>That</i>, <i>such</i> and <i>too</i> cannot be followed by the second <i>as</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "filled",
+      "completed",
+      "put",
+      "wrote"
+     ],
+     "correct": 0,
+     "explanation": "You <b>fill in</b> a form. <i>Completed</i> would need no <i>in</i>, and <i>wrote in</i> and <i>put in</i> do not describe filling a form."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "need",
+      "can",
+      "should",
+      "must"
+     ],
+     "correct": 1,
+     "explanation": "The sentence describes what members are allowed to do, so the modal is <b>can</b>. <i>Must</i> and <i>should</i> would make borrowing five books an obligation, and <i>need</i> is not followed by a bare verb in an affirmative sentence."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "have",
+      "ought",
+      "must",
+      "need"
+     ],
+     "correct": 2,
+     "explanation": "A rule that cannot be avoided uses <b>must</b> + bare verb. <i>Have</i> and <i>ought</i> would need <i>to pay</i>, and <i>need pay</i> is not used in an affirmative sentence."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "what",
+      "whom",
+      "that",
+      "which"
+     ],
+     "correct": 3,
+     "explanation": "After a comma, a non-defining relative clause about a thing takes <b>which</b>. <i>That</i> is not used after a comma, <i>what</i> is not a relative pronoun here, and <i>whom</i> is for people."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "the",
+      "an",
+      "every",
+      "a"
+     ],
+     "correct": 0,
+     "explanation": "A superlative such as <i>quietest</i> is normally preceded by <b>the</b>. <i>A</i>, <i>an</i> and <i>every</i> do not go with a superlative that picks out one place."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "with",
+      "without",
+      "except",
+      "besides"
+     ],
+     "correct": 1,
+     "explanation": "The meaning is that nobody disturbed the writer, which is expressed by <b>without</b> + -ing. <i>With anybody disturbing me</i> means the opposite, and <i>except</i> and <i>besides</i> do not fit the -ing phrase."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "in",
+      "for",
+      "on",
+      "about"
+     ],
+     "correct": 2,
+     "explanation": "You <b>test somebody on</b> the material they have learned. <i>In</i>, <i>for</i> and <i>about</i> do not follow <i>test</i> in this meaning."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "is",
+      "been",
+      "be",
+      "being"
+     ],
+     "correct": 2,
+     "explanation": "After a modal verb such as <i>may</i> we need the bare infinitive <b>be</b>. <i>Is</i>, <i>been</i> and <i>being</i> cannot follow a modal directly."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-05-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Desks in a Circle",
+   "topic": "the first day of term",
+   "passage": "I always feel nervous on the first day of term, even though I have been going to the same school (1)____ six years. This September was different, because our class had been moved to a new building on the other side of the playground. I arrived early, (2)____ I could find my classroom without asking anyone. The corridor was so long that I walked past the door twice (3)____ I noticed the number. Inside, the desks were arranged in a circle rather than in rows, (4)____ meant we could all see each other. Our new form teacher, Mr Tuan, greeted us at the door and asked us to (5)____ ourselves up in alphabetical order. That took a surprisingly long time, as nobody could remember (6)____ to spell the other students' surnames. After that he handed out the timetable and explained the rules. We are not (7)____ to use our phones in class, but we may bring them to school for emergencies. At break my old friends and I went to look at the new library, which is twice (8)____ size of the old one. By the end of the day I had stopped worrying. Nothing had gone wrong, and I had even made a new friend (9)____ sits next to me in maths. Perhaps next year I will not feel nervous (10)____ all.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "since",
+      "for",
+      "during",
+      "in"
+     ],
+     "correct": 1,
+     "explanation": "With the present perfect continuous, a length of time (<i>six years</i>) takes <b>for</b>. <i>Since</i> needs a starting point such as <i>2020</i>, and <i>during</i> and <i>in</i> do not measure how long an action has continued."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "so",
+      "although",
+      "unless",
+      "because"
+     ],
+     "correct": 0,
+     "explanation": "Arriving early was done in order to find the room, so the linker of purpose is <b>so</b> (that). <i>Because</i> would give the reason, and <i>although</i> and <i>unless</i> make no sense here."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "while",
+      "since",
+      "after",
+      "before"
+     ],
+     "correct": 3,
+     "explanation": "The writer walked past the door and only then noticed the number, so the two actions are joined by <b>before</b>. <i>After</i> reverses the order, and <i>while</i> and <i>since</i> do not fit the sequence."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "who",
+      "that",
+      "which",
+      "what"
+     ],
+     "correct": 2,
+     "explanation": "A relative clause that comments on the whole previous idea, after a comma, uses <b>which</b>. <i>That</i> cannot follow a comma this way, <i>what</i> is not a relative pronoun, and <i>who</i> refers to people."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "stand",
+      "line",
+      "put",
+      "set"
+     ],
+     "correct": 1,
+     "explanation": "The phrasal verb is <b>line up</b>: to form a line. <i>Set up</i> means organise or prepare, and <i>stand</i> and <i>put</i> do not combine with <i>ourselves up</i> to describe forming a line."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "how",
+      "which",
+      "where",
+      "what"
+     ],
+     "correct": 0,
+     "explanation": "The question word before <i>to spell</i> must be <b>how</b>, because spelling is a way of doing something. <i>What</i>, <i>which</i> and <i>where</i> would need a different structure or make no sense."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "made",
+      "forced",
+      "let",
+      "allowed"
+     ],
+     "correct": 3,
+     "explanation": "Permission in the passive is <b>be allowed to</b>. <i>Let</i> is not used in the passive with <i>to</i>, and <i>made</i> and <i>forced</i> would mean somebody obliged the students to use phones."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "its",
+      "that",
+      "the",
+      "a"
+     ],
+     "correct": 2,
+     "explanation": "The comparison is <i>twice <b>the</b> size of</i>. <i>A</i>, <i>its</i> and <i>that</i> do not form this fixed pattern with <i>twice</i>."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "whom",
+      "who",
+      "whose",
+      "which"
+     ],
+     "correct": 1,
+     "explanation": "The pronoun is the subject of <i>sits</i> and refers to a person, so it must be <b>who</b>. <i>Whom</i> is an object form, <i>which</i> is for things, and <i>whose</i> shows possession."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "of",
+      "on",
+      "in",
+      "at"
+     ],
+     "correct": 3,
+     "explanation": "The fixed phrase <b>not ... at all</b> adds emphasis to a negative. No other preposition combines with <i>all</i> in this meaning."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-05-4",
+   "level": "kc",
+   "mode": "open",
+   "title": "Two Days Without a Screen",
+   "topic": "a broken phone",
+   "passage": "Last Tuesday my phone fell (1)____ of my pocket on the stairs at school, and the screen broke into a hundred tiny pieces. It still switched on, but I could hardly read anything. My first thought was that my parents would be angry, (2)____ the phone was a birthday present from them only three months before. I decided to tell them straight away rather (3)____ hide it, and I am glad I did. My father looked at the screen, sighed, and said that accidents happen to everyone. The next day we (4)____ it to a small repair shop near the market. The man there told us that a new screen would cost about a third of the price of the phone and that it would be ready (5)____ two days. While I was waiting, I discovered how much I depend (6)____ my phone. I could not check the time, message my friends or look (7)____ words in my dictionary app. On the other hand, I finished my homework faster than usual and went to bed earlier. When I picked the phone up on Thursday, it looked (8)____ if nothing had ever happened to it. My father made me buy a proper case (9)____ that it would not happen again. I have learned a lesson (10)____ I hope I will not need to learn twice.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "Something falls <b>out of</b> a pocket; the two-part preposition <i>out of</i> shows movement from inside. <i>Off</i> or <i>from</i> cannot be followed by <i>of</i> here."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "because",
+      "as",
+      "since",
+      "for"
+     ],
+     "answer": "because",
+     "explanation": "The second clause gives the reason the parents might be angry, so a reason linker such as <b>because</b> (or <i>as</i>, <i>since</i>) fits. <i>So</i> would reverse cause and result, and <i>but</i> would make the two ideas contrast, which they do not."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "The fixed pattern is <b>rather than</b> + bare verb: <i>tell them rather than hide it</i>. <i>Then</i> is a common misspelling, and <i>instead</i> would need <i>of hiding</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "took",
+      "brought",
+      "carried"
+     ],
+     "answer": "took",
+     "explanation": "You <b>take</b> something <i>to</i> a shop, and the narrative is in the past simple, so <i>took</i>. <i>Went</i> fails because it cannot have <i>it</i> as an object, and the present form <i>take</i> breaks the past narrative."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "in",
+      "within",
+      "after"
+     ],
+     "answer": "in",
+     "explanation": "A future point measured from now is expressed with <b>in</b> two days (or <i>within</i>). <i>For two days</i> would describe a duration, not the moment the phone is ready."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "on",
+      "upon"
+     ],
+     "answer": "on",
+     "explanation": "The verb takes a fixed preposition: <b>depend on</b> (or the more formal <i>upon</i>). <i>Of</i> is a common mistake, influenced by <i>independent of</i>, but <i>depend of</i> is not English."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "up"
+     ],
+     "answer": "up",
+     "explanation": "To search for a word in a dictionary is to <b>look it up</b>. <i>Look for</i> means to try to find something lost, and <i>look at</i> only means to direct your eyes."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "as"
+     ],
+     "answer": "as",
+     "explanation": "The comparison with an imagined situation is <b>as if</b> + past perfect. <i>Like if</i> is not standard English, and <i>even if</i> would change the meaning."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "so"
+     ],
+     "answer": "so",
+     "explanation": "Purpose is expressed by <b>so that</b> + clause: he made me buy a case so that it would not happen again. <i>In order that</i> is two words, and <i>because that</i> is not English."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "which",
+      "that"
+     ],
+     "answer": "which",
+     "explanation": "A defining relative clause about a thing (<i>a lesson</i>) with no comma takes <b>which</b> or <i>that</i>. <i>What</i> cannot follow a noun as a relative pronoun, and <i>who</i> is for people."
+    }
+   ]
+  }
+ ]
 }

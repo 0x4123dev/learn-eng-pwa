@@ -1,0 +1,680 @@
+{
+ "passages": [
+  {
+   "id": "cl-kc-12-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Night I Played the King",
+   "topic": "a school play",
+   "passage": "Every spring our school puts on a play, and this year I decided to take part (1)____ it for the first time. I did not expect to get a big role, so I was surprised when the drama teacher chose me (2)____ the king. At first I was terrified. I (3)____ never spoken in front of more than thirty people, and the school hall holds nearly four hundred. My best friend told me not to worry, (4)____ she was playing the queen and would be standing next to me the whole time. We rehearsed every afternoon for six weeks. The hardest part was not learning the lines but remembering (5)____ to stand, because the stage was much smaller than the classroom we practised in. Two days before the performance, the boy (6)____ played the messenger fell ill, and a girl from Year 8 had to learn his part overnight. She did (7)____ a good job that nobody in the audience noticed. On the night itself I could hear my heart beating as the curtain went up. Then I said my first line, somebody laughed in the right place, and suddenly I felt calm. The play lasted just over an hour, and when it ended the audience clapped for a long time. (8)____ the people in the front row were my parents, who said they had never seen me look so confident. I still cannot believe how quickly the evening went (9)____. If the teacher asks me again next year, I will certainly say yes, (10)____ if she only gives me the smallest part in the whole play.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "at",
+      "of",
+      "on",
+      "in"
+     ],
+     "correct": 3,
+     "explanation": "You <b>take part in</b> an activity. <i>On</i>, <i>at</i> and <i>of</i> never follow <i>take part</i>."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "for",
+      "by",
+      "as",
+      "like"
+     ],
+     "correct": 2,
+     "explanation": "<b>Choose somebody as</b> a role means give them that role. <i>Like</i> compares two things, and <i>for</i> or <i>by</i> would need a different sentence."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "have",
+      "had",
+      "did",
+      "was"
+     ],
+     "correct": 1,
+     "explanation": "The story is in the past, and this experience came before it, so the past perfect <b>had never spoken</b> is needed. <i>Have</i> would describe the present."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "because",
+      "so",
+      "although",
+      "unless"
+     ],
+     "correct": 0,
+     "explanation": "The second half gives the reason she said not to worry, so <b>because</b> fits. <i>Although</i> and <i>unless</i> would make the reason a contrast or a condition."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "what",
+      "which",
+      "when",
+      "where"
+     ],
+     "correct": 3,
+     "explanation": "The problem is the size of the stage, so it is a question of position: <b>where to stand</b>. <i>When</i> would be about timing, and <i>what</i> or <i>which</i> need a noun."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "whom",
+      "whose",
+      "who",
+      "which"
+     ],
+     "correct": 2,
+     "explanation": "The relative pronoun is the subject of <i>played</i> and refers to a person, so <b>who</b> is correct. <i>Which</i> is for things and <i>whom</i> can only be an object."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "so",
+      "such",
+      "too",
+      "very"
+     ],
+     "correct": 1,
+     "explanation": "Before <i>a</i> + adjective + noun we use <b>such</b>: <i>such a good job that…</i>. <i>So</i> goes directly before an adjective (<i>so good that</i>)."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "Among",
+      "Along",
+      "Between",
+      "Inside"
+     ],
+     "correct": 0,
+     "explanation": "<b>Among</b> is used for being part of a group of people. <i>Between</i> is for two things, and <i>inside</i> or <i>along</i> describe places, not groups."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "on",
+      "off",
+      "up",
+      "by"
+     ],
+     "correct": 3,
+     "explanation": "Time <b>goes by</b> means time passes. <i>Go on</i> means continue, and <i>go off</i> or <i>go up</i> have nothing to do with time passing."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "just",
+      "even",
+      "only",
+      "still"
+     ],
+     "correct": 1,
+     "explanation": "<b>Even if</b> introduces an extreme condition that does not change the decision. <i>Still</i>, <i>just</i> and <i>only</i> cannot combine with <i>if</i> in this way."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-12-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "A Tent in the Living Room",
+   "topic": "a sleepover",
+   "passage": "Last Saturday my cousin Mai stayed (1)____ at our flat for the first time. She is a year younger than me, and her mother was nervous about leaving her, so she phoned three times before nine o'clock. We built a tent in the living room using two chairs and a blanket, which took (2)____ longer than we had expected. Then we made popcorn, but I put in far too (3)____ salt, and Mai pretended to like it anyway. My little brother wanted to join us, but he was sent to bed at half past eight (4)____ he had football practice early the next morning. He spent twenty minutes complaining through the wall. After that we watched a film about a lost dog (5)____ finds its way home across a whole country. Mai cried at the end, and I have to admit that I did too. We were supposed to be asleep by eleven, but we (6)____ up talking until well after midnight. Mai told me about a girl in her class who can speak four languages, and I told her about the time I fell into the school pond. At some point my mother knocked on the door and asked (7)____ we knew what time it was. We said sorry and turned off the torch, but we carried (8)____ whispering for at least another hour. In the morning both of us were too tired to eat breakfast properly. Mai's mother arrived at ten and asked whether we (9)____ slept well. We looked at each other and said yes at exactly the same moment. She did not believe us, but she smiled and said Mai could come again (10)____ we promised to go to bed earlier next time.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "on",
+      "off",
+      "over",
+      "up"
+     ],
+     "correct": 2,
+     "explanation": "To <b>stay over</b> is to sleep at somebody else's home for a night. <i>Stay up</i> means not go to bed, and <i>stay on</i> means remain longer than planned."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "very",
+      "more",
+      "too",
+      "much"
+     ],
+     "correct": 3,
+     "explanation": "A comparative like <i>longer</i> is strengthened with <b>much</b> (or <i>far</i>). <i>Very</i> and <i>too</i> go with the base form, and <i>more longer</i> is a double comparative."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "much",
+      "many",
+      "plenty",
+      "lot"
+     ],
+     "correct": 0,
+     "explanation": "<i>Salt</i> is uncountable, so <b>too much</b> is needed. <i>Too many</i> is for countable nouns, and <i>lot</i> or <i>plenty</i> cannot follow <i>too</i>."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "unless",
+      "because",
+      "although",
+      "so"
+     ],
+     "correct": 1,
+     "explanation": "Early football practice is the reason for the early bedtime, so <b>because</b> fits. <i>So</i> would make it a result, which is the wrong direction."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "whose",
+      "who",
+      "which",
+      "whom"
+     ],
+     "correct": 2,
+     "explanation": "The relative pronoun refers to <i>a lost dog</i>, an animal, and is the subject of <i>finds</i>, so <b>which</b> is right. <i>Who</i> and <i>whom</i> are for people."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "held",
+      "went",
+      "kept",
+      "stayed"
+     ],
+     "correct": 3,
+     "explanation": "<b>Stay up</b> means not go to bed. <i>Keep up</i> means maintain, <i>hold up</i> means delay, and <i>go up</i> means rise."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "if",
+      "what",
+      "that",
+      "why"
+     ],
+     "correct": 0,
+     "explanation": "A reported yes/no question is introduced by <b>if</b> or <i>whether</i>. <i>That</i> reports a statement, and <i>what</i> or <i>why</i> would need a different question."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "off",
+      "on",
+      "out",
+      "over"
+     ],
+     "correct": 1,
+     "explanation": "<b>Carry on</b> + -ing means continue doing something. <i>Carry out</i> means perform a task, and <i>carry off</i> or <i>carry over</i> do not fit."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "were",
+      "have",
+      "had",
+      "would"
+     ],
+     "correct": 2,
+     "explanation": "In reported speech after <i>asked</i>, the present perfect <i>have you slept</i> moves back to the past perfect: <b>had slept</b>. <i>Were slept</i> is not a correct form."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "whether",
+      "though",
+      "if",
+      "unless"
+     ],
+     "correct": 2,
+     "explanation": "The promise is the condition for coming again, so <b>if</b> is needed. <i>Unless</i> means <i>if not</i>, which reverses the meaning."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-12-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Fried Rice and Onion Tears",
+   "topic": "learning to cook",
+   "passage": "When my mother started working evening shifts last year, I had two choices: eat instant noodles every night or learn to cook. I chose the second, (1)____ I had never even boiled an egg before. My grandmother agreed to teach me, on condition that I (2)____ the washing-up afterwards. Our first lesson was fried rice. She showed me how to hold the knife so that I would not cut (3)____, and then she watched while I chopped an onion. It took me ten minutes and I cried the whole time. She laughed and said that everybody cries (4)____ first. The rice itself was easier than I had thought. The secret, she explained, is to use rice (5)____ was cooked the day before, because fresh rice turns soft and sticky in the pan. After three weeks I could make four dishes without (6)____ at the recipe, and my father said my soup was better than the one at the restaurant near his office. I think he was being kind, but I did not mind. Now I cook for the family twice a week. It is not always a success. Last month I forgot to turn (7)____ the gas and the vegetables turned black, and once I mixed up sugar and salt in a sauce. (8)____, I have learned that a mistake in the kitchen is not the end of the world. You throw it away, open the window and start again. What I enjoy most is the moment (9)____ everyone sits down and tastes something I made myself. My grandmother says that by the time I finish school I (10)____ be a better cook than she is. I doubt it, but it is nice to hear.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "despite",
+      "although",
+      "however",
+      "whereas"
+     ],
+     "correct": 1,
+     "explanation": "Never having boiled an egg is a contrast with choosing to cook, and it is a full clause, so <b>although</b> fits. <i>Despite</i> needs a noun or -ing form, and <i>however</i> cannot join two clauses with a comma."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "did",
+      "took",
+      "made",
+      "had"
+     ],
+     "correct": 0,
+     "explanation": "The collocation is <b>do the washing-up</b>, like <i>do the dishes</i> and <i>do the housework</i>. <i>Make</i> is used for creating things, not for chores."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "my",
+      "me",
+      "mine",
+      "myself"
+     ],
+     "correct": 3,
+     "explanation": "When the subject and the object are the same person, English uses a reflexive pronoun: <b>cut myself</b>. <i>Me</i> is used only when somebody else does the action."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "on",
+      "by",
+      "at",
+      "in"
+     ],
+     "correct": 2,
+     "explanation": "<b>At first</b> means in the early stage of doing something. <i>In</i>, <i>on</i> and <i>by</i> do not combine with <i>first</i> in this meaning."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "whose",
+      "which",
+      "what",
+      "who"
+     ],
+     "correct": 1,
+     "explanation": "<i>Rice</i> is a thing and is the subject of <i>was cooked</i>, so the relative pronoun is <b>which</b> (or <i>that</i>). <i>What</i> cannot follow a noun in this way."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "looking",
+      "look",
+      "looked",
+      "looks"
+     ],
+     "correct": 0,
+     "explanation": "After the preposition <i>without</i>, a verb must be in the -ing form: <b>without looking</b>. The other forms cannot follow a preposition."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "over",
+      "on",
+      "out",
+      "off"
+     ],
+     "correct": 3,
+     "explanation": "The vegetables burned, so the gas was left burning: the writer forgot to <b>turn off</b> the gas. <i>Turn on</i> would mean the opposite, and <i>turn out</i> is for lights."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "Moreover",
+      "Therefore",
+      "However",
+      "Otherwise"
+     ],
+     "correct": 2,
+     "explanation": "The sentence contrasts the failures with a positive lesson, so <b>However</b> is the linker. <i>Therefore</i> gives a result and <i>moreover</i> adds a similar point."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "which",
+      "when",
+      "whose",
+      "where"
+     ],
+     "correct": 1,
+     "explanation": "After a time noun like <i>the moment</i>, the relative word is <b>when</b>. <i>Where</i> follows a place, and <i>which</i> would need to be the subject or object of the verb."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "would",
+      "was",
+      "am",
+      "will"
+     ],
+     "correct": 3,
+     "explanation": "<i>By the time I finish school</i> points to the future, so the main verb takes <b>will</b>. <i>Would</i> is for hypothetical or past situations."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-12-4",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Forty Kilometres from the Nearest Garage",
+   "topic": "a flat tyre",
+   "passage": "My father is a careful driver, but even careful drivers have bad luck sometimes. Last month we were driving to my aunt's house in the countryside when we heard a loud bang and the car began to pull (1)____ the left. Dad slowed down and stopped at the side of the road. The back tyre on the driver's side was completely flat. (2)____ of us had ever changed a tyre before, so Dad opened the boot and took out the instruction book. My mother suggested calling a garage, but the nearest one was forty kilometres (3)____, and there was almost no signal on her phone. So we decided to do it (4)____. The first job was to find the spare tyre, which was hidden under the floor of the boot beneath all our bags. Then Dad had to loosen the nuts on the wheel. They were (5)____ tight that he had to stand on the tool to move them. I held the torch, because by then it was getting dark. Once the nuts were loose, we lifted the car with the jack, took the old wheel (6)____ and pushed the spare one into place. It looked easy in the book, but the spare was heavy and kept slipping. (7)____ the whole thing took almost an hour, and our hands were black with dirt. My aunt, who had been waiting since six, had (8)____ eaten dinner when we finally arrived. She was not angry, though. In fact, she said it was a useful lesson, and that we (9)____ have been much more worried if it had happened at night on a busier road. Since then Dad has kept a pair of gloves in the boot, and I no (10)____ complain when he checks the tyres before a trip.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "to",
+      "at",
+      "in",
+      "on"
+     ],
+     "correct": 0,
+     "explanation": "A car <b>pulls to</b> one side when it moves in that direction by itself. <i>At</i>, <i>on</i> and <i>in</i> do not show movement towards a side."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "Neither",
+      "None",
+      "Nobody",
+      "Any"
+     ],
+     "correct": 1,
+     "explanation": "There are three people in the car, so <b>none of us</b> is correct. <i>Neither</i> is only for two, and <i>nobody</i> cannot be followed by <i>of us</i>."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "far",
+      "apart",
+      "away",
+      "behind"
+     ],
+     "correct": 2,
+     "explanation": "A distance is followed by <b>away</b>: <i>forty kilometres away</i>. <i>Far</i> is not used after a number, and <i>apart</i> is for the gap between two things."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "ours",
+      "our",
+      "us",
+      "ourselves"
+     ],
+     "correct": 3,
+     "explanation": "<b>Do it ourselves</b> means without help from anyone else, using the reflexive pronoun for <i>we</i>. <i>Us</i> would make the family the object of the action."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "so",
+      "such",
+      "too",
+      "very"
+     ],
+     "correct": 0,
+     "explanation": "Before an adjective with a <i>that</i> clause of result, we use <b>so</b>: <i>so tight that…</i>. <i>Such</i> needs a noun, and <i>too</i> or <i>very</i> do not take <i>that</i>."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "away",
+      "off",
+      "out",
+      "down"
+     ],
+     "correct": 1,
+     "explanation": "You <b>take a wheel off</b> a car, because it is fixed onto the car. <i>Take out</i> is for something inside, and <i>take away</i> means remove from the place."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "Nevertheless",
+      "Otherwise",
+      "Altogether",
+      "Meanwhile"
+     ],
+     "correct": 2,
+     "explanation": "<b>Altogether</b> introduces the total time, adding all the steps together. <i>Meanwhile</i> means at the same time, and <i>otherwise</i> or <i>nevertheless</i> signal a contrast that is not there."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "yet",
+      "ever",
+      "still",
+      "already"
+     ],
+     "correct": 3,
+     "explanation": "The aunt finished dinner before they arrived, so <b>had already eaten</b> is right. <i>Yet</i> is used in negatives and questions, and <i>still</i> would mean the action continued."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "would",
+      "should",
+      "will",
+      "must"
+     ],
+     "correct": 0,
+     "explanation": "With <i>if it had happened</i>, this is a third conditional, so the result takes <b>would have been</b>. <i>Will</i> is for real future conditions."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "longer",
+      "sooner",
+      "further",
+      "more"
+     ],
+     "correct": 0,
+     "explanation": "<b>No longer</b> means not any more, and it sits before the verb. <i>No more</i> is placed after the verb, and <i>no sooner</i> or <i>no further</i> have different meanings."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-12-5",
+   "level": "kc",
+   "mode": "open",
+   "title": "Everyday Heroes",
+   "topic": "a photo competition",
+   "passage": "In March our town library announced a photo competition for students (1)____ the age of sixteen. The theme was 'Everyday Heroes', and the winner would have their picture printed on the cover of the library's summer magazine. I had (2)____ entered a competition before, but my art teacher encouraged me to try. For two weeks I carried my camera everywhere. I photographed the man who sells bread outside the station, a nurse waiting for the bus at dawn, and my grandfather fixing a neighbour's bicycle. None of them seemed right. Then one afternoon I saw a girl of about seven helping an old woman (3)____ the road, holding her shopping bag in one hand and the woman's arm in the other. I took the photo quickly, (4)____ they could notice me, and only afterwards did I realise that the girl was a pupil at my old primary school. I printed the picture, wrote a short note (5)____ explained where I had taken it, and handed it in on the last day. Then came the difficult part: waiting. The results were not announced (6)____ the end of April, and every day I checked the library noticeboard on my way home. In the end I did not win. The first prize went (7)____ a boy from another school who had photographed his mother asleep on the sofa after a night shift. I have to admit it was a better picture than (8)____. But my photo was one of ten chosen for the exhibition in the library hall, and the old woman in it came to see it (9)____ her granddaughter. She told me she had never been in a photograph she liked before. That, I think, was worth more (10)____ any prize.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): write ONE word.",
+     "accept": [
+      "under",
+      "below"
+     ],
+     "answer": "under",
+     "explanation": "<b>Under the age of sixteen</b> means younger than sixteen; <i>below</i> is also used. <i>Younger</i> fails because it would need <i>than</i>, not <i>the age of</i>."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): write ONE word.",
+     "accept": [
+      "never",
+      "not"
+     ],
+     "answer": "never",
+     "explanation": "<i>But my art teacher encouraged me</i> shows a lack of experience, so the negative <b>never</b> (or <i>not</i>) fits with <i>had entered … before</i>. <i>Ever</i> fails because it is only used in questions and negatives, not in a positive statement."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): write ONE word.",
+     "accept": [
+      "across",
+      "over"
+     ],
+     "answer": "across",
+     "explanation": "You <b>help somebody across the road</b>, from one side to the other; British English also says <i>over the road</i>. <i>Through</i> fails because a road is crossed, not entered."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): write ONE word.",
+     "accept": [
+      "before"
+     ],
+     "answer": "before",
+     "explanation": "She took the picture quickly so that it happened <b>before</b> the pair could notice her. <i>Until</i> fails because the photo was a single quick action, not something continuing up to a point."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): write ONE word.",
+     "accept": [
+      "which",
+      "that"
+     ],
+     "answer": "which",
+     "explanation": "The relative pronoun refers to <i>a short note</i>, a thing, and is the subject of <i>explained</i>, so <b>which</b> or <i>that</i> is needed. <i>Who</i> fails because a note is not a person."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): write ONE word.",
+     "accept": [
+      "until",
+      "till",
+      "before"
+     ],
+     "answer": "until",
+     "explanation": "<i>Not … </i><b>until</b> the end of April means the results came only at that time; <i>till</i> and <i>before</i> also work. <i>Since</i> fails because it marks a starting point, not an end point."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): write ONE word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "A prize <b>goes to</b> the person who wins it. <i>For</i> fails because <i>go for</i> means choose or attack, not be awarded."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): write ONE word.",
+     "accept": [
+      "mine"
+     ],
+     "answer": "mine",
+     "explanation": "The comparison is with the writer's own picture, so the possessive pronoun <b>mine</b> stands alone. <i>My</i> fails because it needs a noun after it."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): write ONE word.",
+     "accept": [
+      "with"
+     ],
+     "answer": "with",
+     "explanation": "She came <b>with</b> her granddaughter, meaning they came together. <i>And</i> fails because it would make the granddaughter a second object of <i>see</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): write ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "After the comparative <i>more</i>, the second part of the comparison is introduced by <b>than</b>. <i>Then</i> fails because it is a time word, a common spelling confusion."
+    }
+   ]
+  }
+ ]
+}

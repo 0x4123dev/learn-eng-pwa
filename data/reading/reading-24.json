@@ -1,0 +1,403 @@
+{
+ "passages": [
+  {
+   "id": "rd-ch-24-1",
+   "level": "ch",
+   "title": "Seeing Red: What Colour Sells",
+   "topic": "the psychology of colour in advertising",
+   "words": 496,
+   "passage": "<b>A.</b> Walk through any supermarket and the shelves are arguing with you, though not in words. The cereal box that shouts in yellow, the cleaning product that whispers in clinical white, the chocolate wrapped in deep purple as though it were a minor royal — none of this is accidental. Colour is the first thing a shopper registers and, according to those who study the matter, very nearly the last thing they are aware of registering. By the time the conscious mind has read the brand name, the emotional verdict has already been delivered.<br><br><b>B.</b> Rarely has a field been so eager to oversimplify itself. Popular guides insist that red means urgency, blue means trust and green means health, as though the human eye came fitted with a dictionary. Were these rules as reliable as they sound, every bank would be blue and every fast-food chain red — and, admittedly, a striking number of them are. But the research behind such claims is thinner than advertisers care to admit. Much of it was carried out on small groups of university students in a single country, and what a colour means depends heavily on where, and to whom, it is shown. White, which signals purity in one culture, is the colour of mourning in another.<br><br><b>C.</b> What the more careful studies do show is subtler. Colour works less as a message than as a filter for messages. A product whose colour is at odds with its promise — a lime-green sleeping pill, say, or a bright pink firm of accountants — creates a moment of friction in which the shopper hesitates, and hesitation is expensive. Conversely, where colour and promise pull in the same direction, the shopper is spared the effort of deciding whether the product is what it claims to be. It is this fit, rather than any inherent magic in the shade itself, that seems to move sales.<br><br><b>D.</b> No sooner had brands grasped this than they began to treat colour as property. Certain firms have registered particular shades as trademarks, so that a competitor using a similar tone on a similar product may find itself in court. The logic is that a colour can become so bound up with a company that it functions as a signature; the irony is that the same firms spend fortunes trying to establish an association which, according to their own consultants, the public forms almost instantly and forgets almost as fast.<br><br><b>E.</b> Perhaps the most honest conclusion is that colour in advertising is powerful precisely because it goes unexamined. Had shoppers been asked to justify a preference, they would have talked about price, quality or habit; not one in a hundred would have mentioned the wrapper. Yet strip the purple from the chocolate and the very same customers, tasting it blind, describe the same product as cheaper and less satisfying. We do not choose with our eyes, exactly. But our eyes have a quiet word with us first.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) mentions companies taking legal action over the use of a colour?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D describes firms registering shades as trademarks, so that a rival using a similar tone \"may find itself in court\"."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains why the popular rules about what each colour means cannot be trusted?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B calls the red-urgency, blue-trust guides an oversimplification: the research is thin, based on small student samples in one country, and meanings vary between cultures."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) argues that the match between a colour and a product's claim matters more than the colour itself?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C says colour is \"a filter for messages\" and that it is \"this fit, rather than any inherent magic in the shade itself\", that moves sales."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) reports a test in which changing the packaging changed how a product was judged?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E describes customers tasting the chocolate blind, without its purple wrapper, and finding it \"cheaper and less satisfying\"."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which statement best captures the writer's overall position?",
+     "options": [
+      "Colour influences shoppers powerfully, but not in the simple, dictionary-like way that is usually claimed.",
+      "Trademarking colours has made advertising less effective than it used to be.",
+      "Shoppers are fully aware of how packaging colours influence their choices.",
+      "Colour rules such as \"red means urgency\" are reliable enough for most advertisers."
+     ],
+     "correct": 0,
+     "explanation": "The passage accepts that colour matters (sections A and E) while dismantling the crude rules (B) and replacing them with the idea of \"fit\" (C). Options A and D are contradicted; C is a side point."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply about banks being blue and fast-food chains being red?",
+     "options": [
+      "It proves that the colour rules in popular guides are scientifically sound.",
+      "Such choices may reflect industry convention rather than solid evidence.",
+      "Banks and restaurants were the subjects of the original research.",
+      "These industries have been forced by law to use those colours."
+     ],
+     "correct": 1,
+     "explanation": "The writer concedes \"a striking number of them are\" and then immediately says the research is \"thinner than advertisers care to admit\" — so the pattern is not treated as proof. Nothing suggests law or that these industries were studied."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In section C, \"at odds with\" is closest in meaning to",
+     "options": [
+      "more expensive than",
+      "hidden behind",
+      "in conflict with",
+      "dependent on"
+     ],
+     "correct": 2,
+     "explanation": "The examples — a lime-green sleeping pill, a bright pink accountancy firm — are colours that clash with the product's promise, so \"at odds with\" means in conflict with."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "The writer has worked as a consultant for an advertising firm.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 2,
+     "explanation": "The passage mentions consultants employed by brands but says nothing about the writer's own career, so the statement is Not Given."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-24-2",
+   "level": "ch",
+   "title": "The Moon's Slow Engine",
+   "topic": "tidal energy",
+   "words": 542,
+   "passage": "Twice a day, with a punctuality no power station could match, the sea rises and falls along every coast on Earth. The engine driving it is not the wind or the sun but the Moon, whose gravity drags a bulge of water around the planet as it orbits. [1] It is this reliability, more than anything else, that has kept engineers returning to the idea of harnessing the tides long after other schemes have been quietly abandoned.<br><br>The oldest approach is the barrage: a dam built across the mouth of an estuary, with turbines set into it. As the tide comes in, water is held back until a difference in level has built up; it is then released through the turbines, and the process is repeated in reverse as the tide goes out. [2] A barrage completed on a French river in the 1960s is still generating, which is more than can be said for most machinery of that era.<br><br>Yet barrages have fallen from favour, and not because they fail to work. An estuary is not an empty channel but a habitat, and a wall across it alters everything upstream — the mudflats where birds feed, the salt marshes, the movement of fish. [3] Several ambitious proposals have been shelved for exactly this reason, their engineering sound and their politics impossible.<br><br>The alternative that has emerged is less like a dam and more like an underwater wind farm. Tidal stream turbines sit on the seabed, or hang beneath floating platforms, in places where the current runs fast between islands or through narrow straits. [4] Because water is roughly eight hundred times denser than air, a tidal turbine can be far smaller than a wind turbine of equal output, and it spoils nobody's view.<br><br>Not that the technology is free of problems. Seawater is corrosive, maintenance means sending divers or vessels into some of the roughest water on the coast, and the sites where the current is strongest are, by definition, the sites where anything placed in it takes the greatest battering. [5] The cost of tidal power per unit remains well above that of wind or solar, and it will stay there until enough machines have been built for the lessons of one to cheapen the next.<br><br>Whether that day arrives depends less on the sea than on patience. The tide, after all, is in no hurry; the question is whether the people paying for it can afford to be equally calm.<br><br><b>A.</b> The blades turn as the water flows past, first in one direction and then, some six hours later, in the other. <b>B.</b> Environmental groups, who might have been expected to welcome a source of clean energy, have instead led the opposition. <b>C.</b> For this reason, the turbines are usually placed where the water is calm and shallow. <b>D.</b> Unlike sunshine or wind, the timing and size of a tide can be predicted years in advance, almost to the minute. <b>E.</b> Early prototypes have been known to lose blades within months of being installed. <b>F.</b> This is also why the tides are impossible to forecast more than a few days ahead. <b>G.</b> The principle is simple, the technology mature and the results, where it has been tried, remarkably durable.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [1]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "The gap sits between the Moon's gravity and \"It is this reliability\", so the missing sentence must introduce the idea of predictability — piece D. Piece F says the opposite."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [2]?",
+     "accept": [
+      "G"
+     ],
+     "answer": "G",
+     "explanation": "The paragraph has just explained how a barrage works and goes on to praise a 1960s barrage still running, so G — simple principle, mature technology, durable results — bridges the two."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [3]?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "The next sentence says proposals were shelved \"for exactly this reason\" with \"their politics impossible\"; opposition from environmental groups (B) supplies both the reason and the politics."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [4]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "The paragraph is describing tidal stream turbines in fast currents; A explains how their blades turn with the tide in each direction. C contradicts the \"runs fast\" placement."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [5]?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "The list of problems — corrosion, dangerous maintenance, battering — leads naturally to prototypes losing blades (E) and then to the high cost that follows."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What can be inferred about the barrage proposals mentioned in the third paragraph?",
+     "options": [
+      "They were technically workable but could not win public acceptance.",
+      "They were rejected because the estuaries were too shallow.",
+      "They were later revived as tidal stream projects.",
+      "They were abandoned because the turbines proved unreliable."
+     ],
+     "correct": 0,
+     "explanation": "The writer says barrages did not fall from favour \"because they fail to work\" and calls the proposals' \"engineering sound and their politics impossible\" — sound machines, unacceptable to the public. No revival or shallowness is mentioned."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In the third paragraph, \"shelved\" is closest in meaning to",
+     "options": [
+      "built on a smaller scale",
+      "stored in a warehouse",
+      "approved after a long delay",
+      "put aside without being carried out"
+     ],
+     "correct": 3,
+     "explanation": "Proposals that are \"shelved\" are set aside and not carried out; the context — sound engineering, impossible politics — confirms that they were dropped rather than built."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "The writer believes tidal power can never become as cheap as wind or solar.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "The writer says the cost \"will stay there until enough machines have been built for the lessons of one to cheapen the next\" — the cost is expected to fall once enough are built, so \"never\" is False."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-24-3",
+   "level": "ch",
+   "title": "Counting the Sky",
+   "topic": "the invention of the calendar",
+   "words": 528,
+   "passage": "<b>A.</b> Nobody invented the calendar in the way that somebody invented the light bulb. It was less an invention than a surrender: an admission, made independently by farmers in several river valleys, that the sky kept better time than they did. Crops had to be sown before the floods and gathered before the frosts, and the only clock large enough to be trusted was the one overhead. The trouble was that the sky offered not one clock but two, and they disagreed.<br><br><b>B.</b> The Moon was the obvious choice. Its phases are visible to anyone, they repeat every twenty-nine and a half days, and a month — the word itself is a fossil of 'moon' — is short enough to count on the fingers. The difficulty is that twelve lunar months come to only 354 days, eleven short of the solar year that governs the seasons. A calendar built on the Moon alone drifts: within a decade, a spring festival is being celebrated in the snow. Some societies accepted this and let their months wander; others bolted on an extra month every few years, a fix which required a priest or official to decide when, and which handed whoever made that decision considerable power.<br><br><b>C.</b> The Egyptians, whose whole economy hung on the annual flooding of the Nile, took the other road. They noticed that the river rose at roughly the same time as a certain bright star reappeared before dawn after months of absence, and they built a year of 365 days around it, ignoring the Moon altogether. It was a masterpiece of practicality — twelve tidy months of thirty days plus five festival days — and it was wrong by about a quarter of a day. Nobody minded at first. But a quarter of a day a year is a full day every four years, and over the centuries the Egyptian calendar slid slowly through the seasons until it had come all the way round.<br><br><b>D.</b> Only when the Romans borrowed and patched the Egyptian model did the leap year appear, and even that was not the end of the matter. The solar year is not 365.25 days but slightly less, and by the sixteenth century the error had accumulated to ten days, enough to unsettle the dating of religious festivals. The correction, when it came, was drastic: ten days were simply deleted from the month of October, so that people went to bed on the fourth and woke on the fifteenth. Not every country adopted the change at once, and for nearly two centuries a traveller crossing certain borders would find the date shifted by a week and a half.<br><br><b>E.</b> What is striking, looking back, is how little of this was about astronomy and how much was about authority. Whoever controlled the calendar controlled the rhythm of taxes, markets, feasts and fasts. Had the sky been more cooperative — had the Moon's cycle divided neatly into the Sun's — the story might have been a purely mathematical one. It was not, and so the calendar became what it remains: a compromise negotiated between the heavens and the people who wished to govern beneath them.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes a reform that removed days from the year?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D recounts the sixteenth-century correction in which ten days were deleted from October, so that people went to bed on the fourth and woke on the fifteenth."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains why a calendar based only on the Moon falls out of step with the seasons?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B gives the arithmetic: twelve lunar months make 354 days, eleven short of the solar year, so a lunar calendar \"drifts\"."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) links a river flood to the reappearance of a star?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C says the Egyptians noticed the Nile rose at about the same time as a bright star reappeared before dawn, and built their year around it."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) argues that calendars were shaped as much by power as by astronomy?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E states that the history \"was about authority\" — whoever controlled the calendar controlled taxes, markets, feasts and fasts."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "What is the passage mainly about?",
+     "options": [
+      "How the Egyptians produced the first accurate calendar",
+      "Why the Moon is a better timekeeper than the Sun",
+      "How the calendar grew out of repeated compromises between the sky's two clocks and human needs",
+      "Why modern countries still disagree about the date"
+     ],
+     "correct": 2,
+     "explanation": "Section A sets up two disagreeing clocks, B–D show successive attempts to reconcile them, and E names the result \"a compromise negotiated between the heavens and the people\". The other options are single details or untrue."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply about the practice of adding an extra month \"every few years\"?",
+     "options": [
+      "It was adopted by every society that used a lunar calendar.",
+      "It was invented by the Egyptians.",
+      "It solved the problem permanently.",
+      "It was open to being used for political advantage."
+     ],
+     "correct": 3,
+     "explanation": "The writer notes that the fix \"handed whoever made that decision considerable power\", and section E develops the theme of calendars as a tool of authority — the implication is that the power could be exploited. Some societies simply let their months wander, so not every society used it."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In section B, the word \"fossil\" is used to suggest that the word \"month\"",
+     "options": [
+      "preserves a trace of an older meaning",
+      "was invented by astronomers",
+      "refers to something found underground",
+      "is no longer used in modern English"
+     ],
+     "correct": 0,
+     "explanation": "A fossil is a preserved remnant of something ancient; the writer means that \"month\" still carries the buried form of \"moon\" from the days when months followed lunar phases."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "The Egyptian calendar took no account of the Moon.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 0,
+     "explanation": "Section C says the Egyptians built a 365-day year around the star and the Nile flood, \"ignoring the Moon altogether\" — True."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-24-4",
+   "level": "ch",
+   "title": "Gone by Breakfast",
+   "topic": "why we forget dreams",
+   "words": 565,
+   "passage": "Everyone knows the experience. You wake with the certainty that something vivid has just happened — a chase, a conversation, a house that was and was not yours — and by the time you have reached the kitchen it has thinned to nothing. [1] Far from being a failure of memory, this forgetting appears to be something the brain does on purpose, and working out why has taught researchers a great deal about memory itself.<br><br>The first clue lies in the chemistry of sleep. During the phase in which most dreaming occurs, the brain is awash with some signalling chemicals and almost empty of others. [2] Without it, experiences are processed but not filed; the dream is lived and, in the same moment, let go. It is like writing on a slate from which the chalk fades as fast as the hand moves.<br><br>A second explanation concerns what the sleeping brain regards as worth keeping. Waking memories are strengthened when they are emotionally charged, repeated, or connected to something already known. [3] They break the rules of time and place, they are rarely rehearsed, and they seldom attach themselves to any real event that might serve as a hook. A memory with no hook has nowhere to hang.<br><br>There is also the awkward matter of the transition itself. The moments after waking are precisely when the mind is busiest with other things: the alarm, the day ahead, whether it is Tuesday. [4] Those who keep a notebook by the bed and write before doing anything else report remembering far more, which suggests that the dreams were there, briefly, for the taking.<br><br>Not everyone forgets equally. People who surface naturally during dreaming sleep, rather than being dragged out of a deeper stage, tend to recall more; so do the anxious, the imaginative and — for reasons nobody has yet explained — those who are simply interested in their dreams. [5] It may be that they are not better at remembering so much as better at noticing, catching the memory in the second before it dissolves.<br><br>Why should the brain bother to erase its own night's work? One theory holds that dreams are a by-product of the sorting and tidying that memory undergoes in sleep, and that recording it would be as pointless as keeping every draft of a letter. Another suggests that a mind which could not tell dreams from memories would be a mind in trouble, and that forgetting is the price of staying sane. Either way, the loss is no accident. The kitchen is not where the dream goes; it is where we discover it was never meant to stay.<br><br><b>A.</b> Attention turns outward, and whatever was fragile in the mind is crowded out before it can be secured. <b>B.</b> This explains why children, who sleep far longer than adults, almost never remember their dreams. <b>C.</b> Chief among the missing is a chemical that, in waking life, is essential for turning an experience into a lasting memory. <b>D.</b> Whether such people dream more, or merely remember more of it, is far from clear. <b>E.</b> For this reason, dreams that are written down are forgotten just as quickly as those that are not. <b>F.</b> Ask most people what they dreamed last night and, after a pause, they will admit that they have no idea. <b>G.</b> Dreams, on the whole, fail every one of these tests.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [1]?",
+     "accept": [
+      "F"
+     ],
+     "answer": "F",
+     "explanation": "The paragraph moves from one person's fading dream to \"this forgetting\" as a general phenomenon; F, in which most people admit they have no idea what they dreamed, makes that generalisation."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [2]?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "The following sentence begins \"Without it\", so the gap must introduce a single missing thing — the chemical needed for lasting memory (C)."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [3]?",
+     "accept": [
+      "G"
+     ],
+     "answer": "G",
+     "explanation": "The previous sentence lists three conditions that strengthen waking memories, and the next explains how dreams break each of them; G — dreams \"fail every one of these tests\" — is the hinge between them."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [4]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "The paragraph describes the mind being busy on waking; A explains that attention turns outward and the fragile dream is crowded out, which the notebook evidence then supports. E contradicts that evidence."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which piece (A–G) fits gap [5]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "The gap follows a list of people who recall more dreams and precedes \"It may be that they are not better at remembering so much as better at noticing\" — D raises exactly that uncertainty. B makes an unsupported claim about children."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the notebook evidence in the fourth paragraph suggest?",
+     "options": [
+      "The chemistry of sleep has no effect on dream recall.",
+      "Writing dreams down makes people dream more often.",
+      "Dreams are stored normally but are lost through distraction on waking.",
+      "Only imaginative people can remember their dreams."
+     ],
+     "correct": 2,
+     "explanation": "People who write before doing anything else \"report remembering far more\", which the writer takes to mean the dreams \"were there, briefly, for the taking\" — available, then lost to the morning's distractions. The passage does not say writing causes more dreaming."
+    },
+    {
+     "kind": "reference",
+     "type": "mcq",
+     "q": "In the final sentence, \"it\" in \"it was never meant to stay\" refers to",
+     "options": [
+      "the brain",
+      "the dream",
+      "the theory",
+      "the kitchen"
+     ],
+     "correct": 1,
+     "explanation": "The sentence contrasts where \"the dream goes\" with what \"we discover\" — that the dream itself was never meant to stay. The kitchen is the place of discovery, not the thing that leaves."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which of the following best states the passage's central claim?",
+     "options": [
+      "Forgetting dreams is a deliberate feature of how the brain handles memory, not a malfunction.",
+      "Dreams are remembered only by anxious or imaginative people.",
+      "Scientists have finally explained the purpose of dreaming.",
+      "Forgetting dreams is a defect that better sleep habits can cure."
+     ],
+     "correct": 0,
+     "explanation": "The opening calls the forgetting \"something the brain does on purpose\" and the close says \"the loss is no accident\". Option C is one detail, and the writer offers competing theories rather than a final explanation."
+    }
+   ]
+  }
+ ]
+}

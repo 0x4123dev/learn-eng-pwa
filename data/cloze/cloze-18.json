@@ -1,0 +1,676 @@
+{
+ "passages": [
+  {
+   "id": "cl-kc-18-1",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Pepper the Classroom Hamster",
+   "topic": "a class pet",
+   "passage": "At the start of this school year, our form teacher, Mr Tuan, surprised us (1)____ a small cage on the shelf beside the window. Inside it was a brown hamster, (2)____ we later named Pepper after a long and noisy vote. Mr Tuan explained that looking after a pet would teach us responsibility, but he also warned that Pepper would go back to the shop (3)____ we forgot to feed him even once. We made a timetable straight away. Each pair of students is in charge (4)____ the cage for one week: they change the water, add fresh food and clean out the sawdust on Friday afternoon. At first, some of my classmates were nervous about touching him, (5)____ he is tiny and his claws feel strange on your skin. Now, however, almost everyone wants a turn. Pepper sleeps for most of the day and wakes up just (6)____ the last lesson, which is usually maths. It is hard to concentrate on equations when a hamster is running on his wheel a few metres away. Last month there was a moment of panic when Pepper disappeared. We (7)____ for him for twenty minutes before Lan noticed a tail sticking out of the teacher's bag. Since then we have been much (8)____ careful about closing the cage door. Mr Tuan says our class has become calmer and kinder since Pepper arrived, and I think he is right. I have even started (9)____ to school earlier so that I can say good morning to him. If somebody had told me a year ago that a hamster (10)____ change how a class behaves, I would not have believed them.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "by",
+      "with",
+      "for",
+      "at"
+     ],
+     "correct": 1,
+     "explanation": "You <b>surprise someone with</b> something: the cage is the thing that caused the surprise. <i>By</i> follows the passive (<i>surprised by</i>), and <i>for</i> / <i>at</i> do not fit this pattern."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "which",
+      "whose",
+      "what",
+      "who"
+     ],
+     "correct": 0,
+     "explanation": "The relative pronoun refers back to <i>a brown hamster</i>, an animal, so <b>which</b> is used. <i>Who</i> is for people, <i>whose</i> shows possession, and <i>what</i> cannot introduce a relative clause."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "although",
+      "while",
+      "unless",
+      "if"
+     ],
+     "correct": 3,
+     "explanation": "The warning is a condition: he goes back to the shop <b>if</b> we forget. <i>Unless</i> would reverse the meaning, and <i>although</i> / <i>while</i> express contrast, not a condition."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "for",
+      "with",
+      "of",
+      "on"
+     ],
+     "correct": 2,
+     "explanation": "The fixed phrase is <b>in charge of</b> something. The other prepositions do not combine with <i>in charge</i>."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "so",
+      "because",
+      "although",
+      "unless"
+     ],
+     "correct": 1,
+     "explanation": "The clause gives the reason for their nervousness, so <b>because</b> is needed. <i>So</i> would introduce a result, and <i>although</i> / <i>unless</i> give the wrong logic."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "before",
+      "by",
+      "until",
+      "since"
+     ],
+     "correct": 0,
+     "explanation": "Pepper wakes up <b>just before</b> the last lesson, that is, shortly earlier. <i>Until</i> and <i>since</i> describe a period, and <i>by</i> would need a deadline meaning that does not fit <i>wakes up</i>."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "caught",
+      "lost",
+      "found",
+      "looked"
+     ],
+     "correct": 3,
+     "explanation": "The phrasal verb <b>look for</b> means to search. <i>Found</i>, <i>caught</i> and <i>lost</i> are not followed by <i>for</i> in this sense, and finding him is what happened afterwards."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "most",
+      "very",
+      "more",
+      "so"
+     ],
+     "correct": 2,
+     "explanation": "A comparison with the past needs the comparative <b>more careful</b>, and <i>much</i> strengthens a comparative. <i>Much most</i>, <i>much very</i> and <i>much so</i> are not possible."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "come",
+      "coming",
+      "came",
+      "comes"
+     ],
+     "correct": 1,
+     "explanation": "<b>Start</b> is followed by an -ing form (or <i>to</i> + verb): <i>started coming</i>. The bare form, the past form and the -s form cannot follow <i>started</i> directly."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "ought",
+      "must",
+      "should",
+      "could"
+     ],
+     "correct": 3,
+     "explanation": "Inside reported speech about the past, ability is expressed with <b>could</b>: a hamster <i>could change</i> how a class behaves. <i>Must</i> and <i>should</i> express obligation, and <i>ought</i> needs <i>to</i>."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-18-2",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Pool at the End of Our Street",
+   "topic": "the swimming pool",
+   "passage": "The public swimming pool at the end of our street opened (1)____ 1998, and my parents still remember the queue on the first morning. For years it was the busiest place in the neighbourhood every summer. Children learned to swim there, teenagers met their friends there, and old people did slow lengths early in the morning, (2)____ the water was still calm. Then, about three years ago, the city council announced that the pool was too expensive to (3)____ and would close at the end of the season. (4)____ many people were angry that a petition was signed by nearly four thousand residents in a single week. The council agreed to think again, but only (5)____ the community could help pay for repairs. That is when something wonderful happened. Local shops donated money, a builder offered to fix the changing rooms (6)____ free, and my school held a fun run to raise the rest. The pool reopened last May, looking (7)____ than it had for a decade. I go there twice a week now. I am not a fast swimmer, but I have finally (8)____ to dive properly without hurting my stomach. On hot afternoons the pool is so crowded that you can hardly see the water, (9)____ nobody seems to mind. My grandfather, who swam there as a boy, says the smell of chlorine takes him straight back to his childhood. I understand exactly (10)____ he means. A pool is not just a hole full of water; it is a place where a whole street learns to share.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "in",
+      "at",
+      "on",
+      "since"
+     ],
+     "correct": 0,
+     "explanation": "A year takes <b>in</b>: <i>in 1998</i>. <i>At</i> is for clock times, <i>on</i> for days and dates, and <i>since</i> would need a present perfect verb."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "until",
+      "when",
+      "unless",
+      "so"
+     ],
+     "correct": 1,
+     "explanation": "<b>When</b> the water was still calm describes the time the old people chose to swim. <i>Until</i> would mean up to that point, and <i>unless</i> / <i>so</i> give the wrong logic."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "hold",
+      "stay",
+      "run",
+      "take"
+     ],
+     "correct": 2,
+     "explanation": "You <b>run</b> a pool, a shop or a business, meaning you operate it. <i>Hold</i>, <i>stay</i> and <i>take</i> do not have this meaning with a building."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "Very",
+      "Such",
+      "Too",
+      "So"
+     ],
+     "correct": 3,
+     "explanation": "<b>So many</b> people ... <b>that</b> introduces a result. <i>Such</i> goes directly with a noun (<i>such anger</i>), and <i>too</i> / <i>very</i> are not followed by a <i>that</i>-clause of result."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "if",
+      "unless",
+      "though",
+      "whether"
+     ],
+     "correct": 0,
+     "explanation": "<b>Only if</b> the community helped would the council think again: a condition. <i>Unless</i> reverses the condition, <i>whether</i> introduces a choice, and <i>though</i> shows contrast."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "in",
+      "for",
+      "at",
+      "by"
+     ],
+     "correct": 1,
+     "explanation": "The fixed phrase is <b>for free</b>, meaning without payment. None of the other prepositions combines with <i>free</i> in this way."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "good",
+      "best",
+      "better",
+      "well"
+     ],
+     "correct": 2,
+     "explanation": "A comparison with <i>than</i> needs a comparative: <b>better than it had</b>. <i>Good</i> and <i>well</i> are not comparatives, and <i>best</i> is a superlative."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "known",
+      "studied",
+      "taught",
+      "learned"
+     ],
+     "correct": 3,
+     "explanation": "<b>Learn to</b> + verb means gain a skill: <i>learned to dive</i>. <i>Taught</i> needs an object (<i>taught me</i>), and <i>known</i> / <i>studied</i> are not followed by <i>to</i> + verb in this sense."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "but",
+      "because",
+      "so",
+      "unless"
+     ],
+     "correct": 0,
+     "explanation": "The crowding is unpleasant, yet nobody minds: a contrast, so <b>but</b> is the linker. <i>Because</i> and <i>so</i> express reason or result, and <i>unless</i> makes no sense here."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "what",
+      "how",
+      "that",
+      "which"
+     ],
+     "correct": 0,
+     "explanation": "<b>What he means</b> is a noun clause, the thing he means. <i>That</i> and <i>which</i> would need a noun before them, and <i>how</i> would describe a manner, not the meaning."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-18-3",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "The Concert I Never Went To",
+   "topic": "a broken promise",
+   "passage": "When I was twelve, my older cousin Khoa promised to take me to my first real concert. He was nineteen and (1)____ a part-time job in a music shop, so he seemed to know everything about bands. The concert was in August, and I talked about it (2)____ May onwards. I saved my pocket money for a T-shirt, and I even practised the words of every song so that I (3)____ sing along without embarrassing him. Three days before the concert, Khoa phoned my mother instead of me. He said a friend had offered him a free ticket to a festival in another city on the same weekend and he could not (4)____ it down. My mother told me gently, but I still ran to my room and refused to come out for dinner. What hurt most was not missing the concert; it was the fact that he had not told me (5)____. For nearly a year I hardly spoke to him. (6)____ he sent a message, I answered with one word. Then, last spring, he turned up at our house with two tickets and an apology that sounded (7)____ if he had practised it in the mirror. He admitted he had been selfish and said he (8)____ thought about it many times since. I wanted to stay angry, but it is difficult to stay angry with someone who is clearly ashamed. We went to the concert together, and it was (9)____ better than the one I had missed, or at least that is what I tell myself. I learned two things from that summer. A promise is easy to make and hard to keep, and forgiving someone is a decision you make (10)____ yourself, not for them.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "kept",
+      "made",
+      "did",
+      "had"
+     ],
+     "correct": 3,
+     "explanation": "You <b>have</b> a job: <i>had a part-time job</i>. <i>Made</i>, <i>did</i> and <i>kept</i> are not the natural verbs for simply holding a job."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "until",
+      "since",
+      "from",
+      "by"
+     ],
+     "correct": 2,
+     "explanation": "<b>From May onwards</b> marks the starting point of a period that continues. <i>Since</i> is not used with <i>onwards</i>, and <i>by</i> / <i>until</i> mark an end point."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "need",
+      "could",
+      "must",
+      "should"
+     ],
+     "correct": 1,
+     "explanation": "After <i>so that</i> in a past narrative, ability is expressed with <b>could</b>: so that I could sing along. <i>Must</i>, <i>should</i> and <i>need</i> express obligation, not ability."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "turn",
+      "let",
+      "put",
+      "give"
+     ],
+     "correct": 0,
+     "explanation": "The phrasal verb <b>turn something down</b> means refuse an offer. <i>Put down</i>, <i>give down</i> and <i>let down</i> do not mean refuse."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "him",
+      "his",
+      "he",
+      "himself"
+     ],
+     "correct": 3,
+     "explanation": "The emphatic reflexive <b>himself</b> stresses that Khoa did not do the telling in person. <i>Him</i>, <i>his</i> and <i>he</i> cannot add this emphasis after <i>told me</i>."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "Whatever",
+      "However",
+      "Whenever",
+      "Wherever"
+     ],
+     "correct": 2,
+     "explanation": "<b>Whenever</b> he sent a message means every time he sent one. <i>However</i> shows contrast, and <i>wherever</i> / <i>whatever</i> refer to place and things, not time."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "such",
+      "as",
+      "like",
+      "so"
+     ],
+     "correct": 1,
+     "explanation": "The fixed comparison is <b>as if</b>: it sounded as if he had practised. <i>Like if</i>, <i>so if</i> and <i>such if</i> are not English phrases."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "had",
+      "was",
+      "would",
+      "has"
+     ],
+     "correct": 0,
+     "explanation": "The reporting verb <i>said</i> is in the past, so present perfect <i>has thought</i> shifts back to past perfect: he said he <b>had thought</b>. <i>Was thought</i> is passive and <i>would thought</i> is not a form."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "more",
+      "most",
+      "very",
+      "even"
+     ],
+     "correct": 3,
+     "explanation": "<b>Even better</b> strengthens a comparative: better than the other concert, and by a surprising amount. <i>Very</i>, <i>more</i> and <i>most</i> cannot go directly before <i>better</i>."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "with",
+      "for",
+      "at",
+      "to"
+     ],
+     "correct": 1,
+     "explanation": "You do something <b>for yourself</b>, for your own benefit, and the sentence contrasts this with <i>not for them</i>. <i>To</i>, <i>with</i> and <i>at</i> do not express benefit."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-18-4",
+   "level": "kc",
+   "mode": "mcq",
+   "title": "Lights Off at the Star Cinema",
+   "topic": "the old cinema",
+   "passage": "The Star Cinema stood on the corner of our market square for almost seventy years. My grandmother saw her first film there in 1961, and she still remembers (1)____ excited she was when the lights went down. In those days there was only one screen, and people queued around the building on Saturday nights. By the time I was born, however, the cinema was (2)____ trouble. A modern complex with eight screens had opened at the shopping mall, and most families preferred its comfortable seats and cold air conditioning. The Star kept going for a few more years, mainly (3)____ of its loyal older customers, but the roof leaked and the sound system broke (4)____ again and again. It finally closed the winter I turned ten. (5)____ six years the building stayed empty. Posters faded in the glass cases, and pigeons moved in under the roof. Then last year a group of young people decided to bring it (6)____ to life. They cleaned every seat by hand and repainted the front in its original red and gold. Instead of showing new blockbusters, which they could not afford, they show old classics and films made by local students. Tickets cost (7)____ than half the price at the mall. My grandmother and I went to the opening night together. She cried a little when the curtain opened, and I pretended (8)____ to notice. The film was in black and white, and the picture jumped now and then, but nobody complained. In fact, the audience clapped at the end as (9)____ the actors could hear them. Walking home, my grandmother said that some places deserve a second chance, and I could not have (10)____ more.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "which",
+      "what",
+      "how",
+      "that"
+     ],
+     "correct": 2,
+     "explanation": "<b>How excited she was</b> is an indirect question about degree: <i>how</i> + adjective. <i>What</i> and <i>which</i> need a noun, and <i>that excited</i> would not form a clause here."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "under",
+      "at",
+      "on",
+      "in"
+     ],
+     "correct": 3,
+     "explanation": "The fixed phrase is <b>in trouble</b>, meaning in a difficult situation. The other prepositions do not combine with <i>trouble</i> this way."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "because",
+      "despite",
+      "instead",
+      "thanks"
+     ],
+     "correct": 0,
+     "explanation": "<b>Because of</b> + noun gives the reason it kept going. <i>Thanks</i> would need <i>to</i>, <i>despite</i> takes no <i>of</i>, and <i>instead of</i> gives the wrong meaning."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "off",
+      "down",
+      "out",
+      "up"
+     ],
+     "correct": 1,
+     "explanation": "A machine that stops working <b>breaks down</b>. <i>Break up</i>, <i>break off</i> and <i>break out</i> all exist but do not describe a sound system failing."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "Since",
+      "In",
+      "For",
+      "During"
+     ],
+     "correct": 2,
+     "explanation": "A length of time takes <b>for</b>: <i>for six years</i>. <i>During</i> needs a named period, <i>since</i> needs a starting point, and <i>in six years</i> would point to the future."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "out",
+      "over",
+      "up",
+      "back"
+     ],
+     "correct": 3,
+     "explanation": "<b>Bring something back to life</b> means make it alive or active again. <i>Bring up</i>, <i>bring out</i> and <i>bring over</i> do not carry this meaning with <i>to life</i>."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "less",
+      "lower",
+      "smaller",
+      "fewer"
+     ],
+     "correct": 0,
+     "explanation": "With an amount of money, <b>less than</b> is used. <i>Fewer</i> is for countable plurals, and <i>lower</i> / <i>smaller</i> would need <i>prices are</i>, not <i>tickets cost</i>."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "no",
+      "not",
+      "none",
+      "nothing"
+     ],
+     "correct": 1,
+     "explanation": "An infinitive is made negative with <b>not</b> before <i>to</i>: <i>pretended not to notice</i>. <i>No</i>, <i>none</i> and <i>nothing</i> cannot negate a verb form."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "soon",
+      "long",
+      "if",
+      "far"
+     ],
+     "correct": 2,
+     "explanation": "<b>As if</b> the actors could hear them describes an imagined situation. <i>As soon as</i>, <i>as long as</i> and <i>as far as</i> are real phrases but need <i>as</i> again and give the wrong meaning."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "admitted",
+      "argued",
+      "agreed",
+      "accepted"
+     ],
+     "correct": 2,
+     "explanation": "The idiom <b>could not have agreed more</b> means completely agree. <i>Accepted</i>, <i>admitted</i> and <i>argued</i> do not form this expression."
+    }
+   ]
+  },
+  {
+   "id": "cl-kc-18-5",
+   "level": "kc",
+   "mode": "open",
+   "title": "Thirty Seconds in the Air",
+   "topic": "a paper aeroplane contest",
+   "passage": "Every year on the last day (1)____ term, our school holds a paper aeroplane contest in the gym. The rules are simple. You are given one sheet of A4 paper and five minutes, and you are not allowed to use scissors, glue (2)____ tape. The plane that stays in the air the longest wins. This year I was determined to do better (3)____ my brother, who had come second twice and never lets anyone forget it. For a whole week I practised in the garden after dinner. I discovered that a plane with wide wings floats gently, but a narrow (4)____ flies fast and then crashes into the ground. I also learned that the way you throw matters just as (5)____ as the way you fold. On the day of the contest, about eighty students lined up along the wall of the gym. When my turn came, my hands were shaking so badly that I nearly dropped the plane. I threw it slightly upwards, as I (6)____ practised, and it began to glide in a slow circle. Everyone went quiet. The plane seemed to hang in the air for ages, and when it finally touched the floor the teacher's stopwatch showed nineteen seconds. It was the best time (7)____ far. Unfortunately, the last competitor was a quiet girl from Year 7 (8)____ plane flew for twenty-three seconds and landed on the basketball net. She won, and she deserved to. My brother came fourth, so at (9)____ I beat him. On the way home he asked me how I had folded the wings, and for the first time in my life I was the one giving advice. Next year I am going to start practising in January, (10)____ though my brother says that is far too early.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type one word.",
+     "accept": [
+      "of"
+     ],
+     "answer": "of",
+     "explanation": "A part of a period is expressed with <b>of</b>: <i>the last day of term</i>. <i>In</i> would be used with a longer period (<i>the last day in June</i>) but not with <i>term</i> here."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type one word.",
+     "accept": [
+      "or"
+     ],
+     "answer": "or",
+     "explanation": "After a negative such as <i>not allowed</i>, alternatives are joined with <b>or</b>: none of the three is allowed. <i>And</i> would suggest that only using all three together is forbidden."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type one word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "A comparative such as <i>better</i> is followed by <b>than</b> to name what is compared. <i>As</i> is only used with the equal form <i>as good as</i>."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type one word.",
+     "accept": [
+      "one"
+     ],
+     "answer": "one",
+     "explanation": "The pronoun <b>one</b> stands for <i>plane</i> after an adjective: <i>a narrow one</i>. Repeating <i>plane</i> is possible but a single pronoun is required here, and <i>it</i> cannot follow an adjective with <i>a</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type one word.",
+     "accept": [
+      "much"
+     ],
+     "answer": "much",
+     "explanation": "The equal comparison is <b>as much as</b>: the throw matters as much as the fold. <i>Many</i> is only for countable nouns, and <i>well</i> would compare how well, not how much, it matters."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type one word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "The practising happened before the throw, so past perfect is needed: <i>as I <b>had</b> practised</i>. <i>Have practised</i> would clash with the past-tense story."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type one word.",
+     "accept": [
+      "so",
+      "by",
+      "thus"
+     ],
+     "answer": "so",
+     "explanation": "<b>So far</b> means up to that point, which fits because more competitors were still to come. <i>By far</i> (by a large margin) is also acceptable, but <i>too far</i> or <i>as far</i> give no sensible meaning."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type one word.",
+     "accept": [
+      "whose"
+     ],
+     "answer": "whose",
+     "explanation": "The relative pronoun <b>whose</b> shows possession: the girl’s plane. <i>Who</i> or <i>which</i> would need a verb straight after them, not the noun <i>plane</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type one word.",
+     "accept": [
+      "least"
+     ],
+     "answer": "least",
+     "explanation": "The fixed phrase <b>at least</b> means that one good thing is true even if others are not. <i>At last</i> means finally and would change the meaning completely."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type one word.",
+     "accept": [
+      "even"
+     ],
+     "answer": "even",
+     "explanation": "<b>Even though</b> introduces a strong contrast: he says it is too early, yet I will still do it. <i>Although though</i> is impossible, and <i>as though</i> would mean <i>as if</i>."
+    }
+   ]
+  }
+ ]
+}

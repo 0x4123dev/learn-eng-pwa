@@ -1,0 +1,282 @@
+{ "items": [
+  {
+    "id": "er-kc-15-1", "level": "kc", "focus": "tense",
+    "q": "The school choir (A) has performed at the town hall last Friday, and (B) everyone who attended (C) agreed it was (D) the best concert in years.",
+    "options": ["has performed at the town hall","everyone who attended","agreed it was","the best concert in years"],
+    "correct": 0, "correction": "performed at the town hall",
+    "explanation": "A finished action with a past time expression (<b>last Friday</b>) takes the past simple, not the present perfect."
+  },
+  {
+    "id": "er-kc-15-2", "level": "kc", "focus": "agreement",
+    "q": "Each of the students (A) in our class (B) were asked to bring (C) a plant for the science fair (D) next week.",
+    "options": ["in our class","were asked to bring","a plant for the science fair","next week"],
+    "correct": 1, "correction": "was asked to bring",
+    "explanation": "<b>Each of</b> + plural noun is a singular subject, so the verb must be singular: <b>was asked</b>."
+  },
+  {
+    "id": "er-kc-15-3", "level": "kc", "focus": "article",
+    "q": "My uncle, who (A) works as a pilot, says that flying (B) over the Alps (C) at the night is far (D) more beautiful than most people imagine.",
+    "options": ["works as a pilot","over the Alps","at the night","more beautiful than"],
+    "correct": 2, "correction": "at night",
+    "explanation": "Times of day in fixed phrases take no article: <b>at night</b>, just like <b>at noon</b> and <b>at midnight</b>."
+  },
+  {
+    "id": "er-kc-15-4", "level": "kc", "focus": "preposition",
+    "q": "The documentary (A) explains how emperor penguins (B) survive the winter by huddling (C) close together while the females search (D) of food at sea.",
+    "options": ["explains how","survive the winter","close together","of food at sea"],
+    "correct": 3, "correction": "for food at sea",
+    "explanation": "The verb <b>search</b> takes the preposition <b>for</b> before the thing you are looking for."
+  },
+  {
+    "id": "er-kc-15-5", "level": "kc", "focus": "word-form",
+    "q": "Tourists were (A) amazing by the view from the tower, (B) which offers a (C) clear view of the whole valley (D) on sunny days.",
+    "options": ["amazing by","which offers a","clear view of the whole valley","on sunny days"],
+    "correct": 0, "correction": "amazed by",
+    "explanation": "The -ed participle describes how people feel: the tourists were <b>amazed</b>; <b>amazing</b> would describe the view itself."
+  },
+  {
+    "id": "er-kc-15-6", "level": "kc", "focus": "pronoun",
+    "q": "My sister and (A) I bought a new tent, but (B) it's poles were broken, so (C) we returned it to the shop (D) the next morning.",
+    "options": ["I bought a new tent","it's poles were broken","we returned it to the shop","the next morning"],
+    "correct": 1, "correction": "its poles were broken",
+    "explanation": "The possessive of <b>it</b> is <b>its</b> with no apostrophe; <b>it's</b> is short for <b>it is</b>."
+  },
+  {
+    "id": "er-kc-15-7", "level": "kc", "focus": "comparison",
+    "q": "The second half of the match was (A) much more exciting (B) than the first, and the crowd (C) got more louder (D) with every minute.",
+    "options": ["much more exciting","than the first","got more louder","with every minute"],
+    "correct": 2, "correction": "got louder",
+    "explanation": "A one-syllable adjective forms its comparative with <b>-er</b> alone; <b>more</b> and <b>-er</b> are never used together."
+  },
+  {
+    "id": "er-kc-15-8", "level": "kc", "focus": "conditional",
+    "q": "We (A) could finish the poster for the fair today if (B) the printer (C) in the library (D) would work properly.",
+    "options": ["could finish the poster","the printer","in the library","would work properly"],
+    "correct": 3, "correction": "worked properly",
+    "explanation": "In a second conditional the <b>if</b>-clause takes the past simple; <b>would</b> belongs only in the main clause."
+  },
+  {
+    "id": "er-kc-15-9", "level": "kc", "focus": "reported",
+    "q": "The coach (A) told to us that (B) the final had been moved (C) to Sunday because (D) of the storm warning.",
+    "options": ["told to us that","the final had been moved","to Sunday because","of the storm warning"],
+    "correct": 0, "correction": "told us that",
+    "explanation": "<b>Tell</b> takes a direct object with no preposition (<b>tell someone</b>), unlike <b>say to someone</b>."
+  },
+  {
+    "id": "er-kc-15-10", "level": "kc", "focus": "relative",
+    "q": "The girl (A) who sits beside me in maths, (B) which name I can never remember, (C) has just won (D) a national chess title.",
+    "options": ["who sits beside me in maths","which name I can never remember","has just won","a national chess title"],
+    "correct": 1, "correction": "whose name I can never remember",
+    "explanation": "To show possession inside a relative clause (her name) we use <b>whose</b>, not <b>which</b>."
+  },
+  {
+    "id": "er-kc-15-11", "level": "kc", "focus": "word-order",
+    "q": "My grandmother (A) still remembers (B) the day when (C) she saw first a television (D) in a neighbour's window.",
+    "options": ["still remembers","the day when","she saw first a television","in a neighbour's window"],
+    "correct": 2, "correction": "she first saw a television",
+    "explanation": "An adverb like <b>first</b> goes before the main verb, never between the verb and its object."
+  },
+  {
+    "id": "er-kc-15-12", "level": "kc", "focus": "collocation",
+    "q": "Before the exam, the teacher (A) reminded us (B) to read every question (C) carefully and (D) do attention to the time.",
+    "options": ["reminded us","to read every question","carefully and","do attention to the time"],
+    "correct": 3, "correction": "pay attention to the time",
+    "explanation": "The fixed collocation is <b>pay attention</b>; the verb <b>do</b> does not combine with <b>attention</b>."
+  },
+  {
+    "id": "er-kc-15-13", "level": "kc", "focus": "quantifier",
+    "q": "(A) Very few sunlight reaches the forest floor, (B) which is why the plants growing there (C) have developed (D) unusually large leaves.",
+    "options": ["Very few sunlight","which is why","have developed","unusually large leaves"],
+    "correct": 0, "correction": "Very little sunlight",
+    "explanation": "<b>Sunlight</b> is uncountable, so it takes <b>little</b>; <b>few</b> is used only with plural countable nouns."
+  },
+  {
+    "id": "er-kc-15-14", "level": "kc", "focus": "conjunction",
+    "q": "Tom wanted to join the cycling club, (A) but he (B) had neither a bike or a helmet, (C) so his cousin (D) lent him both.",
+    "options": ["but he","had neither a bike or a helmet","so his cousin","lent him both"],
+    "correct": 1, "correction": "had neither a bike nor a helmet",
+    "explanation": "The paired conjunction is <b>neither … nor</b>; <b>neither</b> is never followed by <b>or</b>."
+  },
+  {
+    "id": "er-kc-15-15", "level": "kc", "focus": "tense",
+    "q": "By the time the fire engine (A) arrived, the neighbours (B) had already put out the flames, (C) so nobody has been hurt (D) that night.",
+    "options": ["arrived","had already put out the flames","so nobody has been hurt","that night"],
+    "correct": 2, "correction": "so nobody was hurt",
+    "explanation": "The whole story is set in the finished past (<b>that night</b>), so the present perfect cannot be used; the past simple is needed."
+  },
+  {
+    "id": "er-kc-15-16", "level": "kc", "focus": "agreement",
+    "q": "Most of the equipment (A) in the chemistry lab (B) has been replaced, but (C) the microscopes (D) is still the same ones we used in grade six.",
+    "options": ["in the chemistry lab","has been replaced, but","the microscopes","is still the same ones"],
+    "correct": 3, "correction": "are still the same ones",
+    "explanation": "The subject <b>the microscopes</b> is plural, so the verb must be <b>are</b>; the singular <b>has</b> in the first clause agrees with <b>equipment</b>, not with <b>microscopes</b>."
+  },
+  {
+    "id": "er-kc-15-17", "level": "kc", "focus": "article",
+    "q": "(A) Sahara Desert is slowly expanding southwards, (B) and many scientists believe (C) that climate change (D) is partly to blame.",
+    "options": ["Sahara Desert is slowly expanding","and many scientists believe","that climate change","is partly to blame"],
+    "correct": 0, "correction": "The Sahara Desert is slowly expanding",
+    "explanation": "Names of deserts, oceans, rivers and mountain ranges take <b>the</b>: <b>the Sahara Desert</b>."
+  },
+  {
+    "id": "er-kc-15-18", "level": "kc", "focus": "preposition",
+    "q": "Our neighbours (A) have lived (B) on the same house for twenty years, (C) so they know (D) every shopkeeper in the district.",
+    "options": ["have lived","on the same house","so they know","every shopkeeper in the district"],
+    "correct": 1, "correction": "in the same house",
+    "explanation": "We live <b>in</b> a house or a flat; <b>on</b> is used for streets and floors."
+  },
+  {
+    "id": "er-kc-15-19", "level": "kc", "focus": "word-form",
+    "q": "The chef (A) explained that (B) the secret of a good soup (C) is patient rather than (D) expensive ingredients.",
+    "options": ["explained that","the secret of a good soup","is patient rather than","expensive ingredients"],
+    "correct": 2, "correction": "is patience rather than",
+    "explanation": "After <b>the secret is</b> a noun is needed to match <b>ingredients</b>; <b>patience</b> is the noun and <b>patient</b> the adjective."
+  },
+  {
+    "id": "er-kc-15-20", "level": "kc", "focus": "pronoun",
+    "q": "The twins in my class look so (A) alike that even (B) their own teachers (C) sometimes confuse (D) they with each other.",
+    "options": ["alike that even","their own teachers","sometimes confuse","they with each other"],
+    "correct": 3, "correction": "them with each other",
+    "explanation": "The object of the verb <b>confuse</b> needs the object pronoun <b>them</b>, not the subject form <b>they</b>."
+  },
+  {
+    "id": "er-kc-15-21", "level": "kc", "focus": "comparison",
+    "q": "Mount Fansipan is (A) the higher mountain in Vietnam, (B) and thousands of hikers (C) attempt to reach (D) its summit every year.",
+    "options": ["the higher mountain in Vietnam","and thousands of hikers","attempt to reach","its summit every year"],
+    "correct": 0, "correction": "the highest mountain in Vietnam",
+    "explanation": "Comparing one thing with all the others in a group (<b>in Vietnam</b>) needs the superlative <b>the highest</b>, not a comparative."
+  },
+  {
+    "id": "er-kc-15-22", "level": "kc", "focus": "conditional",
+    "q": "If people (A) recycled more glass, (B) factories will not need to use (C) so much raw sand, (D) which is running out in some regions.",
+    "options": ["recycled more glass","factories will not need to use","so much raw sand","which is running out in some regions"],
+    "correct": 1, "correction": "factories would not need to use",
+    "explanation": "A past-simple <b>if</b>-clause (second conditional) pairs with <b>would</b> in the main clause, not <b>will</b>."
+  },
+  {
+    "id": "er-kc-15-23", "level": "kc", "focus": "reported",
+    "q": "The tour guide (A) warned us that the path (B) could be slippery and (C) asked if we brought (D) proper walking boots.",
+    "options": ["warned us that the path","could be slippery and","asked if we brought","proper walking boots"],
+    "correct": 2, "correction": "asked if we had brought",
+    "explanation": "After a past reporting verb (<b>asked</b>) the tense shifts back: \"Have you brought…?\" becomes <b>had brought</b> in reported speech."
+  },
+  {
+    "id": "er-kc-15-24", "level": "kc", "focus": "relative",
+    "q": "The village (A) where my father grew up (B) has a small museum (C) full of tools (D) which farmers used them a century ago.",
+    "options": ["where my father grew up","has a small museum","full of tools","which farmers used them a century ago"],
+    "correct": 3, "correction": "which farmers used a century ago",
+    "explanation": "The relative pronoun <b>which</b> already acts as the object of <b>used</b>, so the extra pronoun <b>them</b> must be dropped."
+  },
+  {
+    "id": "er-kc-15-25", "level": "kc", "focus": "word-order",
+    "q": "(A) I wonder where did she buy that beautiful scarf, (B) because I (C) would like to get (D) one for my mother.",
+    "options": ["I wonder where did she buy","because I","would like to get","one for my mother"],
+    "correct": 0, "correction": "I wonder where she bought",
+    "explanation": "An indirect question keeps statement word order (subject before verb) and drops the auxiliary <b>did</b>."
+  },
+  {
+    "id": "er-kc-15-26", "level": "kc", "focus": "collocation",
+    "q": "Every morning my father (A) gets up at five, (B) does a short walk around the lake, (C) and then (D) reads the newspaper with his coffee.",
+    "options": ["gets up at five","does a short walk around the lake","and then","reads the newspaper with his coffee"],
+    "correct": 1, "correction": "takes a short walk around the lake",
+    "explanation": "The natural collocation is <b>take a walk</b> or <b>go for a walk</b>; <b>do a walk</b> is not used in English."
+  },
+  {
+    "id": "er-kc-15-27", "level": "kc", "focus": "quantifier",
+    "q": "There were (A) so many cars on the road (B) that we (C) wasted too many time (D) at every junction.",
+    "options": ["so many cars on the road","that we","wasted too many time","at every junction"],
+    "correct": 2, "correction": "wasted too much time",
+    "explanation": "<b>Time</b> in this sense is uncountable, so it takes <b>much</b>; <b>many</b> is only for plural countable nouns."
+  },
+  {
+    "id": "er-kc-15-28", "level": "kc", "focus": "conjunction",
+    "q": "My brother (A) practises the guitar (B) every evening (C) because he wants to join a band, (D) despite he has never played in public before.",
+    "options": ["practises the guitar","every evening","because he wants to join a band","despite he has never played in public before"],
+    "correct": 3, "correction": "although he has never played in public before",
+    "explanation": "<b>Despite</b> is a preposition and must be followed by a noun or -ing form; a full clause needs the conjunction <b>although</b>."
+  },
+  {
+    "id": "er-kc-15-29", "level": "kc", "focus": "tense",
+    "q": "(A) I am knowing the answer to this riddle, (B) but I'd rather let you (C) work it out (D) on your own.",
+    "options": ["I am knowing the answer","but I'd rather let you","work it out","on your own"],
+    "correct": 0, "correction": "I know the answer",
+    "explanation": "<b>Know</b> is a stative verb, so it is not used in the continuous form; the present simple <b>I know</b> is needed."
+  },
+  {
+    "id": "er-kc-15-30", "level": "kc", "focus": "agreement",
+    "q": "Neither the coach (A) nor the players (B) was surprised when the referee (C) stopped the match (D) because of lightning.",
+    "options": ["nor the players","was surprised when the referee","stopped the match","because of lightning"],
+    "correct": 1, "correction": "were surprised when the referee",
+    "explanation": "With <b>neither … nor</b> the verb agrees with the nearer subject, and <b>the players</b> is plural, so <b>were</b> is needed."
+  },
+  {
+    "id": "er-kc-15-31", "level": "kc", "focus": "article",
+    "q": "The engineers (A) who designed (B) the tunnel under the sea had (C) to solve the hundreds of problems (D) nobody had faced before.",
+    "options": ["who designed","the tunnel under the sea","to solve the hundreds of problems","nobody had faced before"],
+    "correct": 2, "correction": "to solve hundreds of problems",
+    "explanation": "Used as a vague large quantity, <b>hundreds of</b> takes no article; <b>the</b> would only fit a specific, already-known set of problems."
+  },
+  {
+    "id": "er-kc-15-32", "level": "kc", "focus": "word-form",
+    "q": "The new app (A) lets you (B) translate street signs instantly, (C) which is (D) extreme useful for travellers who do not speak the local language.",
+    "options": ["lets you","translate street signs instantly","which is","extreme useful for travellers"],
+    "correct": 3, "correction": "extremely useful for travellers",
+    "explanation": "An adverb (<b>extremely</b>) is needed to modify the adjective <b>useful</b>; <b>extreme</b> is itself an adjective."
+  },
+  {
+    "id": "er-kc-15-33", "level": "kc", "focus": "preposition",
+    "q": "(A) According with the latest weather report, (B) a strong typhoon will reach (C) the central coast (D) by Thursday evening.",
+    "options": ["According with the latest weather report","a strong typhoon will reach","the central coast","by Thursday evening"],
+    "correct": 0, "correction": "According to the latest weather report",
+    "explanation": "The fixed phrase is <b>according to</b>; <b>with</b> is never used after <b>according</b>."
+  },
+  {
+    "id": "er-kc-15-34", "level": "kc", "focus": "comparison",
+    "q": "This year's science fair (A) had (B) twice as many projects than last year's, (C) so the judges needed (D) an extra afternoon.",
+    "options": ["had","twice as many projects than last year's","so the judges needed","an extra afternoon"],
+    "correct": 1, "correction": "twice as many projects as last year's",
+    "explanation": "Comparisons of equality use <b>as … as</b>; <b>than</b> belongs only with comparative forms such as <b>more</b>."
+  },
+  {
+    "id": "er-kc-15-35", "level": "kc", "focus": "pronoun",
+    "q": "My parents (A) gave my sister and me a puppy (B) last month, and (C) her and me take turns (D) walking it before school.",
+    "options": ["gave my sister and me a puppy","last month, and","her and me take turns","walking it before school"],
+    "correct": 2, "correction": "she and I take turns",
+    "explanation": "The subject of <b>take turns</b> needs subject pronouns, <b>she and I</b>; the object forms <b>her and me</b> are correct only after a verb or preposition, as in segment A."
+  },
+  {
+    "id": "er-kc-15-36", "level": "kc", "focus": "tense",
+    "q": "The film (A) had already started (B) when we (C) entered the cinema, so we (D) have missed the first ten minutes.",
+    "options": ["had already started","when we","entered the cinema","have missed the first ten minutes"],
+    "correct": 3, "correction": "missed the first ten minutes",
+    "explanation": "The events belong to one finished past occasion, so the past simple <b>missed</b> is needed, not the present perfect."
+  },
+  {
+    "id": "er-kc-15-37", "level": "kc", "focus": "relative",
+    "q": "Honey bees, (A) that are disappearing in many countries, (B) pollinate about a third (C) of the crops (D) we eat.",
+    "options": ["that are disappearing in many countries","pollinate about a third","of the crops","we eat"],
+    "correct": 0, "correction": "which are disappearing in many countries",
+    "explanation": "A non-defining relative clause (between commas) must use <b>which</b>; <b>that</b> cannot follow a comma in this way."
+  },
+  {
+    "id": "er-kc-15-38", "level": "kc", "focus": "word-order",
+    "q": "Please (A) tell me (B) enough clearly what happened (C) at the bus stop (D) this morning so I can write it down.",
+    "options": ["tell me","enough clearly what happened","at the bus stop","this morning so I can write it down"],
+    "correct": 1, "correction": "clearly enough what happened",
+    "explanation": "<b>Enough</b> comes after the adverb or adjective it modifies (<b>clearly enough</b>); it goes before a noun only."
+  },
+  {
+    "id": "er-kc-15-39", "level": "kc", "focus": "collocation",
+    "q": "Our teacher (A) asked us to (B) work in pairs and (C) make a research on (D) the history of the local market.",
+    "options": ["asked us to","work in pairs and","make a research on","the history of the local market"],
+    "correct": 2, "correction": "do research on",
+    "explanation": "<b>Research</b> is uncountable and collocates with <b>do</b>: <b>do research</b>, not <b>make a research</b>."
+  },
+  {
+    "id": "er-kc-15-40", "level": "kc", "focus": "quantifier",
+    "q": "The recipe (A) needs three eggs, (B) a cup of flour and (C) a pinch of salt, (D) but only few sugar.",
+    "options": ["needs three eggs","a cup of flour and","a pinch of salt","but only few sugar"],
+    "correct": 3, "correction": "but only a little sugar",
+    "explanation": "<b>Sugar</b> is uncountable, so it takes <b>a little</b>; <b>few</b> goes only with plural countable nouns."
+  }
+] }

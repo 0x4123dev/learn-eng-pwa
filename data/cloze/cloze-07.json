@@ -1,84 +1,504 @@
 {
-  "passages": [
+ "passages": [
+  {
+   "id": "cl-ch-07-1",
+   "level": "ch",
+   "mode": "open",
+   "title": "Rainforests of the Sea",
+   "topic": "coral reefs",
+   "passage": "Few ecosystems on Earth are (1)____ once so productive and so fragile as a coral reef. Although reefs cover less than one per cent of the ocean floor, they are home (2)____ roughly a quarter of all marine species, a density of life that has earned them the nickname 'rainforests of the sea'. The reef itself is built by tiny animals called polyps, which secrete a limestone skeleton and live in partnership with microscopic algae. It is these algae, rather (3)____ the polyps themselves, that give a healthy reef its colour. When the surrounding water grows too warm, the polyps expel their algae and the reef turns a ghostly white, a process (4)____ as bleaching. Not (5)____ the temperature drops again can the partnership be restored, and if the heat persists for more than a few weeks the polyps simply starve. Scientists had long assumed that bleaching was a rare event; (6)____ the past two decades, however, it has struck the world's largest reefs repeatedly. Had governments acted on the earliest warnings, some of that damage (7)____ have been avoided. Even so, not all the news is bleak. Certain reefs in the Red Sea appear to tolerate heat far (8)____ than their Pacific cousins, and researchers are now trying to work (9)____ whether the genes responsible could be encouraged elsewhere. Whether such efforts succeed will depend largely (10)____ how quickly the oceans keep warming.",
+   "questions": [
     {
-      "id": "cl-ch-07-1",
-      "level": "ch",
-      "mode": "open",
-      "title": "Rainforests of the Sea",
-      "topic": "coral reefs",
-      "passage": "Few ecosystems on Earth are (1)____ once so productive and so fragile as a coral reef. Although reefs cover less than one per cent of the ocean floor, they are home (2)____ roughly a quarter of all marine species, a density of life that has earned them the nickname 'rainforests of the sea'. The reef itself is built by tiny animals called polyps, which secrete a limestone skeleton and live in partnership with microscopic algae. It is these algae, rather (3)____ the polyps themselves, that give a healthy reef its colour. When the surrounding water grows too warm, the polyps expel their algae and the reef turns a ghostly white, a process (4)____ as bleaching. Not (5)____ the temperature drops again can the partnership be restored, and if the heat persists for more than a few weeks the polyps simply starve. Scientists had long assumed that bleaching was a rare event; (6)____ the past two decades, however, it has struck the world's largest reefs repeatedly. Had governments acted on the earliest warnings, some of that damage (7)____ have been avoided. Even so, not all the news is bleak. Certain reefs in the Red Sea appear to tolerate heat far (8)____ than their Pacific cousins, and researchers are now trying to work (9)____ whether the genes responsible could be encouraged elsewhere. Whether such efforts succeed will depend largely (10)____ how quickly the oceans keep warming.",
-      "questions": [
-        { "n": 1, "type": "text", "q": "Blank (1): type ONE word.", "accept": ["at"], "answer": "at", "explanation": "<b>At once ... and ...</b> means 'simultaneously both': at once so productive and so fragile. <b>All</b> or <b>for</b> cannot combine with <i>once</i> to carry that meaning." },
-        { "n": 2, "type": "text", "q": "Blank (2): type ONE word.", "accept": ["to"], "answer": "to", "explanation": "A place is <b>home to</b> the species that live there. <b>Of</b> and <b>for</b> do not follow <i>home</i> in this sense." },
-        { "n": 3, "type": "text", "q": "Blank (3): type ONE word.", "accept": ["than"], "answer": "than", "explanation": "<b>Rather than</b> contrasts the algae with the polyps inside a cleft sentence. <b>Then</b> is a time adverb and <b>not</b> would need <i>and not</i>." },
-        { "n": 4, "type": "text", "q": "Blank (4): type ONE word.", "accept": ["known", "described"], "answer": "known", "explanation": "A reduced relative clause: a process (which is) <b>known as</b> bleaching; <b>described as</b> also works. <b>Called</b> and <b>named</b> fail because they take a bare noun, never <i>as</i>." },
-        { "n": 5, "type": "text", "q": "Blank (5): type ONE word.", "accept": ["until", "till", "before"], "answer": "until", "explanation": "<b>Not until</b> (or <i>till</i>, <i>before</i>) at the front of a sentence triggers the inversion <i>can the partnership be restored</i>. <b>When</b> would give the reverse meaning: that recovery never happens at the moment the water cools." },
-        { "n": 6, "type": "text", "q": "Blank (6): type ONE word.", "accept": ["over", "in", "during", "throughout", "within"], "answer": "over", "explanation": "A period measured up to now takes <b>over</b>, <b>in</b>, <b>during</b>, <b>throughout</b> or <b>within</b> with the present perfect <i>has struck</i>. <b>Since</b> fails because it needs a starting point, not a length of time; <b>for</b> fails before <i>the past two decades</i> with this verb pattern in formal prose." },
-        { "n": 7, "type": "text", "q": "Blank (7): type ONE word.", "accept": ["might", "could", "would", "may"], "answer": "might", "explanation": "An inverted third conditional (<i>Had governments acted ...</i>) needs a past modal: <b>might</b>, <b>could</b> or <b>would</b> have been avoided. <b>Should</b> fails because it turns a hypothetical result into advice about the past." },
-        { "n": 8, "type": "text", "q": "Blank (8): type ONE word.", "accept": ["better", "more"], "answer": "better", "explanation": "<i>Tolerate heat far <b>better</b> than</i> compares how well they cope; <b>more</b> is also acceptable. <b>Best</b> is a superlative and cannot precede <i>than</i>; <b>well</b> is not comparative." },
-        { "n": 9, "type": "text", "q": "Blank (9): type ONE word.", "accept": ["out"], "answer": "out", "explanation": "The phrasal verb <b>work out</b> means discover by reasoning. <b>Work on</b> means continue improving something, and <b>work at</b> means make an effort, so neither can take a <i>whether</i> clause." },
-        { "n": 10, "type": "text", "q": "Blank (10): type ONE word.", "accept": ["on", "upon"], "answer": "on", "explanation": "<b>Depend on</b> (or <i>upon</i>) is the only preposition the verb takes, even with an adverb like <i>largely</i> in between. <b>Of</b> and <b>from</b> are common learner errors influenced by <i>independent of</i>." }
-      ]
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>At once ... and ...</b> means 'simultaneously both': at once so productive and so fragile. <b>All</b> or <b>for</b> cannot combine with <i>once</i> to carry that meaning."
     },
     {
-      "id": "cl-ch-07-2",
-      "level": "ch",
-      "mode": "open",
-      "title": "Letters Made of Lead",
-      "topic": "the printing press",
-      "passage": "It is hard to overstate how thoroughly the printing press transformed the way (1)____ which knowledge moved around Europe in the fifteenth century. Before movable type, a single manuscript might take a monk the better (2)____ of a year to copy, and every copy carried the errors of the one before it. No sooner (3)____ Johannes Gutenberg's workshop begun producing Bibles than printers in other cities started to imitate his methods, and within fifty years presses were operating in more than two hundred towns. What made the invention so powerful was not the press (4)____ but the combination of cheap paper, oil-based ink and metal letters that could be rearranged endlessly. Scholars who had once relied (5)____ memory could now compare identical texts hundreds of miles apart, which in (6)____ made it possible to spot mistakes and build on one another's work. Not everyone welcomed the change. Some rulers, fearing the spread of ideas they could not control, (7)____ about licensing every printer in their territory; others simply banned books outright. Yet (8)____ hard they tried, the flow of pamphlets proved impossible to stop. Had the press never been invented, the religious and scientific upheavals of the following century would almost certainly have (9)____ a very different course. Historians still argue over how much credit one man deserves, but few would deny that the world he left behind bore little (10)____ to the one he had been born into.",
-      "questions": [
-        { "n": 1, "type": "text", "q": "Blank (1): type ONE word.", "accept": ["in"], "answer": "in", "explanation": "The formal relative structure is <b>the way in which</b> something happens. <b>By</b> or <b>on</b> do not collocate with <i>way</i> here; <b>that</b> would need to replace <i>which</i>, not sit beside it." },
-        { "n": 2, "type": "text", "q": "Blank (2): type ONE word.", "accept": ["part"], "answer": "part", "explanation": "<b>The better part of</b> a period means most of it. <b>Half</b> gives the wrong quantity and does not take <i>better</i>; <b>portion</b> is not the idiom." },
-        { "n": 3, "type": "text", "q": "Blank (3): type ONE word.", "accept": ["had"], "answer": "had", "explanation": "<b>No sooner had</b> + subject + past participle ... <i>than</i> is a fixed inversion with the past perfect. <b>Did</b> fails because the participle <i>begun</i> follows, and <b>was</b> would need <i>begun</i> to be passive, which makes no sense." },
-        { "n": 4, "type": "text", "q": "Blank (4): type ONE word.", "accept": ["itself", "alone"], "answer": "itself", "explanation": "<i>Not the press <b>itself</b> but the combination</i> uses the emphatic reflexive to isolate the machine from its context; <b>alone</b> works the same way. <b>Only</b> fails because it must precede the noun, and <b>self</b> is not a free-standing word." },
-        { "n": 5, "type": "text", "q": "Blank (5): type ONE word.", "accept": ["on", "upon"], "answer": "on", "explanation": "You <b>rely on</b> or <b>upon</b> something. <b>In</b> and <b>to</b> are common errors modelled on <i>trust in</i> and <i>refer to</i>, but <i>rely</i> never takes them." },
-        { "n": 6, "type": "text", "q": "Blank (6): type ONE word.", "accept": ["turn"], "answer": "turn", "explanation": "<b>In turn</b> means 'as a further consequence' and links one result to the next. <b>Return</b> gives <i>in return</i>, an exchange, which is not the meaning; <b>fact</b> would merely add emphasis." },
-        { "n": 7, "type": "text", "q": "Blank (7): type ONE word.", "accept": ["set", "went", "thought"], "answer": "set", "explanation": "<b>Set about</b> (or <i>went about</i>) doing something means started to tackle it; <b>thought about</b> licensing (merely considered it) is also grammatical and fits the contrast with rulers who <i>simply banned</i> books. <b>Started</b> or <b>began</b> fail because they take <i>to</i> or a bare gerund, never <i>about</i>." },
-        { "n": 8, "type": "text", "q": "Blank (8): type ONE word.", "accept": ["however"], "answer": "however", "explanation": "<b>However hard they tried</b> means 'no matter how hard'. <b>Whatever</b> must be followed by a noun, and <b>although</b> cannot precede a bare adverb like <i>hard</i>." },
-        { "n": 9, "type": "text", "q": "Blank (9): type ONE word.", "accept": ["taken", "followed", "run", "pursued"], "answer": "taken", "explanation": "Events <b>take</b> (or <i>follow</i>, <i>run</i>, <i>pursue</i>) <b>a course</b>; the past participle is needed after <i>would have</i>. <b>Had</b> or <b>gone</b> do not form this collocation, and the base form <i>take</i> cannot follow <i>have</i>." },
-        { "n": 10, "type": "text", "q": "Blank (10): type ONE word.", "accept": ["resemblance", "relation", "similarity"], "answer": "resemblance", "explanation": "<b>Bear little resemblance to</b> is the standard collocation; <i>bore little relation to</i> and <i>bore little similarity to</i> are also accepted. <b>Difference</b> reverses the logic, and <b>likeness</b> is not used with <i>bear ... to</i> in this way." }
-      ]
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "to"
+     ],
+     "answer": "to",
+     "explanation": "A place is <b>home to</b> the species that live there. <b>Of</b> and <b>for</b> do not follow <i>home</i> in this sense."
     },
     {
-      "id": "cl-ch-07-3",
-      "level": "ch",
-      "mode": "open",
-      "title": "What the Brain Does at Night",
-      "topic": "sleep and memory",
-      "passage": "For most of the twentieth century, sleep was regarded as little (1)____ than a period of rest, a nightly shutdown during which the brain did nothing of importance. That view has been overturned so completely that many neuroscientists now describe sleep as the point (2)____ which learning actually happens. During the day, new experiences are stored temporarily in a region called the hippocampus, but the record is fragile and easily overwritten. It is only at night, (3)____ the brain is cut off from fresh input, that these traces are replayed and gradually transferred to the cortex for long-term storage. Researchers have demonstrated this in a series of elegant experiments. Volunteers who learned a list of word pairs in the evening and then slept remembered far more the next morning than those who had stayed awake, (4)____ though both groups had been given the same amount of time. Nor does the benefit stop at facts. Musicians who practise a difficult passage and then sleep on it often play it more fluently the following day, (5)____ having touched the instrument in between. What is less clear is (6)____ the different stages of sleep contribute. Deep, slow-wave sleep appears to strengthen factual memories, (7)____ the dreaming stage seems to link new information to what we already know. There is a warning here for students. Staying up all night before an exam may feel productive, but (8)____ it is followed by sleep, much of the effort is wasted. Far from being time lost, then, sleep turns (9)____ to be the very process by (10)____ knowledge is made permanent.",
-      "questions": [
-        { "n": 1, "type": "text", "q": "Blank (1): type ONE word.", "accept": ["more"], "answer": "more", "explanation": "<b>Little more than</b> means 'hardly anything beyond'. <b>Less</b> reverses the sense, and <b>other</b> would need <i>little other than</i>, which is not idiomatic English." },
-        { "n": 2, "type": "text", "q": "Blank (2): type ONE word.", "accept": ["at"], "answer": "at", "explanation": "<b>The point at which</b> is the formal equivalent of <i>the point when</i>. <b>In</b> and <b>on</b> do not collocate with <i>point</i> in a time sense, and <b>of</b> would make the sentence meaningless." },
-        { "n": 3, "type": "text", "q": "Blank (3): type ONE word.", "accept": ["when", "once", "while", "after", "as"], "answer": "when", "explanation": "A time conjunction introduces the clause: <b>when</b>, <b>once</b>, <b>while</b>, <b>after</b> or <b>as</b> the brain is cut off. <b>Which</b> fails because the clause already has its own subject, and <b>that</b> would wrongly close the cleft sentence early." },
-        { "n": 4, "type": "text", "q": "Blank (4): type ONE word.", "accept": ["even"], "answer": "even", "explanation": "<b>Even though</b> concedes the fact that both groups had equal time. <b>As</b> would produce <i>as though</i>, which means 'as if' and turns the fact into an appearance." },
-        { "n": 5, "type": "text", "q": "Blank (5): type ONE word.", "accept": ["without"], "answer": "without", "explanation": "<b>Without having touched</b> uses the preposition plus perfect gerund to say the practice did not happen. <b>Despite</b> is impossible because the meaning is not concessive, and <b>not</b> would need <i>not having touched</i> in a different position." },
-        { "n": 6, "type": "text", "q": "Blank (6): type ONE word.", "accept": ["how", "what", "whether"], "answer": "how", "explanation": "A noun clause is needed after <i>is</i>: <b>how</b>, <b>what</b> or <b>whether</b> the stages contribute. <b>That</b> fails because the sentence says the matter is unclear, so a fact cannot simply be stated." },
-        { "n": 7, "type": "text", "q": "Blank (7): type ONE word.", "accept": ["while", "whereas", "and", "but"], "answer": "while", "explanation": "Two stages are contrasted, so <b>while</b> or <b>whereas</b> (or simply <b>and</b> / <b>but</b>) joins the clauses. <b>Although</b> fails because the two facts are not in tension, and <b>however</b> cannot join clauses with just a comma." },
-        { "n": 8, "type": "text", "q": "Blank (8): type ONE word.", "accept": ["unless"], "answer": "unless", "explanation": "<b>Unless it is followed by sleep</b> means 'if it is not'. <b>If</b> says the opposite, that sleep causes the waste, and <b>until</b> would make the wasted effort a temporary state." },
-        { "n": 9, "type": "text", "q": "Blank (9): type ONE word.", "accept": ["out"], "answer": "out", "explanation": "<b>Turn out to be</b> means prove to be, after investigation. <b>Turn up</b> means appear, and <b>turn in</b> means go to bed, so neither takes <i>to be</i>." },
-        { "n": 10, "type": "text", "q": "Blank (10): type ONE word.", "accept": ["which"], "answer": "which", "explanation": "After a preposition the relative pronoun must be <b>which</b>: <i>the process by which</i>. <b>That</b> can never follow a preposition, and <b>what</b> would leave <i>process</i> without a relative clause." }
-      ]
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "than"
+     ],
+     "answer": "than",
+     "explanation": "<b>Rather than</b> contrasts the algae with the polyps inside a cleft sentence. <b>Then</b> is a time adverb and <b>not</b> would need <i>and not</i>."
     },
     {
-      "id": "cl-ch-07-4",
-      "level": "ch",
-      "mode": "mcq",
-      "title": "Born of Fire, Claimed by the Sea",
-      "topic": "volcanic islands",
-      "passage": "Volcanic islands are among the youngest pieces of land on the planet, and their life story follows a pattern that geologists can now (1)____ with remarkable precision. Most begin far below the surface, where a plume of molten rock forces its way (2)____ the ocean crust. Eruption after eruption piles lava on the sea floor until, often after hundreds of thousands of years, a cone finally breaks the surface. At this stage the new island is little more (3)____ bare black rock, utterly hostile to life. Yet colonisation begins almost immediately. Seeds arrive on the wind or in the stomachs of birds; insects are blown in on storms; lichens take (4)____ on the cooling lava and slowly grind it into soil. Within a few centuries, what was once a sterile heap of cinders may support a forest. The island's (5)____, however, is already sealed. As the tectonic plate carries it away from the plume that created it, the volcano falls silent and erosion sets (6)____. Waves eat at the coastline, rain carves valleys, and the whole mass gradually sinks under its own weight. In warm seas, coral reefs grow up around the shrinking peak, so that (7)____ the island has disappeared entirely, a ring of reef remains to mark where it stood. The Hawaiian chain illustrates this cycle perfectly: the youngest island, still erupting, sits at one end, (8)____ a line of ever older, ever lower islands stretches away to the north-west. Thanks (9)____ this sequence, scientists can estimate how fast the plate is moving. Few natural laboratories offer (10)____ a clear picture of creation and decay unfolding side by side.",
-      "questions": [
-        { "n": 1, "type": "mcq", "q": "Blank (1): choose the word that fits.", "options": ["reconstruct", "rebuild", "restore", "recover"], "correct": 0, "explanation": "Scientists <b>reconstruct</b> a sequence of past events from evidence. <i>Rebuild</i> and <i>restore</i> apply to physical objects, and <i>recover</i> means get back something lost." },
-        { "n": 2, "type": "mcq", "q": "Blank (2): choose the word that fits.", "options": ["through", "across", "over", "along"], "correct": 0, "explanation": "Magma <b>forces its way through</b> a layer, passing from one side to the other. <i>Across</i>, <i>over</i> and <i>along</i> describe movement on a surface, not penetration." },
-        { "n": 3, "type": "mcq", "q": "Blank (3): choose the word that fits.", "options": ["than", "as", "then", "that"], "correct": 0, "explanation": "<b>Little more than</b> is a comparative and needs <b>than</b>. <i>As</i> pairs with <i>as much</i>, <i>then</i> is a time adverb, and <i>that</i> would need a full clause to follow." },
-        { "n": 4, "type": "mcq", "q": "Blank (4): choose the word that fits.", "options": ["hold", "grip", "place", "shape"], "correct": 0, "explanation": "<b>Take hold</b> means become established. <i>Take place</i> means happen, <i>take shape</i> means develop a form, and <i>take grip</i> is not an English expression." },
-        { "n": 5, "type": "mcq", "q": "Blank (5): choose the word that fits.", "options": ["fate", "luck", "fortune", "chance"], "correct": 0, "explanation": "Only a <b>fate</b> can be <i>sealed</i>, meaning fixed beyond change. <i>Luck</i>, <i>fortune</i> and <i>chance</i> refer to random outcomes and do not take this verb." },
-        { "n": 6, "type": "mcq", "q": "Blank (6): choose the word that fits.", "options": ["in", "up", "off", "out"], "correct": 0, "explanation": "An unwelcome process such as erosion, rot or bad weather <b>sets in</b>, meaning begins and continues. <i>Set up</i> means establish, <i>set off</i> means depart or trigger, and <i>set out</i> means begin a journey or explain." },
-        { "n": 7, "type": "mcq", "q": "Blank (7): choose the word that fits.", "options": ["once", "while", "unless", "until"], "correct": 0, "explanation": "<b>Once the island has disappeared</b> means 'after that point', which is when the ring of reef is all that remains. <i>While</i> would place the two events at the same time, and <i>unless</i> and <i>until</i> would say the reef survives only if the island does not vanish." },
-        { "n": 8, "type": "mcq", "q": "Blank (8): choose the word that fits.", "options": ["while", "although", "unless", "until"], "correct": 0, "explanation": "<b>While</b> here contrasts the two ends of the chain, like <i>whereas</i>. <i>Although</i> signals an unexpected exception, and <i>unless</i> and <i>until</i> express condition and time, neither of which fits a description." },
-        { "n": 9, "type": "mcq", "q": "Blank (9): choose the word that fits.", "options": ["to", "for", "by", "of"], "correct": 0, "explanation": "<b>Thanks to</b> is a fixed prepositional phrase meaning 'because of'. <i>Thanks for</i> expresses gratitude and needs a person, and <i>by</i> and <i>of</i> never follow <i>thanks</i>." },
-        { "n": 10, "type": "mcq", "q": "Blank (10): choose the word that fits.", "options": ["such", "so", "too", "very"], "correct": 0, "explanation": "<b>Such a clear picture</b> is the order before an article plus adjective plus noun. <i>So</i> and <i>too</i> would need <i>so clear a picture</i>, and <i>very</i> cannot precede the article at all." }
-      ]
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "known",
+      "described"
+     ],
+     "answer": "known",
+     "explanation": "A reduced relative clause: a process (which is) <b>known as</b> bleaching; <b>described as</b> also works. <b>Called</b> and <b>named</b> fail because they take a bare noun, never <i>as</i>."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "until",
+      "till",
+      "before"
+     ],
+     "answer": "until",
+     "explanation": "<b>Not until</b> (or <i>till</i>, <i>before</i>) at the front of a sentence triggers the inversion <i>can the partnership be restored</i>. <b>When</b> would give the reverse meaning: that recovery never happens at the moment the water cools."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "over",
+      "in",
+      "during",
+      "throughout",
+      "within"
+     ],
+     "answer": "over",
+     "explanation": "A period measured up to now takes <b>over</b>, <b>in</b>, <b>during</b>, <b>throughout</b> or <b>within</b> with the present perfect <i>has struck</i>. <b>Since</b> fails because it needs a starting point, not a length of time; <b>for</b> fails before <i>the past two decades</i> with this verb pattern in formal prose."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "might",
+      "could",
+      "would",
+      "may"
+     ],
+     "answer": "might",
+     "explanation": "An inverted third conditional (<i>Had governments acted ...</i>) needs a past modal: <b>might</b>, <b>could</b> or <b>would</b> have been avoided. <b>Should</b> fails because it turns a hypothetical result into advice about the past."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "better",
+      "more"
+     ],
+     "answer": "better",
+     "explanation": "<i>Tolerate heat far <b>better</b> than</i> compares how well they cope; <b>more</b> is also acceptable. <b>Best</b> is a superlative and cannot precede <i>than</i>; <b>well</b> is not comparative."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "The phrasal verb <b>work out</b> means discover by reasoning. <b>Work on</b> means continue improving something, and <b>work at</b> means make an effort, so neither can take a <i>whether</i> clause."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "on",
+      "upon"
+     ],
+     "answer": "on",
+     "explanation": "<b>Depend on</b> (or <i>upon</i>) is the only preposition the verb takes, even with an adverb like <i>largely</i> in between. <b>Of</b> and <b>from</b> are common learner errors influenced by <i>independent of</i>."
     }
-  ]
+   ]
+  },
+  {
+   "id": "cl-ch-07-2",
+   "level": "ch",
+   "mode": "open",
+   "title": "Letters Made of Lead",
+   "topic": "the printing press",
+   "passage": "It is hard to overstate how thoroughly the printing press transformed the way (1)____ which knowledge moved around Europe in the fifteenth century. Before movable type, a single manuscript might take a monk the better (2)____ of a year to copy, and every copy carried the errors of the one before it. No sooner (3)____ Johannes Gutenberg's workshop begun producing Bibles than printers in other cities started to imitate his methods, and within fifty years presses were operating in more than two hundred towns. What made the invention so powerful was not the press (4)____ but the combination of cheap paper, oil-based ink and metal letters that could be rearranged endlessly. Scholars who had once relied (5)____ memory could now compare identical texts hundreds of miles apart, which in (6)____ made it possible to spot mistakes and build on one another's work. Not everyone welcomed the change. Some rulers, fearing the spread of ideas they could not control, (7)____ about licensing every printer in their territory; others simply banned books outright. Yet (8)____ hard they tried, the flow of pamphlets proved impossible to stop. Had the press never been invented, the religious and scientific upheavals of the following century would almost certainly have (9)____ a very different course. Historians still argue over how much credit one man deserves, but few would deny that the world he left behind bore little (10)____ to the one he had been born into.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "in"
+     ],
+     "answer": "in",
+     "explanation": "The formal relative structure is <b>the way in which</b> something happens. <b>By</b> or <b>on</b> do not collocate with <i>way</i> here; <b>that</b> would need to replace <i>which</i>, not sit beside it."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "part"
+     ],
+     "answer": "part",
+     "explanation": "<b>The better part of</b> a period means most of it. <b>Half</b> gives the wrong quantity and does not take <i>better</i>; <b>portion</b> is not the idiom."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "had"
+     ],
+     "answer": "had",
+     "explanation": "<b>No sooner had</b> + subject + past participle ... <i>than</i> is a fixed inversion with the past perfect. <b>Did</b> fails because the participle <i>begun</i> follows, and <b>was</b> would need <i>begun</i> to be passive, which makes no sense."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "itself",
+      "alone"
+     ],
+     "answer": "itself",
+     "explanation": "<i>Not the press <b>itself</b> but the combination</i> uses the emphatic reflexive to isolate the machine from its context; <b>alone</b> works the same way. <b>Only</b> fails because it must precede the noun, and <b>self</b> is not a free-standing word."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "on",
+      "upon"
+     ],
+     "answer": "on",
+     "explanation": "You <b>rely on</b> or <b>upon</b> something. <b>In</b> and <b>to</b> are common errors modelled on <i>trust in</i> and <i>refer to</i>, but <i>rely</i> never takes them."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "turn"
+     ],
+     "answer": "turn",
+     "explanation": "<b>In turn</b> means 'as a further consequence' and links one result to the next. <b>Return</b> gives <i>in return</i>, an exchange, which is not the meaning; <b>fact</b> would merely add emphasis."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "set",
+      "went",
+      "thought"
+     ],
+     "answer": "set",
+     "explanation": "<b>Set about</b> (or <i>went about</i>) doing something means started to tackle it; <b>thought about</b> licensing (merely considered it) is also grammatical and fits the contrast with rulers who <i>simply banned</i> books. <b>Started</b> or <b>began</b> fail because they take <i>to</i> or a bare gerund, never <i>about</i>."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "however"
+     ],
+     "answer": "however",
+     "explanation": "<b>However hard they tried</b> means 'no matter how hard'. <b>Whatever</b> must be followed by a noun, and <b>although</b> cannot precede a bare adverb like <i>hard</i>."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "taken",
+      "followed",
+      "run",
+      "pursued"
+     ],
+     "answer": "taken",
+     "explanation": "Events <b>take</b> (or <i>follow</i>, <i>run</i>, <i>pursue</i>) <b>a course</b>; the past participle is needed after <i>would have</i>. <b>Had</b> or <b>gone</b> do not form this collocation, and the base form <i>take</i> cannot follow <i>have</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "resemblance",
+      "relation",
+      "similarity"
+     ],
+     "answer": "resemblance",
+     "explanation": "<b>Bear little resemblance to</b> is the standard collocation; <i>bore little relation to</i> and <i>bore little similarity to</i> are also accepted. <b>Difference</b> reverses the logic, and <b>likeness</b> is not used with <i>bear ... to</i> in this way."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-07-3",
+   "level": "ch",
+   "mode": "open",
+   "title": "What the Brain Does at Night",
+   "topic": "sleep and memory",
+   "passage": "For most of the twentieth century, sleep was regarded as little (1)____ than a period of rest, a nightly shutdown during which the brain did nothing of importance. That view has been overturned so completely that many neuroscientists now describe sleep as the point (2)____ which learning actually happens. During the day, new experiences are stored temporarily in a region called the hippocampus, but the record is fragile and easily overwritten. It is only at night, (3)____ the brain is cut off from fresh input, that these traces are replayed and gradually transferred to the cortex for long-term storage. Researchers have demonstrated this in a series of elegant experiments. Volunteers who learned a list of word pairs in the evening and then slept remembered far more the next morning than those who had stayed awake, (4)____ though both groups had been given the same amount of time. Nor does the benefit stop at facts. Musicians who practise a difficult passage and then sleep on it often play it more fluently the following day, (5)____ having touched the instrument in between. What is less clear is (6)____ the different stages of sleep contribute. Deep, slow-wave sleep appears to strengthen factual memories, (7)____ the dreaming stage seems to link new information to what we already know. There is a warning here for students. Staying up all night before an exam may feel productive, but (8)____ it is followed by sleep, much of the effort is wasted. Far from being time lost, then, sleep turns (9)____ to be the very process by (10)____ knowledge is made permanent.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "text",
+     "q": "Blank (1): type ONE word.",
+     "accept": [
+      "more"
+     ],
+     "answer": "more",
+     "explanation": "<b>Little more than</b> means 'hardly anything beyond'. <b>Less</b> reverses the sense, and <b>other</b> would need <i>little other than</i>, which is not idiomatic English."
+    },
+    {
+     "n": 2,
+     "type": "text",
+     "q": "Blank (2): type ONE word.",
+     "accept": [
+      "at"
+     ],
+     "answer": "at",
+     "explanation": "<b>The point at which</b> is the formal equivalent of <i>the point when</i>. <b>In</b> and <b>on</b> do not collocate with <i>point</i> in a time sense, and <b>of</b> would make the sentence meaningless."
+    },
+    {
+     "n": 3,
+     "type": "text",
+     "q": "Blank (3): type ONE word.",
+     "accept": [
+      "when",
+      "once",
+      "while",
+      "after",
+      "as"
+     ],
+     "answer": "when",
+     "explanation": "A time conjunction introduces the clause: <b>when</b>, <b>once</b>, <b>while</b>, <b>after</b> or <b>as</b> the brain is cut off. <b>Which</b> fails because the clause already has its own subject, and <b>that</b> would wrongly close the cleft sentence early."
+    },
+    {
+     "n": 4,
+     "type": "text",
+     "q": "Blank (4): type ONE word.",
+     "accept": [
+      "even"
+     ],
+     "answer": "even",
+     "explanation": "<b>Even though</b> concedes the fact that both groups had equal time. <b>As</b> would produce <i>as though</i>, which means 'as if' and turns the fact into an appearance."
+    },
+    {
+     "n": 5,
+     "type": "text",
+     "q": "Blank (5): type ONE word.",
+     "accept": [
+      "without"
+     ],
+     "answer": "without",
+     "explanation": "<b>Without having touched</b> uses the preposition plus perfect gerund to say the practice did not happen. <b>Despite</b> is impossible because the meaning is not concessive, and <b>not</b> would need <i>not having touched</i> in a different position."
+    },
+    {
+     "n": 6,
+     "type": "text",
+     "q": "Blank (6): type ONE word.",
+     "accept": [
+      "how",
+      "what",
+      "whether"
+     ],
+     "answer": "how",
+     "explanation": "A noun clause is needed after <i>is</i>: <b>how</b>, <b>what</b> or <b>whether</b> the stages contribute. <b>That</b> fails because the sentence says the matter is unclear, so a fact cannot simply be stated."
+    },
+    {
+     "n": 7,
+     "type": "text",
+     "q": "Blank (7): type ONE word.",
+     "accept": [
+      "while",
+      "whereas",
+      "and",
+      "but"
+     ],
+     "answer": "while",
+     "explanation": "Two stages are contrasted, so <b>while</b> or <b>whereas</b> (or simply <b>and</b> / <b>but</b>) joins the clauses. <b>Although</b> fails because the two facts are not in tension, and <b>however</b> cannot join clauses with just a comma."
+    },
+    {
+     "n": 8,
+     "type": "text",
+     "q": "Blank (8): type ONE word.",
+     "accept": [
+      "unless"
+     ],
+     "answer": "unless",
+     "explanation": "<b>Unless it is followed by sleep</b> means 'if it is not'. <b>If</b> says the opposite, that sleep causes the waste, and <b>until</b> would make the wasted effort a temporary state."
+    },
+    {
+     "n": 9,
+     "type": "text",
+     "q": "Blank (9): type ONE word.",
+     "accept": [
+      "out"
+     ],
+     "answer": "out",
+     "explanation": "<b>Turn out to be</b> means prove to be, after investigation. <b>Turn up</b> means appear, and <b>turn in</b> means go to bed, so neither takes <i>to be</i>."
+    },
+    {
+     "n": 10,
+     "type": "text",
+     "q": "Blank (10): type ONE word.",
+     "accept": [
+      "which"
+     ],
+     "answer": "which",
+     "explanation": "After a preposition the relative pronoun must be <b>which</b>: <i>the process by which</i>. <b>That</b> can never follow a preposition, and <b>what</b> would leave <i>process</i> without a relative clause."
+    }
+   ]
+  },
+  {
+   "id": "cl-ch-07-4",
+   "level": "ch",
+   "mode": "mcq",
+   "title": "Born of Fire, Claimed by the Sea",
+   "topic": "volcanic islands",
+   "passage": "Volcanic islands are among the youngest pieces of land on the planet, and their life story follows a pattern that geologists can now (1)____ with remarkable precision. Most begin far below the surface, where a plume of molten rock forces its way (2)____ the ocean crust. Eruption after eruption piles lava on the sea floor until, often after hundreds of thousands of years, a cone finally breaks the surface. At this stage the new island is little more (3)____ bare black rock, utterly hostile to life. Yet colonisation begins almost immediately. Seeds arrive on the wind or in the stomachs of birds; insects are blown in on storms; lichens take (4)____ on the cooling lava and slowly grind it into soil. Within a few centuries, what was once a sterile heap of cinders may support a forest. The island's (5)____, however, is already sealed. As the tectonic plate carries it away from the plume that created it, the volcano falls silent and erosion sets (6)____. Waves eat at the coastline, rain carves valleys, and the whole mass gradually sinks under its own weight. In warm seas, coral reefs grow up around the shrinking peak, so that (7)____ the island has disappeared entirely, a ring of reef remains to mark where it stood. The Hawaiian chain illustrates this cycle perfectly: the youngest island, still erupting, sits at one end, (8)____ a line of ever older, ever lower islands stretches away to the north-west. Thanks (9)____ this sequence, scientists can estimate how fast the plate is moving. Few natural laboratories offer (10)____ a clear picture of creation and decay unfolding side by side.",
+   "questions": [
+    {
+     "n": 1,
+     "type": "mcq",
+     "q": "Blank (1): choose the word that fits.",
+     "options": [
+      "recover",
+      "reconstruct",
+      "rebuild",
+      "restore"
+     ],
+     "correct": 1,
+     "explanation": "Scientists <b>reconstruct</b> a sequence of past events from evidence. <i>Rebuild</i> and <i>restore</i> apply to physical objects, and <i>recover</i> means get back something lost."
+    },
+    {
+     "n": 2,
+     "type": "mcq",
+     "q": "Blank (2): choose the word that fits.",
+     "options": [
+      "through",
+      "across",
+      "over",
+      "along"
+     ],
+     "correct": 0,
+     "explanation": "Magma <b>forces its way through</b> a layer, passing from one side to the other. <i>Across</i>, <i>over</i> and <i>along</i> describe movement on a surface, not penetration."
+    },
+    {
+     "n": 3,
+     "type": "mcq",
+     "q": "Blank (3): choose the word that fits.",
+     "options": [
+      "as",
+      "then",
+      "that",
+      "than"
+     ],
+     "correct": 3,
+     "explanation": "<b>Little more than</b> is a comparative and needs <b>than</b>. <i>As</i> pairs with <i>as much</i>, <i>then</i> is a time adverb, and <i>that</i> would need a full clause to follow."
+    },
+    {
+     "n": 4,
+     "type": "mcq",
+     "q": "Blank (4): choose the word that fits.",
+     "options": [
+      "place",
+      "shape",
+      "hold",
+      "grip"
+     ],
+     "correct": 2,
+     "explanation": "<b>Take hold</b> means become established. <i>Take place</i> means happen, <i>take shape</i> means develop a form, and <i>take grip</i> is not an English expression."
+    },
+    {
+     "n": 5,
+     "type": "mcq",
+     "q": "Blank (5): choose the word that fits.",
+     "options": [
+      "chance",
+      "fate",
+      "luck",
+      "fortune"
+     ],
+     "correct": 1,
+     "explanation": "Only a <b>fate</b> can be <i>sealed</i>, meaning fixed beyond change. <i>Luck</i>, <i>fortune</i> and <i>chance</i> refer to random outcomes and do not take this verb."
+    },
+    {
+     "n": 6,
+     "type": "mcq",
+     "q": "Blank (6): choose the word that fits.",
+     "options": [
+      "in",
+      "up",
+      "off",
+      "out"
+     ],
+     "correct": 0,
+     "explanation": "An unwelcome process such as erosion, rot or bad weather <b>sets in</b>, meaning begins and continues. <i>Set up</i> means establish, <i>set off</i> means depart or trigger, and <i>set out</i> means begin a journey or explain."
+    },
+    {
+     "n": 7,
+     "type": "mcq",
+     "q": "Blank (7): choose the word that fits.",
+     "options": [
+      "while",
+      "unless",
+      "until",
+      "once"
+     ],
+     "correct": 3,
+     "explanation": "<b>Once the island has disappeared</b> means 'after that point', which is when the ring of reef is all that remains. <i>While</i> would place the two events at the same time, and <i>unless</i> and <i>until</i> would say the reef survives only if the island does not vanish."
+    },
+    {
+     "n": 8,
+     "type": "mcq",
+     "q": "Blank (8): choose the word that fits.",
+     "options": [
+      "unless",
+      "until",
+      "while",
+      "although"
+     ],
+     "correct": 2,
+     "explanation": "<b>While</b> here contrasts the two ends of the chain, like <i>whereas</i>. <i>Although</i> signals an unexpected exception, and <i>unless</i> and <i>until</i> express condition and time, neither of which fits a description."
+    },
+    {
+     "n": 9,
+     "type": "mcq",
+     "q": "Blank (9): choose the word that fits.",
+     "options": [
+      "of",
+      "to",
+      "for",
+      "by"
+     ],
+     "correct": 1,
+     "explanation": "<b>Thanks to</b> is a fixed prepositional phrase meaning 'because of'. <i>Thanks for</i> expresses gratitude and needs a person, and <i>by</i> and <i>of</i> never follow <i>thanks</i>."
+    },
+    {
+     "n": 10,
+     "type": "mcq",
+     "q": "Blank (10): choose the word that fits.",
+     "options": [
+      "so",
+      "too",
+      "very",
+      "such"
+     ],
+     "correct": 3,
+     "explanation": "<b>Such a clear picture</b> is the order before an article plus adjective plus noun. <i>So</i> and <i>too</i> would need <i>so clear a picture</i>, and <i>very</i> cannot precede the article at all."
+    }
+   ]
+  }
+ ]
 }

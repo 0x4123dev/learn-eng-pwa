@@ -1,305 +1,305 @@
 {
-  "passages": [
+ "passages": [
+  {
+   "id": "rd-ch-10-1",
+   "level": "ch",
+   "title": "Traffic in the Twilight Zone",
+   "topic": "ocean science",
+   "words": 531,
+   "passage": "<b>A.</b> Ask most people to picture the deep ocean and they will describe a silent, lightless plain where nothing much happens. It is an understandable picture, and a wrong one. Below about two hundred metres, where sunlight fades to a faint blue and then to nothing, lies the largest habitat on the planet by volume, and it is neither quiet nor still. Marine scientists now describe this so-called twilight zone as a place of constant traffic, and one whose rhythms may matter for the climate of the entire globe.<br><br><b>B.</b> The traffic in question is a daily migration on a scale that dwarfs anything on land. Each evening, uncountable numbers of small fish, squid and shrimp-like creatures rise hundreds of metres towards the surface to feed under cover of darkness; each dawn they sink back into the gloom to hide from predators. Ship-mounted echo sounders first recorded this movement decades ago, when operators noticed a \"false seabed\" on their screens that rose at dusk and fell at daybreak. Only much later did anyone appreciate what the moving layer was made of, or how much carbon it carried down with it.<br><br><b>C.</b> That last point is what has drawn climate researchers to a zone they once ignored. Animals that feed near the surface and then descend are, in effect, a biological pump: the carbon in their food travels down inside their bodies and is released, through breathing and waste, at depths from which it may not return to the atmosphere for centuries. Estimates of how much carbon moves this way vary wildly, and therein lies the problem. Were the figure at the upper end of current guesses, the twilight zone would be storing more carbon each year than every forest on Earth combined; were it at the lower end, it would be a modest contributor at best. Nobody can yet say which.<br><br><b>D.</b> Closing that gap is harder than it sounds. Nets tear the soft-bodied animals apart or let them escape; cameras need light, which frightens off the very creatures they are meant to observe; and sound-based surveys cannot easily tell a shoal of fish from a cloud of jellyfish. One response has been to release fleets of small autonomous floats that drift with the currents for months at a time, recording temperature, oxygen and the faint acoustic signature of life around them. Another has been to listen in a different sense: hydrophones lowered into the darkness have picked up a low, rhythmic hum at dusk that some researchers believe is the collective sound of millions of animals beginning their nightly climb.<br><br><b>E.</b> All of this is unfolding just as commercial interest in the same waters is growing. Several fishing companies have begun to look at the twilight zone's small, oily fish as raw material for fishmeal and nutritional supplements, and a handful of governments have issued exploratory licences. Scientists have not, on the whole, called for a ban. What they have asked for is time: a pause long enough to learn what the zone does for the rest of the planet before anyone starts to remove pieces of it. Whether that request will be heard is, for now, an open question.",
+   "questions": [
     {
-      "id": "rd-ch-10-1",
-      "level": "ch",
-      "title": "Traffic in the Twilight Zone",
-      "topic": "ocean science",
-      "words": 531,
-      "passage": "<b>A.</b> Ask most people to picture the deep ocean and they will describe a silent, lightless plain where nothing much happens. It is an understandable picture, and a wrong one. Below about two hundred metres, where sunlight fades to a faint blue and then to nothing, lies the largest habitat on the planet by volume, and it is neither quiet nor still. Marine scientists now describe this so-called twilight zone as a place of constant traffic, and one whose rhythms may matter for the climate of the entire globe.<br><br><b>B.</b> The traffic in question is a daily migration on a scale that dwarfs anything on land. Each evening, uncountable numbers of small fish, squid and shrimp-like creatures rise hundreds of metres towards the surface to feed under cover of darkness; each dawn they sink back into the gloom to hide from predators. Ship-mounted echo sounders first recorded this movement decades ago, when operators noticed a \"false seabed\" on their screens that rose at dusk and fell at daybreak. Only much later did anyone appreciate what the moving layer was made of, or how much carbon it carried down with it.<br><br><b>C.</b> That last point is what has drawn climate researchers to a zone they once ignored. Animals that feed near the surface and then descend are, in effect, a biological pump: the carbon in their food travels down inside their bodies and is released, through breathing and waste, at depths from which it may not return to the atmosphere for centuries. Estimates of how much carbon moves this way vary wildly, and therein lies the problem. Were the figure at the upper end of current guesses, the twilight zone would be storing more carbon each year than every forest on Earth combined; were it at the lower end, it would be a modest contributor at best. Nobody can yet say which.<br><br><b>D.</b> Closing that gap is harder than it sounds. Nets tear the soft-bodied animals apart or let them escape; cameras need light, which frightens off the very creatures they are meant to observe; and sound-based surveys cannot easily tell a shoal of fish from a cloud of jellyfish. One response has been to release fleets of small autonomous floats that drift with the currents for months at a time, recording temperature, oxygen and the faint acoustic signature of life around them. Another has been to listen in a different sense: hydrophones lowered into the darkness have picked up a low, rhythmic hum at dusk that some researchers believe is the collective sound of millions of animals beginning their nightly climb.<br><br><b>E.</b> All of this is unfolding just as commercial interest in the same waters is growing. Several fishing companies have begun to look at the twilight zone's small, oily fish as raw material for fishmeal and nutritional supplements, and a handful of governments have issued exploratory licences. Scientists have not, on the whole, called for a ban. What they have asked for is time: a pause long enough to learn what the zone does for the rest of the planet before anyone starts to remove pieces of it. Whether that request will be heard is, for now, an open question.",
-      "questions": [
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) explains how the daily migration was first detected?",
-          "accept": [
-            "B"
-          ],
-          "answer": "B",
-          "explanation": "Section B describes ship-mounted echo sounders recording a \"false seabed\" that rose at dusk and fell at daybreak — the first record of the movement."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) lists the practical difficulties of observing twilight-zone animals?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "Section D explains why nets, cameras and sound surveys each fail, before describing the floats and hydrophones used instead."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) compares the zone's possible role with that of the world's forests?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "Section C says that at the upper end of estimates the zone would store more carbon each year than every forest on Earth combined."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) describes what scientists have asked decision-makers to do?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "Section E states that scientists have not asked for a ban but for a pause — time to learn what the zone does before it is exploited."
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "What is the writer's main purpose in the passage?",
-          "options": [
-            "To argue that fishing in the twilight zone should be banned immediately",
-            "To show that a poorly understood part of the ocean may matter greatly and is now under pressure",
-            "To explain how echo sounders and hydrophones work",
-            "To prove that the deep ocean absorbs more carbon than forests do"
-          ],
-          "correct": 1,
-          "explanation": "The passage moves from the zone's surprising activity, to its uncertain climate role, to the difficulty of studying it, and finally to growing commercial interest. Option D is only one end of an estimate, and the writer says scientists have not called for a ban."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What does the passage suggest about the timing of the commercial interest described in section E?",
-          "options": [
-            "Companies have deliberately waited for scientists to complete their research",
-            "It has arrived before anyone can say what removing the animals would cost the planet",
-            "Governments issued licences because research has shown the fishing is safe",
-            "Most scientists are opposed to any use of the zone's fish"
-          ],
-          "correct": 1,
-          "explanation": "The phrase \"just as\" links growing commercial interest to a moment when the zone's role is still unknown, and scientists want a pause \"long enough to learn\" before removal begins. Nothing suggests companies waited or that research has shown fishing is safe."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "In section B, the word \"dwarfs\" is closest in meaning to:",
-          "options": [
-            "is far larger than",
-            "moves more slowly than",
-            "closely resembles",
-            "is hidden beneath"
-          ],
-          "correct": 0,
-          "explanation": "To \"dwarf\" something is to make it look small by comparison; the migration is on a scale far larger than any on land."
-        },
-        {
-          "kind": "tfng",
-          "type": "mcq",
-          "q": "The hum picked up by hydrophones has been proved to come from migrating animals.",
-          "options": [
-            "True",
-            "False",
-            "Not Given"
-          ],
-          "correct": 1,
-          "explanation": "The passage says only that \"some researchers believe\" the hum is the sound of animals beginning their climb — a belief, not a proof — so the statement contradicts the text."
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) explains how the daily migration was first detected?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "Section B describes ship-mounted echo sounders recording a \"false seabed\" that rose at dusk and fell at daybreak — the first record of the movement."
     },
     {
-      "id": "rd-ch-10-2",
-      "level": "ch",
-      "title": "Every Map Has an Edge",
-      "topic": "the history of maps",
-      "words": 549,
-      "passage": "Five sentences have been removed from the passage. Choose from A–G the one that fits each gap. There are two extra sentences you do not need.<br><br>Long before a map was a tool for getting from one place to another, it was an argument about what the world was. [1] The town where the map was drawn sat at the centre; the edges were reserved for whatever the mapmaker feared, hoped for or had merely heard rumours of. To read such a map as a failed attempt at accuracy is to miss the point entirely. Its makers were not lost; they were explaining.<br><br>The shift towards maps that could actually guide a traveller came not from scholars but from sailors. Charts drawn for the Mediterranean trade in the later Middle Ages were covered in a web of straight lines radiating from compass points, and their coastlines were startlingly precise. [2] A captain who had sailed a stretch of coast a dozen times knew its bays and headlands far better than any professor in a library, and the charts recorded that hard-won knowledge with little decoration and no philosophy.<br><br>For the next few centuries, the two traditions ran side by side and borrowed from each other awkwardly. Printed world maps grew more accurate along the coasts while remaining inventive inland, where the mapmaker's only sources were travellers' tales. [3] It was, after all, easier to sell a map with a mountain range on it than one with an honest blank.<br><br>The blank spaces did not disappear because explorers filled them; they disappeared because a new kind of state demanded it. Governments that wished to tax land, raise armies and build roads needed to know, to within a few metres, where everything was. [4] The resulting surveys took decades, employed thousands, and produced maps that for the first time showed a country as its rulers wished to see it: measured, bounded and owned.<br><br>It is tempting to think of this as the end of the story, with today's satellite imagery as the final, perfect map. Yet the choices have not gone away; they have merely become harder to see. [5] Every map still has a centre and an edge, still decides what deserves a name, and still tells its reader, quietly, what kind of world they are living in.<br><br><b>A.</b> Their accuracy came from a source the universities had never taken seriously: the accumulated experience of working seamen.<br><b>B.</b> A blank space, however, was a poor advertisement, and so cartographers of the period filled it with invented rivers, speculative kingdoms and the occasional monster.<br><b>C.</b> Whoever decides which shops appear when a phone is unlocked, or which border is drawn as a solid line and which as a dotted one, is making exactly the kind of statement the medieval mapmaker made, only with far less candour.<br><b>D.</b> The earliest surviving maps of this kind are less concerned with distance than with meaning.<br><b>E.</b> Their answer was the national survey: teams of engineers with chains and instruments, triangulating from hilltop to hilltop across an entire territory.<br><b>F.</b> Sailors, by contrast, rarely learned to read and had little curiosity about what lay beyond the coast.<br><b>G.</b> The invention of printing made maps cheap enough for ordinary households to own for the first time.",
-      "questions": [
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which sentence (A–G) fits gap [1]?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "Gap [1] follows the claim that a map was \"an argument about what the world was\" and precedes a description of centre and edges; D's \"less concerned with distance than with meaning\" introduces exactly that idea, and \"of this kind\" refers back to maps as arguments."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which sentence (A–G) fits gap [2]?",
-          "accept": [
-            "A"
-          ],
-          "answer": "A",
-          "explanation": "The sentence before [2] praises the charts' precise coastlines and the sentence after explains a captain's experience; A's \"Their accuracy came from… working seamen\" bridges the two. F contradicts the paragraph, which credits sailors, not dismisses them."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which sentence (A–G) fits gap [3]?",
-          "accept": [
-            "B"
-          ],
-          "answer": "B",
-          "explanation": "After \"inventive inland\", B explains why blanks were filled with invented features, and the next sentence (\"easier to sell a map with a mountain range on it\") continues the selling idea. G mentions printing but says nothing about blanks."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which sentence (A–G) fits gap [4]?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "\"Their answer\" in E responds to the governments' need described just before the gap, and \"The resulting surveys\" after the gap refers back to E's national survey."
-        },
-        {
-          "kind": "gap",
-          "type": "text",
-          "q": "Which sentence (A–G) fits gap [5]?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "Gap [5] follows \"the choices… have merely become harder to see\"; C gives modern examples of such hidden choices (phone maps, borders) and links them to the medieval mapmaker, matching the paragraph's argument."
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "Which statement best expresses the writer's central claim?",
-          "options": [
-            "Maps became truly useful only once governments began to survey their territory",
-            "Medieval maps were failures because their makers lacked accurate instruments",
-            "Maps have always expressed choices about the world, even when they look purely objective",
-            "Satellite imagery has finally freed maps from the errors of earlier centuries"
-          ],
-          "correct": 2,
-          "explanation": "The opening calls a map \"an argument\", and the closing paragraph insists the choices \"have not gone away\" even in the satellite era. The writer explicitly rejects reading medieval maps as failed attempts at accuracy."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What does the writer imply about today's satellite-based maps?",
-          "options": [
-            "They have removed the need for human judgement in mapmaking",
-            "They conceal their choices more effectively than older maps did",
-            "They are less accurate than the national surveys that preceded them",
-            "They have made the idea of a map's centre meaningless"
-          ],
-          "correct": 1,
-          "explanation": "The writer says the choices have \"become harder to see\" and that modern mapmakers act \"with far less candour\" than medieval ones. That is a claim about concealment, not about accuracy or the absence of judgement."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "In the third paragraph, \"inventive\" is used to mean:",
-          "options": [
-            "based on imagination rather than evidence",
-            "drawn with great technical skill",
-            "crowded with too much detail",
-            "copied from earlier maps"
-          ],
-          "correct": 0,
-          "explanation": "The inland areas were \"inventive\" because the mapmaker's only sources were travellers' tales — the features were made up, not measured. The contrast with \"more accurate along the coasts\" confirms this."
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) lists the practical difficulties of observing twilight-zone animals?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D explains why nets, cameras and sound surveys each fail, before describing the floats and hydrophones used instead."
     },
     {
-      "id": "rd-ch-10-3",
-      "level": "ch",
-      "title": "The Apprentice Problem",
-      "topic": "artificial intelligence and work",
-      "words": 492,
-      "passage": "<b>A.</b> Every profession has a bottom rung, and for most of history that rung has been where the learning happened. The junior lawyer who spends a year checking contracts for a single clause, the trainee radiologist who reads a thousand routine scans before seeing a rare one, the graduate analyst who builds the same spreadsheet a hundred times: none of them enjoys the work, and all of them are being trained by it. The dull tasks at the bottom of a career are not an accident of bad organisation. They are how expertise is passed on.<br><br><b>B.</b> It is precisely these tasks that the current generation of artificial intelligence performs best. Software that summarises documents, drafts routine letters, flags anomalies in images and writes first-pass code is not replacing the expert at the top of the ladder, whose judgement it cannot yet match. It is replacing the apprentice at the bottom, whose work was always somewhat mechanical. Firms that have adopted such tools report exactly what one would expect: fewer junior hires, faster turnaround, and senior staff freed to concentrate on the parts of the job that genuinely require them.<br><br><b>C.</b> What those same firms have been slower to notice is the debt they are running up. If nobody reads the thousand routine scans, nobody develops the eye that spots the thousand-and-first. Had the tools existed a generation ago, the very people now supervising them would never have acquired the judgement that makes their supervision valuable. The problem is not that machines will take the senior jobs; it is that, a decade from now, there may be no one qualified to hold them. Economists have a name for a resource that is consumed faster than it is renewed, and nothing about the label is reassuring.<br><br><b>D.</b> Not everyone accepts this gloomy account. Sceptics point out that every wave of automation has provoked the same alarm, and that the professions have survived the calculator, the search engine and the spreadsheet. Skills, they argue, do not vanish; they migrate. A junior who no longer checks contracts by hand will instead learn to interrogate the machine's checking, to notice where it is confidently wrong, and to take responsibility for a judgement she did not personally form. That, they say, is a higher skill than the one it replaces, not a lower one.<br><br><b>E.</b> Both sides may be right, which is what makes the question so uncomfortable. It is entirely possible that the skill of supervising machines is genuinely valuable and that it cannot be learned without first doing, at least for a while, the work the machines now do. If so, the firms that will thrive are not those that cut the bottom rung fastest, but those that deliberately keep some of the drudgery in place and pay for it, knowing full well that a machine could do it more cheaply. Whether shareholders will tolerate such an arrangement is a question no algorithm can answer.",
-      "questions": [
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) presents the view that the writer's concern is exaggerated?",
-          "accept": [
-            "D"
-          ],
-          "answer": "D",
-          "explanation": "Section D gives the sceptics' response: every wave of automation has caused the same alarm, and skills migrate rather than vanish."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) suggests that some firms may need to pay for work that a machine could do more cheaply?",
-          "accept": [
-            "E"
-          ],
-          "answer": "E",
-          "explanation": "Section E says the firms that thrive may be those that keep some drudgery \"and pay for it, knowing full well that a machine could do it more cheaply\"."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) uses an imagined past to show what today's senior staff would have lost?",
-          "accept": [
-            "C"
-          ],
-          "answer": "C",
-          "explanation": "Section C's inverted conditional — \"Had the tools existed a generation ago, the very people now supervising them would never have acquired the judgement…\" — imagines a different past to make the point."
-        },
-        {
-          "kind": "section",
-          "type": "text",
-          "q": "Which section (A–E) argues that tedious work has a purpose beyond the task itself?",
-          "accept": [
-            "A"
-          ],
-          "answer": "A",
-          "explanation": "Section A lists dull entry-level tasks and concludes that they are \"how expertise is passed on\", not an accident of bad organisation."
-        },
-        {
-          "kind": "main-idea",
-          "type": "mcq",
-          "q": "Which of the following best summarises the passage?",
-          "options": [
-            "Artificial intelligence will soon replace senior professionals as well as junior ones",
-            "Automation removes the tasks through which people used to learn their professions, with consequences nobody can yet be sure of",
-            "Sceptics have shown that fears about automation have always been unfounded",
-            "Firms should stop hiring junior staff and invest in supervising machines instead"
-          ],
-          "correct": 1,
-          "explanation": "The passage sets out the problem (A–C), the sceptical reply (D) and an unresolved conclusion (E). It explicitly says machines cannot yet match senior judgement and does not endorse the sceptics or recommend cutting junior hiring."
-        },
-        {
-          "kind": "inference",
-          "type": "mcq",
-          "q": "What does the writer imply by saying \"nothing about the label is reassuring\" in section C?",
-          "options": [
-            "Economists have already found a solution to a similar problem",
-            "The writer regards the firms' current approach as unsustainable",
-            "The label refers to the falling number of junior staff being hired",
-            "Economists side with the sceptics described in section D"
-          ],
-          "correct": 1,
-          "explanation": "The \"resource consumed faster than it is renewed\" is expertise itself; a resource used up faster than it is replaced eventually runs out. The writer never names the label but makes clear the situation cannot continue as it is."
-        },
-        {
-          "kind": "vocab",
-          "type": "mcq",
-          "q": "In section E, the word \"drudgery\" refers to:",
-          "options": [
-            "dull, repetitive work that nobody enjoys",
-            "expensive equipment that firms must buy",
-            "the legal risks of using machines",
-            "the supervision of junior staff by seniors"
-          ],
-          "correct": 0,
-          "explanation": "\"Drudgery\" is hard, tedious work; the passage has just described the routine tasks of the bottom rung, which a machine \"could do more cheaply\"."
-        },
-        {
-          "kind": "tfng",
-          "type": "mcq",
-          "q": "The writer states that current software can already match the judgement of an expert at the top of a profession.",
-          "options": [
-            "True",
-            "False",
-            "Not Given"
-          ],
-          "correct": 1,
-          "explanation": "Section B says the software is not replacing the expert at the top, \"whose judgement it cannot yet match\" — the opposite of the statement."
-        }
-      ]
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) compares the zone's possible role with that of the world's forests?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C says that at the upper end of estimates the zone would store more carbon each year than every forest on Earth combined."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) describes what scientists have asked decision-makers to do?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E states that scientists have not asked for a ban but for a pause — time to learn what the zone does before it is exploited."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "What is the writer's main purpose in the passage?",
+     "options": [
+      "To explain how echo sounders and hydrophones work",
+      "To prove that the deep ocean absorbs more carbon than forests do",
+      "To argue that fishing in the twilight zone should be banned immediately",
+      "To show that a poorly understood part of the ocean may matter greatly and is now under pressure"
+     ],
+     "correct": 3,
+     "explanation": "The passage moves from the zone's surprising activity, to its uncertain climate role, to the difficulty of studying it, and finally to growing commercial interest. Option D is only one end of an estimate, and the writer says scientists have not called for a ban."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the passage suggest about the timing of the commercial interest described in section E?",
+     "options": [
+      "Most scientists are opposed to any use of the zone's fish",
+      "Companies have deliberately waited for scientists to complete their research",
+      "It has arrived before anyone can say what removing the animals would cost the planet",
+      "Governments issued licences because research has shown the fishing is safe"
+     ],
+     "correct": 2,
+     "explanation": "The phrase \"just as\" links growing commercial interest to a moment when the zone's role is still unknown, and scientists want a pause \"long enough to learn\" before removal begins. Nothing suggests companies waited or that research has shown fishing is safe."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In section B, the word \"dwarfs\" is closest in meaning to:",
+     "options": [
+      "is hidden beneath",
+      "is far larger than",
+      "moves more slowly than",
+      "closely resembles"
+     ],
+     "correct": 1,
+     "explanation": "To \"dwarf\" something is to make it look small by comparison; the migration is on a scale far larger than any on land."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "The hum picked up by hydrophones has been proved to come from migrating animals.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "The passage says only that \"some researchers believe\" the hum is the sound of animals beginning their climb — a belief, not a proof — so the statement contradicts the text."
     }
-  ]
+   ]
+  },
+  {
+   "id": "rd-ch-10-2",
+   "level": "ch",
+   "title": "Every Map Has an Edge",
+   "topic": "the history of maps",
+   "words": 549,
+   "passage": "Five sentences have been removed from the passage. Choose from A–G the one that fits each gap. There are two extra sentences you do not need.<br><br>Long before a map was a tool for getting from one place to another, it was an argument about what the world was. [1] The town where the map was drawn sat at the centre; the edges were reserved for whatever the mapmaker feared, hoped for or had merely heard rumours of. To read such a map as a failed attempt at accuracy is to miss the point entirely. Its makers were not lost; they were explaining.<br><br>The shift towards maps that could actually guide a traveller came not from scholars but from sailors. Charts drawn for the Mediterranean trade in the later Middle Ages were covered in a web of straight lines radiating from compass points, and their coastlines were startlingly precise. [2] A captain who had sailed a stretch of coast a dozen times knew its bays and headlands far better than any professor in a library, and the charts recorded that hard-won knowledge with little decoration and no philosophy.<br><br>For the next few centuries, the two traditions ran side by side and borrowed from each other awkwardly. Printed world maps grew more accurate along the coasts while remaining inventive inland, where the mapmaker's only sources were travellers' tales. [3] It was, after all, easier to sell a map with a mountain range on it than one with an honest blank.<br><br>The blank spaces did not disappear because explorers filled them; they disappeared because a new kind of state demanded it. Governments that wished to tax land, raise armies and build roads needed to know, to within a few metres, where everything was. [4] The resulting surveys took decades, employed thousands, and produced maps that for the first time showed a country as its rulers wished to see it: measured, bounded and owned.<br><br>It is tempting to think of this as the end of the story, with today's satellite imagery as the final, perfect map. Yet the choices have not gone away; they have merely become harder to see. [5] Every map still has a centre and an edge, still decides what deserves a name, and still tells its reader, quietly, what kind of world they are living in.<br><br><b>A.</b> Their accuracy came from a source the universities had never taken seriously: the accumulated experience of working seamen.<br><b>B.</b> A blank space, however, was a poor advertisement, and so cartographers of the period filled it with invented rivers, speculative kingdoms and the occasional monster.<br><b>C.</b> Whoever decides which shops appear when a phone is unlocked, or which border is drawn as a solid line and which as a dotted one, is making exactly the kind of statement the medieval mapmaker made, only with far less candour.<br><b>D.</b> The earliest surviving maps of this kind are less concerned with distance than with meaning.<br><b>E.</b> Their answer was the national survey: teams of engineers with chains and instruments, triangulating from hilltop to hilltop across an entire territory.<br><b>F.</b> Sailors, by contrast, rarely learned to read and had little curiosity about what lay beyond the coast.<br><b>G.</b> The invention of printing made maps cheap enough for ordinary households to own for the first time.",
+   "questions": [
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [1]?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Gap [1] follows the claim that a map was \"an argument about what the world was\" and precedes a description of centre and edges; D's \"less concerned with distance than with meaning\" introduces exactly that idea, and \"of this kind\" refers back to maps as arguments."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [2]?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "The sentence before [2] praises the charts' precise coastlines and the sentence after explains a captain's experience; A's \"Their accuracy came from… working seamen\" bridges the two. F contradicts the paragraph, which credits sailors, not dismisses them."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [3]?",
+     "accept": [
+      "B"
+     ],
+     "answer": "B",
+     "explanation": "After \"inventive inland\", B explains why blanks were filled with invented features, and the next sentence (\"easier to sell a map with a mountain range on it\") continues the selling idea. G mentions printing but says nothing about blanks."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [4]?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "\"Their answer\" in E responds to the governments' need described just before the gap, and \"The resulting surveys\" after the gap refers back to E's national survey."
+    },
+    {
+     "kind": "gap",
+     "type": "text",
+     "q": "Which sentence (A–G) fits gap [5]?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Gap [5] follows \"the choices… have merely become harder to see\"; C gives modern examples of such hidden choices (phone maps, borders) and links them to the medieval mapmaker, matching the paragraph's argument."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which statement best expresses the writer's central claim?",
+     "options": [
+      "Satellite imagery has finally freed maps from the errors of earlier centuries",
+      "Maps became truly useful only once governments began to survey their territory",
+      "Medieval maps were failures because their makers lacked accurate instruments",
+      "Maps have always expressed choices about the world, even when they look purely objective"
+     ],
+     "correct": 3,
+     "explanation": "The opening calls a map \"an argument\", and the closing paragraph insists the choices \"have not gone away\" even in the satellite era. The writer explicitly rejects reading medieval maps as failed attempts at accuracy."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply about today's satellite-based maps?",
+     "options": [
+      "They conceal their choices more effectively than older maps did",
+      "They are less accurate than the national surveys that preceded them",
+      "They have made the idea of a map's centre meaningless",
+      "They have removed the need for human judgement in mapmaking"
+     ],
+     "correct": 0,
+     "explanation": "The writer says the choices have \"become harder to see\" and that modern mapmakers act \"with far less candour\" than medieval ones. That is a claim about concealment, not about accuracy or the absence of judgement."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In the third paragraph, \"inventive\" is used to mean:",
+     "options": [
+      "copied from earlier maps",
+      "based on imagination rather than evidence",
+      "drawn with great technical skill",
+      "crowded with too much detail"
+     ],
+     "correct": 1,
+     "explanation": "The inland areas were \"inventive\" because the mapmaker's only sources were travellers' tales — the features were made up, not measured. The contrast with \"more accurate along the coasts\" confirms this."
+    }
+   ]
+  },
+  {
+   "id": "rd-ch-10-3",
+   "level": "ch",
+   "title": "The Apprentice Problem",
+   "topic": "artificial intelligence and work",
+   "words": 492,
+   "passage": "<b>A.</b> Every profession has a bottom rung, and for most of history that rung has been where the learning happened. The junior lawyer who spends a year checking contracts for a single clause, the trainee radiologist who reads a thousand routine scans before seeing a rare one, the graduate analyst who builds the same spreadsheet a hundred times: none of them enjoys the work, and all of them are being trained by it. The dull tasks at the bottom of a career are not an accident of bad organisation. They are how expertise is passed on.<br><br><b>B.</b> It is precisely these tasks that the current generation of artificial intelligence performs best. Software that summarises documents, drafts routine letters, flags anomalies in images and writes first-pass code is not replacing the expert at the top of the ladder, whose judgement it cannot yet match. It is replacing the apprentice at the bottom, whose work was always somewhat mechanical. Firms that have adopted such tools report exactly what one would expect: fewer junior hires, faster turnaround, and senior staff freed to concentrate on the parts of the job that genuinely require them.<br><br><b>C.</b> What those same firms have been slower to notice is the debt they are running up. If nobody reads the thousand routine scans, nobody develops the eye that spots the thousand-and-first. Had the tools existed a generation ago, the very people now supervising them would never have acquired the judgement that makes their supervision valuable. The problem is not that machines will take the senior jobs; it is that, a decade from now, there may be no one qualified to hold them. Economists have a name for a resource that is consumed faster than it is renewed, and nothing about the label is reassuring.<br><br><b>D.</b> Not everyone accepts this gloomy account. Sceptics point out that every wave of automation has provoked the same alarm, and that the professions have survived the calculator, the search engine and the spreadsheet. Skills, they argue, do not vanish; they migrate. A junior who no longer checks contracts by hand will instead learn to interrogate the machine's checking, to notice where it is confidently wrong, and to take responsibility for a judgement she did not personally form. That, they say, is a higher skill than the one it replaces, not a lower one.<br><br><b>E.</b> Both sides may be right, which is what makes the question so uncomfortable. It is entirely possible that the skill of supervising machines is genuinely valuable and that it cannot be learned without first doing, at least for a while, the work the machines now do. If so, the firms that will thrive are not those that cut the bottom rung fastest, but those that deliberately keep some of the drudgery in place and pay for it, knowing full well that a machine could do it more cheaply. Whether shareholders will tolerate such an arrangement is a question no algorithm can answer.",
+   "questions": [
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) presents the view that the writer's concern is exaggerated?",
+     "accept": [
+      "D"
+     ],
+     "answer": "D",
+     "explanation": "Section D gives the sceptics' response: every wave of automation has caused the same alarm, and skills migrate rather than vanish."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) suggests that some firms may need to pay for work that a machine could do more cheaply?",
+     "accept": [
+      "E"
+     ],
+     "answer": "E",
+     "explanation": "Section E says the firms that thrive may be those that keep some drudgery \"and pay for it, knowing full well that a machine could do it more cheaply\"."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) uses an imagined past to show what today's senior staff would have lost?",
+     "accept": [
+      "C"
+     ],
+     "answer": "C",
+     "explanation": "Section C's inverted conditional — \"Had the tools existed a generation ago, the very people now supervising them would never have acquired the judgement…\" — imagines a different past to make the point."
+    },
+    {
+     "kind": "section",
+     "type": "text",
+     "q": "Which section (A–E) argues that tedious work has a purpose beyond the task itself?",
+     "accept": [
+      "A"
+     ],
+     "answer": "A",
+     "explanation": "Section A lists dull entry-level tasks and concludes that they are \"how expertise is passed on\", not an accident of bad organisation."
+    },
+    {
+     "kind": "main-idea",
+     "type": "mcq",
+     "q": "Which of the following best summarises the passage?",
+     "options": [
+      "Artificial intelligence will soon replace senior professionals as well as junior ones",
+      "Automation removes the tasks through which people used to learn their professions, with consequences nobody can yet be sure of",
+      "Sceptics have shown that fears about automation have always been unfounded",
+      "Firms should stop hiring junior staff and invest in supervising machines instead"
+     ],
+     "correct": 1,
+     "explanation": "The passage sets out the problem (A–C), the sceptical reply (D) and an unresolved conclusion (E). It explicitly says machines cannot yet match senior judgement and does not endorse the sceptics or recommend cutting junior hiring."
+    },
+    {
+     "kind": "inference",
+     "type": "mcq",
+     "q": "What does the writer imply by saying \"nothing about the label is reassuring\" in section C?",
+     "options": [
+      "The writer regards the firms' current approach as unsustainable",
+      "The label refers to the falling number of junior staff being hired",
+      "Economists side with the sceptics described in section D",
+      "Economists have already found a solution to a similar problem"
+     ],
+     "correct": 0,
+     "explanation": "The \"resource consumed faster than it is renewed\" is expertise itself; a resource used up faster than it is replaced eventually runs out. The writer never names the label but makes clear the situation cannot continue as it is."
+    },
+    {
+     "kind": "vocab",
+     "type": "mcq",
+     "q": "In section E, the word \"drudgery\" refers to:",
+     "options": [
+      "expensive equipment that firms must buy",
+      "the legal risks of using machines",
+      "the supervision of junior staff by seniors",
+      "dull, repetitive work that nobody enjoys"
+     ],
+     "correct": 3,
+     "explanation": "\"Drudgery\" is hard, tedious work; the passage has just described the routine tasks of the bottom rung, which a machine \"could do more cheaply\"."
+    },
+    {
+     "kind": "tfng",
+     "type": "mcq",
+     "q": "The writer states that current software can already match the judgement of an expert at the top of a profession.",
+     "options": [
+      "True",
+      "False",
+      "Not Given"
+     ],
+     "correct": 1,
+     "explanation": "Section B says the software is not replacing the expert at the top, \"whose judgement it cannot yet match\" — the opposite of the statement."
+    }
+   ]
+  }
+ ]
 }

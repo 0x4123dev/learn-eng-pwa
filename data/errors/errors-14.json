@@ -1,0 +1,404 @@
+{
+  "items": [
+    {
+      "id": "er-kc-14-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "My cousin (A) has moved to Da Nang two years ago, and she (B) still sends us photos of the beach (C) whenever the weather (D) is nice.",
+      "options": ["has moved", "still sends", "whenever", "is nice"],
+      "correct": 0,
+      "correction": "moved",
+      "explanation": "A finished action with a definite past time (<b>two years ago</b>) takes the past simple, not the present perfect."
+    },
+    {
+      "id": "er-kc-14-2",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "Before the experiment, the teacher (A) reminded us that each of the coloured liquids (B) were dangerous (C) if it touched (D) our skin.",
+      "options": ["reminded us", "were dangerous", "if it touched", "our skin"],
+      "correct": 1,
+      "correction": "was dangerous",
+      "explanation": "<b>Each of + plural noun</b> is a singular subject, so the verb must be singular (was); the pronoun <b>it</b> later in the sentence confirms this."
+    },
+    {
+      "id": "er-kc-14-3",
+      "level": "kc",
+      "focus": "article",
+      "q": "During the Tet holiday, my brother (A) worked as a guide for (B) a group of climbers who wanted to reach (C) the top of the Mount Fansipan (D) before dawn.",
+      "options": ["worked as a guide", "a group of climbers", "the top of the Mount Fansipan", "before dawn"],
+      "correct": 2,
+      "correction": "the top of Mount Fansipan",
+      "explanation": "The names of individual mountains (Mount Fansipan, Mount Everest) take no article; only mountain ranges do (the Alps)."
+    },
+    {
+      "id": "er-kc-14-4",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "The documentary about penguins (A) was so interesting that my little sister (B) insisted on watching it again (C) as soon as we (D) arrived at home.",
+      "options": ["was so interesting", "insisted on watching", "as soon as", "arrived at home"],
+      "correct": 3,
+      "correction": "arrived home",
+      "explanation": "<b>Home</b> behaves like an adverb after verbs of movement: we arrive home, go home, get home, with no preposition."
+    },
+    {
+      "id": "er-kc-14-5",
+      "level": "kc",
+      "focus": "word-form",
+      "q": "The (A) succeed of the school football team (B) depends largely on (C) how well the players (D) communicate with one another during the match.",
+      "options": ["succeed", "depends largely on", "how well", "communicate with"],
+      "correct": 0,
+      "correction": "success",
+      "explanation": "After <b>the</b> and before <b>of</b> a noun is needed, so the verb <b>succeed</b> must become the noun <b>success</b>."
+    },
+    {
+      "id": "er-kc-14-6",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "Because Lan and I (A) had finished the science project (B) by ourself, the teacher praised us (C) in front of (D) the whole class.",
+      "options": ["had finished", "by ourself", "in front of", "the whole class"],
+      "correct": 1,
+      "correction": "by ourselves",
+      "explanation": "The reflexive pronoun for <b>we</b> is the plural form <b>ourselves</b>; <b>ourself</b> is not a standard form."
+    },
+    {
+      "id": "er-kc-14-7",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Although the new library is (A) much bigger than the old one, most students (B) still think the reading room (C) is more quieter in (D) the old building.",
+      "options": ["much bigger than", "still think", "is more quieter", "the old building"],
+      "correct": 2,
+      "correction": "is quieter",
+      "explanation": "A short adjective forms its comparative with <b>-er</b> alone; <b>more</b> and <b>-er</b> are never used together."
+    },
+    {
+      "id": "er-kc-14-8",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "Scientists say that (A) if the ice at the poles (B) continues to melt at this speed, many coastal cities (C) will face serious floods (D) unless they will build higher walls.",
+      "options": ["if the ice", "continues to melt", "will face serious floods", "unless they will build"],
+      "correct": 3,
+      "correction": "unless they build",
+      "explanation": "In a first conditional the <b>if/unless</b> clause takes the present simple; <b>will</b> belongs only in the main clause."
+    },
+    {
+      "id": "er-kc-14-9",
+      "level": "kc",
+      "focus": "reported",
+      "q": "Yesterday the coach (A) said us that the final match (B) would be postponed (C) until the pitch (D) had dried out.",
+      "options": ["said us", "would be postponed", "until the pitch", "had dried out"],
+      "correct": 0,
+      "correction": "told us",
+      "explanation": "<b>Tell</b> takes a direct object (told us that...), whereas <b>say</b> needs <b>to</b> before the person (said to us)."
+    },
+    {
+      "id": "er-kc-14-10",
+      "level": "kc",
+      "focus": "relative",
+      "q": "Last month our class visited a factory (A) on the outskirts of the city (B) which the workers make bicycles (C) that are sold (D) all over Asia.",
+      "options": ["on the outskirts", "which the workers make bicycles", "that are sold", "all over Asia"],
+      "correct": 1,
+      "correction": "where the workers make bicycles",
+      "explanation": "The clause already has its own subject and object (the workers make bicycles), so a relative adverb of place, <b>where</b>, is needed rather than the pronoun <b>which</b>."
+    },
+    {
+      "id": "er-kc-14-11",
+      "level": "kc",
+      "focus": "word-order",
+      "q": "My father (A) usually reads the newspaper (B) at breakfast, but this morning he (C) asked me what time was the bus (D) leaving for the airport.",
+      "options": ["usually reads", "at breakfast", "asked me what time was the bus", "leaving for the airport"],
+      "correct": 2,
+      "correction": "asked me what time the bus was",
+      "explanation": "In an indirect question the subject comes before the verb (what time the bus was), with no inversion."
+    },
+    {
+      "id": "er-kc-14-12",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "After school, my sister (A) usually helps my mother (B) prepare dinner while I (C) walk the dog and (D) make the washing-up.",
+      "options": ["usually helps", "prepare dinner", "walk the dog", "make the washing-up"],
+      "correct": 3,
+      "correction": "do the washing-up",
+      "explanation": "Household chores collocate with <b>do</b>: do the washing-up, do the cooking, do the housework."
+    },
+    {
+      "id": "er-kc-14-13",
+      "level": "kc",
+      "focus": "quantifier",
+      "q": "(A) A few of the furniture in the hall (B) was damaged when the roof (C) leaked during the heavy storm (D) last Tuesday night.",
+      "options": ["A few of the furniture", "was damaged", "leaked", "last Tuesday night"],
+      "correct": 0,
+      "correction": "Some of the furniture",
+      "explanation": "<b>Furniture</b> is uncountable, so it cannot follow <b>a few</b>; use <b>some</b> or <b>a little</b> instead."
+    },
+    {
+      "id": "er-kc-14-14",
+      "level": "kc",
+      "focus": "conjunction",
+      "q": "My uncle (A) still cycles to work every day (B) despite he is nearly seventy and (C) the road is (D) quite hilly.",
+      "options": ["still cycles", "despite he is nearly seventy", "the road is", "quite hilly"],
+      "correct": 1,
+      "correction": "although he is nearly seventy",
+      "explanation": "<b>Despite</b> is a preposition and must be followed by a noun or -ing form; a full clause with subject and verb needs <b>although</b> or <b>even though</b>."
+    },
+    {
+      "id": "er-kc-14-15",
+      "level": "kc",
+      "focus": "tense",
+      "q": "By the time the fire engine (A) arrived at the market, the shopkeepers (B) had already carried most of their goods outside and (C) are waiting (D) on the pavement.",
+      "options": ["arrived at", "had already carried", "are waiting", "on the pavement"],
+      "correct": 2,
+      "correction": "were waiting",
+      "explanation": "The whole sentence describes a past scene (arrived, had carried), so the ongoing action must be in the past continuous, not the present."
+    },
+    {
+      "id": "er-kc-14-16",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "The number of students (A) who bring their own lunch (B) to school (C) has increased since the canteen prices (D) was raised in March.",
+      "options": ["who bring", "to school", "has increased", "was raised"],
+      "correct": 3,
+      "correction": "were raised",
+      "explanation": "The subject of the final clause is the plural noun <b>prices</b>, so the passive verb must be plural: were raised."
+    },
+    {
+      "id": "er-kc-14-17",
+      "level": "kc",
+      "focus": "article",
+      "q": "(A) The honesty is the quality my grandmother (B) valued most, and she (C) never forgave anyone who (D) told her a lie.",
+      "options": ["The honesty", "valued most", "never forgave", "told her a lie"],
+      "correct": 0,
+      "correction": "Honesty",
+      "explanation": "An abstract noun used in a general sense (honesty, freedom, happiness) takes no article."
+    },
+    {
+      "id": "er-kc-14-18",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "The astronomy club meets (A) on the roof of the science building (B) in Friday evenings, when the sky (C) is usually clear enough (D) to see Jupiter.",
+      "options": ["on the roof", "in Friday evenings", "is usually clear enough", "to see Jupiter"],
+      "correct": 1,
+      "correction": "on Friday evenings",
+      "explanation": "We say <b>in the evening</b>, but once a day is named the preposition becomes <b>on</b>: on Friday evenings, on Monday morning."
+    },
+    {
+      "id": "er-kc-14-19",
+      "level": "kc",
+      "focus": "word-form",
+      "q": "The bus driver (A) drove very (B) carefully along the mountain road, but the passengers were still (C) frighten by the (D) sharp bends.",
+      "options": ["drove very", "carefully", "frighten", "sharp bends"],
+      "correct": 2,
+      "correction": "frightened",
+      "explanation": "To describe how people feel we need the <b>-ed</b> adjective (frightened), not the bare verb <b>frighten</b>."
+    },
+    {
+      "id": "er-kc-14-20",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "The old clock in the hall (A) stopped working last week, so my father (B) took it to a repair shop (C) whose owner promised to fix (D) them by Friday.",
+      "options": ["stopped working", "took it", "whose owner", "them"],
+      "correct": 3,
+      "correction": "it",
+      "explanation": "The pronoun refers back to the singular <b>clock</b>, so it must be <b>it</b>, matching the earlier <b>took it</b>."
+    },
+    {
+      "id": "er-kc-14-21",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Mai is (A) the most tall girl in her class, (B) which is why the coach (C) asked her to try out for the (D) volleyball team.",
+      "options": ["the most tall girl", "which is why", "asked her to try out", "volleyball team"],
+      "correct": 0,
+      "correction": "the tallest girl",
+      "explanation": "One-syllable adjectives form the superlative with <b>-est</b>; <b>most</b> is used only with longer adjectives."
+    },
+    {
+      "id": "er-kc-14-22",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If I (A) had a bigger garden, I (B) will grow my own vegetables (C) instead of buying them (D) from the supermarket every week.",
+      "options": ["had a bigger garden", "will grow", "instead of buying them", "from the supermarket"],
+      "correct": 1,
+      "correction": "would grow",
+      "explanation": "The past simple in the <b>if</b> clause signals a second conditional, whose main clause takes <b>would</b> + verb."
+    },
+    {
+      "id": "er-kc-14-23",
+      "level": "kc",
+      "focus": "reported",
+      "q": "The weather forecaster (A) warned viewers last night that a typhoon (B) was heading towards the coast and (C) will reach land (D) within two days.",
+      "options": ["warned viewers", "was heading", "will reach", "within two days"],
+      "correct": 2,
+      "correction": "would reach",
+      "explanation": "After a past reporting verb (warned) the tenses shift back, so <b>will</b> becomes <b>would</b> to match <b>was heading</b>."
+    },
+    {
+      "id": "er-kc-14-24",
+      "level": "kc",
+      "focus": "relative",
+      "q": "Nobody in my family (A) has ever visited the island off the northern coast, (B) although we have (C) often admired the photos (D) which my aunt took them there.",
+      "options": ["has ever visited", "although we have", "often admired", "which my aunt took them there"],
+      "correct": 3,
+      "correction": "which my aunt took there",
+      "explanation": "The relative pronoun <b>which</b> already acts as the object of <b>took</b>, so the extra object pronoun <b>them</b> must be removed."
+    },
+    {
+      "id": "er-kc-14-25",
+      "level": "kc",
+      "focus": "word-order",
+      "q": "My brother (A) enjoys very much the science programme (B) that is shown (C) on television (D) every Sunday evening.",
+      "options": ["enjoys very much the science programme", "that is shown", "on television", "every Sunday evening"],
+      "correct": 0,
+      "correction": "enjoys the science programme very much",
+      "explanation": "An adverb of degree such as <b>very much</b> cannot separate a verb from its object; it goes after the object."
+    },
+    {
+      "id": "er-kc-14-26",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Our science teacher (A) encouraged us to (B) make more attention (C) to the safety rules (D) before lighting the burner.",
+      "options": ["encouraged us to", "make more attention", "to the safety rules", "before lighting"],
+      "correct": 1,
+      "correction": "pay more attention",
+      "explanation": "The fixed collocation is <b>pay attention to</b>; <b>make attention</b> does not exist in English."
+    },
+    {
+      "id": "er-kc-14-27",
+      "level": "kc",
+      "focus": "quantifier",
+      "q": "There (A) were so many people at the night market (B) that we could hardly move, and there (C) wasn't many room to sit down (D) and eat.",
+      "options": ["were so many people", "that we could hardly move", "wasn't many room", "and eat"],
+      "correct": 2,
+      "correction": "wasn't much room",
+      "explanation": "<b>Room</b> meaning space is uncountable, so it takes <b>much</b>, not <b>many</b>; the singular <b>wasn't</b> is the clue."
+    },
+    {
+      "id": "er-kc-14-28",
+      "level": "kc",
+      "focus": "conjunction",
+      "q": "After the concert (A) finished at ten, we (B) decided to walk (C) all the way home (D) because of the buses were full.",
+      "options": ["finished at ten", "decided to walk", "all the way home", "because of the buses were full"],
+      "correct": 3,
+      "correction": "because the buses were full",
+      "explanation": "<b>Because of</b> is followed by a noun phrase; a clause with its own verb (the buses were full) needs the conjunction <b>because</b>."
+    },
+    {
+      "id": "er-kc-14-29",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "(A) Ten kilometres are a long way to walk (B) in this heat, so (C) we should leave (D) before sunrise.",
+      "options": ["Ten kilometres are", "in this heat", "we should leave", "before sunrise"],
+      "correct": 0,
+      "correction": "Ten kilometres is",
+      "explanation": "A distance, sum of money or period of time is treated as a single amount and takes a singular verb: ten kilometres <b>is</b> a long way."
+    },
+    {
+      "id": "er-kc-14-30",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Don't worry, I (A) will send you the photos (B) as soon as I will get home (C) from the trip (D) this evening.",
+      "options": ["will send you", "as soon as I will get home", "from the trip", "this evening"],
+      "correct": 1,
+      "correction": "as soon as I get home",
+      "explanation": "After time conjunctions like <b>as soon as</b>, <b>when</b> and <b>until</b>, the present simple is used for future time, never <b>will</b>."
+    },
+    {
+      "id": "er-kc-14-31",
+      "level": "kc",
+      "focus": "article",
+      "q": "My uncle, (A) who lives in Can Tho, is (B) a farmer, but his daughter is (C) engineer at (D) a large company in the city.",
+      "options": ["who lives in Can Tho", "a farmer", "engineer", "a large company"],
+      "correct": 2,
+      "correction": "an engineer",
+      "explanation": "A singular countable noun naming someone's job needs an article: <b>a farmer</b>, <b>an engineer</b>."
+    },
+    {
+      "id": "er-kc-14-32",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "The picnic (A) that our class has planned for Saturday (B) will take place at the lake, but (C) whether we swim or not (D) depends of the weather.",
+      "options": ["that our class has planned", "will take place", "whether we swim or not", "depends of the weather"],
+      "correct": 3,
+      "correction": "depends on the weather",
+      "explanation": "The verb <b>depend</b> is always followed by the preposition <b>on</b>, never <b>of</b>."
+    },
+    {
+      "id": "er-kc-14-33",
+      "level": "kc",
+      "focus": "word-form",
+      "q": "(A) Unfortunate, the school concert (B) had to be cancelled because (C) the singer had lost her voice (D) the day before.",
+      "options": ["Unfortunate", "had to be cancelled", "the singer had lost", "the day before"],
+      "correct": 0,
+      "correction": "Unfortunately",
+      "explanation": "A comment on the whole sentence is made with a sentence adverb ending in <b>-ly</b>, not with the adjective."
+    },
+    {
+      "id": "er-kc-14-34",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "The twins look (A) so alike that even their teacher (B) sometimes confuses one with other, (C) especially when they wear (D) the same uniform.",
+      "options": ["so alike", "sometimes confuses one with other", "especially when", "the same uniform"],
+      "correct": 1,
+      "correction": "sometimes confuses one with the other",
+      "explanation": "When there are exactly two, the second one is <b>the other</b>; <b>other</b> alone cannot stand as a pronoun."
+    },
+    {
+      "id": "er-kc-14-35",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "The train journey to Hue (A) takes about twelve hours, (B) which is (C) far longer as the flight, (D) but the views are wonderful.",
+      "options": ["takes about twelve hours", "which is", "far longer as the flight", "but the views are wonderful"],
+      "correct": 2,
+      "correction": "far longer than the flight",
+      "explanation": "A comparative adjective (longer) is followed by <b>than</b>; <b>as</b> belongs only to the pattern <b>as ... as</b>."
+    },
+    {
+      "id": "er-kc-14-36",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "Tuan (A) failed his driving test (B) last month, and his father (C) said he would have passed (D) if he would have practised more.",
+      "options": ["failed his driving test", "last month", "said he would have passed", "if he would have practised more"],
+      "correct": 3,
+      "correction": "if he had practised more",
+      "explanation": "A third conditional puts the past perfect in the <b>if</b> clause; <b>would have</b> is used only in the main clause."
+    },
+    {
+      "id": "er-kc-14-37",
+      "level": "kc",
+      "focus": "reported",
+      "q": "Last week the principal (A) announced that the school would close tomorrow (B) because of the flood, (C) so most students (D) stayed at home.",
+      "options": ["announced that the school would close tomorrow", "because of the flood", "so most students", "stayed at home"],
+      "correct": 0,
+      "correction": "announced that the school would close the next day",
+      "explanation": "When speech is reported from a past time (last week), time words shift too: <b>tomorrow</b> becomes <b>the next day</b> or <b>the following day</b>."
+    },
+    {
+      "id": "er-kc-14-38",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Every morning my grandfather (A) gets up at five, (B) makes a short walk around the lake and (C) then has (D) a bowl of pho.",
+      "options": ["gets up at five", "makes a short walk", "then has", "a bowl of pho"],
+      "correct": 1,
+      "correction": "goes for a short walk",
+      "explanation": "English says <b>go for a walk</b> or <b>take a walk</b>; <b>make a walk</b> is not a collocation."
+    },
+    {
+      "id": "er-kc-14-39",
+      "level": "kc",
+      "focus": "quantifier",
+      "q": "Although we (A) had arrived at the airport early, my mother worried that there (B) were (C) too little seats left near the gate (D) for the whole family.",
+      "options": ["had arrived", "were", "too little seats", "for the whole family"],
+      "correct": 2,
+      "correction": "too few seats",
+      "explanation": "<b>Seats</b> is a plural countable noun, so it takes <b>few</b>; <b>little</b> is used only with uncountable nouns."
+    },
+    {
+      "id": "er-kc-14-40",
+      "level": "kc",
+      "focus": "other",
+      "q": "The recipe (A) says you should (B) let the dough rest (C) for an hour, (D) otherwise the bread will not raise properly.",
+      "options": ["says you should", "let the dough rest", "for an hour", "otherwise the bread will not raise properly"],
+      "correct": 3,
+      "correction": "otherwise the bread will not rise properly",
+      "explanation": "<b>Rise</b> is intransitive (something rises by itself), while <b>raise</b> needs an object (you raise something); bread rises."
+    }
+  ]
+}
