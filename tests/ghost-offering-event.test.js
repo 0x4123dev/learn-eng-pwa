@@ -219,13 +219,17 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
   });
   test('the authored 3D scene and new transparent offerings ship offline', () => {
     assert.truthy(html.indexOf('ghost-offering-event.js') < html.indexOf('petbattle.js'));
-    for (const asset of ['courtyard-v1.webp','roast-pig-v2.png','boiled-chicken-v2.png','fruit-basket-v2.png']) {
+    for (const asset of ['courtyard-v1.webp','roast-pig-v2.webp','boiled-chicken-v2.webp','fruit-basket-v2.webp']) {
       assert.truthy(fs.existsSync(path.join(root, 'img/ghost-offering', asset)), asset + ' exists');
       assert.truthy(sw.includes("'/img/ghost-offering/" + asset + "'"), asset + ' precached');
     }
-    for (const asset of ['roast-pig-v2.png','boiled-chicken-v2.png','fruit-basket-v2.png']) {
-      const png = fs.readFileSync(path.join(root, 'img/ghost-offering', asset));
-      assert.equal(png[25], 6, asset + ' is true RGBA, never a baked checkerboard');
+    for (const asset of ['roast-pig-v2.webp','boiled-chicken-v2.webp','fruit-basket-v2.webp']) {
+      // Lossless WebP (VP8L): byte 20 is the 0x2f signature, and bit 4 of
+      // byte 24 is alpha_is_used — the WebP twin of PNG colour type 6.
+      const webp = fs.readFileSync(path.join(root, 'img/ghost-offering', asset));
+      assert.equal(webp.toString('latin1', 12, 16), 'VP8L', asset + ' is lossless, so its alpha edges are untouched');
+      assert.equal(webp[20], 0x2f, asset + ' has the VP8L signature');
+      assert.equal((webp[24] >> 4) & 1, 1, asset + ' is true RGBA, never a baked checkerboard');
       assert.truthy(ui.includes(asset), asset + ' is used by the game');
     }
     assert.truthy(sw.includes("'/js/ghost-offering-event.js'"));

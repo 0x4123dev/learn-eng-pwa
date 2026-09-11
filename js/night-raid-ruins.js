@@ -39,7 +39,7 @@ var NightRaidRuins = (() => {
         DURATION_MS=RETREAT_END+BEATS.hold;
 
   // ── Assets already on disk for the auto-battle ───────────────────────────
-  const SOLDIER_SHEET='img/night-raid/animation/raider-walk-v3.png',SOLDIER_COLS=6,SOLDIER_ROWS=6;
+  const SOLDIER_SHEET='img/night-raid/animation/raider-walk-v3.webp',SOLDIER_COLS=6,SOLDIER_ROWS=6;
   // Frame 3 is the only pose in the walk strip with both feet under the body,
   // so it doubles as "standing still" and we never load the action atlas too.
   const SOLDIER_IDLE=3;

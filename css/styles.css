@@ -12725,7 +12725,7 @@ html.math-board-open:has(#mathBoardOverlay:not(.hidden)) #bottomNav { display: n
    layered sprite shadows lift the body instead of flattening it into the map. */
 .nr-home-soldier::after{content:"";position:absolute;z-index:0;left:50%;bottom:-2%;width:58%;height:12%;transform:translateX(-50%);border-radius:50%;background:rgba(44,57,20,.3);filter:blur(.3cqw)}
 .nr-home-soldier b{position:absolute;z-index:1;inset:0;display:block;background-image:url('../img/night-raid/animation/raider-actions-v2.webp');background-repeat:no-repeat;background-size:800% 600%;background-position:var(--nr-unit-position,0 0);filter:drop-shadow(0 .16cqw .07cqw rgba(255,255,255,.2)) drop-shadow(0 .48cqw .28cqw rgba(43,37,18,.44));transform-origin:center bottom}
-.nr-yard-army[data-mode="march"] .nr-home-soldier b{background-image:url('../img/night-raid/animation/raider-walk-v3.png');background-size:600% 600%;animation:nr-home-soldier-step .24s ease-in-out infinite alternate}
+.nr-yard-army[data-mode="march"] .nr-home-soldier b{background-image:url('../img/night-raid/animation/raider-walk-v3.webp');background-size:600% 600%;animation:nr-home-soldier-step .24s ease-in-out infinite alternate}
 .nr-yard-army[data-mode="attention"] .nr-home-soldier b{filter:drop-shadow(0 .16cqw .07cqw rgba(255,255,255,.2)) drop-shadow(0 .48cqw .28cqw rgba(43,37,18,.44)) saturate(1.12);transform:translateY(-2%)}
 .nr-yard-army[data-mode="rest"] .nr-home-soldier:nth-child(odd) b{transform:translateY(6%) rotate(-2deg)}
 .nr-yard-army[data-mode="rest"] .nr-home-soldier:nth-child(even) b{transform:translateY(8%) rotate(2deg)}

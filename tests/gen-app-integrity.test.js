@@ -138,10 +138,10 @@ suite('gen: sw.js img assets exist on disk', () => {
         const svgs = IMG_ASSETS.filter(a => /^\/img\/[^/]+\.svg$/.test(a));
         const pets = IMG_ASSETS.filter(a => /^\/img\/pets\/[^/]+\.png$/.test(a));
         const teammates = IMG_ASSETS.filter(a => /^\/img\/battle-teammates\/[^/]+\.jpg$/.test(a));
-        const castles = IMG_ASSETS.filter(a => /^\/img\/castle-skins\/castles-atlas-[ab]\.png$/.test(a));
+        const castles = IMG_ASSETS.filter(a => /^\/img\/castle-skins\/castles-atlas-[ab]\.webp$/.test(a));
         const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
-        const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|png|jpe?g)$/.test(a));
-        const ghostOffering = IMG_ASSETS.filter(a => /^\/img\/ghost-offering\/.+\.(?:webp|png)$/.test(a));
+        const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|jpe?g)$/.test(a));
+        const ghostOffering = IMG_ASSETS.filter(a => /^\/img\/ghost-offering\/.+\.webp$/.test(a));
         // The farm's pictures are counted from the manifest, never a literal:
         // js/farm-art-manifest.js is the one list, so this can never go stale.
         const farmArt = require(path.join(ROOT, 'js', 'farm-art-manifest.js'));
@@ -156,6 +156,33 @@ suite('gen: sw.js img assets exist on disk', () => {
         assert.equal(farm.length, farmArt.FILES.length, `farm art count: every manifest entry is precached, nothing else`);
         assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length + farm.length, IMG_ASSETS.length);
     });
+
+    // The sprite sheets and atlases used to be 15 PNGs totalling 16.8 MB of
+    // the precache; as lossless WebP (cwebp -lossless -z 9, pixel-identical
+    // alpha so frame geometry and atlas coordinates never move) they are
+    // 11.9 MB. A PNG creeping back into these folders undoes that on every
+    // child's first install and every CACHE_NAME re-download.
+    const SPRITE_KEYS = IMG_ASSETS.filter(a => /^\/img\/(?:night-raid|castle-skins|ghost-offering)\//.test(a));
+    test('night-raid, castle-skins and ghost-offering keys are never PNG', () => {
+        assert.truthy(SPRITE_KEYS.length >= 29, `sprite key count: ${SPRITE_KEYS.length}`);
+        const pngs = SPRITE_KEYS.filter(a => /\.png$/i.test(a));
+        assert.equal(pngs.length, 0, `PNG sprite keys in sw.js: ${pngs.join(', ')} — convert with cwebp -lossless -z 9`);
+    });
+    for (const asset of SPRITE_KEYS.filter(a => /\.webp$/.test(a))) {
+        test(`sprite ${asset} is a real WebP on disk`, () => {
+            const abs = path.join(ROOT, asset.slice(1));
+            assert.truthy(fs.existsSync(abs), `missing file for sw.js asset: ${asset}`);
+            const head = fs.readFileSync(abs).subarray(0, 32);
+            assert.equal(head.toString('latin1', 0, 4), 'RIFF', `${asset} is not a RIFF container`);
+            assert.equal(head.toString('latin1', 8, 12), 'WEBP', `${asset} is not a WebP`);
+            // A lossless (VP8L) sprite must still carry its alpha channel; a
+            // sheet that lost it would draw an opaque box around every frame.
+            if (head.toString('latin1', 12, 16) === 'VP8L') {
+                assert.equal(head[20], 0x2f, `${asset} VP8L signature`);
+                assert.equal((head[24] >> 4) & 1, 1, `${asset} lost its alpha channel`);
+            }
+        });
+    }
 });
 
 // ============================================================================

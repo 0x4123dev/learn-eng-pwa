@@ -14,7 +14,7 @@
     ...[22,31,40,60,69].map((x,i)=>({id:'chicken'+(i+1),type:'chicken',reward:50,x,y:43+(i%2)*2,label:'Gà luộc'})),
     ...[19,28,37,46,55,64,73,82].map((x,i)=>({id:'fruit'+(i+1),type:'fruit',reward:10,x,y:49+(i%2)*2,label:'Trái cây'})),
   ];
-  const ASSETS={pig:'img/ghost-offering/roast-pig-v2.png',chicken:'img/ghost-offering/boiled-chicken-v2.png',fruit:'img/ghost-offering/fruit-basket-v2.png'};
+  const ASSETS={pig:'img/ghost-offering/roast-pig-v2.webp',chicken:'img/ghost-offering/boiled-chicken-v2.webp',fruit:'img/ghost-offering/fruit-basket-v2.webp'};
   let state=null,timer=null,claiming=false,active=false,gameFrame=0,gameLast=0,hookGame=null,realtimeLink=null,pendingGrab=null,lastProgressAt=0,qaBots=[],qaBotTimers=[];
   let breakSessionId='',breakProgress=Object.create(null);
 
