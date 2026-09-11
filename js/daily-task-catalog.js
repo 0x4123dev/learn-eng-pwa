@@ -325,6 +325,44 @@ var DailyTaskCatalog = (function () {
   ENTRIES.push(entry('errors:ch', 'ptnk-practice', 'Error Correction · Chuyên · 10 câu (phải đúng 10/10)', 'exam',
     { detail: { field: 'examId', prefix: 'er-round-ch' } }, 'errorsScreen', [['startErrorsRound', 'ch']]));
 
+  // ---- the menu path of every task ------------------------------------------
+  // The admin picks a task the way a child finds it: Eng or Math, then the
+  // menu, then the sub-menu, as deep as the app itself goes. `path` is that
+  // trail of labels, and tree() below turns the flat list into the cascade the
+  // admin page draws. Labels are the app's own (the Learn hub's cards, the
+  // Math tab's sections), so what a parent assigns is what a child sees.
+  const SET_LABEL = { pre: 'Pre', hk1: 'HK1', hk2: 'HK2', posthk: 'Post' };
+  const GRAMMAR_LABEL = new Map(GRAMMAR_NAMES);
+  function pathFor(e) {
+    const k = e.key;
+    switch (e.group) {
+      case 'practice':
+        if (k.startsWith('phrases')) return ['Eng', 'Phrases', 'Phrases'];
+        if (k.startsWith('collocation')) return ['Eng', 'Phrases', 'Collocation'];
+        if (k.startsWith('wordform')) return ['Eng', 'Word Form'];
+        if (k === 'rewrite') return ['Eng', 'Rewrite'];
+        if (k === 'verbs') return ['Eng', 'Irregular Verbs'];
+        if (k === 'vocab') return ['Eng', 'Vocabulary'];
+        return ['Eng'];
+      case 'grammar': return ['Eng', 'Grammar', GRAMMAR_LABEL.get(k.split(':')[1]) || k.split(':')[1]];
+      case 'units-pre': case 'units-hk1': case 'units-hk2': case 'units-posthk':
+        return ['Eng', 'Grade 4', SET_LABEL[e.group.slice(6)] || e.group.slice(6)];
+      case 'math-exam': return ['Math', 'Toán 7', /hk2/.test(k) ? 'Học kì 2' : 'Học kì 1', 'Đề thi'];
+      case 'math-chapter': return ['Math', 'Toán 7', Number(k.split(':')[1]) >= 6 ? 'Học kì 2' : 'Học kì 1', 'Luyện chương'];
+      case 'math-wars': return ['Math', 'Math Wars'];
+      case 'math4': return k.startsWith('math4:cc') ? ['Math', 'Toán 4', 'Bảng cửu chương'] : ['Math', 'Toán 4'];
+      case 'ptnk': { const m = /^ptnk:ptnk-(\d{4})-/.exec(k); return m ? ['Eng', 'PTNK Exams', m[1]] : ['Eng', 'PTNK Exams']; }
+      case 'ptnk-practice':
+        return ['Eng', k.startsWith('reading') ? 'Reading' : k.startsWith('cloze') ? 'Cloze' : 'Error Correction'];
+      default: return ['Eng'];
+    }
+  }
+  // Entries are frozen deep; the path is attached before the freeze below
+  // by rebuilding each entry with it.
+  for (let i = 0; i < ENTRIES.length; i++) {
+    ENTRIES[i] = freezeDeep(Object.assign({}, ENTRIES[i], { path: pathFor(ENTRIES[i]) }));
+  }
+
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));
 
   function groups() { return GROUPS.slice(); }
@@ -332,6 +370,41 @@ var DailyTaskCatalog = (function () {
   function all() { return ENTRIES.slice(); }
   function get(key) { return (typeof key === 'string' && BY_KEY.get(key)) || null; }
 
-  return Object.freeze({ groups, entries, all, get });
+  // The cascade: { label, children: [node…], entries: [entry…] }, root label
+  // ''. Children keep first-seen order, which is the order the entries were
+  // pushed — the same order the app's menus use. A node may hold both
+  // sub-menus and tasks (PTNK Exams: "bất kỳ" beside the years).
+  function tree() {
+    const root = { label: '', children: [], entries: [] };
+    for (const e of ENTRIES) {
+      let node = root;
+      for (const label of e.path) {
+        let next = node.children.find(c => c.label === label);
+        if (!next) { next = { label, children: [], entries: [] }; node.children.push(next); }
+        node = next;
+      }
+      node.entries.push(e);
+    }
+    // Top menus in the order the app shows them (the Learn hub's cards, the
+    // Math tab's sections), so the admin's first two picks look like the
+    // child's screen. Deeper levels keep push order.
+    const ORDER = {
+      '': ['Eng', 'Math'],
+      Eng: ['Vocabulary', 'Grade 4', 'Grammar', 'PTNK Exams', 'Reading', 'Cloze', 'Error Correction', 'Irregular Verbs', 'Phrases', 'Word Form', 'Rewrite'],
+      Math: ['Toán 7', 'Toán 4', 'Math Wars'],
+    };
+    const sortBy = (node) => {
+      const order = ORDER[node.label];
+      if (order) node.children.sort((a, b) => {
+        const ia = order.indexOf(a.label), ib = order.indexOf(b.label);
+        return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+      });
+      node.children.forEach(sortBy);
+    };
+    sortBy(root);
+    return root;
+  }
+
+  return Object.freeze({ groups, entries, all, get, tree });
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyTaskCatalog;

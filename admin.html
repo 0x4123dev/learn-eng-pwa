@@ -299,6 +299,13 @@
   .daily-form-title { margin:0 0 14px; font-size:11.5px; color:var(--muted);
                       text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
   .daily-form-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+  .daily-path { display:flex; flex-direction:column; gap:6px; }
+  .daily-path select { width:100%; }
+  .daily-path select[data-depth="1"] { margin-left:12px; width:calc(100% - 12px); }
+  .daily-path select[data-depth="2"] { margin-left:24px; width:calc(100% - 24px); }
+  .daily-path select[data-depth="3"] { margin-left:36px; width:calc(100% - 36px); }
+  .daily-path select[data-depth="4"] { margin-left:48px; width:calc(100% - 48px); }
+  .daily-path-hint { margin-top:6px; font-size:12px; color:var(--muted); min-height:1.2em; }
   .field { min-width:0; }
   .field label { display:block; margin-bottom:5px; font-size:12px; font-weight:700; color:var(--ink-2); }
   .field select, .field input { display:block; width:100%; min-height:42px; padding:10px 12px;
@@ -307,7 +314,7 @@
   .field-num input { max-width:220px; }
   .daily-form-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
   @media (min-width: 760px) {
-    .daily-form-grid { grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) 210px; align-items:end; }
+    .daily-form-grid { grid-template-columns:minmax(0,1fr) 210px; align-items:end; }
     .field-num input { max-width:none; }
   }
 
@@ -638,13 +645,16 @@
       <form id="dailyForm" class="daily-form" autocomplete="off">
         <h3 class="daily-form-title">Giao nhiệm vụ hằng ngày</h3>
         <div class="daily-form-grid">
-          <div class="field">
-            <label for="dailyGroup">Môn / nhóm bài</label>
-            <select id="dailyGroup"></select>
-          </div>
-          <div class="field">
-            <label for="dailyKind">Bài bé sẽ làm</label>
-            <select id="dailyKind"></select>
+          <!-- The task is picked the way a child finds it: Eng or Math, then
+               the menu, then the sub-menu, as deep as the app goes (Math ›
+               Toán 7 › Học kì 2 › Luyện chương › Chương 6). One <select> per
+               level, drawn from DailyTaskCatalog.tree(); the chosen task's
+               key lands in the hidden #dailyKind that saveDailyTask reads. -->
+          <div class="field daily-path-field">
+            <label>Bài bé sẽ làm — chọn như trên máy bé</label>
+            <div id="dailyPath" class="daily-path"></div>
+            <input type="hidden" id="dailyKind" value="">
+            <div id="dailyPathHint" class="daily-path-hint"></div>
           </div>
           <div class="field field-num">
             <label for="dailyTarget">Số lần phải đạt 100% mỗi ngày</label>
@@ -1118,19 +1128,59 @@ function renderActivityPage(){
 }
 
 // ── Daily task tab ──────────────────────────────────────────────────────
-function fillDailyKinds(){
-  const groupSel = document.getElementById('dailyGroup');
-  const kindSel = document.getElementById('dailyKind');
-  if (!groupSel.options.length) {
-    groupSel.innerHTML = DailyTaskCatalog.groups().map(g=>`<option value="${g.id}">${esc(g.label)}</option>`).join('');
-  }
-  kindSel.innerHTML = DailyTaskCatalog.entries(groupSel.value).map(e=>`<option value="${e.key}">${esc(e.label)}</option>`).join('');
+// The picker is a cascade of <select>s over DailyTaskCatalog.tree(). Level 0
+// is Eng / Math; each pick that lands on a sub-menu adds a level, and a pick
+// that lands on a task fills #dailyKind. Each level lists that node's
+// sub-menus first ("› Học kì 2") and then its own tasks, so a node that has
+// both (PTNK Exams: "bất kỳ đề" beside the years) shows both.
+let _dailyTree = null;
+function dailyNodeAt(labels){
+  let node = _dailyTree;
+  for (const l of labels) { node = (node.children || []).find(c => c.label === l); if (!node) return null; }
+  return node;
 }
+function dailyLevelOptions(node, chosen){
+  const subs = node.children.map(c => `<option value="sub:${esc(c.label)}"${chosen === 'sub:' + c.label ? ' selected' : ''}>› ${esc(c.label)}</option>`);
+  const tasks = node.entries.map(e => `<option value="task:${esc(e.key)}"${chosen === 'task:' + e.key ? ' selected' : ''}>${esc(e.label)}</option>`);
+  return `<option value=""${chosen ? '' : ' selected'} disabled>— chọn —</option>` + subs.join('') + tasks.join('');
+}
+function renderDailyPath(labels, chosenKey){
+  if (!_dailyTree) _dailyTree = DailyTaskCatalog.tree();
+  const host = document.getElementById('dailyPath');
+  const hidden = document.getElementById('dailyKind');
+  const hint = document.getElementById('dailyPathHint');
+  const rows = [];
+  // One select per level already chosen, plus one for the next pick.
+  for (let depth = 0; depth <= labels.length; depth++) {
+    const node = dailyNodeAt(labels.slice(0, depth));
+    if (!node) break;
+    const chosen = depth < labels.length ? 'sub:' + labels[depth] : (chosenKey ? 'task:' + chosenKey : '');
+    if (!node.children.length && !node.entries.length) break;
+    rows.push(`<select class="daily-level" data-depth="${depth}" aria-label="Cấp ${depth + 1}">${dailyLevelOptions(node, chosen)}</select>`);
+    if (depth === labels.length) break;
+  }
+  host.innerHTML = rows.join('');
+  hidden.value = chosenKey || '';
+  const entry = chosenKey ? DailyTaskCatalog.get(chosenKey) : null;
+  hint.textContent = entry
+    ? '✓ ' + entry.path.join(' › ') + ' › ' + entry.label
+    : (labels.length ? labels.join(' › ') + ' › …' : 'Bắt đầu từ Eng hoặc Math.');
+  host.querySelectorAll('select.daily-level').forEach(sel => {
+    sel.onchange = () => {
+      const depth = Number(sel.dataset.depth);
+      const v = sel.value;
+      const kept = labels.slice(0, depth);
+      if (v.startsWith('sub:')) renderDailyPath(kept.concat([v.slice(4)]), '');
+      else if (v.startsWith('task:')) renderDailyPath(kept, v.slice(5));
+    };
+  });
+}
+function fillDailyKinds(){ renderDailyPath([], ''); }
 function resetDailyForm(){
-  document.getElementById('dailyGroup').selectedIndex = 0;
-  fillDailyKinds();
+  renderDailyPath([], '');
   document.getElementById('dailyTarget').value = '5';
-  document.getElementById('dailyKind').focus();
+  const first = document.querySelector('#dailyPath select');
+  if (first) first.focus();
 }
 function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
 // Saving needs a child. Say so by greying the button rather than letting the
@@ -1189,6 +1239,7 @@ async function saveDailyTask(ev){
   const uid = document.getElementById('dailyUser').value;
   if (!uid){ alert('Chọn một bé trước.'); return; }
   const kind = document.getElementById('dailyKind').value;
+  if (!kind){ alert('Chọn bài bé sẽ làm — đi hết các cấp tới một bài cụ thể.'); return; }
   const target = Math.trunc(Number(document.getElementById('dailyTarget').value));
   if (!Number.isFinite(target) || target<1 || target>50){ alert('Số bài phải từ 1 đến 50.'); return; }
   const btn = document.getElementById('dailySave'); btn.disabled = true;
@@ -1483,7 +1534,7 @@ document.getElementById('dailyUser').addEventListener('change', ()=>{
   loadDailyTasks().catch(()=>{});
 });
 syncDailySave();
-document.getElementById('dailyGroup').addEventListener('change', fillDailyKinds);
+// The cascade wires its own change handlers each time it renders.
 document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
 document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
 document.getElementById('sortSel').addEventListener('change', e=>{
