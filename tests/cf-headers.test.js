@@ -54,11 +54,17 @@ suite('Cloudflare _headers: immutable caching for versioned assets only', () => 
     for (const p of paths.filter(p => p.startsWith('/js/'))) assert.equal(p, '/js/phaser.min.js');
   });
 
-  test('deploy.sh ships _headers into .cf-dist on the same line as _redirects', () => {
-    const deploy = read('scripts/deploy.sh');
-    const line = (deploy.match(/^cp [^\n]*\.cf-dist\/$/m) || [])[0] || '';
-    assert.truthy(/\b_redirects\b/.test(line) && /\b_headers\b/.test(line),
-      'the root-files cp line must copy both _redirects and _headers: ' + line);
+  test('the dist build ships _headers next to _redirects, and deploy.sh builds through it', () => {
+    // deploy.sh no longer copies files itself: scripts/build-dist.js builds
+    // the minified bundle, and its root-file list is what ships.
+    const dist = read('scripts/build-dist.js');
+    assert.truthy(/'_redirects'/.test(dist) && /'_headers'/.test(dist), 'build-dist.js must list both _redirects and _headers');
+    assert.truthy(/node scripts\/build-dist\.js/.test(read('scripts/deploy.sh')), 'deploy.sh builds .cf-dist with build-dist.js');
+    const out = fs.mkdtempSync(path.join(require('os').tmpdir(), 'cfh-'));
+    require(path.join(ROOT, 'scripts', 'build-dist.js')).build({ out, root: ROOT, quiet: true });
+    assert.truthy(fs.existsSync(path.join(out, '_headers')), '_headers is in the built bundle');
+    assert.equal(fs.readFileSync(path.join(out, '_headers'), 'utf8'), read('_headers'));
+    fs.rmSync(out, { recursive: true, force: true });
   });
 });
 
