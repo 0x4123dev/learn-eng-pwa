@@ -245,6 +245,12 @@ function completeLesson() {
     // The lesson is over from here on: the × must stop asking whether to throw
     // away work that has just been scored and paid for.
     if (lessonState) lessonState.finished = true;
+    // And the bottom bar comes back with the result: a finished lesson must
+    // never keep the child locked in. Every road out from here (Continue,
+    // Collect!, a nav tab) is silent — switchScreen sees lessonLeaveQuestion()
+    // answer null and just clears the overlay through abandonLesson().
+    const _nav = document.getElementById('bottomNav');
+    if (_nav) _nav.style.display = 'flex';
 
     const accuracy = Math.round((lessonState.correctInLesson / (lessonState.correctInLesson + lessonState.wrongInLesson)) * 100);
 
@@ -579,21 +585,89 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
 // exitLesson() is ALSO how a finished lesson closes (the Continue button below
 // and js/daily-challenge.js both call it) and the coins are already banked.
 function quitLesson() {
-    const st = (typeof lessonState !== 'undefined') ? lessonState : null;
-    const done = st ? (st.correctInLesson || 0) + (st.wrongInLesson || 0) : 0;
-    if (done && st && !st.finished && typeof confirm === 'function'
-        && !confirm('You are ' + done + ' questions into this lesson.\n'
-            + 'If you leave now, this lesson will not be saved.\n\nLeave anyway?')) return;
+    const q = lessonLeaveQuestion();
+    if (q && typeof confirm === 'function' && !confirm(q)) return;
     exitLesson();
+}
+
+// The question the × and js/app.js switchScreen both ask, or null when there
+// is nothing to ask: nothing answered yet, or the lesson already scored. One
+// place, so the two exits can never disagree.
+function lessonLeaveQuestion() {
+    const st = (typeof lessonState !== 'undefined') ? lessonState : null;
+    if (!st || st.finished) return null;
+    const done = (st.correctInLesson || 0) + (st.wrongInLesson || 0);
+    if (!done) return null;
+    return 'You are ' + done + ' questions into this lesson.\n'
+        + 'If you leave now, this lesson will not be saved.\n\nLeave anyway?';
+}
+
+// A matching round of any flavour (Home lesson, SRS review, mistakes review,
+// daily challenge, topic lesson) is showing — scored or not. The result
+// overlays (lessonComplete, the sentence builder, the treasure chest) sit on
+// the lesson screen too, so this stays true until the child has actually left.
+function isLessonOnScreen() {
+    const screen = (typeof document !== 'undefined') ? document.getElementById('lessonScreen') : null;
+    if (!screen || !screen.classList.contains('active')) return false;
+    const st = (typeof lessonState !== 'undefined') ? lessonState : null;
+    return !!(st && Array.isArray(st.roundWords) && st.roundWords.length);
+}
+
+// …and not yet scored. The same shape as isGrammarQuizActive / isExamActive,
+// for js/app.js's list of things a child would lose.
+function isLessonActive() {
+    return isLessonOnScreen() && !lessonState.finished;
+}
+
+// Tear the lesson down WITHOUT navigating — switchScreen has already decided
+// where the child is going and only needs the lesson out of the way: every
+// result overlay off, the bottom bar back, the state emptied so no checkpoint
+// can offer this round again and nothing scores it twice.
+function abandonLesson() {
+    _dropLessonOverlays();
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = 'flex';
+    _forgetLessonState();
+}
+
+function _dropLessonOverlays() {
+    ['lessonComplete', 'sentenceBuilderOverlay', 'treasureOverlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+    });
+    _resetLessonCompleteUI();
+}
+
+function _resetLessonCompleteUI() {
+    const coinEl = document.getElementById('completeCoins');
+    if (coinEl) { coinEl.style.display = 'none'; coinEl.textContent = '+0 🪙'; }
+    const streakBonusEl = document.getElementById('completeStreakBonus');
+    if (streakBonusEl) { streakBonusEl.style.display = 'none'; }
+}
+
+// The same empty shape js/app.js forgetProfileState() leaves behind:
+// roundWords is empty, so buildStudyCheckpoint() sees nothing to save.
+function _forgetLessonState() {
+    lessonState = {
+        categoryId: null, lessonNumber: 0, words: [], currentRound: 0, totalRounds: 0,
+        roundWords: [], selectedLeft: null, selectedRight: null, matchedPairs: 0,
+        correctInLesson: 0, wrongInLesson: 0, lessonPoints: 0,
+    };
+    if (typeof clearStudyCheckpoint === 'function') { try { clearStudyCheckpoint(); } catch (e) {} }
 }
 
 function exitLesson() {
     document.getElementById('bottomNav').style.display = 'flex';
     document.getElementById('lessonScreen').classList.remove('active');
+    // Whatever result card was up leaves with the lesson — Continue and
+    // Collect! remove their own first, but the × does not, and a fixed
+    // overlay that outlives its screen is a locked app.
+    _dropLessonOverlays();
     // Topic lessons return to that topic's detail (so user can quickly start next lesson)
     if (lessonState && lessonState.isTopicLesson) {
         document.getElementById('topicsScreen').classList.add('active');
         const topicId = lessonState.topicId;
+        _forgetLessonState();
         // Re-open the topic detail OR fall back to topics home
         if (topicId && topicId !== '__review__' && typeof openTopicDetail === 'function') {
             openTopicDetail(topicId);
@@ -604,17 +678,14 @@ function exitLesson() {
         }
         return;
     }
+    _forgetLessonState();
     document.getElementById('homeScreen').classList.add('active');
     renderHome();
 }
 
 function closeLessonComplete() {
     document.getElementById('lessonComplete').classList.remove('active');
-    // Reset coins display
-    const coinEl = document.getElementById('completeCoins');
-    if (coinEl) { coinEl.style.display = 'none'; coinEl.textContent = '+0 🪙'; }
-    const streakBonusEl = document.getElementById('completeStreakBonus');
-    if (streakBonusEl) { streakBonusEl.style.display = 'none'; }
+    _resetLessonCompleteUI();
 
     // Continue → go straight to the NEXT unfinished lesson in the same topic
     // (never repeat the lesson just finished). Falls through when the topic is
