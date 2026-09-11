@@ -362,11 +362,12 @@ suite('math: the practice flow', () => {
 });
 
 suite('math: wiring', () => {
-    test('index.html loads the data before math.js', () => {
+    test('neither math.js nor its banks block the first paint', () => {
         const html = read('index.html');
-        // math.js ships eagerly; its banks are deferred until the Toán tab is
-        // opened (js/lazy-data.js), which is what keeps app start light.
-        assert.truthy(html.includes('js/math.js'), 'index.html does not load js/math.js');
+        // math.js rides the "math" lazy group and its banks are deferred under
+        // mathHubScreen (js/lazy-data.js); switchScreen fetches both on the
+        // first open of the Toán tab, code first, which keeps app start light.
+        assert.falsy(html.includes('js/math.js'), 'js/math.js must not be an eager script');
         const lazy = read('js/lazy-data.js');
         const block = lazy.slice(lazy.indexOf('mathHubScreen:'));
         const list = block.slice(0, block.indexOf(']'));

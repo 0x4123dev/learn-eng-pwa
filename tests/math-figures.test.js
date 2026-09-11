@@ -165,11 +165,15 @@ suite('math figures: on the hint panel', () => {
     });
 
     test('the drawings ship with the app: loaded on the page and cached offline', () => {
+        // The figures ride the "math" lazy group (js/lazy-data.js
+        // GROUP_FILES.math) with the tab code, in list order.
         const idx = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
         const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
-        assert.truthy(idx.indexOf('js/math-figures.js') > 0, 'index.html never loads the figures');
+        const math = require(path.join(root, 'js', 'lazy-data.js')).GROUP_FILES.math;
+        assert.truthy(math.indexOf('js/math-figures.js') > -1, 'the math group never loads the figures');
+        assert.falsy(idx.includes('js/math-figures.js'), 'the figures must not block the first paint');
         assert.truthy(sw.indexOf("'/js/math-figures.js'") > 0, 'the figures are not cached offline');
-        assert.truthy(idx.indexOf('js/math-figures.js') < idx.indexOf('js/math.js'),
+        assert.truthy(math.indexOf('js/math-figures.js') < math.indexOf('js/math.js'),
             'math.js must load after the figures it draws with');
     });
 });

@@ -35,6 +35,9 @@ function globalsDefinedIn(files) {
         for (const m of src.matchAll(/(?:^|\n)\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)) out.add(m[1]);
         for (const m of src.matchAll(/(?:^|\n)\s*(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:function|\()/g)) out.add(m[1]);
         for (const m of src.matchAll(/window\.([A-Za-z_$][\w$]*)\s*=/g)) out.add(m[1]);
+        // js/app.js lazyEntry: a name the page may call before the lazy group
+        // that really defines it has landed (openPetBattle, openNightRaid).
+        for (const m of src.matchAll(/(?:^|\n)\s*(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*lazyEntry\(/g)) out.add(m[1]);
     }
     return out;
 }

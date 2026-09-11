@@ -218,7 +218,11 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
       'cosmetic bots cannot move or cast in the public room');
   });
   test('the authored 3D scene and new transparent offerings ship offline', () => {
-    assert.truthy(html.indexOf('ghost-offering-event.js') < html.indexOf('petbattle.js'));
+    // Both ride the Arena lazy group (js/lazy-data.js GROUP_FILES.arena),
+    // in that order: the event before the lobby that draws its card.
+    const arena = require('../js/lazy-data.js').GROUP_FILES.arena;
+    assert.truthy(arena.indexOf('js/ghost-offering-event.js') > -1 && arena.indexOf('js/ghost-offering-event.js') < arena.indexOf('js/petbattle.js'));
+    assert.falsy(html.includes('ghost-offering-event.js'), 'the event must not block the first paint');
     for (const asset of ['courtyard-v1.webp','roast-pig-v2.webp','boiled-chicken-v2.webp','fruit-basket-v2.webp']) {
       assert.truthy(fs.existsSync(path.join(root, 'img/ghost-offering', asset)), asset + ' exists');
       assert.truthy(sw.includes("'/img/ghost-offering/" + asset + "'"), asset + ' precached');

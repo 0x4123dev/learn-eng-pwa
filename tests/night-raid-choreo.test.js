@@ -436,13 +436,18 @@ suite('night raid choreography: movement that does not slide, a gate that is not
 });
 
 suite('night raid choreography: app integration', () => {
-  test('choreo module ships in the app shell between rules and game', () => {
+  test('choreo module ships in the Arena lazy group, after the eager rules and before the game', () => {
+    // The rules stay in the app shell (Daily Task reads them on Home); the
+    // choreography and the game ride js/lazy-data.js GROUP_FILES.arena,
+    // which runs after every eager script and in list order.
     const html = read('index.html');
-    const rules = html.indexOf('night-raid-rules.js');
-    const choreo = html.indexOf('night-raid-choreo.js');
-    const game = html.indexOf('night-raid-game.js');
-    assert.truthy(rules >= 0 && choreo >= 0 && game >= 0);
-    assert.truthy(rules < choreo && choreo < game);
+    const arena = require('../js/lazy-data.js').GROUP_FILES.arena;
+    assert.truthy(html.indexOf('night-raid-rules.js') >= 0, 'the rules must stay eager');
+    assert.falsy(html.includes('night-raid-choreo.js'), 'the choreography must not block the first paint');
+    const choreo = arena.indexOf('js/night-raid-choreo.js');
+    const game = arena.indexOf('js/night-raid-game.js');
+    assert.truthy(choreo >= 0 && game >= 0);
+    assert.truthy(choreo < game);
   });
   test('choreo module works offline', () => {
     assert.truthy(read('sw.js').includes("'/js/night-raid-choreo.js'"));

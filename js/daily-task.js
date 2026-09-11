@@ -359,9 +359,16 @@ var DailyTask = (function () {
   function viewFarm() {
     if (typeof openNightRaid === 'function') openNightRaid();
   }
+  // openNightRaid is a placeholder until the Arena's code has landed
+  // (js/app.js lazyEntry, js/lazy-data.js GROUP_FILES.arena): it then returns
+  // a promise that settles once the real screen is open. Waiting on it is
+  // what lets the seed tray open on the FIRST tap of the day rather than
+  // silently landing the child on the raid home instead.
   function viewSeeds() {
-    if (typeof openNightRaid === 'function') openNightRaid();
-    if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.openSeeds === 'function') NightRaid.openSeeds();
+    if (typeof openNightRaid !== 'function') return;
+    Promise.resolve(openNightRaid()).then(() => {
+      if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.openSeeds === 'function') NightRaid.openSeeds();
+    });
   }
 
   function open() {
