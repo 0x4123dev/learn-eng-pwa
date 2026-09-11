@@ -1543,10 +1543,30 @@ function switchScreen(screenId) {
     if (screenId !== 'petBattleScreen' &&
         typeof GhostOfferingEvent !== 'undefined' &&
         GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) {
-        if (!confirm('Con đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nCon có chắc muốn thoát không?')) {
+        // Ask only while the room is actually open for grabbing (isPlaying).
+        // The same scene also shows the countdown before the event and the
+        // "đã kết thúc" card after it — nothing is at stake there, and a
+        // question about a rope that is not being pulled just teaches the
+        // child to tap OK without reading. close() still runs either way, so
+        // the go-event-active lock never outlives the scene.
+        const playing = typeof GhostOfferingEvent.isPlaying !== 'function' || GhostOfferingEvent.isPlaying();
+        if (playing && !confirm('Con đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nCon có chắc muốn thoát không?')) {
             return false;
         }
         GhostOfferingEvent.close();
+    }
+
+    // Guard: a live pet battle. There is another child at the other end
+    // waiting for the next volley, and unlike Night Raid or Đấu Toán this game
+    // leaves the bottom bar up while it runs — so this is the front line, not
+    // a backstop. The server scores a walked-out battle on remaining HP; a
+    // child who comes back while it is still live is put straight back in.
+    if (screenId !== 'petBattleScreen' &&
+        typeof isPetBattleActive === 'function' && isPetBattleActive()) {
+        if (!confirm('Con đang đấu pháo với bạn.\nThoát bây giờ thì bạn ấy phải chờ, và nếu con không quay lại thì trận sẽ được tính theo máu còn lại.\n\nVẫn thoát?')) {
+            return false;
+        }
+        if (typeof abandonPetBattle === 'function') abandonPetBattle();
     }
 
     // Guard: warn before leaving an in-progress grammar exam (tapping a different
@@ -1931,6 +1951,7 @@ const _BUSY_CHECKS = [
     // thing said without the helpers, from before they existed.
     'isLessonActive', 'isLessonOnScreen',
     'isSpeedGameActive',
+    'isPetBattleActive',
 ];
 function _busyWithTimedActivity() {
     try {
