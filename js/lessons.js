@@ -100,6 +100,8 @@ function renderMatchingRound() {
 
     lessonState.selectedLeft = null;
     lessonState.selectedRight = null;
+    // The screen and the checkpoint change together (js/app.js).
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function selectCard(card, side, word) {

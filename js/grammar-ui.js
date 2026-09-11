@@ -863,8 +863,9 @@ function renderGrammarQuestion() {
     const q = state.questions[state.currentIdx];
     // Warm this question's words now: they become tappable once answered.
     if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || q.parts || [], q.explanation);
-    if (q.type === 'arrangement') return renderArrangementQuestion();
-    return renderMCQuestion();
+    if (q.type === 'arrangement') renderArrangementQuestion(); else renderMCQuestion();
+    // The screen and the checkpoint change together (js/app.js).
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function renderMCQuestion() {
@@ -1226,6 +1227,9 @@ function finishGrammarQuiz() {
         </div>
     `;
     _grammarQuizState = null;
+    // No round left → the checkpoint is cleared at once (js/app.js), so a
+    // finished one is never offered back after a reload and paid for twice.
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function reviewLastGrammarSession() {

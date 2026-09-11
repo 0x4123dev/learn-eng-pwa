@@ -680,7 +680,7 @@ function renderWfQuestion() {
   if (!screen || !_wfQuiz) return;
   const st = _wfQuiz;
   const q = st.questions[st.idx];
-  if (q && q.followup) { renderWfFollowup(); return; }
+  if (q && q.followup) { renderWfFollowup(); if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint(); return; }
   // Warm this question's words now: they become tappable once answered.
   if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const userAns = st.answers[st.idx];         // null | { value, isCorrect }
@@ -758,6 +758,8 @@ function renderWfQuestion() {
     const inp = document.getElementById('wfTextInput');
     if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function answerWfQuestion(i) {
@@ -856,6 +858,9 @@ function finishWordformQuiz() {
   // clear at the END, one throw in between turned every frustrated tap into
   // another payout and another identical history row.
   _wfQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   // A follow-up screen is worth TWO points, so the denominator counts points,
   // not screens: 20 word-form questions plus their two checks each is 60.
   // Reporting 20/40 for a practice a child answered 60 things in would read as

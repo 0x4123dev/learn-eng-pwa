@@ -98,7 +98,28 @@ function rememberedActiveUser() {
     } catch (e) { return null; }
 }
 
-let _studyCheckpointTimer = null;
+// The checkpoint is written when something CHANGES, not on a clock. It used to
+// be a one-second setInterval that ran for the whole of every
+// activity — a JSON.stringify of the exam's forty questions and a localStorage
+// write once a second while a child sat thinking. Now:
+//   - every quiz engine calls saveStudyCheckpoint() from its render function
+//     (the screen and the checkpoint change together) and after it ends a
+//     round (state null → checkpoint cleared, so a finished paper is never
+//     offered back and paid for twice);
+//   - any tap or Enter schedules one coalesced save for right after its
+//     handlers ran, which is the net under everything that is not an answer:
+//     hints, quits, a matched pair, a profile switch;
+//   - typing saves 500 ms after the last keystroke (currentDraftInputs);
+//   - going hidden / pagehide / beforeunload saves at once — the iOS reload
+//     case this whole mechanism exists for;
+//   - timed activities tick saveStudyCheckpointOnClock(), which keeps the
+//     remaining time within STUDY_CHECKPOINT_CLOCK_MS of true.
+let _studyCheckpointListening = false;
+let _studyCheckpointSoon = null;        // the coalesced after-tap save
+let _studyCheckpointDraftTimer = null;  // the debounced typing save
+let _studyCheckpointClockAt = 0;        // last write, for the timed activities
+const STUDY_CHECKPOINT_DRAFT_MS = 500;
+const STUDY_CHECKPOINT_CLOCK_MS = 10000;
 let _studyCheckpointRestored = false;
 // One retry, not a loop. See restoreStudyCheckpoint.
 let _studyCheckpointWaited = false;
@@ -187,11 +208,37 @@ function buildStudyCheckpoint() {
 }
 
 function saveStudyCheckpoint() {
+    _studyCheckpointClockAt = Date.now();
+    if (_studyCheckpointSoon) { clearTimeout(_studyCheckpointSoon); _studyCheckpointSoon = null; }
+    if (_studyCheckpointDraftTimer) { clearTimeout(_studyCheckpointDraftTimer); _studyCheckpointDraftTimer = null; }
     try {
         const checkpoint = buildStudyCheckpoint();
         if (checkpoint) localStorage.setItem(STUDY_CHECKPOINT_KEY, JSON.stringify(checkpoint));
         else clearStudyCheckpoint();
     } catch (e) { /* a checkpoint must never interrupt the exercise */ }
+}
+
+// One save right after the current tap's handlers have run, however many
+// things asked for it. A macrotask, not a microtask, so a handler that hands
+// off to a promise (LazyData.ensure, a confirm) is still seen through.
+function scheduleStudyCheckpoint() {
+    if (_studyCheckpointSoon) return;
+    _studyCheckpointSoon = setTimeout(() => { _studyCheckpointSoon = null; saveStudyCheckpoint(); }, 0);
+}
+
+// Typing: a save STUDY_CHECKPOINT_DRAFT_MS after the last keystroke, so an
+// answer half typed when iOS reloads the page comes back (restoreDraftInputs).
+function scheduleDraftCheckpoint() {
+    if (_studyCheckpointDraftTimer) clearTimeout(_studyCheckpointDraftTimer);
+    _studyCheckpointDraftTimer = setTimeout(() => { _studyCheckpointDraftTimer = null; saveStudyCheckpoint(); }, STUDY_CHECKPOINT_DRAFT_MS);
+}
+
+// For the clocks of the timed activities (exam, Math Wars, speed verbs): the
+// remaining time is part of the checkpoint and changes with nobody touching
+// anything. Called every tick; writes at most once per STUDY_CHECKPOINT_CLOCK_MS.
+function saveStudyCheckpointOnClock() {
+    if (Date.now() - _studyCheckpointClockAt < STUDY_CHECKPOINT_CLOCK_MS) return;
+    saveStudyCheckpoint();
 }
 
 function activateCheckpointScreen(screenId) {
@@ -300,9 +347,16 @@ function restoreStudyCheckpoint() {
 }
 
 function startStudyCheckpointing() {
-    if (_studyCheckpointTimer) return;
-    _studyCheckpointTimer = setInterval(saveStudyCheckpoint, 1000);
+    if (_studyCheckpointListening) return;
+    _studyCheckpointListening = true;
+    // Capture phase + a deferred save: runs after every handler the tap
+    // reaches, and a handler that stops propagation cannot hide from it.
+    document.addEventListener('click', scheduleStudyCheckpoint, true);
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') scheduleStudyCheckpoint(); }, true);
+    document.addEventListener('change', scheduleStudyCheckpoint, true);
+    document.addEventListener('input', scheduleDraftCheckpoint, true);
     window.addEventListener('pagehide', saveStudyCheckpoint);
+    window.addEventListener('beforeunload', saveStudyCheckpoint);
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') saveStudyCheckpoint();
     });
@@ -1138,7 +1192,7 @@ function forgetProfileState() {
     // Every in-progress round. None of these has a clock, but all of them leak
     // by the same two roads: the is…Active() guards in switchScreen — which
     // asked B "You are in the middle of…" about A's work — and, worse,
-    // buildStudyCheckpoint() below, which reads them once a second and writes
+    // buildStudyCheckpoint() below, which reads them at every save and writes
     // whichever it finds into localStorage tagged with the CURRENT user. A
     // round left standing by A was therefore saved under B's name and offered
     // back to B, "↩️ Đã mở lại bài đang làm dở", as if it were theirs.
@@ -1180,11 +1234,11 @@ function forgetProfileState() {
     currentHistoryTab = 'history';
     historyPage = 0;
     selectedDifficultyFilter = 'beginning';
-    // Deliberately NOT cleared: _studyCheckpointTimer and _updateRetryTimer.
-    // Neither belongs to a child — the first re-reads currentUser on every tick
-    // and saves nothing while there is no user, and stopping it would leave the
-    // NEXT child with no checkpointing at all; the second is the app-update
-    // nag. _profileOriginScreen is not cleared either: openProfile() sets it
+    // Deliberately NOT cleared: _studyCheckpointListening and _updateRetryTimer.
+    // Neither belongs to a child — the first is the page's set of save
+    // listeners, which re-read currentUser on every save and write nothing
+    // while there is no user, and removing them would leave the NEXT child
+    // with no checkpointing at all; the second is the app-update nag. _profileOriginScreen is not cleared either: openProfile() sets it
     // before anything can read it.
 }
 

@@ -197,8 +197,12 @@ function showSpeedQuestion() {
 
         if (speedState.timeLeft <= 0) {
             handleTimeUp();
+        } else if (typeof saveStudyCheckpointOnClock === 'function') {
+            saveStudyCheckpointOnClock();   // the time left is in the checkpoint (js/app.js)
         }
     }, 100);
+    // The screen and the checkpoint change together (js/app.js).
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function updateTimerBar() {
@@ -472,6 +476,9 @@ function completeSpeedChallenge() {
     // Show complete overlay
     document.getElementById('speedGameOverlay').classList.remove('active');
     document.getElementById('speedCompleteOverlay').classList.add('active');
+    // The run is over and scored: clear its checkpoint at once (js/app.js), so
+    // a reload never offers it back to be scored and paid for twice.
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function closeSpeedComplete() {

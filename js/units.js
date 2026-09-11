@@ -627,7 +627,7 @@ function abandonUnitPractice() { _unitQuiz = null; }
 // quitUnitPractice()'s ✕ and switchScreen's confirm — and switchUser() goes
 // through neither. So A's half-answered round survived: isUnitPracticeActive()
 // answered B's every tab tap with "You are 6/10 through this practice", and the
-// once-a-second study checkpoint (js/app.js buildStudyCheckpoint) wrote A's
+// study checkpoint (js/app.js buildStudyCheckpoint) wrote A's
 // questions and A's answers into localStorage under B's NAME, to be handed back
 // to B — "↩️ Đã mở lại bài đang làm dở" — on their next open.
 //
@@ -767,6 +767,8 @@ function renderUnitQuestion() {
     const inp = document.getElementById('unitTextInput');
     if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function submitUnitAnswer() {
@@ -886,6 +888,9 @@ function finishUnitPractice() {
     </div>`;
   fireRewardCelebration(coinsEarned, pct);
   _unitQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 if (typeof module !== 'undefined' && module.exports) {
