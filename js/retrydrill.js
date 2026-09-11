@@ -156,6 +156,22 @@ function startRetryDrill(key) {
 }
 function abandonRetryDrill() { _retryDrill = null; }
 
+// The ✕ on the drill. Same rule as every quiz's ✕ (quitCollocPractice,
+// quitPhrasesQuiz): ask before binning a round the child has put work into,
+// and let "not now" on an unanswered drill stay free — the gate pushed them
+// in, so an immediate ✕ is a decision, not a slip. Cancel changes nothing.
+function quitRetryDrill() {
+  const st = _retryDrill;
+  if (!st) return;
+  const cfg = retryCfg(st.key);
+  const noun = (cfg && cfg.noun) || 'câu';
+  if ((st.fixed + st.missed) > 0 && typeof confirm === 'function'
+    && !confirm('Bé đang luyện lại ' + noun + ' sai, còn ' + st.queue.length + ' ' + noun + '.\n'
+      + 'Ra bây giờ thì lần sau vào lại luyện tiếp.\n\nVẫn ra chứ?')) return;
+  abandonRetryDrill();
+  retryGoHome(st.key);
+}
+
 // SILENT teardown for a profile change. The drill is a queue of the words THIS
 // child owes (js/wrong-priority.js), so it is the previous child's homework by
 // definition — and it survived, because the only clears are retryGoHome() and
@@ -249,7 +265,7 @@ function renderRetryDrill() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonRetryDrill(); retryGoHome('${st.key}')">✕</button>
+        <button class="grammar-back-btn" onclick="quitRetryDrill()">✕</button>
         <span class="grammar-quiz-progress">✍️ Luyện ${noun} sai · còn ${left} ${noun}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill"
              style="width:${Math.round(st.fixed / Math.max(1, st.fixed + left) * 100)}%"></div></div>
@@ -347,7 +363,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     defineRetryDrill, retryCfg, retryList, retryCount, retryAdd, retryClear,
     retryGate, retryOwedBannerHTML, retryResultBannerHTML, retryResultCtaHTML,
-    startRetryDrill, abandonRetryDrill, retryDrillForgetProfile, isRetryDrillActive, retryDrillKey,
+    startRetryDrill, abandonRetryDrill, quitRetryDrill, retryDrillForgetProfile, isRetryDrillActive, retryDrillKey,
     setRetryReveal, renderRetryDrill, submitRetryAnswer, nextRetryQuestion,
     finishRetryDrill, retryGoHome, retryEsc,
   };
