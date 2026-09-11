@@ -269,28 +269,81 @@ const ASSETS = Object.keys(PRECACHE);
 // Failures are collected and logged instead. A missing entry means that one
 // asset needs the network, which is a far smaller problem than an update that
 // can never install.
+// The previous generation's cache, if one is still on the device. Every
+// release bumps CACHE_NAME, so on an update there is exactly one of these;
+// on a first install there is none.
+function isAppCache(name) { return /^flashlingo-v\d+$/.test(name) && name !== CACHE_NAME && name !== AUDIO_CACHE; }
+async function previousCache() {
+  const names = (await caches.keys()).filter(isAppCache)
+    .sort((a, b) => Number(b.slice(11)) - Number(a.slice(11)));
+  return names.length ? { name: names[0], cache: await caches.open(names[0]) } : null;
+}
+
+// Each generation records the manifest it was installed from under a
+// synthetic key, so the next install can tell which entries it already has
+// the right bytes for without keeping the old worker's code around.
+const MANIFEST_KEY = '/__precache-manifest__';
+async function storedManifest(cache) {
+  try {
+    const res = await cache.match(MANIFEST_KEY);
+    return res ? await res.json() : {};
+  } catch (e) { return {}; }
+}
+
+// First 16 hex chars of SHA-256 — what scripts/build-sw-manifest.js wrote
+// into PRECACHE for the bytes it shipped.
+async function hashOf(buf) {
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(digest)).slice(0, 8)
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Fetch one precache entry and prove it is the file the manifest describes.
+// A mismatch is a failed entry, like a 404: the SPA fallback (Pages answers
+// an unknown path with 200 text/html) can no longer poison a key, and
+// neither can a half-propagated deploy serving last release's bytes under
+// this release's name. Returns the Response to store, or throws.
+async function fetchVerified(url, want) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(response.status + ' ' + url);
+  if (!url.endsWith('.html') && url !== '/' &&
+      (response.headers.get('content-type') || '').indexOf('text/html') !== -1) {
+    throw new Error('SPA fallback for ' + url);
+  }
+  const buf = await response.clone().arrayBuffer();
+  const got = await hashOf(buf);
+  if (got !== want) throw new Error('hash ' + got + ' != ' + want + ' for ' + url);
+  return response;
+}
+
+// Install: copy what did not change, download and verify what did.
+//
+// BEST EFFORT, not all-or-nothing (see the note above). And no longer a full
+// re-download: an entry whose hash is the same as in the previous
+// generation's stored manifest is copied across from that cache without
+// touching the network, so a release that changed three files costs three
+// requests, not 216 — and never the 16 MB of sprite sheets that change
+// once a year.
 async function precache() {
   const cache = await caches.open(CACHE_NAME);
+  const prev = await previousCache();
+  const prevManifest = prev ? await storedManifest(prev.cache) : {};
+  let copied = 0;
   const results = await Promise.allSettled(ASSETS.map(async url => {
-    // Default cache mode, exactly as cache.addAll used: 20 MB of the precache
-    // is night-raid sprite sheets that do not change between releases, and
-    // forcing a network re-download of all of them on every version bump is
-    // what made this install fragile in the first place.
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(response.status + ' ' + url);
-    // Cloudflare Pages answers an unknown path with the SPA fallback: 200 and
-    // text/html. Caching that under a .js or .png key poisons the entry for
-    // the life of this CACHE_NAME — exactly how the word recordings were
-    // muted once (see isRecording below).
-    if (!url.endsWith('.html') && url !== '/' &&
-        (response.headers.get('content-type') || '').indexOf('text/html') !== -1) {
-      throw new Error('SPA fallback for ' + url);
+    const want = PRECACHE[url];
+    if (prev && prevManifest[url] === want) {
+      const kept = await prev.cache.match(url);
+      if (kept) { await cache.put(url, kept); copied++; return; }
     }
+    const response = await fetchVerified(url, want);
     await cache.put(url, response);
   }));
   const failed = results
     .map((r, i) => (r.status === 'rejected' ? ASSETS[i] : null))
     .filter(Boolean);
+  await cache.put(MANIFEST_KEY, new Response(JSON.stringify(PRECACHE), {
+    headers: { 'Content-Type': 'application/json' } }));
+  console.log('[sw] precache: ' + copied + ' reused, ' + (ASSETS.length - copied - failed.length) + ' downloaded, ' + failed.length + ' failed');
   if (failed.length) console.warn('[sw] precache incomplete:', failed.length, 'of', ASSETS.length, failed.slice(0, 10));
   return failed;
 }
@@ -446,15 +499,35 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Network-first, but not network-forever. On "lie-fi" — associated to a
-  // Wi-Fi that cannot reach the internet — a bare fetch() waits for the OS
+  // Anything the manifest describes is served from the cache, first and
+  // only: the bytes on the device are exactly the ones this generation
+  // shipped (hash-verified at install), so asking the network for them again
+  // is a round-trip per file — ~70 for a cold open — that can only return 304.
+  // Freshness comes from the worker itself: the browser re-checks /sw.js on
+  // every open, a changed manifest installs in the background, and
+  // js/app.js swaps it in when the child is idle. A miss here is a straggler
+  // the install could not fetch, and falls through to the network path below.
+  const manifestHash = url.origin === self.location.origin ? PRECACHE[url.pathname] : undefined;
+  if (manifestHash !== undefined && url.pathname !== MANIFEST_KEY) {
+    event.respondWith(
+      caches.match(event.request, { ignoreSearch: true })
+        .then(hit => hit || networkThenCache(event, manifestHash))
+    );
+    return;
+  }
+  event.respondWith(networkThenCache(event, undefined));
+});
+
+// Network-first, but not network-forever. On "lie-fi" — associated to a
+// Wi-Fi that cannot reach the internet — a bare fetch() waits for the OS
   // socket timeout, tens of seconds, and the startup bundle is 55 scripts plus
   // the stylesheet. A fully cached app took minutes to paint instead of a
   // second. Anything already in the cache is served the moment the network
   // fails to answer in time; the network response still wins if it arrives.
+function networkThenCache(event, manifestHash) {
   const NETWORK_TIMEOUT_MS = 3500;
   let slowTimer = null;
-  const fromNetwork = fetch(event.request).then(response => {
+  const fromNetwork = fetch(event.request).then(async response => {
     // The network answered: stop the fallback timer rather than leaving one
     // pending per request (a cold start asks for 55 scripts and a stylesheet).
     if (slowTimer !== null) { clearTimeout(slowTimer); slowTimer = null; }
@@ -468,11 +541,22 @@ self.addEventListener('fetch', event => {
     // this path did not, which made the guard mostly decorative.
     if (response.ok && !isSpaFallback(event.request, response)) {
       const clone = response.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
-        // Cache.put rejects on a 206, on `Vary: *`, and when the quota is
-        // full. None of those is a reason to fail the request the child is
-        // waiting on.
-        .catch(err => console.warn('[sw] could not cache', event.request.url, err));
+      // A manifest entry is stored only as the bytes the manifest names —
+      // the same rule as install, so a straggler cannot smuggle in a stale
+      // or foreign body under a verified key. Anything else keeps the old
+      // rule: cache it if it is not the fallback page.
+      let store = true;
+      if (manifestHash !== undefined) {
+        try { store = (await hashOf(await clone.clone().arrayBuffer())) === manifestHash; }
+        catch (e) { store = false; }
+      }
+      if (store) {
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+          // Cache.put rejects on a 206, on `Vary: *`, and when the quota is
+          // full. None of those is a reason to fail the request the child is
+          // waiting on.
+          .catch(err => console.warn('[sw] could not cache', event.request.url, err));
+      }
     }
     return response;
   });
@@ -483,8 +567,7 @@ self.addEventListener('fetch', event => {
     .then(() => caches.match(event.request, { ignoreSearch: true }))
     .then(hit => hit || fromNetwork);
 
-  event.respondWith(
-    Promise.race([fromNetwork, raceCache]).catch(async () => {
+  return Promise.race([fromNetwork, raceCache]).catch(async () => {
       // Offline — serve from cache. `ignoreSearch` because a query string is
       // never part of what we precached: the friend-invite link
       // /?ketban=<name> (js/friends.js) missed the cached '/' entirely.
@@ -507,6 +590,5 @@ self.addEventListener('fetch', event => {
       // Never resolve respondWith with undefined: that throws a TypeError and
       // the browser shows its own error page instead of our failure.
       return Response.error();
-    })
-  );
-});
+    });
+}

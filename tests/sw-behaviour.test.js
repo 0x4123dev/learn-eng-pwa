@@ -72,15 +72,32 @@ function makeCaches() {
 
 const body = (text, type) => new Response(text, { status: 200, headers: { 'Content-Type': type } });
 
-// Boot sw.js. `fetchImpl(url)` decides what the network does.
-function bootWorker(fetchImpl) {
+// The worker verifies every precached body against the manifest (first 16
+// hex chars of SHA-256). The shipped sw.js carries the hashes of the real
+// files; a test's mock network serves 'ok', so the harness rewrites the
+// PRECACHE block to the hash of whatever body each URL will get.
+const crypto = require('crypto');
+const sha16 = text => crypto.createHash('sha256').update(text).digest('hex').slice(0, 16);
+const PRECACHE_RE = /const PRECACHE\s*=\s*\{([\s\S]*?)\};/;
+const MANIFEST_URLS = (SW_SRC.match(PRECACHE_RE)[1].match(/'(\/[^']*)'\s*:/g) || []).map(k => k.slice(1, k.lastIndexOf("'")));
+function withManifest(bodyFor) {
+  const block = MANIFEST_URLS.map(u => `  '${u}': '${sha16(bodyFor(u))}'`).join(',\n');
+  return SW_SRC.replace(PRECACHE_RE, `const PRECACHE = {\n${block}\n};`);
+}
+
+// Boot sw.js. `fetchImpl(url)` decides what the network does; `opts.bodyFor(url)`
+// is the text the manifest should expect for each precached URL (default 'ok').
+function bootWorker(fetchImpl, opts) {
+  opts = opts || {};
+  const bodyFor = opts.bodyFor || (() => 'ok');
   const listeners = {};
   const requested = [];
   let skipWaitingCalls = 0;
   const sandbox = {
     console: { log() {}, warn() {}, error() {} },
-    Response, Request, URL, Promise, Math, Date, JSON, Number, String, Object, Array,
+    Response, Request, URL, Promise, Math, Date, JSON, Number, String, Object, Array, Uint8Array, Error,
     setTimeout, clearTimeout,
+    crypto: globalThis.crypto,
     caches: makeCaches(),
     fetch: (input, init) => {
       const url = typeof input === 'string' ? input : input.url;
@@ -100,7 +117,7 @@ function bootWorker(fetchImpl) {
   };
   sandbox.self.caches = sandbox.caches;
   vm.createContext(sandbox);
-  vm.runInContext(SW_SRC, sandbox);
+  vm.runInContext(withManifest(bodyFor), sandbox);
 
   function fire(type, event) {
     const out = [];
@@ -139,7 +156,7 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
     assert.equal(worker.requested.length, ASSET_COUNT, 'every asset is still attempted');
     const cache = await worker.sandbox.caches.open('x');
     const stored = [...worker.sandbox.caches._stores.values()][0];
-    assert.equal(stored.size, ASSET_COUNT - 1, 'everything that could be cached, was');
+    assert.equal(stored.size, ASSET_COUNT - 1 + 1, 'everything that could be cached, was (+ the stored manifest)');
     assert.falsy(stored.has('/js/night-raid.js'), 'and the broken one is simply absent');
   });
 
@@ -150,7 +167,7 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
     // passed with an empty cache while `activate` went on to delete the
     // previous, COMPLETE one.
     const stored = [...worker.sandbox.caches._stores.values()][0];
-    assert.truthy(!stored || stored.size === 0, 'nothing could be fetched, so nothing was stored');
+    assert.truthy(!stored || stored.size <= 1, 'nothing could be fetched, so nothing but the manifest record was stored');
   });
 
   test('a half-finished install does NOT retire the cache that still works', async () => {
@@ -219,7 +236,7 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
   });
 
   test('a real HTML page still caches normally through the fetch path', async () => {
-    const worker = bootWorker(() => body('<!doctype html>the app', 'text/html'));
+    const worker = bootWorker(() => body('<!doctype html>the app', 'text/html'), { bodyFor: () => '<!doctype html>the app' });
     const event = fetchEvent(ORIGIN + '/index.html');
     worker.fire('fetch', event);
     await event.responded;
@@ -263,7 +280,7 @@ suite('service worker: the API is never cached and never replayed', () => {
   });
 
   test('static assets ARE still cached — the exclusion is /api/ only', async () => {
-    const worker = bootWorker(() => body('console.log(1)', 'application/javascript'));
+    const worker = bootWorker(() => body('console.log(1)', 'application/javascript'), { bodyFor: () => 'console.log(1)' });
     const event = fetchEvent(ORIGIN + '/js/app.js');
     worker.fire('fetch', event);
     assert.truthy(event.responded, 'a script must be handled');
@@ -276,7 +293,7 @@ suite('service worker: the API is never cached and never replayed', () => {
 
 suite('service worker: offline always lands on the app', () => {
   test('a friend-invite link with a query string opens the cached shell', async () => {
-    const worker = bootWorker(() => body('<!doctype html>app', 'text/html'));
+    const worker = bootWorker(() => body('<!doctype html>app', 'text/html'), { bodyFor: () => '<!doctype html>app' });
     await install(worker);
     const worker2 = worker;
     // Now offline.
@@ -318,7 +335,7 @@ suite('service worker: offline always lands on the app', () => {
 
 suite('service worker: lie-fi does not stall a fully cached app', () => {
   test('a hanging network gives way to the cache instead of waiting it out', async () => {
-    const worker = bootWorker(url => body('cached body', 'application/javascript'));
+    const worker = bootWorker(url => body('cached body', 'application/javascript'), { bodyFor: () => 'cached body' });
     await install(worker);
     // The network now accepts the connection and never answers — the exact
     // shape of a Wi-Fi with no upstream.

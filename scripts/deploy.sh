@@ -2,8 +2,9 @@
 # deploy.sh — ship FlashLingo to the live site in one command.
 #
 # The ritual this replaces, which was easy to half-forget:
-#   bump APP_VERSION + CACHE_NAME + package.json  →  run tests  →  commit
-#   →  build .cf-dist  →  wrangler pages deploy  →  confirm live
+#   bump APP_VERSION + CACHE_NAME + package.json  →  build .cf-dist (minified)
+#   →  hash the sw.js precache manifest over the shipped bytes  →  run tests
+#   →  commit  →  wrangler pages deploy  →  confirm live (bytes + manifest)
 #
 #   scripts/deploy.sh -m "fix(friends): ..."     bump patch, commit, deploy
 #   scripts/deploy.sh --version 4.3.0 -m "..."   explicit version
@@ -122,6 +123,43 @@ else
   echo "▸ version $NEWVER (unchanged)"
 fi
 
+# ---- build + precache manifest --------------------------------------------
+# The bundle is built BEFORE the suite and the commit, because the service
+# worker's manifest (sw.js PRECACHE) hashes the bytes that actually ship —
+# the esbuild-minified files in .cf-dist, not the source — and those hashes
+# must land in the release commit so HEAD describes what is live.
+# audio/ is deliberately absent from the bundle: the ~13,000 word MP3s deploy
+# separately to the eng-pwa-audio Pages project (scripts/deploy-audio.sh) so
+# they can never push this deployment over Cloudflare's 20,000-file limit.
+echo "▸ building .cf-dist (minified)…"
+node scripts/build-dist.js --out .cf-dist
+if [ "$BUMP" = "1" ]; then
+  echo "▸ hashing the precache manifest over the shipped bytes…"
+  node scripts/build-sw-manifest.js --root .cf-dist
+else
+  # --no-bump ships an already-committed sw.js: its manifest must already
+  # describe these exact bytes, or a device would verify the download
+  # against the wrong hash and refuse to cache it.
+  if ! node scripts/build-sw-manifest.js --root .cf-dist --check; then
+    echo "✗ sw.js's precache manifest is stale for what is about to ship." >&2
+    echo "  Deploy with -m \"…\" so the bump step rehashes and commits it." >&2
+    exit 1
+  fi
+fi
+# sw.js is copied verbatim (never minified: tests and tooling parse its
+# PRECACHE block), and it is copied AFTER the rehash so the bundle carries it.
+cp sw.js .cf-dist/sw.js
+
+# Refuse to ship a deployment that is creeping toward the Pages file cap —
+# better to fail here with a name than mid-upload with an API error.
+COUNT=$(find .cf-dist -type f | wc -l | tr -d ' ')
+echo "▸ .cf-dist: $COUNT files (Pages limit: 20,000/deployment)"
+if [ "$COUNT" -ge 18000 ]; then
+  echo "✗ $COUNT files staged — nearly at Cloudflare's 20,000-file limit." >&2
+  echo "  Find what grew: find .cf-dist -type f | awk -F/ '{print \$2}' | sort | uniq -c | sort -rn | head" >&2
+  exit 1
+fi
+
 # ---- tests -----------------------------------------------------------------
 # Before the deploy, not after. A red suite must never reach the child's phone.
 if [ "$TEST" = "1" ]; then
@@ -188,25 +226,7 @@ if [ "$COMMITTED" = "1" ]; then
     | head -8 || true)
 fi
 
-# ---- build + deploy --------------------------------------------------------
-echo "▸ building .cf-dist…"
-rm -rf .cf-dist && mkdir -p .cf-dist
-cp index.html admin.html manifest.json sw.js .nojekyll _redirects .cf-dist/
-# audio/ is deliberately absent: the ~13,000 word MP3s deploy separately to
-# the eng-pwa-audio Pages project (scripts/deploy-audio.sh) so they can never
-# push this deployment over Cloudflare's 20,000-file limit.
-cp -R css js img assets functions wrangler.toml .cf-dist/
-
-# Refuse to ship a deployment that is creeping toward the Pages file cap —
-# better to fail here with a name than mid-upload with an API error.
-COUNT=$(find .cf-dist -type f | wc -l | tr -d ' ')
-echo "▸ .cf-dist: $COUNT files (Pages limit: 20,000/deployment)"
-if [ "$COUNT" -ge 18000 ]; then
-  echo "✗ $COUNT files staged — nearly at Cloudflare's 20,000-file limit." >&2
-  echo "  Find what grew: find .cf-dist -type f | awk -F/ '{print \$2}' | sort | uniq -c | sort -rn | head" >&2
-  exit 1
-fi
-
+# ---- deploy ----------------------------------------------------------------
 # Braces are load-bearing: "$PROJECT…" makes bash read the first byte of the
 # multibyte "…" as part of the NAME under some locales, and `set -u` then kills
 # the deploy after the build with "PROJECT\xe2: unbound variable".
@@ -258,8 +278,15 @@ for i in $(seq 1 30); do
       [ "$want" = "$got" ] || stale="$stale $f"
     done
     if [ -z "$stale" ]; then
+      # sw.js is among the probes, so the live worker is byte-identical to the
+      # shipped one; and the shipped worker's manifest describes the shipped
+      # bytes — together, a device that verifies a download against the live
+      # manifest is verifying it against what the live site serves.
+      if ! node scripts/build-sw-manifest.js --root .cf-dist --sw .cf-dist/sw.js --check >/dev/null; then
+        echo "✗ the shipped sw.js manifest does not describe the shipped files" >&2; exit 1
+      fi
       n=$(printf '%s\n' $CHANGED $EXTRA_PROBES | grep -c . || true)
-      echo "✓ live: v$NEWVER — assets ✓  api ✓  ${n} file(s) byte-verified ✓"; exit 0
+      echo "✓ live: v$NEWVER — assets ✓  api ✓  ${n} file(s) byte-verified ✓  manifest ✓"; exit 0
     fi
     [ $i -lt 30 ] || { echo "⚠ still serving an older copy of:$stale"; exit 1; }
   fi
