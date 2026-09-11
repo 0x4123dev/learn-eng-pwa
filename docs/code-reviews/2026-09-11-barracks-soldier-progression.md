@@ -14,4 +14,4 @@ The final review found no remaining correctness or security issue in scope.
 
 Accepted limitation: FlashLingo's wider coin economy is intentionally client-authoritative and offline-compatible. The barracks operation does not claim to make that wallet tamper-proof; doing so would require moving all earning and spending to a server transaction/receipt model outside this change.
 
-Verification reviewed: 31 farm-server tests, 35 builder tests, 11 API tests, the 12,033-test full suite, and `git diff --check` all passed.
+Verification reviewed: 31 farm-server tests, 35 builder tests, 11 API tests, the deployed 12,036-test full suite, 286 source/live feature checks, and `git diff --check` all passed.
