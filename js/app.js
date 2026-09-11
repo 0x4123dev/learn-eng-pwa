@@ -1747,6 +1747,20 @@ function switchScreen(screenId) {
         if (typeof abandonSpeedGame === 'function') abandonSpeedGame();
     }
 
+    // Guard: the owed-verbs drill (js/retrydrill.js key 'verbs'), which the
+    // speed run's gate opens on speedChallengeScreen. Every other drill key
+    // had a branch here; this one did not, so a tap on the bottom bar left
+    // the drill RUNNING under the next tab — isRetryDrillActive() stayed true
+    // and held app updates back. tests/leave-guard-contract.test.js is what
+    // now makes a drill key without a branch here impossible to add.
+    if (screenId !== 'speedChallengeScreen' &&
+        typeof retryDrillKey === 'function' && retryDrillKey() === 'verbs') {
+        if (!confirm('You are typing back the verbs you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
+    }
+
     // Guard: warn before leaving an in-progress Rewrite practice, or its
     // owed-questions drill (same screen — see the Word form guard above).
     if (screenId !== 'rewriteScreen' &&
