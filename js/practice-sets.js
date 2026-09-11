@@ -508,6 +508,8 @@ function openPhoneticsLesson(key) {
 
 function practiceRenderHome(setId, screenId, html) {
     if (typeof examSelectSet === 'function') examSelectSet(setId);
+    // A round still running on this screen keeps its question (js/exam.js).
+    if (typeof examHomeYieldsToLivePaper === 'function' && examHomeYieldsToLivePaper(screenId)) return;
     const screen = (typeof document !== 'undefined') ? document.getElementById(screenId) : null;
     if (!screen) return;
     screen.innerHTML = `<div class="exam-home">${html}</div>`;

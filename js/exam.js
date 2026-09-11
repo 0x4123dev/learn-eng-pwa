@@ -156,6 +156,30 @@ function abandonExam() {
     if (_examState && _examState.timerId) clearInterval(_examState.timerId);
     _examState = null;
     examLockScreen(false);
+    // The last renderExamQuestion() wrote this paper into the study checkpoint
+    // (js/app.js). Leaving through the bottom bar relies on the document's
+    // click listener to clear it a tick later; a leave that reaches here any
+    // other way (a deep link, switchUser, a test) would otherwise be offered
+    // the abandoned paper back on the next open. Clear it here, the way
+    // finishExam does.
+    if (typeof saveStudyCheckpoint === 'function') { try { saveStudyCheckpoint(); } catch (e) {} }
+}
+
+// A set's home must never be drawn over a paper that is still running on
+// that same screen. switchScreen(ownScreen) does not ask (there is nothing to
+// leave), but it repaints the tab's home — and with the clock still ticking
+// underneath, the list would sit there until _examTick auto-submitted a paper
+// nobody could see. Every home renderer on the engine asks this first; when
+// the live paper belongs to this screen, the question is redrawn instead.
+function examHomeYieldsToLivePaper(screenId) {
+    if (!isExamActive()) return false;
+    // The paper's OWN set, not the selected one: a set's home selects itself
+    // on the way in, and the question must be redrawn where it started.
+    const live = EXAM_SETS[_examState.set] || _examSetCfg();
+    if (live.screen !== screenId) return false;
+    examSelectSet(_examState.set);
+    renderExamQuestion();
+    return true;
 }
 
 // SILENT teardown for a profile change. abandonExam() is exactly the right
@@ -215,10 +239,23 @@ function escExam(s) {
 // ---- home / landing ----------------------------------------------------------
 
 function renderExamHome() {
+    // The Exam tab's body is the HCMC set's. Visiting Reading (or PTNK, or any
+    // practice menu) leaves THAT set selected, and the bottom bar's Exam
+    // button then asked this function to draw — which delegated to the
+    // Reading home, drew it on readingScreen, and left the Exam tab on its
+    // "Đang tải bài…" placeholder for good. When the Exam tab is the screen
+    // showing, the HCMC list is what is wanted; a set's own results screen
+    // ("← PTNK Exams", "← Back to list") sits on that set's screen, so it
+    // still goes home to its set.
+    if (typeof document !== 'undefined' && !isExamActive()) {
+        const examTab = document.getElementById('examScreen');
+        if (examTab && examTab.classList.contains('active')) _examSet = 'hcmc';
+    }
     // A set that brought its own home (PTNK lists papers by year, not as one
     // flat list with lessons) draws it here; the HCMC body follows.
     const cfg = _examSetCfg();
     if (typeof cfg.home === 'function') { cfg.home(); return; }
+    if (examHomeYieldsToLivePaper(cfg.screen)) return;
     const screen = _examScreen();
     if (!screen) return;
     const bar = `
