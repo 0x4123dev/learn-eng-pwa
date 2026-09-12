@@ -2017,11 +2017,35 @@ function _busyWithTimedActivity() {
     return false;
 }
 
+// When a reload costs the child nothing. "Not busy" was not enough: the
+// moment a practice ENDS the child is on its results card with a finger
+// already heading for "Practice again", and the 10-second poll fired right
+// there — the page reloaded under the tap, went white for the whole cold
+// start (on 3G, seconds), and the new round then came back out of the
+// checkpoint "a long time later". A quiet moment is the app in the
+// background (the best one: the reload lands before they look again), or a
+// MENU screen with no tap for a while — never a results card, never a
+// screen a child is reading.
+const UPDATE_QUIET_SCREENS = ['homeScreen', 'learnHubScreen', 'profileScreen', 'dailyTaskScreen', 'topicsScreen', 'onboardingScreen'];
+const UPDATE_IDLE_MS = 20000;
+let _lastInteractionAt = 0;
+function noteInteraction() { _lastInteractionAt = Date.now(); }
+function _updateQuietMoment() {
+    try {
+        if (typeof document !== 'undefined' && document.hidden) return true;
+        const active = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
+            ? document.querySelector('.screen.active') : null;
+        if (active && UPDATE_QUIET_SCREENS.indexOf(active.id) === -1) return false;
+        return Date.now() - _lastInteractionAt >= UPDATE_IDLE_MS;
+    } catch (e) { return true; }
+}
+
 function applyUpdateWhenSafe(reg) {
     if (_updateReloading) return;
-    if (_busyWithTimedActivity()) {
-        // Poll quietly until the child finishes. This timer belongs to the
-        // page, not to one profile, so switching users must not clear it.
+    if (_busyWithTimedActivity() || !_updateQuietMoment()) {
+        // Poll quietly until the child finishes AND the moment is quiet. This
+        // timer belongs to the page, not to one profile, so switching users
+        // must not clear it.
         if (!_updateRetryTimer) {
             _updateRetryTimer = setInterval(() => applyUpdateWhenSafe(reg), 10000);
         }
@@ -2089,6 +2113,15 @@ function registerServiceWorker() {
                     const p = reg.update();
                     if (p && typeof p.catch === 'function') p.catch(() => {});
                 } catch (e) { /* nothing to do: the next visible hour retries */ }
+            });
+
+            // The quiet-moment rule above needs to know when the child last
+            // touched the app, and the app going to the background is the
+            // best moment of all to swap the worker in.
+            ['pointerdown', 'keydown', 'touchstart'].forEach(t =>
+                document.addEventListener(t, noteInteraction, { capture: true, passive: true }));
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden' && (reg.waiting || reg.installing)) applyUpdateWhenSafe(reg);
             });
 
             // Watch for an updated sw.js becoming available.

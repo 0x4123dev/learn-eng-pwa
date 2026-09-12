@@ -695,15 +695,36 @@ suite('service worker: background updates are automatic but safe', () => {
       } },
     };
     if (opts.math) sandbox.isMathQuizActive = () => true;
+    // The quiet-moment rule: which screen is up, whether the app is hidden,
+    // and how long since the child last touched it.
+    sandbox.document.hidden = !!opts.hidden;
+    sandbox.document.querySelector = (sel) => (sel === '.screen.active' && opts.screen ? { id: opts.screen } : null);
+    sandbox.Date = { now: () => 1000000 };
     sandbox.globalThis = sandbox;
     vm.createContext(sandbox);
-    vm.runInContext(updateCode + '\n;globalThis.__applyUpdate = applyUpdateWhenSafe;', sandbox);
+    vm.runInContext(updateCode + '\n;globalThis.__applyUpdate = applyUpdateWhenSafe;'
+      + (opts.tappedAgo != null ? '\n;_lastInteractionAt = Date.now() - ' + opts.tappedAgo + ';' : ''), sandbox);
     const reg = { waiting: { postMessage(msg) {
       if (msg && msg.type === 'SKIP_WAITING') calls.posts++;
     } } };
     sandbox.__applyUpdate(reg);
     return calls;
   }
+
+  test('a results card is not a quiet moment: the tap heading for "Practice again" must not meet a reload', () => {
+    // The finish screen is not "busy", so the 10 s poll used to fire there.
+    const results = runUpdater({ screen: 'phrasesScreen', tappedAgo: 1500 });
+    assert.equal(results.posts, 0, 'no SKIP_WAITING on a results/practice screen');
+    assert.equal(results.intervals[0].ms, 10000, 'it keeps polling instead');
+    const fresh = runUpdater({ screen: 'homeScreen', tappedAgo: 1500 });
+    assert.equal(fresh.posts, 0, 'a tap 1.5 s ago on Home is not quiet either');
+    const idle = runUpdater({ screen: 'homeScreen', tappedAgo: 25000 });
+    assert.equal(idle.posts, 1, 'Home with no tap for 25 s is the moment');
+    const hidden = runUpdater({ screen: 'phrasesScreen', tappedAgo: 500, hidden: true });
+    assert.equal(hidden.posts, 1, 'the app in the background is always a quiet moment');
+    assert.truthy(/visibilityState === 'hidden'[^\n]*applyUpdateWhenSafe\(reg\)/.test(APP), 'going to the background applies a waiting update at once');
+    assert.truthy(/noteInteraction/.test(APP.slice(APP.indexOf('function registerServiceWorker('))), 'taps are tracked');
+  });
 
   test('there is no update banner or button for the child to handle', () => {
     assert.falsy(APP.includes('sw-update-bar'));
