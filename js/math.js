@@ -758,6 +758,16 @@ function math4Types() {
   return (typeof MATH4_TYPES !== 'undefined' && Array.isArray(MATH4_TYPES)) ? MATH4_TYPES : [];
 }
 function math4Ready() { return math4Bank().length > 0 && math4Types().length > 0; }
+// The bank did not arrive (a download that failed after the tab opened):
+// say so and offer the retry the lazy loader supports, instead of a card
+// that looks locked.
+function math4NotLoaded() {
+  const screen = document.getElementById('mathHubScreen');
+  if (!screen) return;
+  screen.innerHTML = mathHeaderHTML('TOÁN 4', 'Đề ôn theo mẫu đề thi', 'Chưa tải được ngân hàng câu hỏi', 'openMathSection(\'home\')')
+    + '<div class="phrases-wrap"><div class="lazy-loading" role="status" style="text-align:center"><p>Chưa tải được bài Toán 4. Kiểm tra mạng rồi thử lại nhé!</p>'
+    + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button></div></div>';
+}
 
 function mathChapters() {
   if (mathSemester() === 2) return (typeof MATH_CHAPTERS_HK2 !== 'undefined') ? MATH_CHAPTERS_HK2 : [];
@@ -1128,7 +1138,11 @@ function renderToan4MenuHTML() {
   const preBest = math4Best(MATH4_PRE_SET);
   const bank = math4Bank().length;
   const types = math4Types();
-  const ready = math4Ready();
+  // The cards are never drawn locked for "loading": the Math tab's group
+  // (which holds this bank) is awaited before this menu draws, and a menu
+  // entry that is locked because its content has not loaded is the bug that
+  // hid Học kì 2 for an afternoon. If the download really failed, the start
+  // functions say so (below) rather than a 🔒 that never opens.
   const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
   const list = types.map(t => `<li>${mathEsc(t.title)} — ${t.count} câu</li>`).join('');
   return mathHeaderHTML('TOÁN 4', 'Đề ôn theo mẫu đề thi',
@@ -1140,24 +1154,16 @@ function renderToan4MenuHTML() {
         <h1>Ôn Toán 4</h1>
         <p class="phrases-sub">Mỗi lượt <b>${MATH4_QUIZ_SIZE} câu</b>: ${MATH4_PER_TYPE} câu cho mỗi dạng, xếp theo đúng thứ tự tờ đề.</p>
       </div>
-      ${ready ? `<button class="phrases-cta" onclick="startMath4Mix()">
+      <button class="phrases-cta" onclick="startMath4Mix()">
         <span class="phrases-cta-icon">📝</span>
-        <span class="phrases-cta-text"><strong>Mix</strong><small>Nhập đáp án · ${MATH4_QUIZ_SIZE} câu · ${types.length} dạng${mixBest !== null ? ` · Tốt nhất: ${mixBest}%` : ''}</small></span>
+        <span class="phrases-cta-text"><strong>Mix</strong><small>Nhập đáp án · ${MATH4_QUIZ_SIZE} câu · ${types.length || 5} dạng${mixBest !== null ? ` · Tốt nhất: ${mixBest}%` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
-      </button>` : `<button class="phrases-cta locked" disabled aria-disabled="true">
-        <span class="phrases-cta-icon">📝</span>
-        <span class="phrases-cta-text"><strong>Mix</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
-        <span class="phrases-cta-arrow">🔒</span>
-      </button>`}
-      ${ready ? `<button class="phrases-cta" onclick="startMath4Pre()">
+      </button>
+      <button class="phrases-cta" onclick="startMath4Pre()">
         <span class="phrases-cta-icon">✓</span>
         <span class="phrases-cta-text"><strong>Pre</strong><small>Chọn 1 trong 4 đáp án · ${MATH4_QUIZ_SIZE} câu · thưởng 50 xu khi đúng 100%${preBest !== null ? ` · Tốt nhất: ${preBest}%` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
-      </button>` : `<button class="phrases-cta locked" disabled aria-disabled="true">
-        <span class="phrases-cta-icon">✓</span>
-        <span class="phrases-cta-text"><strong>Pre</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
-        <span class="phrases-cta-arrow">🔒</span>
-      </button>`}
+      </button>
       <button class="phrases-cta" onclick="openMathSection('cuuchuong')">
         <span class="phrases-cta-icon">🔢</span>
         <span class="phrases-cta-text"><strong>Bảng cửu chương</strong><small>Nhân và chia · 6 bài · ${typeof TABLES_QUESTIONS !== 'undefined' ? TABLES_QUESTIONS : 10} câu ngược đồng hồ</small></span>
@@ -1248,6 +1254,7 @@ function math4PickPreQuestions() {
 
 function startMath4Mix() {
   _mathHintOpen = false;
+  if (!math4Ready()) { math4NotLoaded(); return; }
   if (typeof retryGate === 'function' && retryGate('math')) return;
   const questions = math4PickQuestions();
   if (!questions.length) return;
@@ -1270,6 +1277,7 @@ function startMath4Mix() {
 
 function startMath4Pre() {
   _mathHintOpen = false;
+  if (!math4Ready()) { math4NotLoaded(); return; }
   if (typeof retryGate === 'function' && retryGate('math')) return;
   const questions = math4PickPreQuestions();
   if (!questions.length) return;

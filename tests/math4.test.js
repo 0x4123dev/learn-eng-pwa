@@ -372,18 +372,22 @@ suite('toán 4: một tờ đề Mix', () => {
       'Pre must not override the shared menu-card colors');
   });
 
-  test('the menu says the bank is loading rather than offering an empty paper', () => {
-    // The bank is lazy-loaded, so a cold, offline first visit reaches this
-    // screen with MATH4_QUESTIONS still undefined. Rendering a live Pre button
-    // there would open a paper of nothing.
+  test('an empty bank never opens a paper of nothing — the start explains, the menu never locks', () => {
+    // The bank rides in the Math tab's lazy group, which is awaited before
+    // this menu draws; the only way to be here with it empty is a download
+    // that failed. The menu used to draw the cards LOCKED with "Đang tải…"
+    // for that — a lock nobody could ever open (the shape of the HK2 bug,
+    // tests/lazy-entry-points.test.js). Now the cards stay tappable and the
+    // start says what happened and offers a retry.
     const { m, screen, ctx } = loadMath();
     vm.runInContext('MATH4_QUESTIONS.length = 0; MATH4_TYPES.length = 0;', ctx);
     m.openMathSection('toan4');
-    assert.truthy(!screen.innerHTML.includes('startMath4Pre()'), 'an empty bank must not offer a paper');
-    assert.truthy(screen.innerHTML.includes('Đang tải'), 'and must say why');
+    assert.truthy(screen.innerHTML.includes('startMath4Pre()') && screen.innerHTML.includes('startMath4Mix()'), 'the cards are offered');
+    assert.falsy(/locked|Đang tải/.test(screen.innerHTML), 'and never drawn locked for loading');
     assert.deepEqual(m.math4PickQuestions(), []);
     m.startMath4Mix();
-    assert.equal(m.isMathQuizActive(), false, 'starting an empty paper must do nothing');
+    assert.equal(m.isMathQuizActive(), false, 'starting an empty paper must not open a paper');
+    assert.truthy(/Chưa tải được/.test(screen.innerHTML) && /Thử lại/.test(screen.innerHTML), 'it says why and offers a retry');
   });
 });
 
