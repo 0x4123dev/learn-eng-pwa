@@ -19,7 +19,7 @@
       "since"
      ],
      "correct": 0,
-     "explanation": "A length of time (<i>months</i>) after a perfect tense takes <b>for</b>. <i>Since</i> needs a starting point, and <i>during</i> names a period, not how long."
+     "explanation": "<b>Câu:</b> \"I had been practising <b>for</b> months, reading long lists of words aloud to my grandmother every evening.\" — Tôi đã luyện tập suốt nhiều tháng, mỗi tối đọc to những danh sách từ dài cho bà nghe.<br><b>Điểm kiểm tra:</b> giới từ đi với khoảng thời gian; \"months\" là độ dài (bao lâu), không phải mốc.<br>✅ <b>for</b> (trong suốt): for + khoảng thời gian (for months, for two years) trả lời \"bao lâu\".<br>✗ <b>during</b> (trong): đi với TÊN một giai đoạn (during the summer), không đứng trước lượng thời gian \"months\".<br>✗ <b>from</b> (từ): chỉ điểm bắt đầu, cần \"to/until\" đi kèm; \"from months\" vô nghĩa.<br>✗ <b>since</b> (kể từ): đi với MỐC thời gian (since March), không đi với độ dài \"months\"."
     },
     {
      "n": 2,
@@ -32,7 +32,7 @@
       "because"
      ],
      "correct": 1,
-     "explanation": "The two halves contrast: she cannot speak English, <b>but</b> she still helped. <i>So</i> and <i>because</i> would make one half the cause of the other."
+     "explanation": "<b>Câu:</b> \"She cannot speak much English, <b>but</b> she was patient enough to check each letter against the list.\" — Bà không nói được nhiều tiếng Anh, nhưng bà đủ kiên nhẫn để dò từng chữ cái theo danh sách.<br><b>Điểm kiểm tra:</b> hai vế TƯƠNG PHẢN: một hạn chế và điều bất ngờ dù có hạn chế đó.<br>✅ <b>but</b> (nhưng): nối hai ý trái ngược — không biết tiếng Anh mà vẫn giúp được.<br>✗ <b>or</b> (hoặc): đưa ra lựa chọn thay thế; ở đây không có lựa chọn.<br>✗ <b>so</b> (vì vậy): chỉ kết quả; \"không biết tiếng Anh\" không dẫn đến \"kiên nhẫn dò chữ\".<br>✗ <b>because</b> (bởi vì): chỉ nguyên nhân; bà kiên nhẫn không phải do không biết tiếng Anh."
     },
     {
      "n": 3,
@@ -45,7 +45,7 @@
       "with"
      ],
      "correct": 2,
-     "explanation": "The fixed phrase is <b>in silence</b>. English does not say <i>with silence</i> or <i>at silence</i> for the way people watch."
+     "explanation": "<b>Câu:</b> \"…thirty students sat in a row on the stage while the whole school watched <b>in</b> silence.\" — …ba mươi học sinh ngồi thành hàng trên sân khấu trong khi cả trường theo dõi trong im lặng.<br><b>Điểm kiểm tra:</b> cụm cố định \"in silence\" (trong im lặng), giống \"in peace\", \"in secret\".<br>✅ <b>in</b> (trong): \"in silence\" chỉ trạng thái khi làm gì — theo dõi mà không ai nói.<br>✗ <b>on</b> (trên): không có cụm \"on silence\"; on đi với bề mặt hoặc ngày tháng.<br>✗ <b>at</b> (tại): chỉ địa điểm hoặc giờ (at school, at six), không đi với trạng thái \"silence\".<br>✗ <b>with</b> (với): \"with silence\" không phải cụm tự nhiên; with đi với công cụ hoặc người đi cùng."
     },
     {
      "n": 4,
@@ -58,7 +58,7 @@
       "at"
      ],
      "correct": 3,
-     "explanation": "<b>At once</b> means immediately. <i>In</i>, <i>on</i> and <i>for</i> do not combine with <i>once</i> in this meaning."
+     "explanation": "<b>Câu:</b> \"…if you spelt a word wrongly, you had to leave the stage <b>at</b> once.\" — …nếu đánh vần sai một từ, bạn phải rời sân khấu ngay lập tức.<br><b>Điểm kiểm tra:</b> cụm cố định \"at once\" = ngay lập tức; luật thi loại trực tiếp nên ý \"ngay\" hợp nhất.<br>✅ <b>at</b> (tại): \"at once\" = \"immediately\" — sai là rời sân khấu ngay.<br>✗ <b>for</b> (cho): \"for once\" = \"lần này thì khác mọi lần\", không hợp với một luật thi.<br>✗ <b>in</b> (trong): không có cụm \"in once\"; in đi với khoảng thời gian (in a minute).<br>✗ <b>on</b> (trên): không có cụm \"on once\"; on đi với ngày hoặc bề mặt (on Monday, on the stage)."
     },
     {
      "n": 5,
@@ -71,7 +71,7 @@
       "therefore"
      ],
      "correct": 0,
-     "explanation": "Easy first round, then a hard fourth round: a contrast, so <b>however</b>. <i>Therefore</i> and <i>moreover</i> would add or conclude, not contrast."
+     "explanation": "<b>Câu:</b> \"By the fourth round, <b>however</b>, only eight of us were left.\" — Tuy nhiên, đến vòng thứ tư thì chỉ còn tám người trong chúng tôi.<br><b>Điểm kiểm tra:</b> TƯƠNG PHẢN với câu trước: vòng một \"nobody was eliminated\", vòng bốn chỉ còn tám; từ nối đứng giữa hai dấu phẩy.<br>✅ <b>however</b> (tuy nhiên): đảo chiều ý — trước không ai bị loại, sau loại gần hết.<br>✗ <b>moreover</b> (hơn nữa): thêm ý cùng chiều, nhưng \"còn tám người\" trái với \"không ai bị loại\".<br>✗ <b>otherwise</b> (nếu không thì): nêu hậu quả khi điều trước không xảy ra; câu này không có điều kiện.<br>✗ <b>therefore</b> (do đó): chỉ kết quả; vòng một dễ không phải nguyên nhân khiến vòng bốn còn tám người."
     },
     {
      "n": 6,
@@ -84,7 +84,7 @@
       "what"
      ],
      "correct": 1,
-     "explanation": "The doubt is between two possibilities (one C or two), so <b>whether</b> introduces the clause. <i>That</i> states a fact; <i>what</i> and <i>which</i> would need a missing noun."
+     "explanation": "<b>Câu:</b> \"I knew it well, but I suddenly could not remember <b>whether</b> it had one C or two.\" — Tôi biết rõ từ đó, nhưng bỗng không nhớ nổi nó có một chữ C hay hai.<br><b>Điểm kiểm tra:</b> phân vân giữa hai khả năng; manh mối là \"one C <i>or</i> two\" — cấu trúc \"whether … or …\".<br>✅ <b>whether</b> (liệu … hay): đi cặp với \"or\" để nêu hai khả năng chưa biết.<br>✗ <b>which</b> (cái nào): cần danh từ theo sau (which letter); \"which it had\" không thành câu.<br>✗ <b>that</b> (rằng): nêu sự thật đã biết, không đi với \"or two\" — người kể đang KHÔNG biết.<br>✗ <b>what</b> (cái gì): cần làm chủ ngữ hoặc tân ngữ, nhưng \"it had one C\" đã đủ."
     },
     {
      "n": 7,
@@ -97,7 +97,7 @@
       "that"
      ],
      "correct": 2,
-     "explanation": "After a comma, <b>which</b> refers back to the whole idea that the bell did not ring. <i>That</i> cannot follow a comma here, and <i>what</i> never refers backwards."
+     "explanation": "<b>Câu:</b> \"The bell did not ring, <b>which</b> meant I was correct.\" — Chuông không reo, điều đó có nghĩa là tôi đã đánh vần đúng.<br><b>Điểm kiểm tra:</b> đại từ quan hệ thay cho CẢ MỆNH ĐỀ trước; dấu phẩy trước chỗ trống cho thấy mệnh đề quan hệ không xác định.<br>✅ <b>which</b> (điều đó): sau dấu phẩy, \"which\" thay cả ý trước và làm chủ ngữ của \"meant\".<br>✗ <b>what</b> (cái mà): mở đầu mệnh đề danh từ, không nối tiếp một mệnh đề đã hoàn chỉnh.<br>✗ <b>who</b> (người mà): chỉ dùng cho người; ở đây thay cho một sự việc.<br>✗ <b>that</b> (mà): không dùng sau dấu phẩy trong mệnh đề quan hệ không xác định, cũng không thay được cả mệnh đề."
     },
     {
      "n": 8,
@@ -110,7 +110,7 @@
       "much"
      ],
      "correct": 3,
-     "explanation": "A comparative (<i>better</i>) is strengthened with <b>much</b>. <i>Very</i> goes with a plain adjective, and <i>more better</i> is a double comparative."
+     "explanation": "<b>Câu:</b> \"In the end I finished third, which is <b>much</b> better than I had expected.\" — Cuối cùng tôi về thứ ba, tốt hơn nhiều so với tôi mong đợi.<br><b>Điểm kiểm tra:</b> từ nhấn mạnh trước so sánh hơn \"better … than\"; chỉ \"much / far / a lot\" đứng được trước so sánh hơn.<br>✅ <b>much</b> (nhiều): \"much better than\" = tốt hơn nhiều — từ chuẩn để tăng mức độ so sánh hơn.<br>✗ <b>too</b> (quá): đi với tính từ nguyên cấp (too good), không đi với \"better\".<br>✗ <b>very</b> (rất): chỉ đứng trước tính từ nguyên cấp (very good); \"very better\" là lỗi kinh điển.<br>✗ <b>more</b> (hơn): \"better\" đã là so sánh hơn của good; thêm \"more\" thành so sánh kép, sai."
     },
     {
      "n": 9,
@@ -123,7 +123,7 @@
       "nearly"
      ],
      "correct": 0,
-     "explanation": "<b>Hardly ... at all</b> means almost not at all, which fits a boy who just reads. <i>Nearly</i> and <i>almost</i> would say he came close to practising, which makes no sense with <i>at all</i>."
+     "explanation": "<b>Câu:</b> \"My friend Nam, who had <b>hardly</b> practised at all, won the whole thing.\" — Nam, bạn tôi, người hầu như chẳng luyện tập gì, lại thắng cả cuộc thi.<br><b>Điểm kiểm tra:</b> trạng từ phủ định đi cặp với \"at all\" (chỉ nhấn mạnh ý phủ định); câu sau \"he simply reads a lot\" xác nhận Nam không luyện.<br>✅ <b>hardly</b> (hầu như không): \"hardly … at all\" = gần như không hề — Nam thắng mà không luyện.<br>✗ <b>almost</b> (gần như): nghĩa khẳng định (gần như đã luyện), không đi với \"at all\".<br>✗ <b>already</b> (đã rồi): chỉ việc đã xong sớm, trái ý \"không luyện\", không ghép với \"at all\".<br>✗ <b>nearly</b> (gần, suýt): giống almost, ý khẳng định \"gần như có luyện\", ngược câu chuyện."
     },
     {
      "n": 10,
@@ -136,7 +136,7 @@
       "little"
      ],
      "correct": 0,
-     "explanation": "<i>Worry</i> is an activity, so the comparative is <b>less</b>. <i>Fewer</i> is for countable nouns, and <i>least</i> is a superlative with nothing to compare to."
+     "explanation": "<b>Câu:</b> \"I have decided that next year I will read more and worry <b>less</b>.\" — Tôi đã quyết định năm sau sẽ đọc nhiều hơn và lo lắng ít đi.<br><b>Điểm kiểm tra:</b> so sánh hơn bổ nghĩa cho ĐỘNG TỪ \"worry\", đối xứng với \"read more\" ở vế trước.<br>✅ <b>less</b> (ít hơn): so sánh hơn của little, đứng được sau động từ — \"worry less\" đối lại \"read more\".<br>✗ <b>fewer</b> (ít hơn): chỉ đi với danh từ đếm được số nhiều (fewer mistakes), không đứng sau động từ.<br>✗ <b>least</b> (ít nhất): so sánh nhất; câu chỉ so với năm nay nên cần so sánh hơn.<br>✗ <b>little</b> (ít): dạng nguyên, không tạo thế đối \"more … less\"; \"worry little\" không tự nhiên."
     }
    ]
   },
@@ -159,7 +159,7 @@
       "off"
      ],
      "correct": 1,
-     "explanation": "You <b>take</b> things <b>out</b> of a bag to empty it. <i>Take off</i> is for clothes, <i>take away</i> means remove from a place, and <i>take up</i> means start a hobby."
+     "explanation": "<b>Câu:</b> \"I searched my bag twice, took everything <b>out</b> and shook it, and still found nothing.\" — Tôi lục cặp hai lần, lấy hết mọi thứ ra rồi giũ cặp, mà vẫn không thấy gì.<br><b>Điểm kiểm tra:</b> cụm động từ \"take something out\" = lấy ra; manh mối là \"shook it\" — lấy đồ ra rồi mới giũ cặp rỗng.<br>✅ <b>out</b> (ra ngoài): \"take out\" = lấy ra khỏi cặp, hợp với \"searched my bag\".<br>✗ <b>away</b> (đi): \"take away\" = mang đi nơi khác; người kể chỉ đổ đồ ra để tìm.<br>✗ <b>up</b> (lên): \"take up\" = bắt đầu một sở thích; không hợp cảnh lục cặp.<br>✗ <b>off</b> (cởi): \"take off\" = cởi quần áo hoặc cất cánh; không dùng cho đồ trong cặp."
     },
     {
      "n": 2,
@@ -172,7 +172,7 @@
       "by"
      ],
      "correct": 0,
-     "explanation": "A negative verb with a clock time takes <b>until</b>: not back until seven. <i>By</i> means no later than, <i>since</i> marks a starting point, and <i>for</i> gives a length of time."
+     "explanation": "<b>Câu:</b> \"My parents would not be back <b>until</b> seven o'clock…\" — Bố mẹ tôi đến bảy giờ mới về…<br><b>Điểm kiểm tra:</b> cấu trúc \"not … until + mốc\" = mãi đến … mới; manh mối là \"would not be back\" cộng mốc giờ.<br>✅ <b>until</b> (cho đến khi): \"not back until seven\" = bảy giờ mới về, nên phải ngồi chờ.<br>✗ <b>since</b> (kể từ): đi với mốc quá khứ; đây là thời điểm sắp tới.<br>✗ <b>for</b> (trong): cần khoảng thời gian (for two hours), không đi với mốc giờ.<br>✗ <b>by</b> (chậm nhất là): \"not back by seven\" chỉ nói chưa về trước bảy giờ, không nói mấy giờ về; ý \"mãi đến … mới\" cần \"until\"."
     },
     {
      "n": 3,
@@ -185,7 +185,7 @@
       "must"
      ],
      "correct": 3,
-     "explanation": "<i>I was sure</i> plus a reason calls for the deduction modal <b>must</b>. <i>Might</i> expresses only a possibility, which contradicts being sure."
+     "explanation": "<b>Câu:</b> \"I was sure the key <b>must</b> still be somewhere, because I remembered locking the door that morning.\" — Tôi chắc chìa khóa vẫn phải ở đâu đó, vì nhớ sáng nay mình đã khóa cửa.<br><b>Điểm kiểm tra:</b> động từ khuyết thiếu chỉ SUY ĐOÁN CHẮC CHẮN; manh mối là \"I was sure\" và bằng chứng \"I remembered locking the door\".<br>✅ <b>must</b> (chắc hẳn): suy luận có căn cứ — đã khóa cửa thì chìa hẳn còn đâu đó.<br>✗ <b>might</b> (có thể): khả năng yếu, mâu thuẫn với \"I was sure\".<br>✗ <b>can</b> (có thể): không dùng để suy đoán khẳng định về một tình huống cụ thể.<br>✗ <b>should</b> (nên): chỉ điều mong đợi hoặc lời khuyên, không phải kết luận chắc chắn."
     },
     {
      "n": 4,
@@ -198,7 +198,7 @@
       "taken"
      ],
      "correct": 2,
-     "explanation": "The phrasal verb <b>pick up</b> means lift something from the ground. <i>Take up</i>, <i>put up</i> and <i>give up</i> all exist but mean different things."
+     "explanation": "<b>Câu:</b> \"Had somebody <b>picked</b> it up in the playground?\" — Có ai đó đã nhặt nó lên trong sân chơi chăng?<br><b>Điểm kiểm tra:</b> cụm động từ với \"up\" đứng sau tân ngữ \"it\"; cảnh là chìa khóa rơi và người kể lo có ai nhặt mất — \"pick up\" = nhặt lên.<br>✅ <b>picked</b> (nhặt): \"pick something up\" = nhặt một vật từ mặt đất — đúng cảnh chìa khóa rơi.<br>✗ <b>put</b> (đặt): \"put up\" = dựng lên, treo lên hoặc cho ở nhờ; không có nghĩa nhặt.<br>✗ <b>given</b> (cho): \"give up\" = từ bỏ; \"give it up\" là bỏ cuộc, không liên quan chìa khóa.<br>✗ <b>taken</b> (lấy): \"take up\" = bắt đầu một môn/sở thích hoặc chiếm chỗ; không phải nhặt đồ."
     },
     {
      "n": 5,
@@ -211,7 +211,7 @@
       "at"
      ],
      "correct": 1,
-     "explanation": "The collocation is <b>keep your eyes on</b> something. <i>Look at</i> takes <i>at</i>, but <i>eyes</i> with <i>keep</i> takes <i>on</i>."
+     "explanation": "<b>Câu:</b> \"I walked back to the bus stop, keeping my eyes <b>on</b> the pavement the whole way…\" — Tôi đi bộ ngược lại trạm xe buýt, mắt dán xuống vỉa hè suốt cả quãng đường…<br><b>Điểm kiểm tra:</b> cụm cố định \"keep your eyes on something\" = luôn nhìn chăm chú vào cái gì.<br>✅ <b>on</b> (vào): \"keep an eye/your eyes on\" là cụm quen thuộc, hợp cảnh vừa đi vừa tìm chìa khóa trên vỉa hè.<br>✗ <b>to</b> (đến): \"eyes to the pavement\" không phải cụm tiếng Anh; to chỉ hướng di chuyển.<br>✗ <b>in</b> (trong): thành \"mắt ở trong vỉa hè\" — vô lý.<br>✗ <b>at</b> (vào): dùng với \"look at\", nhưng với \"keep your eyes\" tiếng Anh dùng \"on\"; \"keep eyes at\" là lỗi thường gặp."
     },
     {
      "n": 6,
@@ -224,7 +224,7 @@
       "that"
      ],
      "correct": 0,
-     "explanation": "A yes/no question reported after <i>asked</i> needs <b>if</b> (or <i>whether</i>). <i>That</i> reports a statement, and <i>what</i> or <i>when</i> would report a wh-question."
+     "explanation": "<b>Câu:</b> \"…and asked the woman at the newspaper stall <b>if</b> she had seen a small silver key.\" — …và hỏi người phụ nữ ở sạp báo xem cô ấy có thấy một chiếc chìa khóa bạc nhỏ không.<br><b>Điểm kiểm tra:</b> câu hỏi gián tiếp CÓ/KHÔNG (\"Have you seen…?\" → asked … if …); câu gốc không có từ để hỏi.<br>✅ <b>if</b> (liệu có … không): tường thuật câu hỏi yes/no — hỏi cô ấy có thấy không.<br>✗ <b>what</b> (cái gì): dùng khi câu gốc là \"What did you see?\", nhưng vật đã nêu rõ.<br>✗ <b>when</b> (khi nào): hỏi thời điểm; người kể muốn biết CÓ thấy hay không.<br>✗ <b>that</b> (rằng): thành lời khẳng định, không phải câu hỏi — sai với \"asked\"."
     },
     {
      "n": 7,
@@ -237,7 +237,7 @@
       "for"
      ],
      "correct": 3,
-     "explanation": "The fixed expression is <b>feel sorry for</b> someone. <i>Sorry about</i> is used for an event, never for a person you pity."
+     "explanation": "<b>Câu:</b> \"By the time I got home again it was starting to rain, and I was beginning to feel sorry <b>for</b> myself.\" — Lúc tôi về đến nhà thì trời bắt đầu mưa, và tôi bắt đầu thấy tủi thân.<br><b>Điểm kiểm tra:</b> giới từ sau \"sorry\" khi thương/tội nghiệp AI: \"feel sorry for somebody\"; ở đây là \"myself\".<br>✅ <b>for</b> (cho): \"feel sorry for yourself\" = tủi thân, tự thương hại — đúng tâm trạng mất chìa khóa, trời mưa.<br>✗ <b>about</b> (về): \"sorry about\" đi với SỰ VIỆC (sorry about the noise), không đi với người.<br>✗ <b>with</b> (với): không có cụm \"sorry with\".<br>✗ <b>of</b> (của): \"sorry of\" không tồn tại trong tiếng Anh."
     },
     {
      "n": 8,
@@ -250,7 +250,7 @@
       "at"
      ],
      "correct": 2,
-     "explanation": "<b>Look for</b> means search for. <i>Look at</i> is just to see, <i>look after</i> is to care for, and <i>look up</i> is to check in a book."
+     "explanation": "<b>Câu:</b> \"\\\"Are you looking <b>for</b> this?\\\" she called, holding up my key.\" — \"Cháu đang tìm cái này phải không?\" bà gọi, giơ chiếc chìa khóa của tôi lên.<br><b>Điểm kiểm tra:</b> cụm động từ \"look for\" = tìm kiếm; bà Hoa đang cầm chính chiếc chìa khóa bị mất.<br>✅ <b>for</b> (tìm): \"look for something\" = tìm cái bị mất — đúng toàn bộ câu chuyện.<br>✗ <b>after</b> (chăm sóc): \"look after\" = trông nom (look after a baby); không ai chăm sóc một chiếc chìa khóa.<br>✗ <b>up</b> (tra cứu): \"look up\" = tra từ điển hoặc ngước nhìn; không có nghĩa tìm đồ thất lạc.<br>✗ <b>at</b> (nhìn vào): \"look at\" = nhìn; bà hỏi có phải đang TÌM nó không, không hỏi \"đang nhìn\"."
     },
     {
      "n": 9,
@@ -263,7 +263,7 @@
       "fell"
      ],
      "correct": 1,
-     "explanation": "After <i>must have</i> the verb is a past participle: <b>fallen</b>. <i>Fell</i> is the past simple and cannot follow <i>have</i>."
+     "explanation": "<b>Câu:</b> \"It must have <b>fallen</b> out of my pocket when I ran for the bus.\" — Chắc hẳn nó đã rơi ra khỏi túi tôi lúc tôi chạy đuổi xe buýt.<br><b>Điểm kiểm tra:</b> suy đoán về quá khứ \"must have + quá khứ phân từ (V3)\"; manh mối là \"must have\" ngay trước chỗ trống.<br>✅ <b>fallen</b> (đã rơi): quá khứ phân từ của fall (fall – fell – fallen), đúng dạng sau \"have\".<br>✗ <b>falling</b> (đang rơi): V-ing chỉ dùng sau \"be\" (was falling) hoặc \"have been\", không đứng ngay sau \"have\".<br>✗ <b>fall</b> (rơi): nguyên thể, chỉ đứng sau modal trần (must fall), không sau \"have\".<br>✗ <b>fell</b> (đã rơi): quá khứ đơn, không phải phân từ; \"have fell\" là lỗi bất quy tắc hay gặp."
     },
     {
      "n": 10,
@@ -276,7 +276,7 @@
       "around"
      ],
      "correct": 3,
-     "explanation": "A cord goes <b>around</b> (or <i>round</i>) your neck, forming a circle. <i>Across</i>, <i>along</i> and <i>over</i> describe a line or a surface, not a loop."
+     "explanation": "<b>Câu:</b> \"Since that day I have kept my key on a long cord <b>around</b> my neck…\" — Từ hôm đó, tôi đeo chìa khóa bằng sợi dây dài quanh cổ…<br><b>Điểm kiểm tra:</b> giới từ chỉ vị trí sợi dây so với cổ: dây vòng QUANH cổ.<br>✅ <b>around</b> (quanh): \"a cord around my neck\" = dây đeo vòng quanh cổ — cách nói chuẩn.<br>✗ <b>along</b> (dọc theo): đi dọc một đường dài (along the road); cổ không phải đường.<br>✗ <b>over</b> (bên trên): \"over my neck\" nghe như dây đặt phía trên cổ, không phải vòng đeo.<br>✗ <b>across</b> (ngang qua): từ bên này sang bên kia (across the street); dây đeo không \"băng ngang\" cổ."
     }
    ]
   },
@@ -299,7 +299,7 @@
       "becomes"
      ],
      "correct": 2,
-     "explanation": "<b>Turn into</b> means change and become something else. <i>Become</i> takes no <i>into</i>, and <i>get into</i> or <i>make into</i> mean something different."
+     "explanation": "<b>Câu:</b> \"On Sunday mornings the square in front of the old church <b>turns</b> into a market.\" — Sáng Chủ nhật, quảng trường trước nhà thờ cổ biến thành một khu chợ.<br><b>Điểm kiểm tra:</b> cụm động từ \"turn into\" = biến thành; manh mối là \"into\" ngay sau chỗ trống.<br>✅ <b>turns</b> (biến, chuyển): \"turn into a market\" = biến thành chợ; động từ đi tự nhiên với \"into\".<br>✗ <b>gets</b> (trở nên): \"get into\" = lên xe, chui vào hoặc dính vào rắc rối; không có nghĩa biến thành.<br>✗ <b>makes</b> (làm): \"make into\" cần tân ngữ ở giữa (make the square into a market); ở đây chỗ trống đứng sát \"into\".<br>✗ <b>becomes</b> (trở thành): đúng nghĩa nhưng KHÔNG đi với \"into\" — phải nói \"becomes a market\"."
     },
     {
      "n": 2,
@@ -312,7 +312,7 @@
       "through"
      ],
      "correct": 3,
-     "explanation": "You push your way <b>through</b> a crowd, passing among the people. <i>Across</i> and <i>along</i> describe a surface or a line, and <i>between</i> needs two things."
+     "explanation": "<b>Câu:</b> \"…and by eight o'clock it is almost impossible to move <b>through</b> the crowd.\" — …và đến tám giờ thì gần như không thể len qua đám đông.<br><b>Điểm kiểm tra:</b> giới từ chỉ chuyển động XUYÊN QUA một khối người bao quanh bốn phía.<br>✅ <b>through</b> (xuyên qua): \"move through the crowd\" = len lỏi qua đám đông.<br>✗ <b>between</b> (giữa hai): đi với HAI vật riêng biệt (between the stalls); đám đông là một khối.<br>✗ <b>across</b> (băng ngang): dùng cho bề mặt phẳng, rộng (across the square), không dùng cho khối người.<br>✗ <b>along</b> (dọc theo): đi dọc một đường dài (along the street); đám đông không phải đường thẳng."
     },
     {
      "n": 3,
@@ -325,7 +325,7 @@
       "by"
      ],
      "correct": 0,
-     "explanation": "You go somewhere <b>with</b> a person, meaning together. <i>Go by</i> is for transport, <i>go to</i> is for a place, and <i>along</i> would need <i>with</i> after it."
+     "explanation": "<b>Câu:</b> \"My mother goes every week, and I usually go <b>with</b> her to help carry the bags.\" — Mẹ tôi đi chợ mỗi tuần, và tôi thường đi cùng mẹ để giúp xách đồ.<br><b>Điểm kiểm tra:</b> giới từ chỉ việc đi CÙNG một người: \"go with somebody\"; manh mối là \"her\" ngay sau và mục đích \"to help carry the bags\".<br>✅ <b>with</b> (cùng với): \"go with her\" = đi cùng mẹ.<br>✗ <b>to</b> (đến): \"go to her\" = đi đến chỗ mẹ, tức mẹ ở nơi khác, không phải cùng đi.<br>✗ <b>along</b> (cùng): muốn nói \"đi cùng\" phải là \"go along WITH her\"; \"go along her\" thiếu giới từ.<br>✗ <b>by</b> (bên cạnh): \"by her\" chỉ vị trí đứng cạnh, không chỉ việc cùng đi."
     },
     {
      "n": 4,
@@ -338,7 +338,7 @@
       "both"
      ],
      "correct": 1,
-     "explanation": "A singular noun (<i>stall</i>) after the determiner needs <b>each</b> or <i>every</i>. <i>All</i> and <i>both</i> take plural nouns, and <i>whole</i> would need <i>the</i>."
+     "explanation": "<b>Câu:</b> \"…she walks slowly around the whole market, comparing prices at <b>each</b> stall, before she decides.\" — …mẹ đi chậm rãi quanh cả chợ, so giá ở từng sạp, rồi mới quyết định.<br><b>Điểm kiểm tra:</b> từ chỉ lượng trước danh từ ĐẾM ĐƯỢC SỐ ÍT \"stall\"; ý là so giá từng sạp một.<br>✅ <b>each</b> (mỗi, từng): each + danh từ số ít (each stall) — đi từng sạp để so giá.<br>✗ <b>whole</b> (toàn bộ): cần \"the whole stall\"; \"cả cái sạp\" không hợp việc so giá nhiều sạp.<br>✗ <b>all</b> (tất cả): đi với danh từ số nhiều (all the stalls), không đứng trước \"stall\" số ít.<br>✗ <b>both</b> (cả hai): chỉ cho đúng hai vật, đi với số nhiều; chợ có rất nhiều sạp."
     },
     {
      "n": 5,
@@ -351,7 +351,7 @@
       "off"
      ],
      "correct": 2,
-     "explanation": "<b>Keep something back</b> means save it rather than sell it. <i>Keep off</i> means stay away, <i>keep out</i> means do not enter, and <i>keep on</i> means continue."
+     "explanation": "<b>Câu:</b> \"The sellers know her well, and some of them keep their best tomatoes <b>back</b> for her.\" — Người bán biết rõ mẹ, và vài người giữ lại những quả cà chua ngon nhất cho mẹ.<br><b>Điểm kiểm tra:</b> cụm động từ \"keep something back\" = giữ lại, không đem bán; manh mối là \"for her\".<br>✅ <b>back</b> (lại): \"keep the best tomatoes back for her\" = cất riêng hàng ngon cho mẹ.<br>✗ <b>out</b> (ngoài): \"keep out\" = không cho vào (Keep out!); không có nghĩa để dành.<br>✗ <b>on</b> (tiếp tục): \"keep on\" = tiếp tục làm gì, đi với V-ing, không đi với danh từ \"tomatoes\".<br>✗ <b>off</b> (tránh xa): \"keep off the grass\" = không giẫm lên; \"keep tomatoes off\" không có nghĩa dành riêng."
     },
     {
      "n": 6,
@@ -364,7 +364,7 @@
       "but"
      ],
      "correct": 3,
-     "explanation": "A queue sounds bad; that it moves quickly is a contrast, so <b>but</b>. <i>So</i> and <i>because</i> would make the speed a result or a cause of the queue."
+     "explanation": "<b>Câu:</b> \"There is always a queue, <b>but</b> it moves quickly, and the smell is worth the wait.\" — Lúc nào cũng có hàng người xếp, nhưng hàng đi rất nhanh, và mùi thơm thì xứng đáng để chờ.<br><b>Điểm kiểm tra:</b> TƯƠNG PHẢN: \"có hàng dài\" là điều phiền, \"đi nhanh\" là điều tốt bất ngờ.<br>✅ <b>but</b> (nhưng): nối điều bất tiện (phải xếp hàng) với điều dễ chịu (hàng đi nhanh).<br>✗ <b>unless</b> (trừ khi): \"luôn có hàng trừ khi hàng đi nhanh\" — vô lý.<br>✗ <b>so</b> (vì vậy): chỉ kết quả; \"có hàng dài\" không phải nguyên nhân khiến hàng \"đi nhanh\".<br>✗ <b>because</b> (bởi vì): chỉ nguyên nhân; hàng đi nhanh không phải lý do luôn có hàng người xếp."
     },
     {
      "n": 7,
@@ -377,7 +377,7 @@
       "therefore"
      ],
      "correct": 0,
-     "explanation": "The usual Sundays are contrasted with one unusual Sunday, so <b>however</b>. <i>Therefore</i> gives a result, and <i>besides</i> adds a point."
+     "explanation": "<b>Câu:</b> \"Last Sunday, <b>however</b>, something unusual happened.\" — Tuy nhiên, Chủ nhật vừa rồi đã xảy ra một chuyện khác thường.<br><b>Điểm kiểm tra:</b> từ nối giữa hai dấu phẩy, CHUYỂN HƯỚNG từ nếp sinh hoạt quen thuộc sang một sự kiện bất thường (\"something unusual\").<br>✅ <b>however</b> (tuy nhiên): báo hiệu điều trái thường lệ — chợ vẫn thế, hôm ấy lại có dê chạy loạn.<br>✗ <b>besides</b> (ngoài ra): thêm ý cùng chiều, nhưng \"chuyện khác thường\" ngược với nếp thường ngày.<br>✗ <b>instead</b> (thay vào đó): cần một việc bị thay thế; câu trước không nêu việc gì \"không xảy ra\".<br>✗ <b>therefore</b> (do đó): chỉ kết quả; mùi ngô thơm không phải nguyên nhân khiến dê chạy vào chợ."
     },
     {
      "n": 8,
@@ -390,7 +390,7 @@
       "cost"
      ],
      "correct": 1,
-     "explanation": "The pattern is <b>it takes</b> someone a length of time to do something. <i>Spend</i> needs a person as its subject, and <i>cost</i> is about money."
+     "explanation": "<b>Câu:</b> \"Nobody was hurt, but it <b>took</b> three men nearly twenty minutes to catch it.\" — Không ai bị thương, nhưng ba người mất gần hai mươi phút mới bắt được con dê.<br><b>Điểm kiểm tra:</b> cấu trúc \"it takes (somebody) + thời gian + to do\"; manh mối là chủ ngữ giả \"it\" và \"to catch\".<br>✅ <b>took</b> (mất, tốn): \"it took three men twenty minutes to catch it\" là mẫu chuẩn nói việc gì tốn bao lâu.<br>✗ <b>needed</b> (cần): chủ ngữ giả \"it\" không đi với \"need + người + thời gian\".<br>✗ <b>spent</b> (dành): chủ ngữ phải là NGƯỜI và đi với V-ing (three men spent … catching it).<br>✗ <b>cost</b> (tốn tiền): nói về tiền hoặc cái giá phải trả, không dùng cho số phút."
     },
     {
      "n": 9,
@@ -403,7 +403,7 @@
       "whom"
      ],
      "correct": 2,
-     "explanation": "The relative pronoun is the subject of <i>would listen</i> and refers to a person, so <b>who</b>. <i>Whom</i> is only for objects, and <i>which</i> is for things."
+     "explanation": "<b>Câu:</b> \"…she was telling the story to anyone <b>who</b> would listen, and laughing harder each time.\" — …cô ấy kể chuyện đó cho bất kỳ ai chịu nghe, mỗi lần kể lại cười to hơn.<br><b>Điểm kiểm tra:</b> đại từ quan hệ thay cho \"anyone\" (người) và làm CHỦ NGỮ của \"would listen\" — sau chỗ trống là động từ.<br>✅ <b>who</b> (người mà): chỉ người, làm chủ ngữ của \"who would listen\" = ai chịu nghe.<br>✗ <b>which</b> (cái mà): chỉ dùng cho vật hoặc sự việc, không thay cho \"anyone\".<br>✗ <b>whose</b> (của người mà): chỉ sở hữu, cần danh từ ngay sau; ở đây là động từ.<br>✗ <b>whom</b> (người mà — tân ngữ): chỉ dùng khi làm TÂN NGỮ; ở đây cần chủ ngữ."
     },
     {
      "n": 10,
@@ -416,7 +416,7 @@
       "am having"
      ],
      "correct": 2,
-     "explanation": "After <i>when</i> in a future time clause, English uses the present simple: <b>when I have</b>. <i>Will have</i> is wrong in a time clause, and <i>had</i> puts it in the past."
+     "explanation": "<b>Câu:</b> \"…and I hope it will still be there when I <b>have</b> children of my own.\" — …và tôi mong chợ vẫn còn ở đó khi tôi có con của riêng mình.<br><b>Điểm kiểm tra:</b> thì trong MỆNH ĐỀ THỜI GIAN chỉ tương lai: sau \"when\" dùng hiện tại đơn, dù mệnh đề chính có \"will\".<br>✅ <b>have</b> (có): hiện tại đơn sau \"when\" để nói về tương lai — \"when + hiện tại, chính + will\".<br>✗ <b>will have</b> (sẽ có): không dùng \"will\" trong mệnh đề thời gian với when/after/before.<br>✗ <b>had</b> (đã có): quá khứ, mâu thuẫn với \"it will still be there\" nói về tương lai.<br>✗ <b>am having</b> (đang có): \"have\" nghĩa sở hữu không dùng thì tiếp diễn."
     }
    ]
   },
@@ -439,7 +439,7 @@
       "who"
      ],
      "correct": 3,
-     "explanation": "The relative pronoun is the subject of <i>warned</i> and refers to a person (the uncle), so <b>who</b>. <i>Which</i> is for things, and <i>whom</i> cannot be a subject."
+     "explanation": "<b>Câu:</b> \"We had borrowed a tent from his uncle, <b>who</b> warned us to practise putting it up in the garden first.\" — Chúng tôi mượn lều của chú cậu ấy, người đã dặn phải tập dựng lều trong vườn trước.<br><b>Điểm kiểm tra:</b> đại từ quan hệ thay cho NGƯỜI (\"his uncle\") và làm CHỦ NGỮ của \"warned\".<br>✅ <b>who</b> (người mà): chỉ người, làm chủ ngữ cho \"warned\" ngay sau.<br>✗ <b>which</b> (cái mà): chỉ dùng cho vật; nếu thay \"a tent\" thì cái lều không thể \"warn\" ai.<br>✗ <b>whom</b> (người mà — tân ngữ): chỉ dùng khi làm tân ngữ (whom we thanked); ở đây cần chủ ngữ.<br>✗ <b>whose</b> (của người mà): chỉ sở hữu, cần danh từ theo sau; ở đây là động từ \"warned\"."
     },
     {
      "n": 2,
@@ -452,7 +452,7 @@
       "while"
      ],
      "correct": 2,
-     "explanation": "<b>When</b> the sun was already low describes the moment they arrived. <i>Until</i> and <i>since</i> mark the end or start of a period, which is not the meaning here."
+     "explanation": "<b>Câu:</b> \"We arrived at the campsite late in the afternoon, <b>when</b> the sun was already low…\" — Chúng tôi đến khu cắm trại cuối chiều, lúc mặt trời đã xuống thấp…<br><b>Điểm kiểm tra:</b> trạng từ quan hệ chỉ THỜI GIAN bổ nghĩa cho \"late in the afternoon\".<br>✅ <b>when</b> (khi mà): thay cho \"at that time\" — mô tả thời điểm ấy.<br>✗ <b>until</b> (cho đến khi): \"arrived\" xảy ra một lần, không kéo dài \"đến tận lúc\" mặt trời thấp.<br>✗ <b>since</b> (kể từ / vì): \"kể từ\" cần thì hoàn thành; \"vì\" thì mặt trời thấp không phải lý do họ đến.<br>✗ <b>while</b> (trong khi): nối hai hành động song song; \"the sun was low\" chỉ là trạng thái."
     },
     {
      "n": 3,
@@ -465,7 +465,7 @@
       "as"
      ],
      "correct": 1,
-     "explanation": "<b>Look like</b> plus a noun means resemble. <i>As</i> would mean in the role of, and <i>similar</i> needs <i>to</i> after it."
+     "explanation": "<b>Câu:</b> \"After an hour we had built something that looked <b>like</b> a tent…\" — Sau một tiếng, chúng tôi dựng được thứ trông giống cái lều…<br><b>Điểm kiểm tra:</b> cụm \"look like + danh từ\" = trông giống; manh mối là \"a tent\" ngay sau chỗ trống.<br>✅ <b>like</b> (giống như): \"looked like a tent\" — giới từ like đi trực tiếp với danh từ.<br>✗ <b>such</b> (như thế): cần \"as\" (such as) để liệt kê ví dụ, không diễn tả \"trông giống\".<br>✗ <b>similar</b> (tương tự): là tính từ, phải có \"to\" (similar to a tent).<br>✗ <b>as</b> (như): chỉ đi \"look as if + mệnh đề\"; trước danh từ phải dùng like."
     },
     {
      "n": 4,
@@ -478,7 +478,7 @@
       "turned"
      ],
      "correct": 0,
-     "explanation": "When the wind gets stronger it <b>picks up</b> (or <i>gets up</i>). <i>Turn up</i> means arrive, and <i>go up</i> is for prices or temperatures."
+     "explanation": "<b>Câu:</b> \"Around midnight the wind <b>picked</b> up.\" — Khoảng nửa đêm, gió nổi lên mạnh hơn.<br><b>Điểm kiểm tra:</b> cụm động từ chỉ gió MẠNH LÊN: \"the wind picks up\"; manh mối là ngay sau đó lều \"began to shake\" và \"lifted off the ground\".<br>✅ <b>picked</b> (mạnh lên): \"pick up\" nói về gió, tốc độ, việc kinh doanh = tăng lên, mạnh lên.<br>✗ <b>made</b> (làm): \"make up\" = bịa chuyện, làm lành hoặc trang điểm; gió không \"make up\".<br>✗ <b>went</b> (đi): \"go up\" = tăng (giá, nhiệt độ) hoặc đi lên; không nói \"the wind went up\".<br>✗ <b>turned</b> (xoay): \"turn up\" = vặn to (âm lượng) hoặc xuất hiện bất ngờ; gió \"turned up\" nghe như gió bỗng đến chơi."
     },
     {
      "n": 5,
@@ -491,7 +491,7 @@
       "while"
      ],
      "correct": 3,
-     "explanation": "Two actions at the same time are joined by <b>while</b> plus a clause. <i>During</i> is a preposition and needs a noun, and <i>meanwhile</i> cannot join two clauses."
+     "explanation": "<b>Câu:</b> \"Minh shouted at me to hold the pole <b>while</b> he searched for the torch.\" — Minh hét bảo tôi giữ cái cọc trong khi cậu ấy tìm đèn pin.<br><b>Điểm kiểm tra:</b> liên từ nối HAI HÀNH ĐỘNG ĐỒNG THỜI; sau chỗ trống là mệnh đề đầy đủ \"he searched\".<br>✅ <b>while</b> (trong khi): liên từ, đứng trước mệnh đề \"he searched for the torch\" — hai việc song song.<br>✗ <b>during</b> (trong suốt): là GIỚI TỪ, chỉ đi với danh từ (during the night), không đứng trước mệnh đề.<br>✗ <b>meanwhile</b> (trong lúc đó): là trạng từ, mở đầu câu mới, không nối hai mệnh đề.<br>✗ <b>until</b> (cho đến khi): tìm đèn diễn ra CÙNG LÚC với giữ cọc, không phải điểm dừng của việc giữ cọc."
     },
     {
      "n": 6,
@@ -504,7 +504,7 @@
       "that"
      ],
      "correct": 2,
-     "explanation": "After a comma, <b>which</b> adds a comment about the whole fact of sleeping in the car. <i>That</i> is not used after a comma in this way, and <i>it</i> would create two separate sentences."
+     "explanation": "<b>Câu:</b> \"We spent the rest of the night in the car, <b>which</b> was uncomfortable but at least dry.\" — Chúng tôi ngủ nốt đêm trong xe hơi, khá khó chịu nhưng ít ra là khô ráo.<br><b>Điểm kiểm tra:</b> đại từ quan hệ sau dấu phẩy, thay cho ý trước, làm chủ ngữ của \"was\".<br>✅ <b>which</b> (điều đó / cái mà): sau dấu phẩy, \"which\" nhận xét về ý trước — khó chịu nhưng khô.<br>✗ <b>what</b> (cái mà): chỉ mở đầu mệnh đề danh từ, không nối tiếp mệnh đề trước.<br>✗ <b>it</b> (nó): đại từ thường, tạo hai câu độc lập chỉ ngăn bằng dấu phẩy; phải có \"and it\".<br>✗ <b>that</b> (mà): không dùng sau dấu phẩy trong mệnh đề quan hệ không xác định."
     },
     {
      "n": 7,
@@ -517,7 +517,7 @@
       "what"
      ],
      "correct": 1,
-     "explanation": "<i>Show somebody</i> <b>how</b> <i>to do</i> something teaches a method. <i>What to do</i> would need no object after the verb, and <i>that</i> cannot introduce <i>to</i> plus a verb."
+     "explanation": "<b>Câu:</b> \"…a family in the next tent lent us a hammer and showed us <b>how</b> to knock the pegs in at an angle.\" — …gia đình ở lều bên cho mượn búa và chỉ cách đóng cọc nghiêng một góc.<br><b>Điểm kiểm tra:</b> từ để hỏi trước \"to + động từ\" nói về CÁCH LÀM: \"show somebody how to do something\".<br>✅ <b>how</b> (cách nào): \"showed us how to knock the pegs in\" = chỉ cách đóng cọc.<br>✗ <b>why</b> (tại sao): \"why to knock\" gần như không dùng; câu nói về cách làm.<br>✗ <b>that</b> (rằng): dẫn mệnh đề có động từ chia, không đứng trước \"to + V\".<br>✗ <b>what</b> (cái gì): cần làm tân ngữ, nhưng \"knock the pegs in\" đã có tân ngữ \"the pegs\"."
     },
     {
      "n": 8,
@@ -530,7 +530,7 @@
       "ever"
      ],
      "correct": 0,
-     "explanation": "<i>Did not move</i> <b>even</b> <i>an inch</i> stresses the smallest possible amount. <i>Ever</i> and <i>still</i> describe time, not amount."
+     "explanation": "<b>Câu:</b> \"We stayed two more nights, and the tent did not move <b>even</b> an inch.\" — Chúng tôi ở thêm hai đêm nữa, và cái lều không nhúc nhích dù chỉ một phân.<br><b>Điểm kiểm tra:</b> trạng từ nhấn mạnh trong câu phủ định; manh mối là \"did not move\" cộng đơn vị rất nhỏ \"an inch\".<br>✅ <b>even</b> (thậm chí): \"not even an inch\" = không dịch chuyển dù chỉ một inch.<br>✗ <b>still</b> (vẫn): chỉ sự tiếp diễn, phải đứng TRƯỚC \"did not\", không đứng trước \"an inch\".<br>✗ <b>just</b> (chỉ): \"not just an inch\" = \"không chỉ một inch mà còn hơn\" — ngược ý.<br>✗ <b>ever</b> (từng): mang nghĩa thời gian (\"not ever\"), không đi với đơn vị đo \"an inch\"."
     },
     {
      "n": 9,
@@ -543,7 +543,7 @@
       "had"
      ],
      "correct": 3,
-     "explanation": "The uncle's question <i>How did you get on?</i> is reported after a past verb, so it moves back to <b>had got on</b>. <i>Have got</i> keeps the present, and <i>did got</i> is impossible."
+     "explanation": "<b>Câu:</b> \"When we returned it, Minh's uncle asked how we <b>had</b> got on.\" — Khi trả lều, chú của Minh hỏi chúng tôi đã cắm trại ra sao.<br><b>Điểm kiểm tra:</b> CÂU HỎI GIÁN TIẾP: \"asked\" ở quá khứ, việc cắm trại xảy ra TRƯỚC lúc hỏi → lùi thành quá khứ hoàn thành.<br>✅ <b>had</b> (đã): \"had got on\" là quá khứ hoàn thành, đúng khi tường thuật việc đã xong trước lúc hỏi.<br>✗ <b>have</b> (đã): hiện tại hoàn thành không lùi thì, lệch với \"asked\".<br>✗ <b>were</b> (thì): \"were got on\" thành bị động vô nghĩa; \"get on\" (xoay xở) không dùng bị động.<br>✗ <b>did</b> (đã): câu hỏi gián tiếp không đảo ngữ với \"did\"; sau \"did\" cũng phải là \"get\"."
     },
     {
      "n": 10,
@@ -556,7 +556,7 @@
       "until"
      ],
      "correct": 1,
-     "explanation": "The lesson is to practise first and then go, so <b>before</b> we leave. <i>After</i> reverses the order, and <i>until</i> would mean practising non-stop."
+     "explanation": "<b>Câu:</b> \"Next year we are going again, but this time we will practise <b>before</b> we leave.\" — Năm sau chúng tôi lại đi, nhưng lần này sẽ tập dựng lều trước khi lên đường.<br><b>Điểm kiểm tra:</b> liên từ thời gian nêu THỨ TỰ: tập dựng lều rồi mới đi; bài học là \"practise … in the garden first\".<br>✅ <b>before</b> (trước khi): tập ở nhà TRƯỚC khi lên đường — đúng lời chú dặn.<br>✗ <b>while</b> (trong khi): \"tập trong lúc rời đi\" — hai việc không thể cùng lúc.<br>✗ <b>after</b> (sau khi): tập sau khi đã rời nhà thì lặp lại đúng sai lầm cũ.<br>✗ <b>until</b> (cho đến khi): \"tập liên tục cho đến lúc rời đi\" — câu chỉ nói tập TRƯỚC."
     }
    ]
   },
@@ -579,7 +579,7 @@
       "through"
      ],
      "answer": "around",
-     "explanation": "<b>Follow someone around</b> (or <i>round</i>, <i>about</i>, <i>through</i>) <i>the house</i> means everywhere inside it. <i>In</i> would fit a place but not the idea of following from room to room, and <i>along</i> is for a line such as a road."
+     "explanation": "<b>Câu:</b> \"…he follows me <b>around</b> the house like a small shadow.\" — …em theo tôi khắp nhà như một cái bóng nhỏ.<br><b>Điểm kiểm tra:</b> giới từ chỉ việc đi theo KHẮP NƠI trong nhà (\"like a small shadow\").<br>✅ <b>around</b> (khắp, quanh): \"follow me around the house\" là cách nói chuẩn.<br>✅ <b>round</b> (khắp): cách nói Anh-Anh của around.<br>✅ <b>about</b> (khắp): cũng được, hơi cổ hơn.<br>✅ <b>through</b> (xuyên qua): đi qua các phòng trong nhà, vẫn hợp nghĩa.<br>✗ <b>in</b> (trong): chỉ nói em ở trong nhà, không tả việc theo khắp nơi.<br>✗ <b>to</b> (đến): \"follow me to the house\" = theo tôi ĐẾN nhà, sai cảnh.<br>✗ <b>after</b> (theo sau): thừa nghĩa với \"follow\" và không đi với \"the house\"."
     },
     {
      "n": 2,
@@ -589,7 +589,7 @@
       "what"
      ],
      "answer": "what",
-     "explanation": "The question he asks is <i>What are you doing?</i>, so the reported form keeps <b>what</b>. <i>Which</i> needs a known set of choices, and <i>if</i> would turn it into a yes/no question that makes no sense here."
+     "explanation": "<b>Câu:</b> \"…he climbs onto the chair next to me and asks <b>what</b> I am doing.\" — …em trèo lên ghế cạnh tôi và hỏi tôi đang làm gì.<br><b>Điểm kiểm tra:</b> câu hỏi gián tiếp \"What are you doing?\"; \"doing\" thiếu TÂN NGỮ, nên cần từ để hỏi làm tân ngữ.<br>✅ <b>what</b> (cái gì): làm tân ngữ cho \"am doing\" — hỏi tôi đang làm CÁI GÌ.<br>✗ <b>if</b> (liệu … không): cho câu hỏi có/không, nhưng \"if I am doing\" thiếu tân ngữ, câu cụt.<br>✗ <b>why</b> (tại sao): \"why I am doing\" vẫn thiếu tân ngữ; phải là \"why I am doing it\".<br>✗ <b>that</b> (rằng): biến thành câu kể — không phải câu hỏi, lại thiếu tân ngữ."
     },
     {
      "n": 3,
@@ -602,7 +602,7 @@
       "although"
      ],
      "answer": "but",
-     "explanation": "The old feeling (annoying) contrasts with the new one (enjoy), so <b>but</b> (or <i>yet</i>, <i>though</i>, <i>although</i>). <i>So</i> would wrongly make the enjoyment a result of the annoyance."
+     "explanation": "<b>Câu:</b> \"I used to find this annoying, <b>but</b> lately I have started to enjoy it.\" — Trước đây tôi thấy điều này phiền phức, nhưng gần đây tôi đã bắt đầu thích.<br><b>Điểm kiểm tra:</b> TƯƠNG PHẢN giữa quá khứ (\"used to find this annoying\") và hiện tại (\"lately … enjoy it\").<br>✅ <b>but</b> (nhưng): liên từ tương phản cơ bản nhất.<br>✅ <b>yet</b> (thế nhưng): liên từ tương phản, hơi mạnh hơn \"but\".<br>✅ <b>though</b> / <b>although</b> (mặc dù): mở đầu mệnh đề nhượng bộ, vẫn đúng.<br>✗ <b>so</b> (vì vậy): chỉ kết quả; \"thấy phiền\" không dẫn đến \"bắt đầu thích\".<br>✗ <b>and</b> (và): chỉ nối thêm ý, làm mất sự đối lập.<br>✗ <b>however</b> (tuy nhiên): là trạng từ, không nối hai vế chỉ bằng dấu phẩy."
     },
     {
      "n": 4,
@@ -612,7 +612,7 @@
       "to"
      ],
      "answer": "to",
-     "explanation": "In the passive, <i>give something</i> <b>to</b> <i>someone</i> keeps its preposition: the job was given <b>to</b> me. <i>For</i> would mean the job was done on my behalf, not handed to me."
+     "explanation": "<b>Câu:</b> \"My father was busy, so the job was given <b>to</b> me.\" — Bố tôi bận, nên việc đó được giao cho tôi.<br><b>Điểm kiểm tra:</b> \"give something TO somebody\" ở dạng bị động: \"the job was given to me\"; manh mối là \"me\" (người nhận) ngay sau.<br>✅ <b>to</b> (cho): chỉ người nhận sau \"give\" khi vật đứng trước — \"was given to me\" = được giao cho tôi.<br>✗ <b>for</b> (vì lợi ích của): \"given for me\" nghĩa là làm việc đó thay tôi, không phải tôi là người nhận nhiệm vụ.<br>✗ <b>at</b> (tại): không có cụm \"give at somebody\"; at chỉ hướng ném hoặc nhìn.<br>✗ <b>by</b> (bởi): sau bị động, \"by\" chỉ NGƯỜI THỰC HIỆN — \"given by me\" = tôi giao việc, ngược hẳn."
     },
     {
      "n": 5,
@@ -622,7 +622,7 @@
       "least"
      ],
      "answer": "least",
-     "explanation": "<b>At least</b> twenty times means twenty or more. <i>At most</i> would set an upper limit, and <i>at last</i> means finally, which makes no sense with a number."
+     "explanation": "<b>Câu:</b> \"He fell off at <b>least</b> twenty times in the first week.\" — Tuần đầu, em ngã xe ít nhất hai mươi lần.<br><b>Điểm kiểm tra:</b> cụm cố định \"at least + con số\" = ít nhất; manh mối là \"at\" đứng trước và \"twenty times\" đứng sau.<br>✅ <b>least</b> (ít nhất): \"at least twenty times\" = không dưới hai mươi lần, nhấn mạnh em ngã rất nhiều.<br>✗ <b>most</b> (nhiều nhất): \"at most twenty times\" = không quá hai mươi — ngược ý, câu muốn nói ngã nhiều.<br>✗ <b>last</b> (cuối cùng): \"at last\" = cuối cùng thì, không đi với con số.<br>✗ <b>about</b> (khoảng): \"khoảng hai mươi lần\" là \"about twenty times\", không có \"at\" phía trước; \"at about\" chỉ hợp với giờ giấc (at about six)."
     },
     {
      "n": 6,
@@ -633,7 +633,7 @@
       "could"
      ],
      "answer": "would",
-     "explanation": "An imagined past (<i>at his age</i>) takes <b>would</b> (or <i>could</i>) <i>have been</i>. <i>Should have been</i> talks about a duty that was not done, not about an imagined ability."
+     "explanation": "<b>Câu:</b> \"I do not think I <b>would</b> have been so brave at his age.\" — Tôi không nghĩ mình dũng cảm được như thế ở tuổi em.<br><b>Điểm kiểm tra:</b> \"modal + have + V3\" nói về quá khứ KHÔNG có thật (tôi đã qua tuổi đó); manh mối là \"have been\".<br>✅ <b>would</b> (sẽ): \"would have been\" — giả định về quá khứ.<br>✅ <b>could</b> (có thể): \"could have been\" nhấn vào khả năng, vẫn đúng.<br>✗ <b>will</b> (sẽ): \"will have been\" là tương lai hoàn thành, không phải giả định.<br>✗ <b>must</b> (chắc hẳn): \"must have been\" là suy đoán về việc có thật; ở đây là giả định.<br>✗ <b>should</b> (đáng lẽ): \"should have been\" mang ý trách móc, không hợp lời tự nhận."
     },
     {
      "n": 7,
@@ -643,7 +643,7 @@
       "on"
      ],
      "answer": "on",
-     "explanation": "The fixed phrase is <b>on</b> <i>his own</i>, meaning without help. <i>By</i> goes with <i>himself</i>, not with <i>his own</i>."
+     "explanation": "<b>Câu:</b> \"…he rode all the way to the far wall <b>on</b> his own.\" — …em tự đạp một mạch đến bức tường xa.<br><b>Điểm kiểm tra:</b> cụm cố định \"on one's own\" = tự mình; manh mối là \"his own\" sau chỗ trống và việc tôi đã \"let go of the seat\".<br>✅ <b>on</b> (tự): \"on his own\" = một mình, không cần ai đỡ — giây phút em tự đi xe lần đầu.<br>✗ <b>by</b> (bởi): \"tự mình\" với \"by\" phải là \"by himself\"; \"by his own\" sai.<br>✗ <b>of</b> (của): \"of his own\" = \"của riêng em\", đi sau danh từ — \"bức tường của riêng em\" là vô lý.<br>✗ <b>with</b> (với): \"with his own\" thiếu danh từ và không có nghĩa \"tự mình\"."
     },
     {
      "n": 8,
@@ -653,7 +653,7 @@
       "no"
      ],
      "answer": "no",
-     "explanation": "<b>No longer</b> means not any more; with the positive verb <i>was</i>, only <i>no</i> works. <i>Not</i> would need <i>any</i> and a negative verb (<i>was not any longer</i>), and <i>any</i> alone is wrong here."
+     "explanation": "<b>Câu:</b> \"When he realised I was <b>no</b> longer behind him, he was so surprised that he forgot to use the brakes…\" — Khi nhận ra tôi không còn ở phía sau nữa, em ngạc nhiên đến mức quên bóp phanh…<br><b>Điểm kiểm tra:</b> cụm cố định \"no longer\" = không còn … nữa; manh mối là \"longer\" ngay sau chỗ trống.<br>✅ <b>no</b> (không): \"no longer\" đứng giữa \"was\" và \"behind him\" — cách nói chuẩn.<br>✗ <b>not</b> (không): phải là \"not … any longer\" ở cuối câu; \"was not longer\" sai cấu trúc.<br>✗ <b>any</b> (bất kỳ): \"any longer\" cần \"not\" phía trước và đứng cuối câu.<br>✗ <b>never</b> (không bao giờ): \"never longer\" không phải cụm tiếng Anh."
     },
     {
      "n": 9,
@@ -663,7 +663,7 @@
       "so"
      ],
      "answer": "so",
-     "explanation": "<b>So</b> plus an adverb (<i>loudly</i>) plus <i>that</i> gives the result. <i>Very</i> and <i>too</i> cannot be followed by a <i>that</i> clause of result."
+     "explanation": "<b>Câu:</b> \"…he laughed <b>so</b> loudly that two people came out onto their balconies…\" — …em cười to đến mức hai người ra ban công…<br><b>Điểm kiểm tra:</b> cấu trúc \"so + trạng từ + that + mệnh đề\" chỉ mức độ – kết quả; manh mối là \"loudly … that\".<br>✅ <b>so</b> (đến mức): \"so loudly that…\" = to đến nỗi mà… — đúng cặp \"so … that\" với trạng từ.<br>✗ <b>such</b> (đến mức): đi với DANH TỪ (such a loud laugh that), không đứng trước trạng từ \"loudly\".<br>✗ <b>very</b> (rất): chỉ nhấn mạnh, không ghép với \"that\" để nói kết quả.<br>✗ <b>too</b> (quá): đi với \"to + động từ\" (too loudly to hear), không đi với \"that + mệnh đề\"."
     },
     {
      "n": 10,
@@ -673,7 +673,7 @@
       "up"
      ],
      "answer": "up",
-     "explanation": "<b>Keep up with</b> someone means move as fast as they do. <i>Keep on</i> means continue, and <i>keep away</i> means stay at a distance, which is the opposite idea."
+     "explanation": "<b>Câu:</b> \"Now he rides everywhere, and I have to run to keep <b>up</b> with him.\" — Giờ em đạp xe đi khắp nơi, và tôi phải chạy mới theo kịp em.<br><b>Điểm kiểm tra:</b> cụm động từ \"keep up with somebody\" = theo kịp; manh mối là \"with him\" và \"have to run\".<br>✅ <b>up</b> (kịp): \"keep up with him\" = giữ tốc độ ngang em, không bị bỏ lại.<br>✗ <b>on</b> (tiếp tục): \"keep on\" = tiếp tục làm gì (keep on running), đi với V-ing, không đi với \"with him\".<br>✗ <b>in</b> (trong): \"keep in with somebody\" = giữ quan hệ tốt với ai, không liên quan tốc độ.<br>✗ <b>away</b> (tránh xa): \"keep away\" = tránh xa, ngược hẳn ý theo kịp."
     }
    ]
   }

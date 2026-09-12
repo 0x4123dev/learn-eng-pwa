@@ -17,7 +17,7 @@
       "in"
      ],
      "answer": "with",
-     "explanation": "You whisk one thing <b>with</b> another to combine them; cooks also say <i>whisk the paste in water</i>, so <b>in</b> is accepted. <i>By</i> would name the tool, not the liquid, and <i>to</i> is not used after <i>whisk</i>."
+     "explanation": "<b>Câu:</b> \"…whisked the result <b>with</b> water until it foamed.\" — …đánh hỗn hợp đó với nước cho đến khi nổi bọt.<br><b>Điểm kiểm tra:</b> giới từ đi với \"whisk\" khi trộn hai thứ; manh mối: \"the result\" (bột ca cao) và \"water\" là hai thứ được trộn với nhau.<br>✅ <b>with</b> (với): whisk A with B = đánh trộn A với B.<br>✅ <b>in</b> (trong): \"whisk the paste in water\" — cách nói của người nấu ăn, cũng đúng.<br>✗ <b>by</b> (bằng): chỉ dụng cụ (whisk by hand), nước không phải công cụ.<br>✗ <b>into</b> (vào): \"whisk A into B\" = khuấy A tan vào B; ở đây nước là thứ trộn cùng, nên \"with\" tự nhiên hơn.<br>✗ <b>to</b> (đến): \"whisk\" không đi với \"to\"."
     },
     {
      "n": 2,
@@ -27,7 +27,7 @@
       "were"
      ],
      "answer": "were",
-     "explanation": "A fronted <i>So + adverb</i> forces inversion: <b>So highly were the seeds prized that</b>. The plural subject <i>seeds</i> and the past narrative rule out <i>was</i> and <i>are</i>."
+     "explanation": "<b>Câu:</b> \"So highly <b>were</b> the seeds prized that they doubled as currency…\" — Hạt ca cao được quý trọng đến mức chúng còn được dùng như tiền tệ…<br><b>Điểm kiểm tra:</b> đảo ngữ sau \"So + trạng từ\" đứng đầu câu, động từ \"be\" lên trước chủ ngữ; manh mối: chủ ngữ số nhiều \"the seeds\", bị động \"prized\", cả đoạn kể ở quá khứ (roasted, whisked).<br>✅ <b>were</b> (đã được): số nhiều, quá khứ, tạo bị động \"were prized\".<br>✗ <b>was</b> (số ít): \"the seeds\" là số nhiều, sai hòa hợp.<br>✗ <b>are</b> (hiện tại): lệch thì với toàn đoạn kể quá khứ.<br>✗ <b>had</b> (đã): \"had prized\" là chủ động — hạt không tự quý mình, chúng \"được\" quý nên cần \"be\"."
     },
     {
      "n": 3,
@@ -39,7 +39,7 @@
       "once"
      ],
      "answer": "when",
-     "explanation": "<b>Only when/after/once</b> + clause, fronted, triggers the inversion <i>did it win</i>. <i>Only if</i> would state a condition rather than the moment it happened, and <i>until</i> would contradict <i>only</i>."
+     "explanation": "<b>Câu:</b> \"…only <b>when</b> sugar and cinnamon had been stirred in did it win favour at court.\" — …chỉ khi đường và quế đã được khuấy vào thì nó mới được ưa chuộng trong cung đình.<br><b>Điểm kiểm tra:</b> \"Only + mệnh đề thời gian\" đứng đầu gây đảo ngữ \"did it win\"; manh mối: \"had been stirred in\" — việc đã xảy ra, là mốc thời gian thật.<br>✅ <b>when</b> (khi): chỉ đúng thời điểm.<br>✅ <b>after</b> (sau khi), <b>once</b> (một khi đã): cùng nghĩa.<br>✗ <b>if</b> (nếu): điều kiện giả định, nhưng câu kể sự thật đã xảy ra.<br>✗ <b>until</b> (cho đến khi): \"only until\" cho nghĩa ngược hẳn.<br>✗ <b>by</b> (bằng): giới từ, không đứng trước cả một mệnh đề."
     },
     {
      "n": 4,
@@ -51,7 +51,7 @@
       "limited"
      ],
      "answer": "confined",
-     "explanation": "A reduced passive clause: a luxury <b>confined/restricted/limited to</b> a small group. <i>Reserved</i> would need <i>for</i>, and <i>only</i> cannot take <i>to</i>."
+     "explanation": "<b>Câu:</b> \"…a luxury, <b>confined</b> to the wealthy few who could afford the imported beans…\" — …món xa xỉ, chỉ giới hạn trong số ít người giàu đủ tiền mua hạt nhập khẩu…<br><b>Điểm kiểm tra:</b> mệnh đề rút gọn bị động sau dấu phẩy, và giới từ \"to\" ngay sau chỗ trống — cần động từ đi với \"to\".<br>✅ <b>confined</b> (bị giới hạn trong): confined to = chỉ dành cho.<br>✅ <b>restricted</b> (bị hạn chế), <b>limited</b> (bị giới hạn): cũng đi với \"to\".<br>✗ <b>reserved</b> (dành riêng): đi với \"for\", không đi với \"to\".<br>✗ <b>only</b> (chỉ): trạng từ, không thay được phân từ.<br>✗ <b>belonged</b> (thuộc về): động từ đã chia, không làm mệnh đề rút gọn được; phải là \"belonging\"."
     },
     {
      "n": 5,
@@ -61,7 +61,7 @@
       "What"
      ],
      "answer": "What",
-     "explanation": "A wh-cleft sentence: <b>What changed everything was</b> a press. <i>That</i> and <i>Which</i> cannot open a sentence as a free relative meaning 'the thing that'."
+     "explanation": "<b>Câu:</b> \"<b>What</b> changed everything was a Dutch chemist's press…\" — Điều làm thay đổi tất cả là chiếc máy ép của một nhà hóa học Hà Lan…<br><b>Điểm kiểm tra:</b> câu chẻ \"What + V … was + N\"; manh mối: chỗ trống đứng đầu câu, không có danh từ nào trước để thay thế, và cụm \"____ changed everything\" làm chủ ngữ cho \"was\".<br>✅ <b>What</b> (điều mà): đóng vai \"the thing that\".<br>✗ <b>That</b> (điều đó): \"That changed everything\" đã trọn câu, thêm \"was a press\" thành thừa động từ.<br>✗ <b>Which</b> (cái nào): đầu câu chỉ dùng trong câu hỏi; làm đại từ quan hệ cần danh từ đi trước.<br>✗ <b>It</b> (nó): \"It changed everything was\" — một chủ ngữ hai động từ chia."
     },
     {
      "n": 6,
@@ -74,7 +74,7 @@
       "later"
      ],
      "answer": "afterwards",
-     "explanation": "<b>Not long afterwards/after/later</b> is the fixed time phrase for 'soon after that'. <i>Then</i> or <i>next</i> cannot follow <i>not long</i>."
+     "explanation": "<b>Câu:</b> \"Not long <b>afterwards</b>, an English firm discovered that adding the fat back to sweetened powder produced a paste…\" — Không lâu sau đó, một hãng ở Anh phát hiện rằng cho chất béo trở lại vào bột ngọt sẽ tạo ra khối nhão…<br><b>Điểm kiểm tra:</b> trạng từ thời gian sau \"Not long\" = không lâu sau sự kiện vừa kể; manh mối: mốc 1828 ở câu trước; dấu phẩy ngay sau nên cần trạng từ.<br>✅ <b>afterwards</b> / <b>afterward</b> (sau đó — viết kiểu Anh/Mỹ).<br>✅ <b>after</b> (sau), <b>later</b> (sau này): cũng đúng.<br>✗ <b>then</b> (rồi): không ghép với \"not long\".<br>✗ <b>ago</b> (trước đây): tính lùi từ hiện tại, còn mốc ở đây là 1828.<br>✗ <b>next</b> (tiếp theo): \"not long next\" không tồn tại."
     },
     {
      "n": 7,
@@ -86,7 +86,7 @@
       "easily"
      ],
      "answer": "well",
-     "explanation": "<b>Might well have</b> strengthens a past possibility; <i>otherwise</i> and <i>easily</i> also fit the unreal past after <i>Had that press never been invented</i>. <i>Never</i> would reverse the meaning, and <i>not</i> would make the bar the surprising outcome."
+     "explanation": "<b>Câu:</b> \"Had that press never been invented, chocolate might <b>well</b> have stayed a drink for the rich.\" — Nếu máy ép ấy chưa ra đời, rất có thể sô-cô-la đã mãi là thức uống của người giàu.<br><b>Điểm kiểm tra:</b> điều kiện loại 3 đảo ngữ, mệnh đề chính \"might + trạng từ + have + V3\"; manh mối: câu sau \"Instead…\" — thực tế ngược lại.<br>✅ <b>well</b> (rất có thể): nhấn khả năng cao.<br>✅ <b>otherwise</b> (nếu không thì), <b>easily</b> (hoàn toàn có thể): cũng đúng.<br>✗ <b>never</b> (không bao giờ): nói sô-cô-la chưa từng là đồ uống của người giàu — sai.<br>✗ <b>not</b> (không): thành \"không có máy ép nó vẫn phổ biến\" — trái logic.<br>✗ <b>also</b> (cũng): không có sự việc song song."
     },
     {
      "n": 8,
@@ -96,7 +96,7 @@
       "up"
      ],
      "answer": "up",
-     "explanation": "The phrasal verb <b>spring up</b> means to appear suddenly in large numbers. <i>Spring out</i> describes leaping from a hiding place, not new factories opening."
+     "explanation": "<b>Câu:</b> \"Instead, factories sprang <b>up</b> across Europe…\" — Thay vào đó, các nhà máy mọc lên khắp châu Âu…<br><b>Điểm kiểm tra:</b> cụm động từ \"spring up\" = mọc lên nhanh và hàng loạt; manh mối: \"factories … across Europe\" (nhiều nhà máy ở nhiều nơi), \"within a generation\" (thời gian ngắn).<br>✅ <b>up</b> (lên): spring up = xuất hiện ồ ạt, mọc như nấm.<br>✗ <b>out</b> (ra): \"spring out\" = bật ra khỏi chỗ nấp, nói về người hay con vật.<br>✗ <b>from</b> (từ): \"spring from\" = bắt nguồn từ, cần danh từ chỉ nguồn gốc, nhưng sau chỗ trống là \"across Europe\".<br>✗ <b>back</b> (trở lại): \"spring back\" = bật lại như lò xo, không có nghĩa xuất hiện mới."
     },
     {
      "n": 9,
@@ -109,7 +109,7 @@
       "nonetheless"
      ],
      "answer": "however",
-     "explanation": "Set off by commas mid-sentence, the contrast linker must be an adverb: <b>however/though/nevertheless</b>. <i>But</i> and <i>although</i> are conjunctions and cannot sit between commas after the verb."
+     "explanation": "<b>Câu:</b> \"It is worth remembering, <b>however</b>, that the cacao tree itself still grows only in a narrow belt…\" — Tuy vậy, nên nhớ cây ca cao vẫn chỉ mọc trong một dải hẹp…<br><b>Điểm kiểm tra:</b> tương phản giữa câu trước (sô-cô-la rẻ, ai cũng mua được) và câu này (nông dân lại chẳng được hưởng); giữa hai dấu phẩy phải là trạng từ liên kết.<br>✅ <b>however</b> (tuy nhiên): trạng từ liên kết.<br>✅ <b>though</b> (dù vậy), <b>nevertheless</b> / <b>nonetheless</b> (dẫu vậy): cùng vai trò.<br>✗ <b>but</b> (nhưng): liên từ, phải đứng đầu vế.<br>✗ <b>although</b> (mặc dù): liên từ phụ thuộc, cần mệnh đề đi ngay sau.<br>✗ <b>therefore</b> (do đó): chỉ kết quả, nhưng nông dân thiệt thòi là điều trái ngược."
     },
     {
      "n": 10,
@@ -120,7 +120,7 @@
       "on"
      ],
      "answer": "from",
-     "explanation": "A fortune is <b>made from</b> a product, marking its source; <i>fortunes made on</i> a commodity is also idiomatic. <i>Made of</i> describes the material something consists of, and <i>made by</i> would turn the beans into the earners."
+     "explanation": "<b>Câu:</b> \"…have seldom shared in the fortunes made <b>from</b> their beans.\" — …hiếm khi được chia phần trong những gia sản kiếm được từ hạt ca cao của họ.<br><b>Điểm kiểm tra:</b> giới từ sau \"fortunes made\" chỉ nguồn gốc tiền; manh mối: \"their beans\" là hàng hóa người khác kiếm lời từ đó.<br>✅ <b>from</b> (từ): a fortune made from X = tài sản kiếm từ X.<br>✅ <b>on</b> (nhờ): \"make a fortune on a commodity\" = kiếm bộn nhờ mặt hàng đó.<br>✗ <b>of</b> (bằng): \"made of\" chỉ chất liệu, gia sản không \"làm bằng\" hạt.<br>✗ <b>by</b> (bởi): biến hạt thành người kiếm tiền.<br>✗ <b>for</b> (cho): \"made for their beans\" = làm ra cho hạt — vô nghĩa."
     }
    ]
   },
@@ -141,7 +141,7 @@
       "though"
      ],
      "answer": "however",
-     "explanation": "A contrast adverb between commas after the subject: <b>Few people, however/though, could explain</b>. <i>But</i> is a conjunction and cannot be parenthetical here; <i>despite</i> needs a noun."
+     "explanation": "<b>Câu:</b> \"Few people, <b>however</b>, could explain why.\" — Tuy nhiên, ít ai giải thích được vì sao.<br><b>Điểm kiểm tra:</b> tương phản giữa câu trước (ai cũng thấy thủy triều) và câu này (ít ai giải thích được); vị trí giữa hai dấu phẩy sau chủ ngữ đòi trạng từ liên kết.<br>✅ <b>however</b> (tuy nhiên): trạng từ tương phản, đứng được sau chủ ngữ.<br>✅ <b>though</b> (dù vậy): dùng như trạng từ giữa câu, cùng nghĩa.<br>✗ <b>but</b> (nhưng): liên từ, phải đứng đầu vế, không nằm giữa hai dấu phẩy.<br>✗ <b>despite</b> (mặc dù): giới từ, bắt buộc có danh từ theo sau.<br>✗ <b>therefore</b> (vì vậy): chỉ nhân quả, nhưng hai vế ở đây tương phản."
     },
     {
      "n": 2,
@@ -151,7 +151,7 @@
       "whose"
      ],
      "answer": "whose",
-     "explanation": "The relative pronoun shows possession: the moon, <b>whose gravity</b> tugs at the oceans. <i>Which</i> would need <i>the gravity of which</i>, and <i>its</i> cannot introduce a relative clause."
+     "explanation": "<b>Câu:</b> \"…in the moon, <b>whose</b> gravity tugs at the oceans…\" — …ở mặt trăng, thứ có lực hấp dẫn kéo các đại dương…<br><b>Điểm kiểm tra:</b> đại từ quan hệ chỉ sở hữu; manh mối: danh từ \"gravity\" ngay sau chỗ trống không có mạo từ, và lực hấp dẫn ấy là CỦA mặt trăng.<br>✅ <b>whose</b> (mà … của nó): vừa nối mệnh đề quan hệ vừa chỉ sở hữu.<br>✗ <b>which</b> (mà): không đứng trực tiếp trước danh từ; phải viết \"the gravity of which\".<br>✗ <b>its</b> (của nó): tính từ sở hữu, không nối được mệnh đề — thành hai câu dính nhau.<br>✗ <b>that</b> (mà): không dùng sau dấu phẩy, và không chỉ sở hữu."
     },
     {
      "n": 3,
@@ -163,7 +163,7 @@
       "rather"
      ],
      "answer": "more",
-     "explanation": "<b>More surprisingly</b> introduces the less expected of two facts; <i>perhaps</i> and <i>rather</i> also modify the sentence adverb naturally. <i>Most</i> would need <i>the</i> and a set of three, and <i>very</i> does not sit before <i>surprisingly</i> as a comment adverb."
+     "explanation": "<b>Câu:</b> \"…bulges outward; <b>more</b> surprisingly, a second bulge forms on the far side…\" — …phình ra; đáng ngạc nhiên hơn, một chỗ phình thứ hai hình thành ở phía đối diện…<br><b>Điểm kiểm tra:</b> trạng từ bổ nghĩa cho \"surprisingly\"; manh mối: \"a second bulge\" — hiện tượng thứ hai, khó ngờ hơn hiện tượng thứ nhất.<br>✅ <b>more</b> (hơn): so sánh mức độ bất ngờ giữa hai hiện tượng.<br>✅ <b>perhaps</b> (có lẽ), <b>rather</b> (khá): làm mềm nhận xét, cũng tự nhiên.<br>✗ <b>most</b> (nhất): câu chỉ so HAI chỗ phình, nên \"more\" khớp hơn \"nhất\".<br>✗ <b>very</b> (rất): chỉ nhấn mức độ, mất ý so sánh với chỗ phình thứ nhất.<br>✗ <b>less</b> (kém hơn): đảo nghĩa — chỗ phình phía xa khó hiểu HƠN."
     },
     {
      "n": 4,
@@ -175,7 +175,7 @@
       "any"
      ],
      "answer": "every",
-     "explanation": "A singular determiner before <i>point</i> with the singular verb <i>passes</i>: <b>every/each/any point</b>. <i>All</i> would need <i>points pass</i>, and <i>the</i> would refer to one specific point."
+     "explanation": "<b>Câu:</b> \"…<b>every</b> point on the coast passes through both of them once a day…\" — …mỗi điểm trên bờ biển đều đi qua cả hai một lần mỗi ngày…<br><b>Điểm kiểm tra:</b> lượng từ trước danh từ số ít \"point\" với động từ số ít \"passes\"; manh mối: \"most shores\" — nói khái quát về mọi điểm.<br>✅ <b>every</b> (mọi): đi với danh từ số ít, nghĩa khái quát.<br>✅ <b>each</b> (mỗi), <b>any</b> (bất kỳ): cũng đi với số ít, nghĩa tương đương.<br>✗ <b>all</b> (tất cả): phải là \"all points … pass\" số nhiều.<br>✗ <b>the</b>: chỉ một điểm cụ thể đã nhắc trước, nhưng chưa nhắc điểm nào.<br>✗ <b>some</b> (một vài): phải đi với số nhiều \"some points\", và mâu thuẫn với \"most shores\"."
     },
     {
      "n": 5,
@@ -185,7 +185,7 @@
       "apart"
      ],
      "answer": "apart",
-     "explanation": "An interval between two events is expressed as <b>twelve hours apart</b>. <i>Away</i> describes distance from a place, and <i>later</i> would need <i>than</i> to compare the two tides."
+     "explanation": "<b>Câu:</b> \"…most shores see two high tides roughly twelve hours <b>apart</b>.\" — …phần lớn các bờ biển có hai lần triều cường cách nhau khoảng mười hai giờ.<br><b>Điểm kiểm tra:</b> cách nói khoảng cách thời gian giữa hai sự kiện: \"X hours apart\"; manh mối: \"two high tides\" (hai sự kiện) và \"roughly twelve hours\" (khoảng cách).<br>✅ <b>apart</b> (cách nhau): đứng sau cụm số lượng, chỉ khoảng giữa hai sự kiện.<br>✗ <b>away</b> (cách xa): chỉ khoảng cách từ MỘT nơi hay thời điểm, không phải giữa hai sự kiện.<br>✗ <b>later</b> (sau): cần mốc (\"later than the first\"), không nói khoảng giữa hai sự kiện.<br>✗ <b>between</b> (giữa): giới từ, phải đứng trước danh từ, không kết thúc câu."
     },
     {
      "n": 6,
@@ -195,7 +195,7 @@
       "with"
      ],
      "answer": "with",
-     "explanation": "The fixed expression is <b>have nothing to do with</b> something. <i>About</i> and <i>for</i> never complete this idiom."
+     "explanation": "<b>Câu:</b> \"…the exceptionally high 'spring' tides, a name that has nothing to do <b>with</b> the season.\" — …những đợt triều cường đặc biệt lớn gọi là 'spring tides', cái tên chẳng liên quan gì đến mùa xuân.<br><b>Điểm kiểm tra:</b> thành ngữ cố định \"have nothing to do with\" = không liên quan gì đến; manh mối: tác giả đang phủ nhận mối liên hệ giữa tên \"spring\" và mùa xuân.<br>✅ <b>with</b> (với): cụm không đổi được giới từ.<br>✗ <b>about</b> (về): \"do about\" = xử lý việc gì, không nói về mối liên hệ.<br>✗ <b>for</b> (cho): \"do for\" = làm giúp ai, sai nghĩa.<br>✗ <b>to</b> (đến): \"nothing to do to the season\" = không làm gì với mùa — không phải ý câu."
     },
     {
      "n": 7,
@@ -207,7 +207,7 @@
       "yet"
      ],
      "answer": "still",
-     "explanation": "<b>Still/even/yet further</b> intensifies a comparative adverb. <i>More</i> cannot precede <i>further</i>, which is already comparative, and <i>much</i> would need <i>much further</i> without the verb object between."
+     "explanation": "<b>Câu:</b> \"Local geography complicates the picture <b>still</b> further:\" — Địa lý địa phương còn làm bức tranh phức tạp thêm nữa:<br><b>Điểm kiểm tra:</b> trạng từ tăng cường cho so sánh hơn \"further\"; manh mối: câu trước đã thêm yếu tố mặt trời, nay thêm địa lý — phức tạp tăng thêm nữa.<br>✅ <b>still</b> (còn … nữa): \"still further\" nhấn mạnh so sánh hơn.<br>✅ <b>even</b> (thậm chí), <b>yet</b> (còn): cùng chức năng trước \"further\".<br>✗ <b>more</b> (hơn): \"further\" đã là so sánh hơn, \"more further\" là so sánh kép.<br>✗ <b>very</b> (rất): không đứng trước dạng so sánh hơn.<br>✗ <b>any</b> (chút nào): \"any further\" chỉ dùng trong câu phủ định hoặc nghi vấn, câu này khẳng định."
     },
     {
      "n": 8,
@@ -217,7 +217,7 @@
       "at"
      ],
      "answer": "at",
-     "explanation": "<b>Barely ... at all</b> is the emphatic negative phrase. <i>In all</i> means 'in total' and <i>of all</i> follows a superlative, so neither fits after <i>a change</i>."
+     "explanation": "<b>Câu:</b> \"…whereas an enclosed sea may barely register a change <b>at</b> all.\" — …trong khi một vùng biển kín có thể gần như không ghi nhận thay đổi nào cả.<br><b>Điểm kiểm tra:</b> cụm nhấn mạnh phủ định \"barely … at all\" = hầu như không … chút nào; manh mối: \"barely\" đứng trước và \"all\" ngay sau chỗ trống.<br>✅ <b>at</b>: \"at all\" là cụm cố định nhấn mạnh phủ định.<br>✗ <b>in</b> (trong): \"in all\" = tổng cộng, không nhấn mạnh phủ định.<br>✗ <b>of</b> (của): \"of all\" đi sau so sánh nhất (the best of all), câu này không có.<br>✗ <b>after</b> (sau): \"after all\" = rốt cuộc — nghĩa khác hẳn, không kết hợp với \"barely\"."
     },
     {
      "n": 9,
@@ -227,7 +227,7 @@
       "so"
      ],
      "answer": "so",
-     "explanation": "<b>And rightly so</b> is a set phrase meaning 'and they were right to'. <i>Too</i> or <i>then</i> would not stand in for the whole previous clause the way <i>so</i> does."
+     "explanation": "<b>Câu:</b> \"Sailors have relied on tide tables for centuries, and rightly <b>so</b>…\" — Thủy thủ đã dựa vào bảng thủy triều hàng thế kỷ, và làm thế là đúng…<br><b>Điểm kiểm tra:</b> cụm cố định \"and rightly so\" — \"so\" thay cho cả mệnh đề trước; manh mối: vế \"for a harbour…\" nêu lý do vì sao làm thế là đúng.<br>✅ <b>so</b> (như vậy): thay thế trọn mệnh đề, tạo cụm \"rightly so\".<br>✗ <b>too</b> (cũng): không thay thế được mệnh đề, \"rightly too\" vô nghĩa.<br>✗ <b>then</b> (khi đó): chỉ thời gian, không mang nghĩa \"làm như thế\".<br>✗ <b>that</b> (điều đó): không đứng một mình sau \"rightly\" để chỉ cả mệnh đề."
     },
     {
      "n": 10,
@@ -237,7 +237,7 @@
       "was"
      ],
      "answer": "was",
-     "explanation": "A fronted <i>Not until</i> phrase inverts subject and auxiliary: <b>Not until the seventeenth century was anyone able</b>. <i>Did</i> would need a bare verb, but the sentence continues with <i>able</i>."
+     "explanation": "<b>Câu:</b> \"Not until the seventeenth century, however, <b>was</b> anyone able to set out the mathematics behind a rhythm…\" — Tuy nhiên, phải đến thế kỷ mười bảy mới có người trình bày được phần toán học đằng sau nhịp điệu ấy…<br><b>Điểm kiểm tra:</b> đảo ngữ sau \"Not until + cụm thời gian\" đứng đầu câu; manh mối: sau \"anyone\" là tính từ \"able\" (be able to), và mốc \"seventeenth century\" thuộc quá khứ.<br>✅ <b>was</b> (đã): \"was anyone able\" — be + able, quá khứ, số ít.<br>✗ <b>did</b>: sau \"did anyone\" phải là động từ nguyên mẫu, nhưng \"able\" là tính từ.<br>✗ <b>were</b>: \"anyone\" là số ít.<br>✗ <b>had</b>: \"had anyone able\" thiếu \"been\", mà chỗ trống chỉ nhận một từ."
     }
    ]
   },
@@ -257,7 +257,7 @@
       "on"
      ],
      "answer": "on",
-     "explanation": "The linking phrase is <b>on the contrary</b>, used to reject the idea just stated. <i>In contrast</i> exists, but <i>in the contrary</i> does not."
+     "explanation": "<b>Câu:</b> \"…; <b>on</b> the contrary, it took the best part of a century to evolve.\" — …; trái lại, nó mất gần cả thế kỷ để tiến hóa.<br><b>Điểm kiểm tra:</b> cụm liên kết \"on the contrary\" — bác bỏ ý vừa phủ định và nêu điều ngược lại; manh mối: vế trước phủ định (did not spring…), vế sau \"it took the best part of a century\".<br>✅ <b>on</b>: \"on the contrary\" là cụm không đổi giới từ.<br>✗ <b>in</b> (trong): \"in contrast\" đúng nhưng \"in the contrary\" không tồn tại.<br>✗ <b>to</b> (đến): \"to the contrary\" chỉ đứng SAU danh từ (evidence to the contrary).<br>✗ <b>by</b> (bằng): \"by contrast\" đúng, \"by the contrary\" không có."
     },
     {
      "n": 2,
@@ -267,7 +267,7 @@
       "whatsoever"
      ],
      "answer": "whatsoever",
-     "explanation": "After a negative noun phrase, <b>no pedals whatsoever</b> adds emphasis in a single word. The familiar <i>at all</i> means the same but is two words, so it cannot fill one blank."
+     "explanation": "<b>Câu:</b> \"The earliest ancestor, built in Germany in 1817, had no pedals <b>whatsoever</b>:\" — Tổ tiên xa nhất, chế tạo ở Đức năm 1817, hoàn toàn không có bàn đạp:<br><b>Điểm kiểm tra:</b> từ nhấn mạnh sau cụm danh từ phủ định \"no pedals\"; manh mối: dấu hai chấm rồi giải thích người lái đẩy bằng chân — thật sự không có bàn đạp.<br>✅ <b>whatsoever</b> (nào cả): một từ, đứng sau danh từ phủ định để nhấn mạnh.<br>✗ <b>at all</b> (chút nào): nghĩa giống nhưng là hai từ, ô trống chỉ nhận một.<br>✗ <b>anyway</b> (dù sao): trạng từ liên kết, không nhấn mạnh phủ định.<br>✗ <b>absolutely</b> (tuyệt đối): phải đứng TRƯỚC \"no\" (absolutely no pedals), không đứng sau danh từ."
     },
     {
      "n": 3,
@@ -278,7 +278,7 @@
       "like"
      ],
      "answer": "as",
-     "explanation": "A comparison followed by a full clause (<i>a child does</i>) takes the conjunction <b>as</b>; <i>like</i> before a clause is informal but widely accepted. <i>Than</i> needs a comparative, and <i>so</i> makes no sense after <i>rather</i>."
+     "explanation": "<b>Câu:</b> \"…pushed himself along with his feet, rather <b>as</b> a child does on a balance bike today.\" — …dùng chân đẩy mình đi, gần giống như một đứa trẻ trên xe thăng bằng ngày nay.<br><b>Điểm kiểm tra:</b> từ so sánh trước một mệnh đề đầy đủ; manh mối: \"a child does\" có chủ ngữ và động từ, nên cần liên từ.<br>✅ <b>as</b> (như): liên từ so sánh, đứng trước mệnh đề.<br>✅ <b>like</b> (giống như): trước mệnh đề là cách nói thân mật nhưng được chấp nhận.<br>✗ <b>than</b> (hơn): \"rather than\" = chứ không phải, không có nghĩa \"giống như\".<br>✗ <b>so</b> (như vậy): \"rather so\" không phải cụm so sánh.<br>✗ <b>unlike</b> (không giống): giới từ cần danh từ, và đảo nghĩa."
     },
     {
      "n": 4,
@@ -290,7 +290,7 @@
       "before"
      ],
      "answer": "until",
-     "explanation": "<b>Not ... until/before the 1860s</b> places the first occurrence at that decade. <i>Since</i> would need a present perfect verb, and <i>in</i> would clash with the negative <i>were not attached</i>."
+     "explanation": "<b>Câu:</b> \"Pedals were not attached to the front wheel <b>until</b> the 1860s…\" — Mãi đến thập niên 1860 bàn đạp mới được gắn vào bánh trước…<br><b>Điểm kiểm tra:</b> cấu trúc \"not … until + mốc\" = mãi đến … mới; manh mối: \"were not attached\" và mệnh đề \"when … hit upon the idea\" kể việc đã xảy ra ở mốc đó.<br>✅ <b>until</b> / <b>till</b> (cho đến): phải đến thập niên 1860 mới có.<br>✅ <b>before</b> (trước): \"not before\" cũng cho nghĩa ấy.<br>✗ <b>since</b> (kể từ): cần thì hoàn thành, câu này ở quá khứ đơn.<br>✗ <b>in</b> (vào): nói bàn đạp KHÔNG được gắn trong thập niên ấy — ngược với mệnh đề \"when\".<br>✗ <b>after</b> (sau): = sau đó không gắn nữa, trái sự thật."
     },
     {
      "n": 5,
@@ -301,7 +301,7 @@
       "on"
      ],
      "answer": "upon",
-     "explanation": "The phrasal verb <b>hit upon/on an idea</b> means to think of it suddenly. <i>Hit at</i> or <i>hit with</i> would describe striking something physically."
+     "explanation": "<b>Câu:</b> \"…a French mechanic hit <b>upon</b> the idea while repairing one of the old machines.\" — …thợ cơ khí Pháp nảy ra ý tưởng ấy trong lúc sửa một chiếc máy cũ.<br><b>Điểm kiểm tra:</b> cụm động từ \"hit upon/on an idea\" = chợt nghĩ ra; manh mối: tân ngữ \"the idea\" — một ý tưởng, không phải vật thể bị đánh trúng.<br>✅ <b>upon</b> (lên): \"hit upon\" = bất chợt nghĩ ra.<br>✅ <b>on</b>: \"hit on the idea\" cùng nghĩa, ít trang trọng hơn.<br>✗ <b>at</b> (vào): \"hit at\" = nhắm đánh vào vật gì, không đi với \"idea\".<br>✗ <b>with</b> (bằng): \"hit with\" = đánh bằng vật gì, ý tưởng không phải công cụ.<br>✗ <b>up</b>: \"hit up\" là tiếng lóng nghĩa hỏi xin tiền."
     },
     {
      "n": 6,
@@ -311,7 +311,7 @@
       "because"
      ],
      "answer": "because",
-     "explanation": "Before a noun phrase the reason is given by <b>because of</b>. <i>Due</i> would need <i>to</i>, not <i>of</i>, and <i>as</i> or <i>since</i> must introduce a full clause."
+     "explanation": "<b>Câu:</b> \"His 'boneshaker', so called <b>because</b> of the punishing ride its iron tyres delivered over cobbles, sold in the thousands.\" — Chiếc 'boneshaker' (xe rung xương) của ông, gọi thế vì cú xóc khủng khiếp mà lốp sắt gây ra trên đá cuội, bán được hàng nghìn chiếc.<br><b>Điểm kiểm tra:</b> nêu nguyên nhân trước danh từ (the punishing ride) bằng \"because of + N\"; manh mối: \"so called\" đòi lý do, và \"of\" ngay sau chỗ trống.<br>✅ <b>because</b> (bởi vì): ghép với \"of\" thành giới từ \"because of\".<br>✗ <b>due</b> (do): đi với \"to\", không đi với \"of\".<br>✗ <b>owing</b> (do): cũng chỉ ghép với \"to\".<br>✗ <b>since</b> (vì): liên từ, cần mệnh đề đầy đủ theo sau, không đứng trước \"of\"."
     },
     {
      "n": 7,
@@ -321,7 +321,7 @@
       "than"
      ],
      "answer": "than",
-     "explanation": "The comparative <i>taller</i> is completed by <b>than</b>. <i>Over</i> or <i>above</i> would describe position, not a comparison of height."
+     "explanation": "<b>Câu:</b> \"…and wheels grew until they stood taller <b>than</b> the rider.\" — …và bánh xe cứ to dần cho đến khi cao hơn cả người lái.<br><b>Điểm kiểm tra:</b> dạng so sánh hơn \"taller\" phải hoàn thành bằng \"than\"; manh mối: đuôi \"-er\" ở \"taller\" và \"the rider\" là đối tượng được đem ra so sánh.<br>✅ <b>than</b> (hơn): từ duy nhất đi sau so sánh hơn.<br>✗ <b>over</b> (phía trên): chỉ vị trí không gian, không nối với dạng \"-er\".<br>✗ <b>above</b> (bên trên): tương tự, chỉ vị trí cao hơn, không phải so sánh chiều cao.<br>✗ <b>as</b> (bằng): chỉ đúng trong \"as tall as\"; \"taller as\" là lỗi rất hay gặp."
     },
     {
      "n": 8,
@@ -334,7 +334,7 @@
       "clean"
      ],
      "answer": "headlong",
-     "explanation": "An adverb intensifying the direction of a fall: <b>pitch someone headlong/straight/right/clean over</b>. <i>Down</i> would contradict <i>over</i>, and <i>forward</i> does not combine with <i>over the handlebars</i>."
+     "explanation": "<b>Câu:</b> \"…a stone in the road could pitch a man <b>headlong</b> over the handlebars.\" — …một hòn đá trên đường có thể hất người lái lộn nhào qua ghi-đông.<br><b>Điểm kiểm tra:</b> trạng từ nhấn mạnh cú ngã, đứng giữa \"a man\" và \"over the handlebars\"; manh mối: \"perilous\" (nguy hiểm), \"pitch\" (hất mạnh).<br>✅ <b>headlong</b> (lộn đầu về phía trước): tả cú ngã chúi đầu.<br>✅ <b>straight</b> (thẳng), <b>right</b> (ngay), <b>clean</b> (gọn, hoàn toàn): đều nhấn mạnh cho \"over\".<br>✗ <b>down</b> (xuống): mâu thuẫn với \"over\" — hất xuống chứ không phải văng qua.<br>✗ <b>forward</b> (về phía trước): chỉ lặp hướng mà \"over the handlebars\" đã nói, thiếu ý mạnh và đột ngột của cú ngã.<br>✗ <b>off</b> (rơi khỏi): cần \"off the bike\", không ghép với \"over\"."
     },
     {
      "n": 9,
@@ -344,7 +344,7 @@
       "for"
      ],
      "answer": "for",
-     "explanation": "The inverted conditional is <b>Had it not been for</b> + noun, meaning 'without'. <i>Of</i> and <i>by</i> do not form this idiom."
+     "explanation": "<b>Câu:</b> \"Had it not been <b>for</b> the invention of the chain drive…, cycling might have remained a sport for daring athletes.\" — Nếu không nhờ phát minh ra bộ truyền động xích, đạp xe có thể đã mãi là môn thể thao của dân liều lĩnh.<br><b>Điểm kiểm tra:</b> cấu trúc đảo ngữ cố định \"Had it not been for + N\" = nếu không có, nếu không nhờ; manh mối: \"might have remained\" — kết quả giả định trong quá khứ.<br>✅ <b>for</b>: từ duy nhất hoàn thành cụm này.<br>✗ <b>of</b> (của): \"had it not been of\" không tồn tại.<br>✗ <b>by</b> (bởi): không tạo thành ngữ này, đọc như bị động dở dang.<br>✗ <b>with</b> (với): không phải cấu trúc điều kiện nào."
     },
     {
      "n": 10,
@@ -354,7 +354,7 @@
       "reach"
      ],
      "answer": "reach",
-     "explanation": "<b>Within reach of</b> someone means affordable or obtainable for them. <i>Within range of</i> refers to distance or weapons, and <i>within grasp</i> takes a possessive, not <i>of</i>."
+     "explanation": "<b>Câu:</b> \"…brought cheap, independent travel within <b>reach</b> of ordinary workers…\" — …đã đưa việc đi lại rẻ và tự chủ đến trong tầm với của người lao động bình thường…<br><b>Điểm kiểm tra:</b> thành ngữ \"within reach of somebody\" = trong tầm với, đủ khả năng có được; manh mối: \"cheap\", \"ordinary workers\" — nói về khả năng chi trả, và \"of\" ngay sau chỗ trống.<br>✅ <b>reach</b> (tầm với): \"within reach of\" = vừa túi tiền.<br>✗ <b>range</b> (tầm, phạm vi): \"within range of\" nói về khoảng cách hay tầm bắn, không nói về tiền.<br>✗ <b>grasp</b> (tầm nắm): đi với sở hữu (\"within their grasp\"), không nói \"within grasp of\".<br>✗ <b>budget</b> (ngân sách): \"within budget\" đứng một mình, không ghép \"within budget of\"."
     }
    ]
   },
@@ -374,7 +374,7 @@
       "No"
      ],
      "answer": "No",
-     "explanation": "The negative determiner <b>No sensible planner would</b> makes the whole statement emphatic without a separate <i>not</i>. <i>Any</i> would need a negative verb, and <i>None</i> cannot directly precede a noun."
+     "explanation": "<b>Câu:</b> \"<b>No</b> sensible planner would choose a marsh of shifting mud … as the site for a great city…\" — Không nhà quy hoạch tỉnh táo nào lại chọn đầm lầy bùn nhão … làm nơi xây thành phố…<br><b>Điểm kiểm tra:</b> từ hạn định phủ định trước danh từ số ít; manh mối: \"would choose\" không có \"not\", và \"yet\" ở vế sau tạo tương phản nên vế đầu phải phủ định.<br>✅ <b>No</b> (không một … nào): tự mang nghĩa phủ định cho cả câu.<br>✗ <b>Any</b> (bất kỳ): thành khẳng định \"ai cũng chọn\"; \"any\" chỉ phủ định khi có \"not\".<br>✗ <b>None</b> (không ai): đại từ, không đứng trực tiếp trước danh từ.<br>✗ <b>Every</b> (mọi): khẳng định, trái với \"Venice ought not to exist\"."
     },
     {
      "n": 2,
@@ -386,7 +386,7 @@
       "pursuing"
      ],
      "answer": "after",
-     "explanation": "<b>Be after something</b> is the idiom for wanting or seeking it; <i>seeking</i> and <i>pursuing</i> express the same idea as verbs. <i>Looking</i> would need <i>for</i>, and <i>wanting</i> is not used this way in a cleft."
+     "explanation": "<b>Câu:</b> \"Safety, not comfort, was what they were <b>after</b>;\" — Điều họ tìm kiếm là sự an toàn chứ không phải tiện nghi;<br><b>Điểm kiểm tra:</b> thành ngữ \"be after something\" = muốn có, tìm kiếm; manh mối: câu chẻ đã đưa tân ngữ \"safety\" lên đầu, nên từ điền phải khép được cụm mà không cần tân ngữ theo sau.<br>✅ <b>after</b> (theo đuổi): \"were after\" = đang tìm kiếm.<br>✅ <b>seeking</b> (tìm kiếm), <b>pursuing</b> (theo đuổi): dạng tiếp diễn cùng nghĩa.<br>✗ <b>looking</b> (tìm): bắt buộc có \"for\" (\"what they were looking for\"), thiếu thì cụt.<br>✗ <b>wanting</b> (muốn): động từ trạng thái, hiếm dùng tiếp diễn.<br>✗ <b>for</b> (ủng hộ): \"were for\" = ủng hộ điều gì, không có nghĩa tìm kiếm."
     },
     {
      "n": 3,
@@ -396,7 +396,7 @@
       "at"
      ],
      "answer": "at",
-     "explanation": "The collocation is <b>keep something at bay</b>, meaning prevent it from coming close. <i>In</i> or <i>to bay</i> would break the idiom."
+     "explanation": "<b>Câu:</b> \"…the lagoon's shallow channels, known only to locals, kept enemy fleets <b>at</b> bay.\" — …những luồng lạch nông của đầm phá, chỉ dân địa phương biết, đã giữ chân hạm đội địch ở xa.<br><b>Điểm kiểm tra:</b> thành ngữ \"keep somebody at bay\" = ngăn không cho tới gần; manh mối: \"enemy fleets\" và \"Safety\" ở vế trước — mục đích là chặn kẻ thù.<br>✅ <b>at</b>: \"at bay\" là cụm cố định.<br>✗ <b>in</b> (trong): \"in the bay\" là \"trong vịnh\" — nghĩa ngược, tức cho địch vào.<br>✗ <b>to</b> (đến): \"to bay\" không tồn tại trong cụm này.<br>✗ <b>from</b> (khỏi): \"keep … from\" cần V-ing chỉ hành động bị ngăn (keep fleets from entering), không đi với \"bay\"."
     },
     {
      "n": 4,
@@ -406,7 +406,7 @@
       "that"
      ],
      "answer": "that",
-     "explanation": "<b>So tightly that</b> introduces the result of the degree. <i>As</i> after <i>so</i> forms a comparison, not a result, and <i>which</i> would need a noun to refer back to."
+     "explanation": "<b>Câu:</b> \"…packed so tightly <b>that</b> they formed a raft on which stone could rest.\" — …xếp khít đến mức tạo thành một chiếc bè cho đá tựa lên.<br><b>Điểm kiểm tra:</b> cấu trúc \"so + trạng từ + that + mệnh đề\" chỉ kết quả của mức độ; manh mối: \"so tightly\" đứng trước và mệnh đề đầy đủ \"they formed a raft\" theo sau.<br>✅ <b>that</b> (đến mức mà): mở mệnh đề kết quả sau \"so\".<br>✗ <b>as</b> (như): \"so … as\" cần \"to + V\", không đi với mệnh đề \"they formed\".<br>✗ <b>which</b> (mà): đại từ quan hệ cần danh từ đứng trước, \"tightly\" là trạng từ.<br>✗ <b>because</b> (bởi vì): đảo chiều nhân quả — thành bè là KẾT QUẢ của xếp khít."
     },
     {
      "n": 5,
@@ -416,7 +416,7 @@
       "if"
      ],
      "answer": "if",
-     "explanation": "<b>If anything</b> means 'on the contrary, to a small degree', correcting the expectation that the wood weakened. <i>Of anything</i> and <i>for anything</i> are not linking phrases."
+     "explanation": "<b>Câu:</b> \"…the timber never rotted; <b>if</b> anything, it hardened over the centuries into something resembling stone.\" — …gỗ không hề mục; trái lại, nếu có gì thì nó còn cứng dần qua nhiều thế kỷ thành thứ gần như đá.<br><b>Điểm kiểm tra:</b> cụm cố định \"if anything\" = ngược lại, nếu có gì thì…; manh mối: vế trước phủ nhận điều người đọc mong đợi (never rotted), vế sau nêu điều trái ngược (hardened).<br>✅ <b>if</b> (nếu): \"if anything\" dùng để đính chính theo hướng ngược lại.<br>✗ <b>of</b> (của): \"of anything\" không phải cụm liên kết.<br>✗ <b>for</b> (vì): \"for anything\" = vì bất cứ điều gì, không có nghĩa đính chính.<br>✗ <b>above</b> (trên): chỉ có \"above all\" (hơn hết), không diễn tả sự đối lập."
     },
     {
      "n": 6,
@@ -427,7 +427,7 @@
       "could"
      ],
      "answer": "would",
-     "explanation": "A modal describing a past state of affairs: the empire <b>would/could stretch</b> so far at its peak. <i>Had</i> would need <i>stretched</i>, and <i>did</i> is not used for an unstressed statement of fact here."
+     "explanation": "<b>Câu:</b> \"…a trading empire that at its height <b>would</b> stretch from the Adriatic to the Black Sea.\" — …một đế chế thương mại mà lúc cực thịnh trải dài từ biển Adriatic đến Biển Đen.<br><b>Điểm kiểm tra:</b> động từ khuyết thiếu kể tình trạng quá khứ sau mốc \"at its height\"; manh mối: \"rose\" (quá khứ) ở mệnh đề chính và nguyên mẫu \"stretch\" ngay sau chỗ trống.<br>✅ <b>would</b> (rồi sẽ): kể điều đã xảy ra sau đó trong quá khứ.<br>✅ <b>could</b> (có thể): cũng hợp.<br>✗ <b>had</b> (đã): sau \"had\" phải là \"stretched\", không phải nguyên mẫu.<br>✗ <b>can</b> (có thể): hiện tại, nhưng đế chế ấy đã qua.<br>✗ <b>did</b>: \"did stretch\" chỉ dùng khi nhấn mạnh, câu này kể bình thường."
     },
     {
      "n": 7,
@@ -438,7 +438,7 @@
       "cost"
      ],
      "answer": "price",
-     "explanation": "<b>Come at a price/cost</b> means to bring disadvantages with it. <i>Fee</i> and <i>charge</i> refer to sums actually paid, not to consequences."
+     "explanation": "<b>Câu:</b> \"The city's very success, however, has come at a <b>price</b>.\" — Tuy nhiên, chính thành công của thành phố đã phải trả giá.<br><b>Điểm kiểm tra:</b> thành ngữ \"come at a price/cost\" = kéo theo cái giá phải trả; manh mối: \"however\" và các câu sau kể hậu quả — đất lún, biển dâng.<br>✅ <b>price</b> (cái giá): \"come at a price\" = có mặt trái đi kèm.<br>✅ <b>cost</b> (cái giá, chi phí): \"come at a cost\" cùng nghĩa.<br>✗ <b>fee</b> (lệ phí): tiền trả cho một dịch vụ cụ thể, không dùng cho hậu quả.<br>✗ <b>charge</b> (phí): cũng là tiền phải trả, không phải hậu quả.<br>✗ <b>loss</b> (mất mát): \"at a loss\" = lúng túng hoặc lỗ vốn, không ghép với \"come at\"."
     },
     {
      "n": 8,
@@ -448,7 +448,7 @@
       "as"
      ],
      "answer": "as",
-     "explanation": "<b>As recently as 2019</b> stresses how short a time ago something happened. <i>So recently as</i> is not used in the affirmative, and <i>more recently</i> cannot pair with <i>as</i>."
+     "explanation": "<b>Câu:</b> \"…and <b>as</b> recently as 2019 it reached a level not seen for half a century.\" — …và mới gần đây thôi, năm 2019, nước đã dâng tới mức nửa thế kỷ chưa từng thấy.<br><b>Điểm kiểm tra:</b> cấu trúc nhấn mạnh \"as + trạng từ + as + mốc\" = mới đây, ngay năm 2019; manh mối: \"as\" thứ hai đã có sẵn sau \"recently\".<br>✅ <b>as</b>: tạo cặp \"as … as\" nhấn mạnh mốc thời gian.<br>✗ <b>so</b>: \"so … as\" chỉ dùng trong câu phủ định hoặc nghi vấn, câu này khẳng định.<br>✗ <b>more</b> (hơn): so sánh hơn phải đi với \"than\", không đi với \"as\".<br>✗ <b>very</b> (rất): \"very recently\" đúng nhưng không ghép được với \"as 2019\" phía sau."
     },
     {
      "n": 9,
@@ -460,7 +460,7 @@
       "out"
      ],
      "answer": "back",
-     "explanation": "<b>Hold back/off/out</b> the sea means stop it advancing. <i>Hold up</i> means delay or support, and <i>hold down</i> means keep under control, neither of which fits a barrier."
+     "explanation": "<b>Câu:</b> \"A vast barrier of movable gates has been built at the lagoon's mouth to hold the sea <b>back</b>…\" — Một hàng rào khổng lồ gồm các cửa di động đã được xây ở cửa đầm phá để chặn nước biển…<br><b>Điểm kiểm tra:</b> cụm động từ \"hold back/off/out\" = chặn lại, không cho tiến vào; manh mối: \"barrier\" (rào chắn) và câu trước \"the sea has been rising\".<br>✅ <b>back</b> (lại): \"hold back the sea\" = ngăn nước biển tràn vào.<br>✅ <b>off</b>, <b>out</b> (ngăn không cho vào): cùng nghĩa.<br>✗ <b>up</b> (đỡ): \"hold up\" = chống đỡ hoặc trì hoãn, không phải chặn nước.<br>✗ <b>down</b> (kìm): \"hold down\" = kìm giữ giá cả hay người.<br>✗ <b>on</b> (bám chặt): \"hold on\" không có tân ngữ."
     },
     {
      "n": 10,
@@ -470,7 +470,7 @@
       "on"
      ],
      "answer": "on",
-     "explanation": "<b>Go on doing something</b> means continue. <i>Go through</i> and <i>go over</i> mean experience or review, and <i>keep</i> is not available after <i>can go</i>."
+     "explanation": "<b>Câu:</b> \"Whether the city … can go <b>on</b> doing so is a question Venetians would rather not dwell on.\" — Liệu thành phố … có thể tiếp tục làm thế được không là câu hỏi người Venice không muốn nghĩ tới.<br><b>Điểm kiểm tra:</b> cụm động từ \"go on + V-ing\" = tiếp tục; manh mối: \"doing so\" (V-ing) ngay sau, và ý \"đã thách thức biển 1500 năm, còn được nữa không\".<br>✅ <b>on</b> (tiếp): \"go on doing\" = continue doing.<br>✗ <b>through</b> (trải qua): \"go through\" = trải qua hoặc xem xét, không đi với V-ing chỉ tiếp tục.<br>✗ <b>over</b> (xem lại): \"go over doing so\" không có nghĩa.<br>✗ <b>off</b> (nổ, hỏng, bỏ đi): không nghĩa nào hợp với \"doing so\"."
     }
    ]
   },
@@ -490,7 +490,7 @@
       "less"
      ],
      "answer": "less",
-     "explanation": "The contrast is between the familiar sound and its unexplained cause, so <b>far less obvious</b> is needed. <i>More</i> would claim the mechanism is easier to see than the sound itself, the opposite of the point."
+     "explanation": "<b>Câu:</b> \"What is far <b>less</b> obvious is how cats produce it…\" — Điều kém rõ ràng hơn nhiều là mèo tạo ra âm thanh đó bằng cách nào…<br><b>Điểm kiểm tra:</b> tương phản giữa âm thanh ai cũng biết (câu trước: \"knows the sound\") và cơ chế chưa ai rõ; \"far\" đứng trước so sánh hơn; manh mối: cả đoạn sau chỉ nêu các giả thuyết chưa chắc.<br>✅ <b>less</b> (kém hơn): \"far less obvious\" = kém rõ ràng hơn nhiều.<br>✗ <b>more</b> (hơn): nói cơ chế rõ ràng HƠN tiếng kêu — ngược ý đoạn văn.<br>✗ <b>too</b> (quá): \"far too obvious\" = quá hiển nhiên, trái nghĩa.<br>✗ <b>so</b> (đến vậy): \"far so obvious\" sai ngữ pháp, \"far\" không đi với \"so\"."
     },
     {
      "n": 2,
@@ -500,7 +500,7 @@
       "why"
      ],
      "answer": "why",
-     "explanation": "The second embedded question asks for the reason, which the rest of the passage then explores: <b>why they do so at all</b>. <i>Whether</i> would question whether purring happens, which nobody doubts."
+     "explanation": "<b>Câu:</b> \"…and <b>why</b> they do so at all.\" — …và tại sao chúng lại làm thế.<br><b>Điểm kiểm tra:</b> từ để hỏi mở mệnh đề danh từ thứ hai, song song với \"how cats produce it\"; manh mối: \"As for the purpose\" ở câu sau (mục đích = lý do) và \"at all\" nhấn mạnh việc mèo có kêu là điều chắc chắn.<br>✅ <b>why</b> (tại sao): hỏi lý do, khớp phần bàn về \"purpose\".<br>✗ <b>whether</b> (liệu có): nghi vấn mèo có kêu hay không, nhưng ai cũng biết mèo có kêu.<br>✗ <b>how</b> (bằng cách nào): đã dùng ở vế trước, lặp lại làm hai vế trùng nghĩa.<br>✗ <b>what</b> (cái gì): \"what they do so\" sai cấu trúc — \"do so\" không nhận tân ngữ."
     },
     {
      "n": 3,
@@ -513,7 +513,7 @@
       "whenever"
      ],
      "answer": "as",
-     "explanation": "A time conjunction linking two simultaneous actions: the airway opens <b>as/while/when the cat breathes</b>. <i>During</i> is a preposition and cannot take a clause, and <i>because</i> would state a cause instead of a time."
+     "explanation": "<b>Câu:</b> \"…opening and closing the airway <b>as</b> the cat breathes in and out.\" — …đóng mở đường thở khi mèo hít vào thở ra.<br><b>Điểm kiểm tra:</b> liên từ thời gian nối hai hành động đồng thời; manh mối: mệnh đề đầy đủ \"the cat breathes\" theo sau, và \"opening and closing\" diễn ra song song với hơi thở.<br>✅ <b>as</b> (khi): hai việc diễn ra cùng lúc.<br>✅ <b>while</b> (trong khi), <b>when</b> (khi), <b>whenever</b> (mỗi khi): cùng chức năng.<br>✗ <b>during</b> (trong suốt): giới từ, chỉ đi với danh từ.<br>✗ <b>because</b> (bởi vì): biến việc thở thành nguyên nhân, nhưng câu chỉ tả thời điểm.<br>✗ <b>until</b> (cho đến khi): = đóng mở rồi dừng khi mèo thở — sai, cơ co giật liên tục."
     },
     {
      "n": 4,
@@ -523,7 +523,7 @@
       "out"
      ],
      "answer": "out",
-     "explanation": "<b>Turn out to be</b> means prove to be in the end. <i>Turn up</i> means arrive, and <i>turn into</i> would need a noun rather than <i>to be</i>."
+     "explanation": "<b>Câu:</b> \"…the obvious answer, contentment, turns <b>out</b> to be only part of the story.\" — …câu trả lời hiển nhiên — sự thỏa mãn — hóa ra chỉ là một phần câu chuyện.<br><b>Điểm kiểm tra:</b> cụm động từ \"turn out to be\" = hóa ra là; manh mối: \"to be\" ngay sau và \"only part of the story\" — sự thật khác điều người ta tưởng.<br>✅ <b>out</b>: \"turn out to be\" là cụm duy nhất đi với \"to be\" theo nghĩa này.<br>✗ <b>up</b> (xuất hiện): \"turn up\" = đến, xuất hiện, không đi với \"to be\".<br>✗ <b>into</b> (biến thành): cần danh từ theo sau (turn into a tool), không đi với \"to be\".<br>✗ <b>over</b> (lật): \"turn over\" = lật lại, không hợp nghĩa."
     },
     {
      "n": 5,
@@ -540,7 +540,7 @@
       "is"
      ],
      "answer": "holds",
-     "explanation": "A theory <b>holds/suggests/proposes that</b> something is the case; the plain <i>is that</i> also works. The verb must be singular present after <i>One theory</i>, so <i>hold</i> or <i>held</i> would break agreement or tense."
+     "explanation": "<b>Câu:</b> \"One theory <b>holds</b> that the frequency of a purr lies within the range…\" — Một giả thuyết cho rằng tần số tiếng rừ nằm trong dải…<br><b>Điểm kiểm tra:</b> động từ tường thuật sau chủ ngữ số ít \"One theory\", trước \"that\"; manh mối: câu sau \"Another points out\" — hiện tại đơn, ngôi ba số ít.<br>✅ <b>holds</b> (cho rằng): \"a theory holds that\" là cách nói trang trọng.<br>✅ <b>suggests</b> (gợi ý), <b>proposes</b> (đề xuất), <b>argues</b> (lập luận), <b>claims</b> / <b>maintains</b> (khẳng định), <b>says</b> (nói), <b>is</b> (là): đều đúng dạng và nghĩa.<br>✗ <b>hold</b> (không \"-s\"): sai hòa hợp với chủ ngữ số ít.<br>✗ <b>held</b> (quá khứ): lệch thì với \"Another points out\".<br>✗ <b>thinks</b> (nghĩ): giả thuyết không \"nghĩ\", cần chủ ngữ là người."
     },
     {
      "n": 6,
@@ -554,7 +554,7 @@
       "apparently"
      ],
      "answer": "thereby",
-     "explanation": "<b>Thereby/thus signalling</b> introduces the result of the action just described; <i>perhaps</i> or <i>possibly</i> softens it. <i>Therefore</i> is not used before an -ing participle in this position."
+     "explanation": "<b>Câu:</b> \"…kittens purr while feeding, <b>thereby</b> signalling to their mother…\" — …mèo con rừ khi bú, nhờ đó báo hiệu cho mèo mẹ…<br><b>Điểm kiểm tra:</b> trạng từ trước phân từ \"-ing\" nối hành động (purr) với hệ quả (báo hiệu cho mẹ); manh mối: dấu phẩy + V-ing, không có chủ ngữ mới.<br>✅ <b>thereby</b> (nhờ đó): nêu kết quả của hành động vừa kể.<br>✅ <b>thus</b> (do vậy): cùng nghĩa; <b>perhaps</b> (có lẽ), <b>possibly</b> (có thể), <b>apparently</b> (có vẻ): làm mềm giả thuyết.<br>✗ <b>therefore</b> (do đó): nối hai mệnh đề đầy đủ, không đứng trước phân từ \"-ing\".<br>✗ <b>so</b> (nên): liên từ, cần mệnh đề có chủ ngữ.<br>✗ <b>because</b> (bởi vì): đảo chiều nhân quả và cũng cần mệnh đề đầy đủ."
     },
     {
      "n": 7,
@@ -564,7 +564,7 @@
       "it"
      ],
      "answer": "it",
-     "explanation": "Anticipatory <b>it</b> stands for the that-clause: <i>it is certain that cats have learned</i>. <i>This</i> or <i>there</i> cannot introduce a delayed that-clause subject this way."
+     "explanation": "<b>Câu:</b> \"…<b>it</b> is certain that cats have learned to exploit the sound.\" — …điều chắc chắn là mèo đã học được cách khai thác âm thanh này.<br><b>Điểm kiểm tra:</b> chủ ngữ giả đứng trước \"is certain that + mệnh đề\"; manh mối: chủ ngữ thật là mệnh đề \"that cats have learned…\" bị đẩy ra sau.<br>✅ <b>it</b> (chủ ngữ giả): \"it is certain that…\" = điều chắc chắn là…<br>✗ <b>this</b> (điều này): phải chỉ về điều đã nêu trước, nhưng mệnh đề \"that…\" chưa xuất hiện.<br>✗ <b>there</b> (có): \"there is\" đi với danh từ chỉ sự tồn tại, không đi với tính từ \"certain\".<br>✗ <b>what</b> (điều gì): thiếu động từ thứ hai — phải là \"what is certain IS that\"."
     },
     {
      "n": 8,
@@ -574,7 +574,7 @@
       "without"
      ],
      "answer": "without",
-     "explanation": "<b>Without realising</b> is the preposition plus -ing pattern meaning 'not knowing'. <i>Before</i> would claim they later work it out, and <i>not</i> cannot stand alone before a participle here."
+     "explanation": "<b>Câu:</b> \"…and that owners respond to it <b>without</b> realising why.\" — …và chủ mèo phản ứng với tiếng đó mà không nhận ra tại sao.<br><b>Điểm kiểm tra:</b> giới từ + V-ing: \"without realising\" = mà không nhận ra; manh mối: \"realising\" ngay sau, và ý \"embeds a cry … within its purr\" — tiếng kêu được giấu trong tiếng rừ nên chủ không biết.<br>✅ <b>without</b> (mà không): đi với V-ing, đúng nghĩa \"không hay biết\".<br>✗ <b>before</b> (trước khi): ngụ ý sau đó chủ nhận ra — đoạn văn không nói vậy.<br>✗ <b>not</b> (không): \"not\" không đứng một mình nối phân từ theo cách này.<br>✗ <b>despite</b> (mặc dù): \"despite realising why\" = dù đã nhận ra, ngược với việc tiếng kêu được giấu kín."
     },
     {
      "n": 9,
@@ -586,7 +586,7 @@
       "thus"
      ],
      "answer": "then",
-     "explanation": "A concluding adverb between commas draws the passage together: <b>then/therefore/thus</b>. <i>However</i> would signal a contrast with the previous sentence, which actually supports this one."
+     "explanation": "<b>Câu:</b> \"Far from being a simple expression of happiness, <b>then</b>, the purr appears to be a tool…\" — Vậy nên, chẳng phải chỉ là biểu hiện của niềm vui, tiếng rừ dường như là một công cụ…<br><b>Điểm kiểm tra:</b> trạng từ kết luận giữa hai dấu phẩy, rút ra hệ quả từ các bằng chứng đã nêu (rừ khi đau, khi bú, khi đòi ăn).<br>✅ <b>then</b> (vậy thì): dùng như trạng từ kết luận.<br>✅ <b>therefore</b> (do đó), <b>thus</b> (như vậy): cùng vai trò.<br>✗ <b>however</b> (tuy nhiên): chỉ tương phản, nhưng câu này là kết luận, không mâu thuẫn.<br>✗ <b>moreover</b> (hơn nữa): thêm ý mới, không kết luận.<br>✗ <b>instead</b> (thay vào đó): \"Far from being…\" đã bác bỏ rồi, thêm nữa thành lặp."
     },
     {
      "n": 10,
@@ -600,7 +600,7 @@
       "beside"
      ],
      "answer": "with",
-     "explanation": "<b>Living with/alongside/among</b> people describes sharing their homes. <i>Living by us</i> would mean simply nearby, and <i>living on us</i> would make cats parasites."
+     "explanation": "<b>Câu:</b> \"…refined over thousands of years of living <b>with</b> us…\" — …được mài giũa qua hàng nghìn năm sống cùng chúng ta…<br><b>Điểm kiểm tra:</b> giới từ sau \"living\" chỉ sự chung sống với con người; manh mối: \"owners\" (chủ nuôi) và cả đoạn nói về mèo nhà — sống trong nhà cùng người.<br>✅ <b>with</b> (cùng với): \"living with us\" = sống chung với chúng ta.<br>✅ <b>alongside</b> (bên cạnh, cùng), <b>among</b> / <b>amongst</b> (giữa), <b>beside</b> (bên cạnh): cùng ý chung sống.<br>✗ <b>by</b> (cạnh): \"living by us\" chỉ ở gần, không có nghĩa chung sống.<br>✗ <b>on</b> (bám vào): \"living on us\" biến mèo thành ký sinh trùng.<br>✗ <b>for</b> (vì): \"living for us\" = sống vì chúng ta, sai nghĩa."
     }
    ]
   },
@@ -623,7 +623,7 @@
       "known"
      ],
      "correct": 0,
-     "explanation": "<b>Take something for granted</b> means to stop noticing its value. <i>Given</i>, <i>known</i> and <i>sure</i> all express certainty but none forms this idiom with <i>take for</i>."
+     "explanation": "<b>Câu:</b> \"Few inventions have been taken so thoroughly for <b>granted</b> as paper.\" — Ít có phát minh nào bị coi là hiển nhiên đến mức như giấy.<br><b>Điểm kiểm tra:</b> thành ngữ \"take something for granted\" = coi là đương nhiên, không còn thấy giá trị; manh mối: cả bài kể giấy quan trọng thế nào mà ít ai để ý.<br>✅ <b>granted</b> (được ban cho → đương nhiên): hoàn thành thành ngữ \"take for granted\".<br>✗ <b>sure</b> (chắc chắn): \"for sure\" chỉ đứng độc lập (I know it for sure), không có \"take for sure\".<br>✗ <b>given</b> (cho sẵn): dù \"a given\" nghĩa là điều hiển nhiên, không có thành ngữ \"take for given\".<br>✗ <b>known</b> (được biết): \"take for known\" không phải cụm tiếng Anh."
     },
     {
      "n": 2,
@@ -636,7 +636,7 @@
       "at"
      ],
      "correct": 1,
-     "explanation": "Something recorded on paper is described <b>in writing</b>. <i>By writing</i> would describe the means of doing some other action, and <i>on</i> or <i>at writing</i> are not used."
+     "explanation": "<b>Câu:</b> \"…before he described the method <b>in</b> writing.\" — …trước khi ông mô tả phương pháp bằng văn bản.<br><b>Điểm kiểm tra:</b> cụm cố định \"in writing\" = bằng văn bản; manh mối: \"described the method\" (cách ghi lại phương pháp) đối lập với \"scraps found in tombs\" — bằng chứng không có chữ viết.<br>✅ <b>in</b> (trong, dưới dạng): \"in writing\" = dưới dạng văn bản.<br>✗ <b>by</b> (bằng cách): \"by writing\" dùng khi viết là phương tiện làm việc KHÁC (earn money by writing).<br>✗ <b>on</b> (về): \"on writing\" chỉ có trong \"a book on writing\" (sách VỀ việc viết), sai ngữ cảnh.<br>✗ <b>at</b> (ở, giỏi về): \"at writing\" cần tính từ đi trước (good at writing)."
     },
     {
      "n": 3,
@@ -649,7 +649,7 @@
       "managed"
      ],
      "correct": 2,
-     "explanation": "Only <b>succeed</b> takes <i>in + -ing</i>. <i>Managed</i> needs a to-infinitive, while <i>achieved</i> and <i>accomplished</i> take a direct object."
+     "explanation": "<b>Câu:</b> \"…and for six centuries China <b>succeeded</b> in doing so.\" — …và suốt sáu thế kỷ Trung Quốc đã làm được điều đó.<br><b>Điểm kiểm tra:</b> động từ đi với giới từ \"in + V-ing\"; manh mối: \"in doing so\" ngay sau chỗ trống — chỉ \"succeed\" có kết hợp \"succeed in doing\".<br>✅ <b>succeeded</b> (thành công): \"succeed in doing something\" là cấu trúc cố định.<br>✗ <b>managed</b> (xoay xở được): đi với \"to + V\" (managed to do so), không đi với \"in doing\".<br>✗ <b>achieved</b> (đạt được): cần tân ngữ trực tiếp (achieved this), không có \"in\".<br>✗ <b>accomplished</b> (hoàn thành): cũng là ngoại động từ, \"accomplished in doing\" sai."
     },
     {
      "n": 4,
@@ -662,7 +662,7 @@
       "in"
      ],
      "correct": 3,
-     "explanation": "The fixed phrase is <b>in exchange for</b>. <i>On</i>, <i>at</i> and <i>for exchange</i> do not form the idiom, although <i>for</i> is tempting because it appears later in the phrase."
+     "explanation": "<b>Câu:</b> \"…Chinese papermakers were taken prisoner … and agreed to teach their captors <b>in</b> exchange for their freedom.\" — …thợ làm giấy Trung Quốc bị bắt làm tù binh … và đồng ý dạy cho những kẻ bắt giữ mình để đổi lấy tự do.<br><b>Điểm kiểm tra:</b> cụm cố định \"in exchange for\" = để đổi lấy; manh mối: \"exchange for their freedom\" — sự trao đổi giữa việc dạy nghề và tự do.<br>✅ <b>in</b> (trong, để đổi): \"in exchange for\" không đổi được giới từ.<br>✗ <b>for</b> (vì, cho): \"for exchange\" không thành cụm; dễ nhầm vì \"for\" xuất hiện ngay sau \"exchange\".<br>✗ <b>on</b> (trên): \"on exchange\" không phải thành ngữ.<br>✗ <b>at</b> (tại): \"at exchange\" không tồn tại."
     },
     {
      "n": 5,
@@ -675,7 +675,7 @@
       "since"
      ],
      "correct": 0,
-     "explanation": "<b>Not until the fifteenth</b> century means it arrived only then. <i>Not by</i> would set a deadline that was missed, and <i>since</i> or <i>from</i> mark a starting point rather than a delayed arrival."
+     "explanation": "<b>Câu:</b> \"…reaching Spain in the twelfth century and England not <b>until</b> the fifteenth.\" — …đến Tây Ban Nha vào thế kỷ mười hai và mãi đến thế kỷ mười lăm mới tới Anh.<br><b>Điểm kiểm tra:</b> cấu trúc \"not until + mốc\" = mãi đến … mới; manh mối: \"moved slowly\" và Tây Ban Nha nhận ở thế kỷ 12 — Anh muộn hơn.<br>✅ <b>until</b> (cho đến): \"not until the fifteenth\" = phải đến thế kỷ 15 mới tới.<br>✗ <b>by</b> (trước hạn): nghĩa là đến thế kỷ 15 VẪN CHƯA tới, nhưng giấy đã tới Anh.<br>✗ <b>since</b> (kể từ): chỉ điểm bắt đầu kéo dài đến nay, cần thì hoàn thành.<br>✗ <b>from</b> (từ): cũng chỉ điểm khởi đầu, không diễn tả sự trì hoãn."
     },
     {
      "n": 6,
@@ -688,7 +688,7 @@
       "measured"
      ],
      "correct": 1,
-     "explanation": "<b>Compared with</b> introduces the standard against which paper seemed flimsy. <i>Contrasted with</i> stresses difference rather than a scale, and <i>opposed</i> or <i>measured with</i> are not used for judging quality."
+     "explanation": "<b>Câu:</b> \"…the new material, which seemed flimsy <b>compared</b> with parchment made from animal skin…\" — …vật liệu mới này, thứ có vẻ mỏng manh so với giấy da làm từ da thú…<br><b>Điểm kiểm tra:</b> cụm \"compared with/to\" = so với, đứng sau tính từ để nêu chuẩn so sánh; manh mối: \"seemed flimsy … with parchment\" — đặt giấy cạnh giấy da.<br>✅ <b>compared</b> (được so sánh): \"compared with\" = so với.<br>✗ <b>contrasted</b> (được đối chiếu): nhấn sự khác biệt giữa hai thứ ngang hàng, không nói \"yếu hơn so với chuẩn\".<br>✗ <b>opposed</b> (đối lập): chỉ có \"as opposed to\" (chứ không phải), không đi với \"with\".<br>✗ <b>measured</b> (được đo): \"measured against\" mới là \"đo theo chuẩn\"; \"measured with\" là đo bằng dụng cụ."
     },
     {
      "n": 7,
@@ -701,7 +701,7 @@
       "stop"
      ],
      "correct": 2,
-     "explanation": "<b>Put paid to something</b> is an idiom meaning to finish it off completely. <i>Put a stop to</i> and <i>put an end to</i> exist but each needs an article, and <i>put to rest</i> has a different word order."
+     "explanation": "<b>Câu:</b> \"Printing put <b>paid</b> to that.\" — Máy in đã chấm dứt điều đó.<br><b>Điểm kiểm tra:</b> thành ngữ \"put paid to something\" = chấm dứt hẳn; manh mối: câu trước nói quan chức cấm dùng giấy, câu sau kể máy in tạo nhu cầu khổng lồ — lệnh cấm hết ý nghĩa; chỗ trống không có mạo từ.<br>✅ <b>paid</b> (đã trả → xong hẳn): \"put paid to\" là thành ngữ cố định, không cần mạo từ.<br>✗ <b>end</b> (kết thúc): \"put an end to\" đúng nhưng bắt buộc có \"an\"; \"put end to\" sai.<br>✗ <b>stop</b> (dừng): tương tự, \"put a stop to\" cần \"a\".<br>✗ <b>rest</b> (nghỉ): \"put to rest\" tồn tại nhưng trật tự phải là \"put that to rest\"."
     },
     {
      "n": 8,
@@ -714,7 +714,7 @@
       "up"
      ],
      "correct": 3,
-     "explanation": "<b>Keep up with demand</b> means supply as fast as it is needed. <i>Keep on with</i> means continue an activity, <i>keep in with</i> means stay friendly with someone, and <i>keep out</i> means exclude."
+     "explanation": "<b>Câu:</b> \"…no amount of sheep could keep <b>up</b> with demand…\" — …bao nhiêu cừu cũng không thể đáp ứng kịp nhu cầu…<br><b>Điểm kiểm tra:</b> cụm động từ \"keep up with\" = theo kịp; manh mối: \"hundreds of pages an hour\" (tốc độ cao) và \"demand\" (nhu cầu) — nguồn da cừu không theo kịp nhu cầu giấy.<br>✅ <b>up</b> (kịp, lên): \"keep up with demand\" = cung kịp cầu.<br>✗ <b>on</b> (tiếp tục): \"keep on with\" = tiếp tục một hoạt động, không có nghĩa theo kịp.<br>✗ <b>in</b> (thân thiết): \"keep in with someone\" = giữ quan hệ tốt với ai, sai nghĩa.<br>✗ <b>out</b> (ngăn ra): \"keep out\" = không cho vào, \"keep out with demand\" vô nghĩa."
     },
     {
      "n": 9,
@@ -727,7 +727,7 @@
       "fell"
      ],
      "correct": 0,
-     "explanation": "The phrasal verb <b>drive prices down</b> means force them lower. <i>Fell</i> is intransitive and cannot take an object, <i>dropped</i> does not combine with <i>down</i>, and <i>lowered ... down</i> repeats the idea."
+     "explanation": "<b>Câu:</b> \"The shift to wood pulp in the nineteenth century <b>drove</b> prices down further still…\" — Việc chuyển sang bột gỗ vào thế kỷ mười chín còn đẩy giá xuống thấp hơn nữa…<br><b>Điểm kiểm tra:</b> cụm động từ \"drive prices down\" = ép giá xuống; manh mối: tân ngữ \"prices\" + tiểu từ \"down\" — cần ngoại động từ ghép với \"down\".<br>✅ <b>drove</b> (đẩy, ép): \"drive … down\" là cụm chuẩn cho giá cả.<br>✗ <b>fell</b> (giảm): nội động từ, không nhận tân ngữ — \"prices fell\" đúng nhưng \"fell prices\" sai.<br>✗ <b>dropped</b> (hạ): không ghép với \"down\", \"dropped prices down\" thừa.<br>✗ <b>lowered</b> (hạ thấp): đã chứa nghĩa \"xuống\", \"lowered … down\" lặp ý."
     },
     {
      "n": 10,
@@ -740,7 +740,7 @@
       "in"
      ],
      "correct": 0,
-     "explanation": "The set phrase is <b>for the first time</b>. <i>At first</i> exists without <i>the ... time</i>, and <i>in</i> or <i>on the first time</i> are not English idioms."
+     "explanation": "<b>Câu:</b> \"…cheap novels and, <b>for</b> the first time, the expectation that an ordinary person could read.\" — …tiểu thuyết rẻ và, lần đầu tiên, kỳ vọng rằng một người bình thường cũng biết đọc.<br><b>Điểm kiểm tra:</b> cụm cố định \"for the first time\" = lần đầu tiên; manh mối: \"the first time\" đứng ngay sau chỗ trống, giữa hai dấu phẩy như một trạng ngữ.<br>✅ <b>for</b> (cho, lần): \"for the first time\" là cụm không đổi được giới từ.<br>✗ <b>at</b> (lúc): \"at first\" = ban đầu, nhưng không có \"at the first time\".<br>✗ <b>in</b> (trong): \"in the first time\" không phải cách nói tiếng Anh.<br>✗ <b>on</b> (vào): \"on\" chỉ đi với ngày cụ thể (on Monday), \"on the first time\" không dùng."
     }
    ]
   }

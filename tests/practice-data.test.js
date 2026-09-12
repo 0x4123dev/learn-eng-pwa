@@ -68,6 +68,44 @@ suite('practice banks: every source file holds to the contract', () => {
   });
 });
 
+suite('cloze: every explanation teaches in Vietnamese', () => {
+  // The parent's standard (2026-09-12): a child who misses a blank must be
+  // able to read WHY in Vietnamese — the sentence with its translation, the
+  // point being tested, and every option (or, for a typed blank, the
+  // tempting wrong words) with its meaning and a specific reason. Pinned so
+  // a future bank cannot slide back to an English one-liner.
+  const VN = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
+  const strip = s => String(s).replace(/<[^>]+>/g, ' ');
+  test('shape: Câu + translation, Điểm kiểm tra, ✅ answer, ✗ every wrong option with a meaning', () => {
+    const bad = [];
+    for (const p of CLOZE_PASSAGES) {
+      for (const q of p.questions) {
+        const e = String(q.explanation);
+        const plain = strip(e);
+        const id = p.id + '#' + q.n;
+        if (!VN.test(plain)) { bad.push(id + ': not Vietnamese'); continue; }
+        if (!/Câu:/.test(e) || !/Điểm kiểm tra:/.test(e)) { bad.push(id + ': missing Câu/Điểm kiểm tra'); continue; }
+        if (!/✅/.test(e)) { bad.push(id + ': no ✅'); continue; }
+        if (q.type === 'mcq') {
+          const wrong = q.options.filter((_, i) => i !== q.correct);
+          // "✗ <b>set up</b> (…)" names the option "up" — a phrasal verb or a
+          // collocation may be quoted with its partner word.
+          const esc = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const names = (mark, o) => new RegExp(mark + '\\s*<b>[^<]*(?<![a-z])' + esc(o) + '(?![a-z])[^<]*</b>\\s*\\(', 'i').test(e);
+          const named = wrong.filter(o => names('✗', o));
+          if (named.length < 3) bad.push(id + ': wrong options with a meaning: ' + named.length + '/3');
+          if (!names('✅', q.options[q.correct])) bad.push(id + ': ✅ does not name the answer with its meaning');
+        } else {
+          if (!/✗/.test(e)) bad.push(id + ': typed blank names no tempting wrong word');
+        }
+        const words = plain.trim().split(/\s+/).length;
+        if (words < 40 || words > 220) bad.push(id + ': ' + words + ' words');
+      }
+    }
+    assert.deepEqual(bad.slice(0, 20), [], bad.length + ' explanations off the standard: ' + bad.slice(0, 8).join(' | '));
+  });
+});
+
 suite('practice banks: format parity with the real PTNK papers', () => {
   // What the real papers actually use, read from the real bank.
   const real = PTNK_EXAMS.flatMap(e => e.questions.map(q => Object.assign({ level: e.track === 'kc' ? 'kc' : 'ch' }, q)));
