@@ -1009,6 +1009,14 @@ function renderMathHome() {
     LazyData.ensure('mathHk2').then(() => { if (_mathView === 'hk2') renderMathHome(); });
     return;
   }
+  // The Toán 7 menu's HK2 card is ALWAYS tappable — tapping it is what
+  // fetches the bank (above). It used to be drawn locked ("Sắp có") whenever
+  // MATH_QUESTIONS_HK2 was not in memory, which, once the bank became lazy,
+  // was every first visit: the card that loads HK2 was locked because HK2
+  // was not loaded. Warm it in the background so the question count fills in.
+  if (_mathView === 'toan7' && typeof LazyData !== 'undefined' && !LazyData.ready('mathHk2')) {
+    LazyData.ensure('mathHk2').then(() => { if (_mathView === 'toan7' && !isMathQuizActive()) renderMathHome(); });
+  }
   if (_mathView === 'toan4') { screen.innerHTML = renderToan4MenuHTML(); return; }
   if (_mathView === 'cuuchuong') {
     screen.innerHTML = (typeof renderMathTablesMenuHTML === 'function')
@@ -1098,17 +1106,11 @@ function renderToan7MenuHTML() {
         <span class="phrases-cta-text"><strong>Học kì 1</strong><small>${mathBank().length} câu · Luyện tập, Lý thuyết, Đề thi</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
-      ${(typeof MATH_QUESTIONS_HK2 !== 'undefined' && MATH_QUESTIONS_HK2.length) ? `
       <button class="phrases-cta" onclick="openMathSection('hk2')">
         <span class="phrases-cta-icon">②</span>
         <span class="phrases-cta-text"><strong>Học kì 2</strong><small>${_mathHk2Bank().length ? _mathHk2Bank().length + ' câu · ' : ''}Luyện tập, Lý thuyết, Đề thi</small></span>
         <span class="phrases-cta-arrow">›</span>
-      </button>` : `
-      <button class="phrases-cta locked" disabled aria-disabled="true">
-        <span class="phrases-cta-icon">②</span>
-        <span class="phrases-cta-text"><strong>Học kì 2</strong><small>Sắp có — đang soạn nội dung</small></span>
-        <span class="phrases-cta-arrow">🔒</span>
-      </button>`}
+      </button>
       <button class="phrases-cta" onclick="openMathSection('history')">
         <span class="phrases-cta-icon">🕘</span>
         <span class="phrases-cta-text"><strong>Lịch sử làm bài</strong><small>${runs ? `${runs} lượt đã làm · thống kê và câu hay sai` : 'Chưa có lượt nào'}</small></span>

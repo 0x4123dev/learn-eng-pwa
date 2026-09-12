@@ -16,6 +16,37 @@ const lazy = require(path.join(ROOT, 'js', 'lazy-data.js'));
 
 const HK2 = ['js/math-data-hk2.js', 'js/math-exams-hk2.js', 'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js'];
 
+suite('HK2 lazy group: the Toán 7 menu can always reach it', () => {
+  // The card that LOADS Học kì 2 was drawn locked ("Sắp có — đang soạn nội
+  // dung") whenever MATH_QUESTIONS_HK2 was not in memory — which, once the
+  // bank became lazy, was every first visit. A child could never open HK2
+  // from the menu. Executed: boot the app, open Toán 7 before the group has
+  // loaded, tap the card, land in HK2 with its bank.
+  const { mountApp, loginTestUser } = require('./verify/client.js');
+  const settle = (n) => new Promise(r => setTimeout(r, n || 30));
+  test('before the HK2 group has loaded, the Học kì 2 card is tappable and opens HK2', async () => {
+    const h = mountApp();
+    loginTestUser(h, { coins: 100 });
+    const S = h.sandbox;
+    S.switchScreen('mathHubScreen');
+    await S.LazyData.ensure('mathHubScreen');
+    await settle();
+    assert.falsy(S.LazyData.ready('mathHk2'), 'HK2 must not be loaded merely by opening the Math tab');
+    S.openMathSection('toan7');
+    const html = h.el('mathHubScreen').innerHTML;
+    assert.truthy(/onclick="openMathSection\('hk2'\)"/.test(html), 'the Học kì 2 card is wired');
+    assert.falsy(/Sắp có/.test(html), 'and not drawn as locked');
+    const card = h.doc.querySelectorAll('button').find(b => /openMathSection\('hk2'\)/.test(b.getAttribute('onclick') || ''));
+    assert.truthy(card && !card.disabled && !card.classList.contains('locked'), 'the card is enabled');
+    h.run("openMathSection('hk2')");
+    await S.LazyData.ensure('mathHk2');
+    await settle();
+    assert.truthy(S.LazyData.ready('mathHk2'), 'tapping it fetched the group');
+    assert.truthy(/Học kì 2|HỌC KÌ 2/i.test(h.el('mathHubScreen').innerHTML), 'HK2 is on screen');
+    assert.truthy(h.peek('MATH_QUESTIONS_HK2').length >= 900, 'with its bank');
+  });
+});
+
 suite('HK2 lazy group: the split itself', () => {
   test('the four HK2 files are a group of their own, and NOT in the Math tab group', () => {
     assert.deepEqual(lazy.GROUP_FILES.mathHk2, HK2);
