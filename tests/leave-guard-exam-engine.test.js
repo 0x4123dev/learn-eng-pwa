@@ -245,7 +245,7 @@ for (const a of ACTIVITIES) {
       const coins1 = h.state().coins;
       // The results screen's own buttons are the set's: home and retake.
       assert.truthy(h.el(a.screen).innerHTML.includes('renderExamHome()'), 'a home button on the results');
-      assert.truthy(h.el(a.screen).innerHTML.includes("confirmStartExam('" + attempt.examId + "')"), 'a retake button on the results');
+      assert.truthy(h.el(a.screen).innerHTML.includes("retakeExam('" + attempt.examId + "')"), 'a retake button on the results');
       // (B) every way out, no question asked.
       h.sandbox.__confirmAnswer = false;
       h.sandbox.__confirmLog.length = 0;
@@ -287,11 +287,12 @@ for (const a of ACTIVITIES) {
       finishPaper(h, a);
       h.sandbox.__confirmAnswer = true;
       h.sandbox.__confirmLog.length = 0;
-      tapOnclick(h, a.screen, 'confirmStartExam');
+      tapOnclick(h, a.screen, 'retakeExam');
       assert.equal(h.sandbox.__confirmLog.length, 1, 'retake asks "Start?" once');
       assert.truthy(h.sandbox.isExamActive(), 'retake started a fresh paper');
       const s2 = h.peek('_examState');
       assert.truthy(s2 !== s && s2.idx === 0, 'a fresh session from question 1');
+      assert.equal(s2.retake, true, 'a retake is marked as one (tests/retake-not-a-task.test.js has the rest)');
       assert.equal(h.sandbox.examCurrentSet(), a.set);
     });
 

@@ -280,7 +280,7 @@ var DailyTask = (function () {
         <div class="dt-task-main">
           <div class="dt-task-top"><strong>${esc(t.label)}</strong><span>${done ? '✓ Xong' : (stale ? '…' : t.count + '/' + t.target)}</span></div>
           <div class="dt-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
-          <small>Cần ${t.target} bài đạt 100%</small>
+          <small>Cần ${t.target} bài đạt 100% · làm bài mới từ menu (🔁 làm lại không tính)</small>
           ${done ? '' : `<button type="button" class="dt-go" onclick="DailyTask.go('${esc(t.kind)}')">Vào học</button>`}
         </div>
       </div>`;

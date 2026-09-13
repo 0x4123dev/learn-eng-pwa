@@ -92,6 +92,28 @@ function examSelectSet(setId) { if (setId && EXAM_SETS[setId]) _examSet = setId;
 //   timerId, finished }
 let _examState = null;
 
+// ---- retake ------------------------------------------------------------------
+// A daily task is completed only by a FRESH attempt started from the menu
+// (the Practice button, a paper list, a daily-task deep link). Re-doing the
+// SAME paper through the results screen's "Làm lại" — the child has just seen
+// every answer and every explanation — must not count, even at 100%. So
+// retakeExam() arms a one-shot flag, startExam() consumes it into
+// _examState.retake, and finishExam() writes `retake: true` on the attempt;
+// js/auth.js carries that as detail.retake and the server's task counter
+// (functions/api/_daily-task.js progress()) leaves such rows out. A "Practice
+// again" that draws a NEW round is not a retake and never comes through here.
+//
+// The flag is one-shot on purpose: it is cleared the moment startExam() reads
+// it, and by abandonExam() / examForgetProfile() as well, so a retake the
+// child cancelled at the confirm(), or walked out of, can never mark the next
+// fresh paper as a retake.
+let _examRetake = false;
+function retakeExam(examId, setId) {
+    _examRetake = true;
+    try { confirmStartExam(examId, setId); }
+    finally { _examRetake = false; }   // consumed by startExam, or dropped on Cancel
+}
+
 // Which sub-tab of the Exam home is showing: 'exams' or 'lessons'.
 let _examSubTab = 'exams';
 
@@ -155,6 +177,7 @@ function isExamActive() {
 function abandonExam() {
     if (_examState && _examState.timerId) clearInterval(_examState.timerId);
     _examState = null;
+    _examRetake = false;
     examLockScreen(false);
     // The last renderExamQuestion() wrote this paper into the study checkpoint
     // (js/app.js). Leaving through the bottom bar relies on the document's
@@ -391,6 +414,10 @@ function startExam(examId, setId) {
     const ex = examLookup(examId);
     if (!ex) return;
     const now = Date.now();
+    // Consume the one-shot NOW, before anything else can read it: a retake of
+    // this paper is a retake; the next paper started from the menu is not.
+    const retake = _examRetake === true;
+    _examRetake = false;
     _examState = {
         set: _examSet,
         examId: ex.id,
@@ -403,6 +430,7 @@ function startExam(examId, setId) {
         deadlineTs: now + ex.durationMin * 60 * 1000,
         timerId: null,
         finished: false,
+        retake,
     };
     _examState.timerId = setInterval(_examTick, 1000);
     examLockScreen(true);
@@ -638,6 +666,11 @@ function finishExam(auto) {
         coinsEarned,
         perfectBonus,
         autoSubmitted: !!auto,
+        // Set only on a "Làm lại" of the same paper from a results card (see
+        // retakeExam). Absent, not false, on a fresh attempt: the uploader and
+        // the server treat a missing key as "counts", and a history written
+        // before this flag existed must keep counting too.
+        ...(s.retake ? { retake: true } : {}),
         // Only what cannot be looked back up. `q` and `explanation` used to
         // live here too and were 80% of the weight; the review screen now
         // reads them out of EXAMS by examId + n. `correctAnswer` stays even
@@ -732,15 +765,23 @@ function _renderExamResults(attempt, auto) {
             </div>` : ''}
             ${autoNote}
             <div class="exam-result-actions">
-                <button class="exam-btn-primary" onclick="confirmStartExam('${attempt.examId}')">🔁 Retake</button>
+                <button class="exam-btn-primary" onclick="retakeExam('${attempt.examId}')">🔁 Làm lại</button>
                 <button class="exam-btn-secondary" onclick="renderExamHome()">${escExam(_examSetCfg().homeLabel || '← Exam Home')}</button>
             </div>
+            ${_examRetakeNoteHTML()}
             <h2 class="exam-review-title">Review — every question</h2>
             <div class="exam-review-list">${reviewHTML}</div>
         </div>
     `;
     if (screen) screen.scrollTop = 0;
     window.scrollTo(0, 0);
+}
+
+// The one line under "Làm lại" that says why the retake will not move the
+// daily-task counter. Drawn on every results card (fresh or retaken): the
+// child reads it BEFORE tapping, which is when it matters.
+function _examRetakeNoteHTML() {
+    return '<div class="exam-retake-note" role="note">🔁 Làm lại không tính vào nhiệm vụ ngày — muốn tính, hãy bắt đầu bài mới từ menu.</div>';
 }
 
 function _optionLetterFor(a) {
@@ -803,7 +844,7 @@ function reviewExamAttempt(idx) {
     const actions = screen.querySelector('.exam-result-actions');
     if (actions) {
         actions.innerHTML = `
-            <button class="exam-btn-primary" onclick="confirmStartExam('${attempt.examId}')">🔁 Retake</button>
+            <button class="exam-btn-primary" onclick="retakeExam('${attempt.examId}')">🔁 Làm lại</button>
             <button class="exam-btn-secondary" onclick="renderExamHistory()">← Back to History</button>`;
     }
 }

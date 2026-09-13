@@ -80,8 +80,16 @@ export function matchSql(match) {
   return { sql: where.join(' AND '), binds };
 }
 
+// Rows that never move a task counter, whatever they score: a paper re-done
+// through a results card's "Làm lại" (js/exam.js retakeExam → js/auth.js
+// detail.retake). A task is completed only by a FRESH attempt started from
+// the menu. COALESCE(…, 0) is what keeps every other row counting — a
+// detail_json of NULL, or one without the key, extracts to NULL, and NULL = 0
+// would otherwise be neither true nor false and drop the row.
+export const NOT_RETAKE_SQL = "COALESCE(json_extract(detail_json, '$.retake'), 0) = 0";
+
 // Today's progress for every active task. `done` = enough sessions with
-// score == total inside the GMT+7 day. Never writes.
+// score == total inside the GMT+7 day, retakes excluded. Never writes.
 export async function progress(env, uid, now = Date.now()) {
   const historical = typeof now === 'string';
   const { date, startUtc, endUtc } = dayWindowUtc(now);
@@ -107,7 +115,7 @@ export async function progress(env, uid, now = Date.now()) {
     const r = await env.DB.prepare(
       `SELECT COUNT(*) AS n FROM activities
         WHERE user_id = ? AND type = ? AND total > 0 AND score = total
-          AND created_at >= ? AND created_at < ? AND ${m.sql}`
+          AND created_at >= ? AND created_at < ? AND ${NOT_RETAKE_SQL} AND ${m.sql}`
     ).bind(uid, row.activity_type, startUtc, endUtc, ...m.binds).first();
     const count = Number((r && r.n) || 0);
     const target = Math.min(MAX_TARGET, Math.max(1, Math.trunc(+row.target || 1)));
