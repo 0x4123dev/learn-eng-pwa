@@ -143,6 +143,9 @@ CREATE TABLE IF NOT EXISTS night_raid_config (
   key TEXT PRIMARY KEY, value INTEGER NOT NULL,
   updated_at INTEGER NOT NULL DEFAULT 0, updated_by INTEGER
 );
+-- db/032 ALTERs in defense_earned (the defender's daily "giữ thành" total);
+-- it is deliberately not inlined here so that migration stays replayable on
+-- a database built from this file (tests/pages-harness.js SQL_FILES).
 CREATE TABLE IF NOT EXISTS night_raid_daily (
   user_id INTEGER NOT NULL, raid_date TEXT NOT NULL, tickets_used INTEGER NOT NULL DEFAULT 0,
   reward_earned INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (user_id, raid_date),

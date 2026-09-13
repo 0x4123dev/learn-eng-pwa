@@ -21,15 +21,23 @@ export const COOLDOWN_RAID_STATUS_SQL = "('done','ruined')";
 //   win_cap           most total xu one successful raid can carry home
 //   win_floor         minimum reward for a win, including an empty house
 //   win_pct           % of the victim's lootable pile a robbery takes
-//   loss              what a failed raid costs the attacker — and hands to
-//                     the defender, so no coin is created or destroyed
+//   loss              what a failed raid costs the attacker. Clamped to what
+//                     they actually hold, and BURNED — it is a marching fee,
+//                     not a transfer (see defense_reward)
 //   shield_loss       the same, when the raid broke on a Khiên Đêm
+//   defense_reward    what the SYSTEM pays a defender for repelling a raid
+//                     (shielded or not). It used to be the attacker's loss,
+//                     coin for coin — which meant a broke raider paid the
+//                     child who held the wall nothing at all
+//   defense_daily_cap most xu one defender can earn that way in one ICT day,
+//                     so a house that is attacked all night is not a mint
 //   seal_hours        "nhà tan hoang": how long a ROBBED house is unraidable
 //   retry_hours       how long before the SAME child may hit the SAME house
 //                     again — win, loss or ruins alike
 //   daily_reward_cap  most xu one child can win from raids in one ICT day
 export const RAID_CONFIG_DEFAULTS = {
   win_cap: 100, win_floor: 100, win_pct: 10, loss: 100, shield_loss: 200,
+  defense_reward: 100, defense_daily_cap: 500,
   seal_hours: 24, retry_hours: 12, daily_reward_cap: 400,
 };
 // A typo in the admin page must not be able to break the game: every value is
@@ -39,6 +47,7 @@ export const RAID_CONFIG_DEFAULTS = {
 // wallet, so no single raid can move more money than a wallet can hold.
 export const RAID_CONFIG_RANGE = {
   win_cap: [0, 100000], win_floor: [0, 100000], win_pct: [0, 100], loss: [0, 100000], shield_loss: [0, 100000],
+  defense_reward: [0, 100000], defense_daily_cap: [0, 100000],
   seal_hours: [0, 168], retry_hours: [0, 168], daily_reward_cap: [0, 100000],
 };
 export const RAID_CONFIG_KEYS = Object.keys(RAID_CONFIG_DEFAULTS);
@@ -74,7 +83,7 @@ async function raidConfigTableExists(env) {
   }
 }
 
-// The complete rulebook: always all eight keys, always integers, always in
+// The complete rulebook: always all ten keys, always integers, always in
 // range. Callers never have to check for a missing key.
 export async function readRaidConfig(env) {
   const cfg = Object.assign({}, RAID_CONFIG_DEFAULTS);
@@ -267,4 +276,20 @@ export function winReward(lootableCoins, cfg, dailyReward) {
 }
 export function winLoot(lootableCoins, cfg, dailyReward) {
   return winAmounts(lootableCoins, cfg, dailyReward).loot;
+}
+
+// ---- what holding the wall pays --------------------------------------------
+//
+// A repelled raid — shielded or not — is paid by the SYSTEM: defense_reward
+// xu, until the defender has earned defense_daily_cap that ICT day. It is NOT
+// the attacker's loss handed over: that rule paid a broke raider's victim
+// nothing, and paid a rich raider's victim more, when the wall was the same
+// wall. `earned` is the defender's night_raid_daily.defense_earned for today
+// (db/032). Never negative, never past the cap, always an integer.
+export function defenseAmounts(cfg, earned) {
+  const reward = Math.max(0, Math.trunc(+cfg.defense_reward || 0));
+  const cap = Math.max(0, Math.trunc(+cfg.defense_daily_cap || 0));
+  const used = Math.max(0, Math.trunc(+earned || 0));
+  const gain = Math.max(0, Math.min(reward, cap - used));
+  return { gain, reason: gain > 0 ? 'defense_reward' : 'daily_cap' };
 }

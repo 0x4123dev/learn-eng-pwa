@@ -1,0 +1,27 @@
+-- 032-night-raid-defense-daily.sql — the defender's daily ledger for "giữ
+-- thành": how much the SYSTEM has paid this child today for repelling raids.
+--
+-- Until now a repelled raid paid the defender exactly what the attacker lost,
+-- coin for coin, clamped to what the attacker actually held. That kept the
+-- money conserved, but it made the reward depend on the RAIDER's purse: a
+-- broke raider bounced off the wall and the child who held it got nothing.
+-- functions/api/night-raid/finish.js now pays a flat defense_reward (100 xu
+-- by default, night_raid_config) from the system, and the attacker's loss is
+-- simply burned. A house that is attacked all night must not become a mint,
+-- so the payout stops at defense_daily_cap (500 xu by default) per ICT day —
+-- and this column is where that day's total is kept, on the same row that
+-- already caps the ATTACKER's winnings (tickets_used, reward_earned, db/009).
+--
+-- Apply BEFORE deploying the code that reads it: finish.js asks PRAGMA
+-- table_info first and pays no defence reward while the column is missing
+-- (result.defenseReason = 'unmigrated'), so a wrong order costs the defender
+-- a reward, never a 500 — but it does cost the reward.
+--
+-- SQLite has no ADD COLUMN IF NOT EXISTS, so this is NOT re-runnable; check
+-- first with
+--   npx wrangler@3 d1 execute eng_pwa_db --remote --command "PRAGMA table_info(night_raid_daily)"
+--
+-- Apply with:
+--   npx wrangler@3 d1 execute eng_pwa_db --remote --file db/032-night-raid-defense-daily.sql
+
+ALTER TABLE night_raid_daily ADD COLUMN defense_earned INTEGER NOT NULL DEFAULT 0;

@@ -238,7 +238,7 @@ const EngAuth = (function () {
       return '🎉 Hoàn thành Daily Task được tặng ' + amount + ' xu!';
     }
     if (note === 'Cướp Đêm: con giữ được nhà') {
-      return '🏰 Nhà con bị cướp nhưng đã phòng thủ thành công · ' + signed;
+      return '🏰 Giữ thành ' + signed + ' · nhà con đã đẩy lui kẻ cướp';
     }
     if (note === 'Cướp Đêm: nhà con bị cướp') {
       return '🌙 Nhà con đã bị cướp · ' + signed;

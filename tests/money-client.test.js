@@ -70,7 +70,7 @@ suite('money client: admin grants land exactly as the server says', () => {
     ctx.currentUser = 'Kid';
     await ctx.EngAuth.refreshFlags('Kid');
     assert.equal(ctx.appState.coins, 600);
-    assert.equal(toasts[0], '🏰 Nhà con bị cướp nhưng đã phòng thủ thành công · +100 xu');
+    assert.equal(toasts[0], '🏰 Giữ thành +100 xu · nhà con đã đẩy lui kẻ cướp');
     assert.falsy(toasts[0].includes('Admin'));
   });
 

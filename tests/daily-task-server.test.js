@@ -753,7 +753,7 @@ async function raid(world, attacker, defender) {
 }
 
 suite('daily task: raiding a shielded castle', () => {
-  test('shielded target: the raid runs, the raider loses, pays 200, and the DEFENDER pockets it', async () => {
+  test('shielded target: the raid runs, the raider loses, pays 200, and the DEFENDER is paid by the system', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
     const defender = await world.createUser({ allowBot: true });
@@ -768,9 +768,9 @@ suite('daily task: raiding a shielded castle', () => {
     assert.equal(result.shielded, true);
     assert.equal(result.loss, 200);
     assert.equal(result.reward, 0);
-    assert.equal(result.defenderGain, 200, 'holding the wall now pays — db/021');
-    assert.equal(homeRow(world, attacker.uid).lootable_coins, 600);
-    assert.equal(homeRow(world, defender.uid).lootable_coins, 1000, 'the 200 moved, it was not burned');
+    assert.equal(result.defenderGain, 100, 'holding the wall pays the flat defence reward — db/032');
+    assert.equal(homeRow(world, attacker.uid).lootable_coins, 600, 'the 200 is burned');
+    assert.equal(homeRow(world, defender.uid).lootable_coins, 900, 'and the system pays the defender 100');
     assert.equal(homeRow(world, defender.uid).ruined_until, null);
     const daily = world.db.prepare('SELECT tickets_used FROM night_raid_daily WHERE user_id=?').get(attacker.uid);
     assert.equal(daily.tickets_used, 1, 'the ticket is spent, not returned');
@@ -784,11 +784,11 @@ suite('daily task: raiding a shielded castle', () => {
     await seedHome(world, defender, 800);
     world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
     const { result } = await raid(world, attacker, defender);
-    // The fee is clamped to what the raider has, because the same coins are
-    // handed to the defender: a broke attacker must not mint money (db/021).
+    // The fee is clamped to what the raider has; the defender's reward does
+    // not depend on it any more (db/032).
     assert.equal(result.loss, 50, 'you can only lose what you have');
     assert.equal(homeRow(world, attacker.uid).lootable_coins, 0);
-    assert.equal(homeRow(world, defender.uid).lootable_coins, 850, 'and the defender gains exactly that');
+    assert.equal(homeRow(world, defender.uid).lootable_coins, 900, 'and the defender is still paid the full reward');
   });
 
   test('an unshielded (or expired-shield) target is raided by the normal rules', async () => {
@@ -805,7 +805,7 @@ suite('daily task: raiding a shielded castle', () => {
     // old 5%-of-the-wallet slice, and shield_loss (200) applies to shields only.
     assert.equal(result.won ? result.loss : 100, result.loss,
       'normal loss is 0 on a win or the flat 100 on a loss: ' + result.loss);
-    assert.equal(result.loss, result.defenderGain, 'whatever it is, the defender gets it');
+    assert.equal(result.defenderGain, result.won ? 0 : 100, 'the defender is paid the flat reward on a loss, nothing on a win');
   });
 
   test('GET /api/night-raid/home reports the owner\'s own shieldUntil', async () => {

@@ -1286,9 +1286,13 @@ const RAID_FIELDS = [
   { key:'win_pct', group:'money', unit:'%', label:'Cướp bao nhiêu phần trăm kho xu',
     help:'Bé lấy bấy nhiêu phần trăm kho xu của nhà bị cướp; hệ thống bù thưởng nếu số này thấp hơn mức tối thiểu.' },
   { key:'loss', group:'money', unit:'xu', label:'Thua trận mất bao nhiêu xu',
-    help:'Thua trận thì bên tấn công mất bấy nhiêu xu, và bên phòng thủ NHẬN đúng bấy nhiêu.' },
+    help:'Thua trận thì bên tấn công mất bấy nhiêu xu (chỉ mất tối đa số xu đang có). Số xu này bị mất hẳn, KHÔNG chuyển sang bên thủ — bên thủ nhận thưởng giữ thành riêng bên dưới.' },
   { key:'shield_loss', group:'money', unit:'xu', label:'Đâm vào Khiên Đêm mất bao nhiêu xu',
-    help:'Đâm vào nhà đang bật Khiên Đêm thì mất bấy nhiêu (bên thủ cũng nhận đúng số này).' },
+    help:'Đâm vào nhà đang bật Khiên Đêm thì bên tấn công mất bấy nhiêu xu (cũng chỉ mất tối đa số đang có, và cũng mất hẳn).' },
+  { key:'defense_reward', group:'money', unit:'xu', label:'Thưởng giữ thành khi đẩy lui kẻ cướp',
+    help:'Mỗi lần nhà bé đẩy lui được một đội cướp (kể cả nhờ Khiên Đêm), hệ thống thưởng bé bấy nhiêu xu — không phụ thuộc kẻ cướp có bao nhiêu xu.' },
+  { key:'defense_daily_cap', group:'money', unit:'xu', label:'Trần thưởng giữ thành cả ngày',
+    help:'Trần tổng xu thưởng giữ thành một bé nhận được trong một ngày, để nhà bị cướp suốt đêm không thành máy in xu.' },
   { key:'daily_reward_cap', group:'money', unit:'xu', label:'Trần xu cướp được cả ngày',
     help:'Trần tổng xu cướp được trong một ngày.' },
   { key:'seal_hours', group:'time', unit:'giờ', label:'Nhà bị cướp tan hoang bao lâu',
@@ -1325,6 +1329,10 @@ function paintRaidExample(){
   const floor = raidLiveValue('win_floor');
   const pct = raidLiveValue('win_pct');
   const dayCap = raidLiveValue('daily_reward_cap');
+  const loss = raidLiveValue('loss');
+  const defReward = raidLiveValue('defense_reward');
+  const defCap = raidLiveValue('defense_daily_cap');
+  const defRaids = defReward > 0 ? Math.floor(defCap / defReward) : 0;
   const share = Math.floor(RAID_EXAMPLE_PILE * pct / 100);
   const loot = Math.min(cap, share);
   const won = Math.min(cap, Math.max(floor, loot));
@@ -1335,7 +1343,10 @@ function paintRaidExample(){
     + 'thưởng tối thiểu <b>' + fmtXu(floor) + ' xu</b>, trần một trận <b>' + fmtXu(cap) + ' xu</b> '
     + '⇒ bé mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
     + 'Nếu kho địch trống, bé vẫn nhận <b>' + fmtXu(Math.min(cap, floor)) + ' xu</b> cho phí hành quân và chiến thắng.<br>'
-    + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.';
+    + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.<br>'
+    + 'Bé đánh thua: mất <b>' + fmtXu(loss) + ' xu</b> (mất hẳn, tối đa số đang có). '
+    + 'Nhà bé đẩy lui kẻ cướp: hệ thống thưởng <b>' + fmtXu(defReward) + ' xu</b>, cả ngày tối đa <b>' + fmtXu(defCap) + ' xu</b>'
+    + ' — khoảng <b>' + fmtXu(defRaids) + '</b> lần giữ thành.';
 }
 
 function paintRaidStatus(){

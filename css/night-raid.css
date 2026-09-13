@@ -221,6 +221,7 @@
 .nr-report-crest svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2}
 .nr-report-card h3{font-size:18px;color:#fff;margin:3px 0}
 .nr-report-card p{font-size:12px;color:#aebfd8;margin:0}
+.nr-report-card .nr-held-reward{color:#ffd065;font-weight:900;white-space:nowrap}
 .nr-report-state{font-size:10px;font-weight:950;letter-spacing:.11em;color:#76dda7}
 .nr-report-card.breached .nr-report-state{color:#ff9992}
 .nr-report-card .nr-secondary{min-width:118px;padding:0 14px}

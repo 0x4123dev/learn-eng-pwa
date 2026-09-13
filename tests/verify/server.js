@@ -543,7 +543,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
          : `start=${s.status} finish=${f.status} won=${res.won} reward=${reward} loot=${loot} bonus=${bonus} victimOwed=${victimOwed} attackerOwed=${attackerOwed} ledgerSum=${world} :: ${JSON.stringify(f.data).slice(0, 300)}`);
   } catch (e) { add('money.raid-win', `${NR}: đánh thắng nhà bạn`, false, 'threw: ' + ((e && e.stack) || e)); }
 
-  // ---- Cướp Đêm: a LOSS moves the same money the other way ----
+  // ---- Cướp Đêm: a LOSS burns the fee and the SYSTEM pays the defender ----
   try {
     const w = newWorld(seenSql);
     const attacker = await w.createUser({ allowBot: true });
@@ -554,13 +554,16 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const f = await hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId: s.data && s.data.raid && s.data.raid.raidId } });
     const res = (f.data && f.data.result) || {};
     const loss = Number(res.loss || 0);
+    const gain = Number(res.defenderGain || 0);
     const defOwed = grantsOf(w, defender.uid);
     const atkOwed = grantsOf(w, attacker.uid);
+    const cfg = await loadModule('functions/api/_night-raid.js').readRaidConfig(w.env);
     const ok = f.status === 200 && res.won === false && loss > 0
-      && Number(res.defenderGain) === loss && defOwed === loss && atkOwed === 0 && allGrants(w) === loss;
+      && gain === cfg.defense_reward && res.defenseReason === 'defense_reward'
+      && defOwed === gain && atkOwed === 0 && allGrants(w) === gain;
     add('money.raid-loss', `${NR}: đánh thua, mất xu`, ok,
-      ok ? `lost ${loss} xu; the defender is credited exactly +${loss} and the attacker pays on their own device (0 server-side) — the two halves are equal and opposite`
-         : `start=${s.status} finish=${f.status} won=${res.won} loss=${loss} defenderGain=${res.defenderGain} defOwed=${defOwed} atkOwed=${atkOwed} :: ${JSON.stringify(f.data).slice(0, 300)}`);
+      ok ? `lost ${loss} xu (burned, paid on the attacker's own device); the defender is credited the system's defense_reward of +${gain} exactly once, independent of what the raider had`
+         : `start=${s.status} finish=${f.status} won=${res.won} loss=${loss} defenderGain=${res.defenderGain} defenseReason=${res.defenseReason} defOwed=${defOwed} atkOwed=${atkOwed} :: ${JSON.stringify(f.data).slice(0, 300)}`);
   } catch (e) { add('money.raid-loss', `${NR}: đánh thua, mất xu`, false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- Cướp Đêm: one raid settles once, however many /finish calls arrive ----

@@ -108,6 +108,9 @@ const SQL_FILES = [
   'db/021-night-raid-rules.sql',
   // One in-flight raid per attacker (the other half of the ticket rule).
   'db/023-night-raid-one-active.sql',
+  // The defender's daily "giữ thành" ledger (night_raid_daily.defense_earned).
+  // Replayable here because schema.sql creates night_raid_daily without it.
+  'db/032-night-raid-defense-daily.sql',
   // One offering pays one child once per event day, however many preview
   // rounds they replay.
   'db/024-ghost-offering-payouts.sql',
@@ -159,4 +162,4 @@ function createWorld(opts) {
   return { db, d1, env, createUser, call, loadModule };
 }
 
-module.exports = { createWorld, loadModule, AUTH_SECRET };
+module.exports = { createWorld, loadModule, AUTH_SECRET, SQL_FILES };

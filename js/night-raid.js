@@ -250,10 +250,12 @@ var NightRaid = (() => {
   // battle DOM is already gone.
   function resultActionsHTML(){return `<button class="nr-primary" type="button" onclick="nrShowLiveTargets()">Cướp nhà khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`;}
   const foeName=t=>String((t&&t.title&&t.title.vi)||(t&&t.name)||'Nhà đối thủ');
-  // Losing now MOVES the coins: /finish hands the defender what the attacker
-  // dropped, and reports it as `defenderGain`. "-20 xu phí hành quân" alone hid
-  // that — the xu went somewhere, and the somewhere has a name on it.
-  const lossHTML=(loss,gain,target)=>`<div class="nr-loss">-${loss} xu phí hành quân${gain>0?`<small>${esc(foeName(target))} đã lấy ${gain} xu này.</small>`:''}</div>`;
+  // The marching fee is burned; the defender is paid a flat "giữ thành"
+  // reward by the SYSTEM (/finish reports it as `defenderGain`, db/032). The
+  // card says both, and says they are separate: the child used to read "Tí đã
+  // lấy 20 xu này", which was true when the loss was handed over and would now
+  // be a lie — a broke raider pays 0 and the wall is still paid 100.
+  const lossHTML=(loss,gain,target)=>`<div class="nr-loss">-${loss} xu phí hành quân${gain>0?`<small>${esc(foeName(target))} được thưởng giữ thành +${gain} xu.</small>`:''}</div>`;
   const shieldLossText=loss=>`Nhà này đang bật Khiên Đêm — mạnh mấy cũng thua, cả đội mất ${Math.max(0,Math.trunc(+loss||0))} xu.`;
   function zeroLootText(state){return state&&state.rewardReason==='daily_cap'?'Đã đạt giới hạn xu Cướp Đêm hôm nay':'Kho xu của nhà này đang trống';}
   function winRewardHTML(state,reward){
@@ -1367,7 +1369,11 @@ var NightRaid = (() => {
   }
   function reportCardHTML(report,i){
     const breached=!!report.result.won;
-    return `<article class="nr-report-card ${breached?'breached':'held'} ${report.seen?'':'new'}"><span class="nr-report-crest">${svg(breached?'castle':'shield')}</span><div><span class="nr-report-state">${breached?'TƯỜNG ĐÃ BỊ PHÁ':(report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN':'PHÒNG THỦ THÀNH CÔNG')}</span><h3>${esc(report.attackerName||'Đội cướp bí ẩn')}</h3><p>${whenPhrase(report.finishedAt)} · Castle còn ${Math.max(0,Math.ceil(+report.result.castleHp||0))} HP</p></div><button class="nr-secondary" type="button" onclick="nrReplayReport(${i})">${svg('play')} Xem lại</button></article>`;
+    // A held wall shows what it earned: the system's "giữ thành" reward that
+    // /finish wrote into result.defenderGain (0 once the day's cap is reached,
+    // and then the line simply is not drawn — a "+0 xu" badge reads as a bug).
+    const held=!breached?Math.max(0,Math.trunc(+report.result.defenderGain||0)):0;
+    return `<article class="nr-report-card ${breached?'breached':'held'} ${report.seen?'':'new'}"><span class="nr-report-crest">${svg(breached?'castle':'shield')}</span><div><span class="nr-report-state">${breached?'TƯỜNG ĐÃ BỊ PHÁ':(report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN':'PHÒNG THỦ THÀNH CÔNG')}</span><h3>${esc(report.attackerName||'Đội cướp bí ẩn')}</h3><p>${whenPhrase(report.finishedAt)} · Castle còn ${Math.max(0,Math.ceil(+report.result.castleHp||0))} HP${held>0?` · <b class="nr-held-reward">Giữ thành +${held} xu</b>`:''}</p></div><button class="nr-secondary" type="button" onclick="nrReplayReport(${i})">${svg('play')} Xem lại</button></article>`;
   }
   async function showReports(){cleanup();setNav(true);view='reports';const r=root();if(!r)return;
     r.innerHTML=shell(`<main class="nr-reports"><div class="nr-loading" role="status"><i></i><span>Đang tải các trận cướp</span></div></main>`);

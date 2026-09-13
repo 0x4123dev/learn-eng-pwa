@@ -88,7 +88,7 @@ suite('cướp đêm: the sleeping side is really settled', () => {
     assert.equal(owedTo(world, attacker.uid), 0, 'the attacker is paid client-side, not twice');
   });
 
-  test('a lost raid owes the defender exactly what the attacker paid', async () => {
+  test('a lost raid owes the defender the system\'s defence reward, whatever the attacker paid', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
     const defender = await world.createUser({ allowBot: true });
@@ -101,8 +101,8 @@ suite('cướp đêm: the sleeping side is really settled', () => {
 
     const loss = f.data.result.loss;
     assert.truthy(loss > 0, 'a defeat must cost the attacker something');
-    assert.equal(f.data.result.defenderGain, loss, 'the two halves are equal and opposite');
-    assert.equal(owedTo(world, defender.uid), loss, 'holding the wall really pays the defender');
+    assert.equal(f.data.result.defenderGain, 100, 'the defence reward is the configured flat amount');
+    assert.equal(owedTo(world, defender.uid), 100, 'holding the wall really pays the defender');
     assert.equal(owedTo(world, attacker.uid), 0, 'the attacker pays on their own device');
   });
 
@@ -449,7 +449,7 @@ suite('cướp đêm: a shield is a shield, whenever it went up', () => {
     assert.falsy(f.data.result.won, 'and a shielded raid always loses');
     assert.equal(owedTo(world, victim.uid), f.data.result.defenderGain,
       'the defender is paid for holding, not robbed');
-    assert.truthy(f.data.result.defenderGain > 0);
+    assert.equal(f.data.result.defenderGain, 100, 'the same flat reward a plain defeat pays');
   });
 
   test('a shield that was up at the start still counts if it lapses mid-raid', async () => {

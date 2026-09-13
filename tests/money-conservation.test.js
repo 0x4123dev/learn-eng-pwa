@@ -168,14 +168,19 @@ suite('cướp đêm: the coins in the world are the same before and after', () 
     const result = await raid(world, attacker, defender, attackerDev.appState.coins);
     assert.falsy(result.won, 'fixture must be a defeat: ' + JSON.stringify(result));
     assert.equal(result.loss, 0, 'an empty purse pays nothing');
-    assert.equal(result.defenderGain, 0, 'so the defender is funded by nothing');
-    assert.equal(grantsFor(world, defender.uid).length, 0, 'and no IOU is written');
+    // The defender is no longer funded BY the attacker at all: the system
+    // pays the flat defence reward, so a broke raider costs the wall nothing.
+    assert.equal(result.defenderGain, 100, 'the defender is paid by the system, not by the raider');
+    assert.deepEqual(grantsFor(world, defender.uid), [100], 'one IOU, the system\'s');
 
     const ops = walletOpsFor(attackerDev.appState);
     attackerDev.appState.coins = Math.max(0, attackerDev.appState.coins - result.loss);
     for (const amount of grantsFor(world, attacker.uid)) ops.applySignedGrant(amount);
+    const defOps = walletOpsFor(defenderDev.appState);
+    for (const amount of grantsFor(world, defender.uid)) defOps.applySignedGrant(amount);
     const after = net(attackerDev.wallet()) + net(defenderDev.wallet());
-    assert.equal(after, before, `coins were created: ${before} → ${after}`);
+    assert.equal(after, before + result.defenderGain,
+      `exactly the system reward was created, nothing else: ${before} → ${after}`);
   });
 
   test('an attacker who still has the money pays it in full', async () => {
@@ -196,8 +201,9 @@ suite('cướp đêm: the coins in the world are the same before and after', () 
     const ops = walletOpsFor(defenderDev.appState);
     for (const amount of grantsFor(world, defender.uid)) ops.applySignedGrant(amount);
 
-    assert.equal(net(defenderDev.wallet()), 900 + result.loss, 'the defender is paid in full');
-    assert.equal(net(attackerDev.wallet()) + net(defenderDev.wallet()), before, 'and nothing is created');
+    assert.equal(net(defenderDev.wallet()), 900 + result.defenderGain, 'the defender is paid the flat reward');
+    assert.equal(net(attackerDev.wallet()) + net(defenderDev.wallet()), before - result.loss + result.defenderGain,
+      'the fee is burned and the reward is minted — neither leaks into the other');
   });
 
   test('a client under-reporting its purse can starve its opponent but not mint', async () => {
@@ -210,8 +216,8 @@ suite('cướp đêm: the coins in the world are the same before and after', () 
     // A modified client claims to be broke while really holding 900.
     const result = await raid(world, attacker, defender, 0);
     assert.equal(result.loss, 0);
-    assert.equal(result.defenderGain, 0, 'the defender gets nothing — but nothing is invented either');
-    assert.equal(grantsFor(world, defender.uid).length, 0);
+    assert.equal(result.defenderGain, 100, 'lying about the purse no longer starves the opponent');
+    assert.deepEqual(grantsFor(world, defender.uid), [100]);
     // The cheat still loses the raid and its 12 h door; it buys no coins.
     assert.falsy(result.won);
   });

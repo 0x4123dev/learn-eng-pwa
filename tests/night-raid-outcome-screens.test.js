@@ -222,7 +222,7 @@ suite('NHÀ ĐÃ TAN HOANG: the house somebody else got to first', () => {
 });
 
 suite('the defeat card names where the coins went', () => {
-  test('a loss that fed the defender says so', async () => {
+  test('a loss says the fee is gone and the defender was paid for holding', async () => {
     const w = await marchOn({
       friends: friendsReply, targets: targetsReply,
       start: { ok: true, data: { raid: { raidId: 'r-2', defense: 9999, layout: { cells: [], soldiers: 0, dogLane: 2 }, castleHp: 200 } } },
@@ -234,8 +234,9 @@ suite('the defeat card names where the coins went', () => {
     await flush();
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('-20 xu phí hành quân'), 'the child still sees what it cost');
-    assert.truthy(html.includes('đã lấy 20 xu này'), 'and that the other house took it');
-    assert.truthy(html.includes('Tí'), 'named, so the xu did not just evaporate');
+    assert.truthy(html.includes('được thưởng giữ thành +20 xu'), 'and that the other house was paid for holding');
+    assert.falsy(html.includes('đã lấy'), 'the fee is burned — nobody "took" it');
+    assert.truthy(html.includes('Tí'), 'the defender is named');
   });
 
   test('a loss with no defenderGain keeps the plain line', async () => {
@@ -249,7 +250,7 @@ suite('the defeat card names where the coins went', () => {
     await flush();
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('-20 xu phí hành quân'));
-    assert.falsy(html.includes('đã lấy'), 'no invented recipient');
+    assert.falsy(html.includes('giữ thành'), 'no invented reward');
   });
 });
 
@@ -346,6 +347,25 @@ suite('NHẬT KÝ: both sides of the night', () => {
     assert.truthy(html.includes('Kho trống'));
     assert.truthy(html.includes('không có xu để lấy'));
     assert.falsy(html.includes('+0 xu'), 'breaking an empty castle is not stealing zero coins');
+  });
+
+  test('a held wall shows the "giữ thành" reward the server paid; a capped one shows no +0', async () => {
+    const held = { won: false, shielded: false, castleHp: 150, damage: 200, defense: 600, stars: 0, loss: 100, defenderGain: 100, defenseReason: 'defense_reward' };
+    const w = await openLog({ ok: true, data: { attacks: [], reports: [
+      REPORT({ id: 'held', attackerName: 'Minh Anh', result: held }),
+      REPORT({ id: 'shield', attackerName: 'Bảo Lâm', result: Object.assign({}, held, { shielded: true, loss: 200 }) }),
+      REPORT({ id: 'capped', attackerName: 'Khánh Vy', result: Object.assign({}, held, { defenderGain: 0, defenseReason: 'daily_cap' }) }),
+      REPORT({ id: 'legacy', attackerName: 'Ngày xưa', result: { won: false, castleHp: 150, damage: 1, defense: 9 } }),
+      REPORT({ id: 'breach', attackerName: 'Gia Hân' }),
+    ] } });
+    const cards = [...w.screen().querySelectorAll('.nr-report-card')].map(c => c.innerHTML);
+    assert.equal(cards.length, 5);
+    assert.truthy(cards[0].includes('PHÒNG THỦ THÀNH CÔNG') && cards[0].includes('Giữ thành +100 xu'), 'a plain hold names its reward');
+    assert.truthy(cards[1].includes('KHIÊN ĐÃ CHẶN') && cards[1].includes('Giữ thành +100 xu'), 'a shielded hold is paid the same and says so');
+    assert.falsy(cards[0].includes('đã lấy'), 'the raider\'s fee is burned; nobody "took" it');
+    assert.falsy(cards[2].includes('Giữ thành'), 'a capped hold draws no "+0 xu" line');
+    assert.falsy(cards[3].includes('Giữ thành'), 'a row settled before db/032 has no reward to show');
+    assert.truthy(cards[4].includes('TƯỜNG ĐÃ BỊ PHÁ') && !cards[4].includes('Giữ thành'), 'a breach earns nothing');
   });
 
   test('names in the log are escaped', async () => {

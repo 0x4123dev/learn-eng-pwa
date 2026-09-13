@@ -10,8 +10,9 @@
 //     about — db/021);
 //   - a win takes min(win_cap, win_pct%) from the victim and the system fills
 //     any shortfall up to win_floor;
-//   - a defeat moves exactly `loss` (or `shield_loss`) from the attacker to
-//     the DEFENDER, so the game neither prints nor burns coins;
+//   - a defeat burns exactly `loss` (or `shield_loss`) from the attacker,
+//     clamped to what they hold, and the SYSTEM pays the defender a flat
+//     defense_reward — capped per ICT day by defense_daily_cap (db/032);
 //   - every one of those numbers comes from night_raid_config, is clamped on
 //     read, and falls back to the defaults on a database that has no such
 //     table yet.
@@ -219,23 +220,24 @@ suite('night raid: loot transfers and victory rewards', () => {
     assert.equal(coinsOf(world, modest.uid), 720);
   });
 
-  test('a defeat hands the attacker\'s loss to the DEFENDER, coin for coin', async () => {
+  test('a defeat burns the attacker\'s loss and the SYSTEM pays the defender defense_reward', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true }), wall = await world.createUser({ allowBot: true });
     await seedHome(world, me, Object.assign({ coins: 800 }, WEAK));
     await seedHome(world, wall, Object.assign({ coins: 800 }, STRONG));
-    const total = coinsOf(world, me.uid) + coinsOf(world, wall.uid);
 
     const { result } = await raid(world, me, wall);
     assert.equal(result.won, false);
     assert.equal(result.loss, 100, 'the default marching fee');
-    assert.equal(result.defenderGain, 100, 'and the defender is told they earned it');
-    assert.equal(coinsOf(world, me.uid), 700);
-    assert.equal(coinsOf(world, wall.uid), 900);
-    assert.equal(coinsOf(world, me.uid) + coinsOf(world, wall.uid), total, 'not one coin was printed or burned');
+    assert.equal(result.defenderGain, 100, 'the default defence reward — the same number by coincidence, not by rule');
+    assert.equal(result.defenseReason, 'defense_reward');
+    assert.equal(coinsOf(world, me.uid), 700, 'the fee is gone');
+    assert.equal(coinsOf(world, wall.uid), 900, 'and the reward arrived');
+    assert.equal(Number(world.db.prepare('SELECT defense_earned FROM night_raid_daily WHERE user_id=?').get(wall.uid).defense_earned), 100,
+      'the day\'s ledger counts it');
   });
 
-  test('hitting a shield costs shield_loss, and the defender gains that too', async () => {
+  test('hitting a shield costs shield_loss, and the defender is paid the same flat reward', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true }), shielded = await world.createUser({ allowBot: true });
     await seedHome(world, me, Object.assign({ coins: 800 }, STRONG));
@@ -246,9 +248,10 @@ suite('night raid: loot transfers and victory rewards', () => {
     assert.equal(result.won, false, 'a shield decides the raid outright, however strong the raider');
     assert.equal(result.shielded, true);
     assert.equal(result.loss, 200);
-    assert.equal(result.defenderGain, 200);
+    assert.equal(result.defenderGain, 100, 'the reward is for holding the wall, however the raid broke');
+    assert.equal(result.defenseReason, 'defense_reward');
     assert.equal(coinsOf(world, me.uid), 600);
-    assert.equal(coinsOf(world, shielded.uid), 1000);
+    assert.equal(coinsOf(world, shielded.uid), 900);
   });
 
   test('a win pays the defender nothing', async () => {
@@ -258,6 +261,7 @@ suite('night raid: loot transfers and victory rewards', () => {
     const { result } = await raid(world, me, weak);
     assert.equal(result.won, true);
     assert.equal(result.defenderGain, 0);
+    assert.equal(result.defenseReason, 'won');
     assert.equal(result.loss, 0);
   });
 
@@ -275,7 +279,7 @@ suite('night raid: loot transfers and victory rewards', () => {
     assert.equal(coinsOf(world, empty.uid), 0, 'the empty defender is never pushed negative');
   });
 
-  test('a broke raider cannot conjure coins into the defender\'s pile', async () => {
+  test('a broke raider still pays only what they have — and the defender is still paid in full', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true }), wall = await world.createUser({ allowBot: true });
     await seedHome(world, me, Object.assign({ coins: 30 }, WEAK));
@@ -283,8 +287,9 @@ suite('night raid: loot transfers and victory rewards', () => {
     const { result } = await raid(world, me, wall);
     assert.equal(result.won, false);
     assert.equal(result.loss, 30, 'the fee is clamped to what the attacker actually has');
+    assert.equal(result.defenderGain, 100, 'the reward no longer depends on the raider\'s purse');
     assert.equal(coinsOf(world, me.uid), 0);
-    assert.equal(coinsOf(world, wall.uid), 830);
+    assert.equal(coinsOf(world, wall.uid), 900);
   });
 
   test('the daily reward cap still bites, at daily_reward_cap', async () => {
@@ -305,11 +310,12 @@ suite('night raid: loot transfers and victory rewards', () => {
 });
 
 suite('night raid: the admin rulebook', () => {
-  test('defaults are the eight documented numbers', async () => {
+  test('defaults are the ten documented numbers', async () => {
     const world = createWorld();
     const cfg = await helper().readRaidConfig(world.env);
     assert.deepEqual(cfg, {
       win_cap: 100, win_floor: 100, win_pct: 10, loss: 100, shield_loss: 200,
+      defense_reward: 100, defense_daily_cap: 500,
       seal_hours: 24, retry_hours: 12, daily_reward_cap: 400,
     });
     assert.deepEqual(cfg, helper().RAID_CONFIG_DEFAULTS);
