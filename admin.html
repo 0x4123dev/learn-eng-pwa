@@ -165,6 +165,9 @@
   .pill.kind-verbs { background:#fdeef2; color:#bb2f65; }
   .pill.kind-math { background:#fff4e3; color:#96590a; }
   .pill.kind-battle { background:var(--surface-2); color:#4c5568; }
+  /* A "Làm lại" of the same paper: never counts toward a daily task, so the
+     parent can see why a 100% left the counter where it was. */
+  .pill.retake { background:var(--amber-tint); color:var(--amber-ink); margin-left:6px; font-weight:600; }
   .pill.on   { background:var(--green-tint); color:var(--green-ink); }
   .pill.off  { background:var(--surface-2); color:var(--muted); }
   .pill.dead { background:var(--red-tint); color:var(--red-ink); }
@@ -1115,7 +1118,7 @@ function renderActivityPage(){
       <td class="muted">${fmtDate(a.created_at)}</td>
       <td><b>${esc(a.username)}</b></td>
       <td>${kindPill(a.kind)}</td>
-      <td>${esc(a.title||a.ref||'—')}</td>
+      <td>${esc(a.title||a.ref||'—')}${Number(a.retake)===1 ? '<span class="pill retake" title="Làm lại cùng một bài — không tính vào nhiệm vụ ngày">🔁 làm lại</span>' : ''}</td>
       <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
       <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
       <td>${a.coin_balance!=null ? `<b>${Number(a.coin_balance).toLocaleString('en-US')} xu</b>` : '—'}</td>

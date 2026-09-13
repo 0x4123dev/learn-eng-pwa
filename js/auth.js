@@ -414,6 +414,14 @@ const EngAuth = (function () {
     const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
     const items = [];
     const add = (o) => { if (o && Number.isFinite(+o.at) && +o.at >= cutoff) items.push(o); };
+    // A paper re-done through a results card's "Làm lại" (js/exam.js
+    // retakeExam) is stored with `retake: true`, and that mark rides up as
+    // detail.retake so the server's daily-task counter can leave it out: a
+    // task is completed only by a fresh attempt started from the menu. The
+    // key is OMITTED on a fresh attempt, never sent as false — the server
+    // treats "no key" as "counts", which is also what every row written
+    // before this flag existed must mean.
+    const retakeDetail = (h) => (h && h.retake === true) ? { retake: true } : {};
     if (typeof appState === 'undefined' || !appState) return items;
 
     (appState.lessonHistory || []).forEach(h => add({
@@ -468,8 +476,10 @@ const EngAuth = (function () {
         ? (h.label || 'Toán 4 · Đề ôn')
         : 'Toán 7 · ' + (h.examId ? 'Đề thi: ' : '') + (h.label || 'công thức'),
       score: h.score, total: h.total, at: h.date,
-      detail: h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
-        : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
+      detail: Object.assign(
+        h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
+          : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
+        retakeDetail(h)),
     }));
     // PTNK papers. Their history lives on appState (not the Exam tab's
     // localStorage key) precisely so it reaches this list: an admin assigns
@@ -487,7 +497,7 @@ const EngAuth = (function () {
       type: 'exam',
       title: h.title || (set + ' ' + (h.examId || '')),
       score: h.score, total: h.total, at: h.ts,
-      detail: { examId: h.examId, set: set },
+      detail: Object.assign({ examId: h.examId, set: set }, retakeDetail(h)),
     });
     (appState.ptnkHistory || []).forEach(examSet('ptnk'));
     (appState.readingHistory || []).forEach(examSet('reading'));

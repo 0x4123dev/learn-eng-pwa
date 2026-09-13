@@ -9265,6 +9265,9 @@
         .exam-result-time { font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 600; }
         .exam-result-auto { font-size: 13px; color: #ff4b4b; font-weight: 700; margin-top: 8px; }
         .exam-result-actions { display: flex; gap: 10px; margin: 18px 0 6px; }
+        /* Under "Làm lại": a retake of the same paper never counts toward the
+           daily task (js/exam.js retakeExam) — say so before the tap. */
+        .exam-retake-note { font-size: 12px; color: var(--text-secondary); margin: 0 0 6px; line-height: 1.4; }
         .exam-btn-primary, .exam-btn-secondary {
             flex: 1 1 0; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700;
             cursor: pointer; font-family: inherit; border: none;
