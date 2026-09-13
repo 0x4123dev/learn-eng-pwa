@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v618';
+const CACHE_NAME = 'flashlingo-v619';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -36,8 +36,8 @@ const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e', 'birthday', 'jam'];
 const PRECACHE = {
   '/': 'fc54d8b47f6c812f',
   '/index.html': 'fc54d8b47f6c812f',
-  '/css/styles.css': '973cbd97c614e9a3',
-  '/css/night-raid.css': '77128c1a5f2efebf',
+  '/css/styles.css': '756108bde35cadb5',
+  '/css/night-raid.css': '2d959f61b4fc575e',
   '/css/arena.css': 'd525cb14151473bf',
   '/css/math.css': '502ad61b4504bbf1',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
@@ -101,12 +101,12 @@ const PRECACHE = {
   '/js/night-raid-ruins.js': 'e33927c66a7800b4',
   '/js/night-raid-phaser.js': '6cca7987176593d1',
   '/js/phaser.min.js': 'e92ddef111ba42e9',
-  '/js/night-raid.js': '715396c67dd94394',
+  '/js/night-raid.js': 'dffa9009bed1285a',
   '/js/ghost-offering-schedule.js': 'ae5aecb3c5bfc10c',
   '/js/ghost-offering-link.js': 'ffdffe7641eb7d36',
   '/js/ghost-offering-event.js': 'cee57fc77b7065d8',
   '/js/daily-task-catalog.js': 'f09af62cfff588ab',
-  '/js/daily-task.js': 'ae48a210b56a8ff4',
+  '/js/daily-task.js': 'a471e0e1317049a9',
   '/js/armory.js': '61176c8f2efb15b0',
   '/img/ghost-offering/courtyard-v1.webp': 'b790dd596c3b6415',
   '/img/ghost-offering/roast-pig-v2.webp': '5c5ca147b49bae39',
@@ -207,14 +207,14 @@ const PRECACHE = {
   '/js/phonetics-data.js': '9ebca2e9478c163c',
   '/js/phonetics-lessons.js': '8e328ea6b4e6e472',
   '/js/exam-lessons.js': '6a0e0aaa9f66f5d2',
-  '/js/auth.js': '4751810294171ca5',
+  '/js/auth.js': '53351f016cae83a4',
   '/js/lazy-data.js': '693da5fa1172b12f',
   '/js/app.js': 'f3993a1956877c52',
   '/js/srs.js': '9f98ba86f249bef8',
-  '/js/home.js': 'ded4eb6acea23cb1',
+  '/js/home.js': 'd30bdf82c9a02a0d',
   '/js/lessons.js': '2f7e4be284ac076c',
   '/js/verbs.js': '642747574edd8d16',
-  '/js/exam.js': 'cad5a74de0dff1ff',
+  '/js/exam.js': 'f964d5895d249249',
   '/js/ptnk.js': '1852c8826c3aecaa',
   '/js/practice-sets.js': 'daf1b96a517bff11',
   '/js/profile.js': '169896d307335231',
