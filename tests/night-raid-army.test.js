@@ -31,6 +31,14 @@ function boxes(count) {
 const overlaps = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
 
 suite('night raid: the army can be counted', () => {
+    test('the barracks cycles through ten complete visual identities', () => {
+        assert.equal(NR.SOLDIER_VARIANT_COUNT, 10);
+        assert.equal(NR.SOLDIER_VARIANTS.length, 10);
+        assert.deepEqual(Array.from({ length: 10 }, (_, i) => NR.soldierVariantFor(i)), [0,1,2,3,4,5,6,7,8,9]);
+        assert.equal(NR.soldierVariantFor(10), 0, 'the eleventh soldier begins the next visual squad');
+        assert.deepEqual(NR.armySlots(10).map(slot => slot.row), [0,1,2,3,4,5,6,7,8,9]);
+    });
+
     test('one slot per soldier, for every squad size', () => {
         for (let n = 0; n <= NR.ARMY_DISPLAY_CAP; n++) {
             assert.equal(NR.armySlots(n).length, n, `${n} soldiers must produce ${n} slots`);

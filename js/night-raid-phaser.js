@@ -24,7 +24,7 @@ var NightRaidPhaser = (() => {
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const lerp=(a,b,p)=>a+(b-a)*p;
   const easeOut=p=>1-(1-p)*(1-p);
-  const squadRows=6, squadCols=8, squadWalkCols=6;
+  const squadRows=10, squadCols=8, squadWalkCols=6;
   // Horizontal visual centroids measured inside each authored atlas cell.
   // Compensating these keeps the torso over the same world coordinate even
   // when a sword, shield or wide running pose changes the transparent bounds.
@@ -35,6 +35,8 @@ var NightRaidPhaser = (() => {
     [ .0414, .0339, .0021,-.0140, .0268, .0007],
     [ .0139, .0248, .0458, .0302, .0965, .0499],
     [ .0195,-.0087, .0066,-.0249, .0101, .0688],
+    [0,0,0,0,0,0],[0,0,0,0,0,0],
+    [0,0,0,0,0,0],[0,0,0,0,0,0],
   ]);
   const squadActionAnchors=Object.freeze([
     [ .0417, .0627,-.0409,-.1082,-.0933, .0596, .0789, .0448],
@@ -43,6 +45,8 @@ var NightRaidPhaser = (() => {
     [ .0485, .0810, .0646,-.0368,-.0574,-.0848,-.0274,-.0240],
     [ .0231, .0013,-.0445,-.1180,-.0979, .0197,-.0273,-.0433],
     [ .0311, .0345,-.0086,-.0825,-.1500,-.0150,-.0619,-.0989],
+    [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
   ]);
   const petCols=Object.freeze({small:8,large:7});
   const defenseRows=Object.freeze(['wood-fence','stone-wall','pebble-pup','water-cannon','spike-trap']);
@@ -208,8 +212,8 @@ var NightRaidPhaser = (() => {
       this.petAtlas=petAtlas;
       const sources={
         board:'img/night-raid/isometric-home-board-frame-v4.webp',
-        squad:'img/night-raid/animation/raider-actions-v2.webp',
-        squadWalk:'img/night-raid/animation/raider-walk-v3.webp',
+        squad:'img/night-raid/animation/raider-actions-v3.webp',
+        squadWalk:'img/night-raid/animation/raider-walk-v4.webp',
         pet:'img/night-raid/animation/pet-actions-'+petAtlas+'-v2.webp',
         defenses:'img/night-raid/animation/defense-damage-v2.webp',
         economy:'img/night-raid/animation/economy-damage-v2.webp',
