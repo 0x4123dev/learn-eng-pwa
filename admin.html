@@ -7,315 +7,334 @@
 <title>FlashLingo — Admin</title>
 <style>
   /* ============================================================
-     FlashLingo Admin — a control panel, not the child's app.
+     FlashLingo Admin — laid out like an Ant Design Pro app.
      The child's app is warm, rounded and glassy; this screen is the
-     parent's tool, so it stays calm: one accent, a flat neutral ramp,
-     depth only where it separates a surface from the page.
+     parent's tool. Ant Design 5 tokens, hand-written (no antd is loaded):
+     a fixed dark sider carrying the section menu, a white header, grey
+     content, cards with a hairline border and no drop shadow.
      ============================================================ */
   :root {
     color-scheme: light;
 
-    /* surfaces */
-    --bg:#f2f5f9; --card:#fff; --surface:#f8fafc; --surface-2:#eef2f7; --hover:#f5f8fd;
-    /* rules */
-    --line:#e4e9f0; --line-soft:#eef1f6; --line-strong:#cfd8e4;
-    /* text */
-    --ink:#16202f; --ink-2:#33415a; --muted:#5a6678; --muted-2:#697489;   /* 4.7:1 on white */
-    /* the one accent: --brand fills, --brand-strong anything that must be read */
-    --brand:#1cb0f6; --brand-strong:#0a6ea8; --brand-tint:#e8f4fd;
-    /* status: bright value for bars/fills, *-ink for text that must pass on white */
-    --green:#2ea44f; --green-ink:#1f7a3f; --green-tint:#e7f7ec;
-    --amber:#ff9600; --amber-ink:#8a5200; --amber-tint:#fff4e3;
-    --red:#e5484d;   --red-ink:#b42318;   --red-tint:#fdecec;
-    /* shape + depth */
-    --r-xs:8px; --r-sm:10px; --r-md:12px; --r-lg:16px;
-    --sh-1:0 1px 2px rgba(17,26,45,.05);
-    --sh-2:0 1px 2px rgba(17,26,45,.05), 0 10px 26px -16px rgba(17,26,45,.30);
-    --sh-3:0 2px 5px rgba(17,26,45,.06), 0 22px 48px -26px rgba(17,26,45,.42);
-    --ring:0 0 0 3px rgba(10,110,168,.18);
+    /* Ant Design 5 seed + derived tokens */
+    --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
+    --primary-bg:#e6f4ff; --primary-bg-hover:#bae0ff; --primary-border:#91caff;
+    --success:#52c41a; --success-bg:#f6ffed; --success-border:#b7eb8f; --success-text:#389e0d;
+    --warning:#faad14; --warning-bg:#fffbe6; --warning-border:#ffe58f; --warning-text:#d48806;
+    --error:#ff4d4f;   --error-bg:#fff2f0;   --error-border:#ffccc7;   --error-text:#cf1322;
+    --text:rgba(0,0,0,.88); --text-2:rgba(0,0,0,.65); --text-3:rgba(0,0,0,.45); --text-4:rgba(0,0,0,.25);
+    --border:#d9d9d9; --split:#f0f0f0;
+    --fill-2:rgba(0,0,0,.06); --fill-3:rgba(0,0,0,.04); --fill-4:rgba(0,0,0,.02);
+    --bg:#f5f5f5; --card:#fff; --table-head:#fafafa;
+    /* Ant Pro layout */
+    --sider-bg:#001529; --sider-w:220px; --header-h:56px;
+    --r:6px; --r-lg:8px;
+    --sh-card:0 1px 2px 0 rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px 0 rgba(0,0,0,.02);
+    --sh-2:0 6px 16px 0 rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
+    --sh-btn:0 2px 0 rgba(0,0,0,.02);
+    --sh-primary:0 2px 0 rgba(5,145,255,.1);
+    --ring:0 0 0 2px rgba(5,145,255,.1);
   }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-         background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45; }
-  a { color: var(--brand-strong); }
-  .wrap { max-width: 1140px; margin: 0 auto; padding: 24px 20px 96px; }
-  :focus-visible { outline:2px solid var(--brand-strong); outline-offset:2px; border-radius:4px; }
+  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+         "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+         background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.5715; }
+  a { color: var(--primary); text-decoration:none; }
+  a:hover { color: var(--primary-hover); }
+  :focus-visible { outline:2px solid var(--primary); outline-offset:1px; border-radius:var(--r); }
 
-  /* ---- shared controls ------------------------------------------------ */
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px;
-         border:1px solid transparent; border-radius:var(--r-sm); padding:9px 15px; font-size:13.5px;
-         font-weight:650; cursor:pointer; font-family:inherit; color:var(--ink); background:var(--surface-2);
-         transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease; }
-  .btn-primary { background:var(--brand-strong); color:#fff; border-color:var(--brand-strong); box-shadow:var(--sh-1); }
-  .btn-primary:hover:not(:disabled) { background:#095c8d; border-color:#095c8d; }
-  .btn-ghost { background:#fff; border-color:var(--line-strong); color:var(--ink-2); box-shadow:var(--sh-1); }
-  .btn-ghost:hover:not(:disabled) { background:var(--hover); border-color:#b9c6d8; color:var(--ink); }
-  .btn:disabled { opacity:.5; cursor:not-allowed; box-shadow:none; }
+  /* ---- shared controls (Ant Button / Input / Select) ------------------ */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; min-height:32px;
+         border:1px solid var(--border); border-radius:var(--r); padding:4px 15px; font-size:14px;
+         font-weight:400; cursor:pointer; font-family:inherit; color:var(--text); background:#fff;
+         box-shadow:var(--sh-btn); white-space:nowrap; line-height:1.5715;
+         transition: background .2s, border-color .2s, color .2s, box-shadow .2s; }
+  .btn:hover:not(:disabled) { color:var(--primary-hover); border-color:var(--primary-hover); }
+  .btn:active:not(:disabled) { color:var(--primary-active); border-color:var(--primary-active); }
+  .btn-primary { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:var(--sh-primary); }
+  .btn-primary:hover:not(:disabled) { background:var(--primary-hover); border-color:var(--primary-hover); color:#fff; }
+  .btn-primary:active:not(:disabled) { background:var(--primary-active); border-color:var(--primary-active); color:#fff; }
+  .btn-ghost { background:#fff; border-color:var(--border); color:var(--text); }
+  .btn:disabled { color:var(--text-4); background:var(--fill-3); border-color:var(--border); cursor:not-allowed; box-shadow:none; }
 
-  input, select, textarea { font-family:inherit; color:var(--ink); }
+  input, select, textarea { font-family:inherit; color:var(--text); font-size:14px; }
   select, input[type=text], input[type=password], input[type=number], input:not([type]) {
-    background:#fff; border:1px solid var(--line-strong); border-radius:var(--r-sm);
-    transition: border-color .15s ease, box-shadow .15s ease; }
-  select:focus, input:focus { outline:none; border-color:var(--brand-strong); box-shadow:var(--ring); }
-  select { -webkit-appearance:none; appearance:none; padding-right:34px; cursor:pointer;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%235a6678' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.75 6 6.5 11 1.75'/></svg>");
-    background-repeat:no-repeat; background-position:right 12px center; background-size:11px 8px; }
+    background:#fff; border:1px solid var(--border); border-radius:var(--r); min-height:32px; padding:4px 11px;
+    line-height:1.5715; transition: border-color .2s, box-shadow .2s; }
+  select:hover, input:hover { border-color:var(--primary-hover); }
+  select:focus, input:focus { outline:none; border-color:var(--primary); box-shadow:var(--ring); }
+  input::placeholder { color:var(--text-4); }
+  select { -webkit-appearance:none; appearance:none; padding-right:30px; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='rgba(0,0,0,0.25)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.75 6 6.5 11 1.75'/></svg>");
+    background-repeat:no-repeat; background-position:right 11px center; background-size:11px 8px; }
 
-  /* ---- Login ---------------------------------------------------------- */
-  .login { max-width: 380px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--line);
-           border-radius:var(--r-lg); padding:30px 28px; box-shadow:var(--sh-3); }
-  .login h1 { font-size:21px; letter-spacing:-.01em; margin:0 0 4px; }
-  .login p { color:var(--muted); font-size:13px; margin:0 0 20px; }
-  .login label { display:block; font-size:12px; font-weight:700; color:var(--ink-2); margin:14px 0 6px; }
-  .login input { width:100%; padding:11px 12px; font-size:15px; min-height:44px; }
-  .login .btn-primary { width:100%; margin-top:20px; min-height:46px; font-size:15px; }
-  .err { color:var(--red-ink); font-size:13px; font-weight:600; margin-top:10px; min-height:18px; }
+  /* ---- Login (Ant Card + Form) ----------------------------------------- */
+  .login { max-width: 380px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--split);
+           border-radius:var(--r-lg); padding:28px 24px 24px; box-shadow:var(--sh-2); }
+  .login h1 { font-size:20px; font-weight:600; margin:0 0 4px; line-height:1.4; }
+  .login p { color:var(--text-2); font-size:14px; margin:0 0 16px; }
+  .login label { display:block; font-size:14px; color:var(--text); margin:16px 0 8px; }
+  .login input { width:100%; padding:7px 11px; font-size:14px; min-height:44px; }
+  .login .btn-primary { width:100%; margin-top:20px; min-height:40px; height:40px; font-size:15px; }
+  .err { color:var(--error-text); font-size:14px; margin-top:8px; min-height:22px; }
   /* .keep is itself a <label>, so it has to out-specify `.login label` above
      or the checkbox lands on its own line above the text. */
-  .keep, .login label.keep { display:flex; align-items:center; gap:9px; margin:20px 0 0;
-          font-size:13px; font-weight:600; color:var(--ink-2); cursor:pointer; }
-  .keep input { width:17px; height:17px; accent-color:var(--brand-strong); cursor:pointer; }
+  .keep, .login label.keep { display:flex; align-items:center; gap:8px; margin:16px 0 0;
+          font-size:14px; color:var(--text); cursor:pointer; }
+  .keep input { width:16px; height:16px; min-height:0; accent-color:var(--primary); cursor:pointer; }
 
-  /* ---- Page header ---------------------------------------------------- */
-  header.bar { display:flex; align-items:center; justify-content:space-between; gap:12px;
-               flex-wrap:wrap; margin:0 0 22px; }
-  header.bar h1 { font-size:20px; font-weight:750; letter-spacing:-.015em; margin:0; }
-  header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
-  header.bar .bar-actions .btn { min-height:38px; padding:7px 13px; font-size:13px; }
-  /* paintAppFlags() paints this button's background inline when Đấu Toán is ON,
+  /* ---- Ant Pro layout: sider + header + content ----------------------- */
+  .sider { position:fixed; inset:0 auto 0 0; width:var(--sider-w); z-index:30; display:flex; flex-direction:column;
+           background:var(--sider-bg); color:rgba(255,255,255,.65); overflow-y:auto;
+           transition: transform .2s ease; }
+  .logo { display:flex; align-items:center; gap:10px; height:var(--header-h); padding:0 20px; color:#fff;
+          font-size:16px; font-weight:600; white-space:nowrap; letter-spacing:-.01em; }
+  .logo-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:var(--r);
+               background:var(--primary); font-size:17px; flex:none; }
+  .sider-foot { margin-top:auto; padding:14px 20px; font-size:12px; color:rgba(255,255,255,.35); }
+
+  .main { margin-left:var(--sider-w); min-height:100vh; display:flex; flex-direction:column; }
+  .wrap { width:100%; max-width:1200px; margin:0 auto; padding:24px 24px 96px; }
+
+  /* ---- Header ----------------------------------------------------------- */
+  header.bar { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px;
+               flex-wrap:wrap; min-height:var(--header-h); padding:8px 24px; margin:0;
+               background:#fff; border-bottom:1px solid var(--split); }
+  header.bar h1 { font-size:18px; font-weight:600; letter-spacing:-.01em; margin:0; line-height:1.4; }
+  header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; align-items:center; }
+  .menu-btn { display:none; align-items:center; justify-content:center; width:36px; height:36px;
+              border:0; border-radius:var(--r); background:transparent; color:var(--text); font-size:20px;
+              cursor:pointer; font-family:inherit; }
+  .menu-btn:hover { background:var(--fill-3); }
+  /* paintAppFlags() paints this button's colours inline when Đấu Toán is ON,
      so only properties it does NOT set can be styled here. */
-  #mathFightFlag[aria-pressed="true"] { border-color:transparent; box-shadow:var(--sh-1); }
+  #mathFightFlag[aria-pressed="true"] { border-color:transparent; }
+  #ccSecondsWrap { cursor:default; }
+  #ccSecondsWrap input { width:60px; min-height:24px; height:24px; padding:0 6px; border-radius:4px;
+                         border:1px solid var(--border); background:#fff; color:var(--text);
+                         font:inherit; text-align:right; }
+  #ccSecondsWrap:hover { color:var(--text); border-color:var(--border); }
 
-  /* ---- Stat tiles: the only numbers on the page, so they read as metrics */
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-           gap:14px; margin-bottom:22px; }
-  .stat { display:flex; flex-direction:column; align-items:flex-start; gap:5px;
-          background:var(--card); border:1px solid var(--line); border-radius:var(--r-md);
-          padding:16px 18px 17px; box-shadow:var(--sh-1); }
-  .stat::before { content:""; width:26px; height:3px; border-radius:999px; background:var(--brand); margin-bottom:3px; }
-  .stat b { display:block; font-size:30px; line-height:1.05; font-weight:750; letter-spacing:-.02em;
-            font-variant-numeric:tabular-nums; }
-  .stat span { color:var(--muted); font-size:12.5px; font-weight:600; }
+  /* ---- Stat tiles (Ant Statistic in a Card) --------------------------- */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+           gap:16px; margin-bottom:16px; }
+  .stat { display:flex; flex-direction:column; align-items:flex-start; gap:4px;
+          background:var(--card); border:1px solid var(--split); border-radius:var(--r-lg);
+          padding:20px 24px; box-shadow:var(--sh-card); }
+  .stat b { display:block; font-size:30px; line-height:1.2; font-weight:500; letter-spacing:-.01em;
+            font-variant-numeric:tabular-nums; order:2; }
+  .stat span { color:var(--text-2); font-size:14px; order:1; }
 
-  /* ---- Tabs ----------------------------------------------------------- */
-  /* The activity feed is the first thing on the page now, so it carries a
-     little more weight than a tab panel did — and a cap, because it is meant
-     to be glanced at on the way to somewhere else, not scrolled forever. */
-  .activity-feed { border-color:var(--line-2, var(--line)); }
-  .pager { display:flex; align-items:center; justify-content:center; gap:12px;
-           padding:10px 14px 12px; border-top:1px solid var(--line); }
+  /* ---- Activity feed --------------------------------------------------- */
+  /* The activity feed is the first thing on the page, whichever section is
+     open — and it is capped, because it is meant to be glanced at on the way
+     to somewhere else, not scrolled forever. */
+  .pager { display:flex; align-items:center; justify-content:flex-end; gap:8px;
+           padding:12px 24px; border-top:1px solid var(--split); }
   .pager:empty { display:none; }
-  .pager-btn { min-height:36px; padding:8px 14px; }
-  .pager-btn[disabled] { opacity:.45; cursor:default; }
-  .pager-info { font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .pager-btn { min-height:32px; padding:4px 12px; }
+  .pager-btn[disabled] { cursor:default; }
+  .pager-info { font-size:14px; color:var(--text-2); font-variant-numeric:tabular-nums; }
 
-  .admin-tabs { display:flex; gap:4px; margin:0 0 18px; padding:5px; border:1px solid var(--line);
-                border-radius:var(--r-md); background:var(--surface-2); overflow-x:auto; scrollbar-width:none; }
-  .admin-tabs::-webkit-scrollbar { display:none; }
-  .admin-tab { min-height:42px; flex:1 0 auto; border:1px solid transparent; border-radius:var(--r-xs); padding:9px 18px;
-               background:transparent; color:var(--muted); font:650 13.5px/1.2 inherit; cursor:pointer;
-               white-space:nowrap; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
-  .admin-tab:hover { color:var(--ink); background:rgba(255,255,255,.6); }
-  /* The active tab differs on four counts at once — white ground, accent text,
-     heavier weight and a shadow — because one of them alone was not visible. */
-  .admin-tab[aria-selected="true"] { color:var(--brand-strong); font-weight:800; background:#fff;
-               border-color:rgba(10,110,168,.22); box-shadow:0 1px 2px rgba(17,26,45,.06), 0 6px 16px -8px rgba(17,26,45,.30); }
+  /* ---- Section menu (Ant Menu, dark theme) — the old tab bar ---------- */
+  .admin-tabs { display:flex; flex-direction:column; gap:4px; margin:8px 0 0; padding:4px 8px; }
+  .admin-tab { display:flex; align-items:center; gap:10px; min-height:40px; width:100%; border:0;
+               border-radius:var(--r); padding:0 16px; background:transparent; color:rgba(255,255,255,.65);
+               font:400 14px/40px inherit; cursor:pointer; text-align:left; white-space:nowrap;
+               transition: background .2s, color .2s; }
+  .admin-tab:hover { color:#fff; background:rgba(255,255,255,.08); }
+  .admin-tab[aria-selected="true"] { color:#fff; background:var(--primary); }
   .admin-panel[hidden] { display:none; }
 
-  /* ---- Cards ---------------------------------------------------------- */
-  .card { background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
-          margin-bottom:18px; overflow:hidden; box-shadow:var(--sh-2); }
+  /* ---- Cards (Ant Card) ----------------------------------------------- */
+  .card { background:var(--card); border:1px solid var(--split); border-radius:var(--r-lg);
+          margin-bottom:16px; overflow:hidden; box-shadow:var(--sh-card); }
   /* The only .card > h2 is "Users", and it sits directly above the search
      toolbar — one band of chrome, not two stacked rules. */
-  .card > h2 { font-size:12px; margin:0; padding:16px 20px 0; color:var(--muted);
-               text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  .card > h2 { font-size:16px; margin:0; padding:16px 24px 0; color:var(--text); font-weight:600; line-height:1.5; }
   .card > h2 + .tools { padding-top:12px; }
   .scroll { overflow-x:auto; }
 
-  /* ---- Tables --------------------------------------------------------- */
-  table { width:100%; border-collapse:collapse; font-size:13.5px; }
-  th, td { text-align:left; padding:13px 12px; white-space:nowrap; }
-  th:first-child, td:first-child { padding-left:20px; }
-  th:last-child, td:last-child { padding-right:20px; }
-  thead th { background:var(--surface); color:var(--muted); font-size:11px; font-weight:750;
-             text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--line);
-             border-top:1px solid var(--line-soft); }
-  tbody td { border-top:1px solid var(--line-soft); vertical-align:middle; }
-  tbody tr:first-child td { border-top:0; }
+  /* ---- Tables (Ant Table) --------------------------------------------- */
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:12px 16px; white-space:nowrap; }
+  th:first-child, td:first-child { padding-left:24px; }
+  th:last-child, td:last-child { padding-right:24px; }
+  thead th { background:var(--table-head); color:var(--text); font-size:14px; font-weight:600;
+             border-bottom:1px solid var(--split); }
+  tbody td { border-bottom:1px solid var(--split); vertical-align:middle; transition: background .2s; }
+  tbody tr:last-child td { border-bottom:0; }
   tbody tr.clickable { cursor:pointer; }
-  tbody tr.clickable:hover { background:var(--hover); }
-  tr.selected, tbody tr.clickable.selected:hover { background:var(--brand-tint); }
+  tbody tr.clickable:hover td { background:var(--fill-4); }
+  tr.selected td, tbody tr.clickable.selected:hover td { background:var(--primary-bg); }
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
-  .muted { color:var(--muted); }
-  .empty { padding:34px 20px; text-align:center; color:var(--muted); }
+  .muted { color:var(--text-2); }
+  .empty { padding:32px 24px; text-align:center; color:var(--text-3); }
 
-  /* ---- Pills ---------------------------------------------------------- */
-  .pill { display:inline-block; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;
-          line-height:1.5; white-space:nowrap; }
-  .pill.admin { background:#efeaff; color:#6427c9; }
-  .pill.user { background:var(--surface-2); color:var(--muted); }
-  .pill.kind-exam { background:#e6f0ff; color:#1c5fd6; }
-  .pill.kind-lesson { background:var(--green-tint); color:var(--green-ink); }
-  .pill.kind-review { background:var(--amber-tint); color:var(--amber-ink); }
-  .pill.kind-grammar { background:#efeaff; color:#6427c9; }
-  .pill.kind-phrases { background:#e4f4fd; color:#0d6f97; }
-  .pill.kind-wordform { background:#fff0e6; color:#b04d08; }
-  .pill.kind-rewrite { background:#f3e8ff; color:#6427c9; }
-  .pill.kind-collocation { background:#e0f2fe; color:#0369a1; }
-  .pill.kind-verbs { background:#fdeef2; color:#bb2f65; }
-  .pill.kind-math { background:#fff4e3; color:#96590a; }
-  .pill.kind-battle { background:var(--surface-2); color:#4c5568; }
+  /* ---- Pills (Ant Tag, preset colours) -------------------------------- */
+  .pill { display:inline-block; padding:0 7px; border:1px solid transparent; border-radius:4px;
+          font-size:12px; font-weight:400; line-height:20px; white-space:nowrap; }
+  .pill.admin { background:#f9f0ff; border-color:#d3adf7; color:#531dab; }
+  .pill.user { background:#fafafa; border-color:var(--border); color:var(--text-2); }
+  .pill.kind-exam { background:var(--primary-bg); border-color:var(--primary-border); color:var(--primary-active); }
+  .pill.kind-lesson { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+  .pill.kind-review { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning-text); }
+  .pill.kind-grammar { background:#f9f0ff; border-color:#d3adf7; color:#531dab; }
+  .pill.kind-phrases { background:#e6fffb; border-color:#87e8de; color:#08979c; }
+  .pill.kind-wordform { background:#fff7e6; border-color:#ffd591; color:#d46b08; }
+  .pill.kind-rewrite { background:#f0f5ff; border-color:#adc6ff; color:#1d39c4; }
+  .pill.kind-collocation { background:#e6f4ff; border-color:#91caff; color:#0958d9; }
+  .pill.kind-verbs { background:#fff0f6; border-color:#ffadd2; color:#c41d7f; }
+  .pill.kind-math { background:#fffbe6; border-color:#ffe58f; color:#d48806; }
+  .pill.kind-battle { background:#fafafa; border-color:var(--border); color:var(--text-2); }
   /* A "Làm lại" of the same paper: never counts toward a daily task, so the
      parent can see why a 100% left the counter where it was. */
-  .pill.retake { background:var(--amber-tint); color:var(--amber-ink); margin-left:6px; font-weight:600; }
-  .pill.on   { background:var(--green-tint); color:var(--green-ink); }
-  .pill.off  { background:var(--surface-2); color:var(--muted); }
-  .pill.dead { background:var(--red-tint); color:var(--red-ink); }
-  .pct-good { color:var(--green-ink); font-weight:700; }
-  .pct-mid  { color:var(--amber-ink); font-weight:700; }
-  .pct-low  { color:var(--red-ink); font-weight:700; }
+  .pill.retake { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning-text); margin-left:6px; }
+  .pill.on   { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+  .pill.off  { background:#fafafa; border-color:var(--border); color:var(--text-2); }
+  .pill.dead { background:var(--error-bg); border-color:var(--error-border); color:var(--error-text); }
+  .pct-good { color:var(--success-text); font-weight:500; }
+  .pct-mid  { color:var(--warning-text); font-weight:500; }
+  .pct-low  { color:var(--error-text); font-weight:500; }
 
-  /* ---- Toolbars ------------------------------------------------------- */
-  .toolbar { display:flex; align-items:center; gap:12px; padding:14px 20px; flex-wrap:wrap;
-             border-bottom:1px solid var(--line-soft); }
-  .toolbar h2 { margin:0; font-size:12px; color:var(--muted); text-transform:uppercase;
-                letter-spacing:.07em; font-weight:750; }
-  .toolbar .who { font-weight:650; font-size:13.5px; color:var(--ink); }
+  /* ---- Toolbars (Ant Card head) --------------------------------------- */
+  .toolbar { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap; min-height:56px;
+             border-bottom:1px solid var(--split); }
+  .toolbar h2 { margin:0; font-size:16px; color:var(--text); font-weight:600; line-height:1.5; }
+  .toolbar .who { font-size:14px; color:var(--text-2); }
   #allBtn { margin-left:auto; }
-  .tools { display:flex; align-items:center; gap:10px; padding:14px 20px; flex-wrap:wrap;
-           border-bottom:1px solid var(--line-soft); }
-  .search { flex:1; min-width:200px; position:relative; }
-  .search input { width:100%; min-height:40px; padding:9px 12px 9px 36px; font-size:13.5px;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237b8698' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.6'/><path d='M10.5 10.5 14 14'/></svg>");
-    background-repeat:no-repeat; background-position:left 12px center; background-size:15px 15px; }
-  .count { color:var(--muted); font-size:12.5px; font-variant-numeric:tabular-nums; }
+  .tools { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap;
+           border-bottom:1px solid var(--split); }
+  .search { flex:1; min-width:200px; max-width:360px; position:relative; }
+  .search input { width:100%; min-height:32px; padding:4px 11px 4px 32px; font-size:14px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='rgba(0,0,0,0.45)' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.6'/><path d='M10.5 10.5 14 14'/></svg>");
+    background-repeat:no-repeat; background-position:left 10px center; background-size:14px 14px; }
+  .count { color:var(--text-2); font-size:14px; font-variant-numeric:tabular-nums; }
   .sort-mobile { display:none; }
 
-  #usersTable th.sortable { cursor:pointer; user-select:none; }
-  #usersTable th.sortable:hover { color:var(--ink); }
-  #usersTable th .arrow { opacity:.3; font-size:9px; }
-  #usersTable th.sorted { color:var(--brand-strong); }
-  #usersTable th.sorted .arrow { opacity:1; color:var(--brand-strong); }
+  #usersTable th.sortable { cursor:pointer; user-select:none; transition: background .2s; }
+  #usersTable th.sortable:hover { background:var(--fill-2); }
+  #usersTable th .arrow { color:var(--text-4); font-size:9px; }
+  #usersTable th.sorted { color:var(--primary); }
+  #usersTable th.sorted .arrow { color:var(--primary); }
   .th-short { display:none; }
 
-  .who-cell { display:flex; align-items:center; gap:11px; }
-  .avatar { width:34px; height:34px; border-radius:10px; display:grid; place-items:center;
-            font-weight:750; font-size:12.5px; color:#fff; background:var(--brand-strong); flex:none;
-            letter-spacing:.02em; }
-  .avatar.admin { background:#6427c9; }
-  .who-name { font-weight:700; }
-  .who-sub { font-size:11px; color:var(--muted-2); }
+  .who-cell { display:flex; align-items:center; gap:10px; }
+  .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+            font-weight:500; font-size:13px; color:#fff; background:var(--primary); flex:none; }
+  .avatar.admin { background:#722ed1; }
+  .who-name { font-weight:500; }
+  .who-sub { font-size:12px; color:var(--text-3); }
   tr.disabled td { opacity:.55; }
   tr.disabled .who-name { text-decoration:line-through; }
   /* Named .meter, NOT .bar: <header class="bar"> already exists, and a bare
      .bar rule styled the page header as a 4px blue strip 24px tall with its
      buttons spilling over the stats below. A generic class name in a single
      stylesheet is how that happens. */
-  .meter { height:4px; border-radius:999px; background:var(--brand); opacity:.6; margin:3px 0 0 auto; }
+  .meter { height:4px; border-radius:999px; background:var(--primary); opacity:.7; margin:3px 0 0 auto; }
 
   .row-actions { display:flex; gap:6px; justify-content:flex-end; }
   .mini { display:inline-flex; align-items:center; justify-content:center; gap:2px;
-          min-height:32px; border:1px solid var(--line-strong); background:#fff; border-radius:var(--r-xs);
-          padding:5px 10px; font-size:12px; font-weight:650; cursor:pointer; font-family:inherit;
-          color:var(--ink-2); white-space:nowrap; box-shadow:var(--sh-1);
-          transition: background .15s ease, border-color .15s ease, color .15s ease; }
-  .mini:hover:not(:disabled) { background:var(--hover); border-color:#b9c6d8; color:var(--ink); }
-  .mini:disabled { opacity:.5; cursor:default; box-shadow:none; }
-  .mini.on { background:var(--green-tint); border-color:#bfe6cc; color:var(--green-ink); }
-  .mini.on:hover:not(:disabled) { background:#daf1e2; border-color:#a6d9b8; color:var(--green-ink); }
-  .mini.danger { color:var(--red-ink); border-color:#f0cbc7; }
-  .mini.danger:hover:not(:disabled) { background:var(--red-tint); border-color:#e3aba5; color:var(--red-ink); }
-  .mini.revive { color:var(--green-ink); border-color:#bfe6cc; }
+          min-height:24px; height:24px; border:1px solid var(--border); background:#fff; border-radius:4px;
+          padding:0 7px; font-size:12px; font-weight:400; cursor:pointer; font-family:inherit;
+          color:var(--text); white-space:nowrap; box-shadow:var(--sh-btn);
+          transition: background .2s, border-color .2s, color .2s; }
+  .mini:hover:not(:disabled) { color:var(--primary-hover); border-color:var(--primary-hover); }
+  .mini:disabled { color:var(--text-4); background:var(--fill-3); cursor:default; box-shadow:none; }
+  .mini.on { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+  .mini.on:hover:not(:disabled) { background:#d9f7be; border-color:#95de64; color:var(--success-text); }
+  .mini.danger { color:var(--error); border-color:var(--error-border); }
+  .mini.danger:hover:not(:disabled) { background:var(--error-bg); border-color:var(--error); color:var(--error-text); }
+  .mini.revive { color:var(--success-text); border-color:var(--success-border); }
 
   /* ---- learning strengths / weaknesses (admin only) ------------------- */
-  .learning-card { padding-bottom:18px; }
-  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
-                   padding:18px 20px; border-bottom:1px solid var(--line-soft); background:var(--surface); }
-  .learning-title { display:flex; gap:13px; align-items:flex-start; }
-  .learning-icon { width:40px; height:40px; border-radius:var(--r-md); display:grid; place-items:center;
-                   font-size:19px; color:#fff; background:linear-gradient(150deg,#2b7fd4,#0a6ea8); flex:none;
-                   box-shadow:var(--sh-1); }
-  .learning-icon svg { width:21px; height:21px; }
-  .learning-title h2 { margin:0 0 3px; color:var(--ink); font-size:16.5px; font-weight:750;
-                       letter-spacing:-.01em; text-transform:none; }
-  .learning-title p { margin:0; max-width:62ch; color:var(--muted); font-size:12.5px; line-height:1.5; }
+  .learning-card { padding-bottom:24px; }
+  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:24px;
+                   padding:16px 24px; border-bottom:1px solid var(--split); }
+  .learning-title { display:flex; gap:12px; align-items:flex-start; }
+  .learning-icon { width:40px; height:40px; border-radius:var(--r-lg); display:grid; place-items:center;
+                   font-size:20px; color:var(--primary); background:var(--primary-bg); flex:none; }
+  .learning-icon svg { width:22px; height:22px; }
+  .learning-title h2 { margin:0 0 2px; color:var(--text); font-size:16px; font-weight:600; line-height:1.5;
+                       text-transform:none; }
+  .learning-title p { margin:0; max-width:52ch; color:var(--text-2); font-size:14px; line-height:1.5715; }
   .learning-filters { display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
-  .learning-filters label { display:block; font-size:12px; color:var(--ink-2); font-weight:700; }
-  .learning-filters select { display:block; min-height:40px; margin-top:5px; min-width:150px;
-                             padding:8px 34px 8px 11px; font:600 13.5px/1.2 inherit; }
+  .learning-filters label { display:block; font-size:14px; color:var(--text); }
+  .learning-filters select { display:block; min-height:32px; margin-top:6px; min-width:140px;
+                             padding:4px 30px 4px 11px; font:400 14px/1.5715 inherit; }
 
-  .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 20px; }
-  .learning-stat { border:1px solid var(--line); border-radius:var(--r-md); padding:14px 15px; background:var(--surface); }
-  .learning-stat b { display:block; font-size:22px; font-weight:750; letter-spacing:-.02em;
+  .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; padding:24px; }
+  .learning-stat { border:1px solid var(--split); border-radius:var(--r-lg); padding:16px 20px; background:var(--card);
+                   box-shadow:var(--sh-card); display:flex; flex-direction:column; }
+  .learning-stat b { display:block; font-size:24px; font-weight:500; line-height:1.3; order:2;
                      font-variant-numeric:tabular-nums; }
-  .learning-stat span { display:block; margin-top:3px; color:var(--muted); font-size:12px; font-weight:600; }
-  .skill-section-title { margin:4px 20px 10px; font-size:11.5px; color:var(--muted);
-                         text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
-  .skill-list { display:grid; gap:8px; padding:0 20px; }
+  .learning-stat span { display:block; margin-bottom:4px; color:var(--text-2); font-size:14px; order:1; }
+  .skill-section-title { margin:8px 24px 12px; font-size:14px; color:var(--text); font-weight:600; }
+  .skill-list { display:grid; gap:8px; padding:0 24px; }
   .skill-row { display:grid; grid-template-columns:minmax(170px,1.6fr) minmax(120px,1fr) 62px 118px;
-               gap:16px; align-items:center; padding:13px 15px; border:1px solid var(--line);
-               border-radius:var(--r-md); background:#fff; }
+               gap:16px; align-items:center; padding:12px 16px; border:1px solid var(--split);
+               border-radius:var(--r-lg); background:#fff; }
   .skill-name { min-width:0; }
   .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-                       font-size:13.5px; font-weight:700; }
-  .skill-name small { display:block; margin-top:2px; color:var(--muted); font-size:11.5px; }
-  .skill-track { height:8px; border-radius:999px; overflow:hidden; background:var(--surface-2); }
-  .skill-fill { height:100%; border-radius:inherit; background:var(--amber); }
-  .skill-fill.strong { background:var(--green); }
-  .skill-fill.weak { background:var(--red); }
-  .skill-score { text-align:right; font-weight:750; font-size:15px; font-variant-numeric:tabular-nums; }
-  .skill-status { display:inline-flex; align-items:center; justify-content:center; min-height:28px;
-                  padding:4px 10px; border-radius:999px; font-size:11px; font-weight:750; text-align:center; }
-  .skill-status.weak { background:var(--red-tint); color:var(--red-ink); }
-  .skill-status.practice { background:var(--amber-tint); color:var(--amber-ink); }
-  .skill-status.strong { background:var(--green-tint); color:var(--green-ink); }
-  .skill-status.learning { background:var(--surface-2); color:var(--muted); }
-  .learning-empty { margin:18px 20px; border:1px dashed var(--line-strong); border-radius:var(--r-md);
-                    padding:30px 18px; text-align:center; color:var(--muted); font-size:13px; background:var(--surface); }
-  .menu-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; padding:0 20px 18px; }
-  .menu-card { min-height:92px; text-align:left; border:1px solid var(--line); border-radius:var(--r-md);
-               padding:13px 14px; background:#fff; color:var(--ink); font:inherit; cursor:pointer;
-               box-shadow:var(--sh-1); transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
-  .menu-card:hover { border-color:#b9c6d8; box-shadow:var(--sh-2); transform:translateY(-1px); }
-  .menu-card strong { display:block; font-size:13px; font-weight:700; margin-bottom:8px; }
-  .menu-card b { font-size:21px; font-weight:750; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
-  .menu-card small { display:block; margin-top:3px; color:var(--muted); font-size:11.5px; }
-  .priority-card { display:flex; gap:13px; align-items:center; margin:0 20px 18px; padding:14px 16px;
-                   border:1px solid #f2d9ac; border-left:4px solid var(--amber); border-radius:var(--r-md);
-                   background:#fffaf0; }
-  .priority-icon { width:38px; height:38px; flex:none; display:grid; place-items:center;
-                   border-radius:var(--r-sm); background:#ffe8bc; }
+                       font-size:14px; font-weight:500; }
+  .skill-name small { display:block; margin-top:2px; color:var(--text-2); font-size:12px; }
+  .skill-track { height:8px; border-radius:100px; overflow:hidden; background:var(--fill-2); }
+  .skill-fill { height:100%; border-radius:inherit; background:var(--warning); }
+  .skill-fill.strong { background:var(--success); }
+  .skill-fill.weak { background:var(--error); }
+  .skill-score { text-align:right; font-weight:500; font-size:15px; font-variant-numeric:tabular-nums; }
+  .skill-status { display:inline-flex; align-items:center; justify-content:center; min-height:22px;
+                  padding:0 7px; border:1px solid transparent; border-radius:4px; font-size:12px; text-align:center; }
+  .skill-status.weak { background:var(--error-bg); border-color:var(--error-border); color:var(--error-text); }
+  .skill-status.practice { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning-text); }
+  .skill-status.strong { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+  .skill-status.learning { background:#fafafa; border-color:var(--border); color:var(--text-2); }
+  .learning-empty { margin:24px; border:1px dashed var(--border); border-radius:var(--r-lg);
+                    padding:32px 16px; text-align:center; color:var(--text-3); font-size:14px; background:#fafafa; }
+  .menu-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; padding:0 24px 24px; }
+  .menu-card { min-height:92px; text-align:left; border:1px solid var(--split); border-radius:var(--r-lg);
+               padding:16px; background:#fff; color:var(--text); font:inherit; cursor:pointer;
+               box-shadow:var(--sh-card); transition: border-color .2s, box-shadow .2s; }
+  .menu-card:hover { border-color:var(--primary-border); box-shadow:var(--sh-2); }
+  .menu-card strong { display:block; font-size:14px; font-weight:500; margin-bottom:8px; color:var(--text-2); }
+  .menu-card b { font-size:24px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .menu-card small { display:block; margin-top:4px; color:var(--text-3); font-size:12px; }
+  /* Ant Alert (warning) */
+  .priority-card { display:flex; gap:12px; align-items:center; margin:0 24px 24px; padding:12px 16px;
+                   border:1px solid var(--warning-border); border-radius:var(--r-lg);
+                   background:var(--warning-bg); }
+  .priority-icon { width:32px; height:32px; flex:none; display:grid; place-items:center;
+                   border-radius:50%; background:#ffe58f; }
   .priority-card strong,.priority-card span { display:block; }
-  .priority-card strong { font-size:14px; font-weight:750; }
-  .priority-card span { margin-top:3px; color:#6d4a17; font-size:12.5px; line-height:1.5; }
+  .priority-card strong { font-size:14px; font-weight:500; }
+  .priority-card span { margin-top:2px; color:var(--text-2); font-size:14px; line-height:1.5715; }
 
   /* ---- Daily task panel ----------------------------------------------
      The two dropdowns carry strings like "Toán 7 · Đề thi HK1 4 (THCS Tương
      Bình Hiệp)". They used to sit in the right-hand filter bar and were
      squeezed to ~60px, so the parent could not read what she was assigning.
      They now get their own labelled grid with full-width controls. */
-  .daily-status { margin:0; padding:13px 20px; background:var(--surface);
-                  border-bottom:1px solid var(--line-soft); font-size:13.5px; color:var(--ink-2); }
+  .daily-status { margin:0; padding:12px 24px; background:var(--primary-bg);
+                  border-bottom:1px solid var(--primary-border); font-size:14px; color:var(--text); }
   .daily-status:empty { display:none; }
-  .daily-form { margin:20px 20px 0; padding:18px; border:1px solid var(--line);
-                border-radius:var(--r-md); background:var(--surface); }
-  .daily-form-title { margin:0 0 14px; font-size:11.5px; color:var(--muted);
-                      text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
-  .daily-form-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
-  .daily-path { display:flex; flex-direction:column; gap:6px; }
+  .daily-form { margin:24px 24px 0; padding:24px; border:1px solid var(--split);
+                border-radius:var(--r-lg); background:#fafafa; }
+  .daily-form-title { margin:0 0 16px; font-size:16px; color:var(--text); font-weight:600; }
+  .daily-form-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
+  .daily-path { display:flex; flex-direction:column; gap:8px; }
   .daily-path select { width:100%; }
   .daily-path select[data-depth="1"] { margin-left:12px; width:calc(100% - 12px); }
   .daily-path select[data-depth="2"] { margin-left:24px; width:calc(100% - 24px); }
   .daily-path select[data-depth="3"] { margin-left:36px; width:calc(100% - 36px); }
   .daily-path select[data-depth="4"] { margin-left:48px; width:calc(100% - 48px); }
-  .daily-path-hint { margin-top:6px; font-size:12px; color:var(--muted); min-height:1.2em; }
+  .daily-path-hint { margin-top:6px; font-size:14px; color:var(--text-2); min-height:1.2em; }
   .field { min-width:0; }
-  .field label { display:block; margin-bottom:5px; font-size:12px; font-weight:700; color:var(--ink-2); }
-  .field select, .field input { display:block; width:100%; min-height:42px; padding:10px 12px;
+  .field label { display:block; margin-bottom:8px; font-size:14px; color:var(--text); }
+  .field select, .field input { display:block; width:100%; min-height:32px; padding:4px 11px;
                                 font-size:14px; }
-  .field select { padding-right:34px; }
+  .field select { padding-right:30px; }
   .field-num input { max-width:220px; }
-  .daily-form-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  .daily-form-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
   @media (min-width: 760px) {
     .daily-form-grid { grid-template-columns:minmax(0,1fr) 210px; align-items:end; }
     .field-num input { max-width:none; }
@@ -328,41 +347,56 @@
      filling a form and submitting it. The worked example above the groups is
      the whole point of the card: it turns "win_pct = 10" into "bé mang về
      100 xu", which is the number the parent actually has an opinion about. */
-  .raid-example { margin:20px 20px 0; padding:14px 16px; border:1px solid #cfe6f6;
-                  border-left:4px solid var(--brand); border-radius:var(--r-md);
-                  background:var(--brand-tint); color:var(--ink-2);
-                  font-size:13.5px; line-height:1.6; }
-  .raid-example b { color:var(--ink); font-variant-numeric:tabular-nums; }
-  .raid-example-title { display:block; margin-bottom:4px; font-size:11.5px; font-weight:750;
-                        text-transform:uppercase; letter-spacing:.07em; color:var(--brand-strong); }
-  .raid-group { margin:18px 20px 0; padding:2px 18px 14px; border:1px solid var(--line);
-                border-radius:var(--r-md); background:var(--surface); }
-  .raid-group:last-child { margin-bottom:20px; }
-  .raid-group-title { margin:14px 0 2px; font-size:11.5px; color:var(--muted);
-                      text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  /* Ant Alert (info) */
+  .raid-example { margin:24px 24px 0; padding:12px 16px; border:1px solid var(--primary-border);
+                  border-radius:var(--r-lg); background:var(--primary-bg); color:var(--text);
+                  font-size:14px; line-height:1.6; }
+  .raid-example b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
+  .raid-example-title { display:block; margin-bottom:4px; font-size:14px; font-weight:600; color:var(--text); }
+  .raid-group { margin:16px 24px 0; padding:0 20px 8px; border:1px solid var(--split);
+                border-radius:var(--r-lg); background:#fff; }
+  .raid-group:last-child { margin-bottom:24px; }
+  .raid-group-title { margin:0 -20px 4px; padding:12px 20px; font-size:14px; color:var(--text); font-weight:600;
+                      background:var(--table-head); border-bottom:1px solid var(--split); }
   .raid-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px;
-              align-items:start; padding:15px 0; border-top:1px solid var(--line); }
+              align-items:start; padding:16px 0; border-top:1px solid var(--split); }
   .raid-row:first-of-type { border-top:0; }
   .raid-copy { grid-column:1; grid-row:1 / span 2; min-width:0; }
-  .raid-copy label { display:block; font-size:13.5px; font-weight:700; color:var(--ink); }
-  .raid-help { margin:4px 0 0; max-width:64ch; color:var(--muted); font-size:12.5px; line-height:1.5; }
+  .raid-copy label { display:block; font-size:14px; font-weight:500; color:var(--text); }
+  .raid-help { margin:4px 0 0; max-width:64ch; color:var(--text-2); font-size:14px; line-height:1.5715; }
   .raid-edit { grid-column:2; grid-row:1; display:flex; align-items:center; gap:8px; }
-  .raid-edit input { width:112px; min-height:42px; padding:10px 12px; font-size:14px;
+  .raid-edit input { width:112px; min-height:32px; padding:4px 11px; font-size:14px;
                      text-align:right; font-variant-numeric:tabular-nums; }
-  .raid-unit { font-size:12.5px; font-weight:650; color:var(--muted); }
+  .raid-unit { font-size:14px; color:var(--text-2); }
   /* .btn, not .mini: on a phone every .mini collapses to a 34px icon square,
      and "did that save?" is not a question to answer with a bare 💾. */
-  .raid-save { min-height:42px; }
-  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:11.5px;
-               color:var(--muted-2); font-variant-numeric:tabular-nums; }
-  .raid-note { grid-column:1 / -1; grid-row:3; margin-top:2px; font-size:12.5px; font-weight:650; }
+  .raid-save { min-height:32px; }
+  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:12px;
+               color:var(--text-3); font-variant-numeric:tabular-nums; }
+  .raid-note { grid-column:1 / -1; grid-row:3; margin-top:2px; font-size:14px; }
   .raid-note:empty { display:none; }
-  .raid-note.ok { color:var(--green-ink); }
-  .raid-note.bad { color:var(--red-ink); }
+  .raid-note.ok { color:var(--success-text); }
+  .raid-note.bad { color:var(--error-text); }
   /* An edited-but-unsaved box must not be mistaken for the rule in force. */
-  .raid-row.changed .raid-edit input { border-color:var(--amber); box-shadow:0 0 0 3px rgba(255,150,0,.16); }
-  .raid-dirty { color:var(--amber-ink); font-weight:700; font-size:11.5px; }
+  .raid-row.changed .raid-edit input { border-color:var(--warning); box-shadow:0 0 0 2px rgba(250,173,20,.16); }
+  .raid-dirty { color:var(--warning-text); font-weight:500; font-size:12px; }
   .raid-dirty:empty { display:none; }
+
+  /* ---- tablets and phones: the sider becomes a Drawer ------------------
+     Ant Pro's own behaviour below the lg breakpoint: the menu slides in from
+     the left over a mask when the ☰ button is pressed, and goes away when a
+     section is picked or the mask is tapped. The header names the open
+     section, so the menu being off-screen never leaves you lost. */
+  .sider-mask { position:fixed; inset:0; z-index:29; background:rgba(0,0,0,.45); }
+  .sider-mask[hidden] { display:none; }
+  @media (max-width: 900px) {
+    .sider { transform:translateX(-100%); box-shadow:none; }
+    .sider.open { transform:none; box-shadow:var(--sh-2); }
+    .main { margin-left:0; }
+    .menu-btn { display:inline-flex; margin-left:-8px; }
+    header.bar { padding:8px 16px; }
+    .wrap { padding:16px 16px 96px; }
+  }
 
   @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
 
@@ -380,19 +414,19 @@
        tab bar to y=901 on a 375x812 iPhone — one screen down. These three
        trims (heading on one line, shorter rows, compact stat tiles) bring it
        back above the fold without dropping a single row. */
-    .activity-feed .toolbar { padding:10px 12px 8px; gap:2px 8px; }
-    .activity-feed .toolbar h2 { margin:0; }
-    .activity-feed .toolbar .who { font-size:11.5px; }
+    .activity-feed .toolbar { padding:10px 12px 8px; gap:2px 8px; min-height:0; }
+    .activity-feed .toolbar h2 { margin:0; font-size:15px; white-space:nowrap; }
+    .activity-feed .toolbar .who { font-size:12px; }
     /* The three toolbar items fit one line if the middle one is allowed to
        shrink; wrapping the button onto its own row cost a whole line of the
        screen the tab bar needed. */
     .activity-feed .toolbar { flex-wrap:nowrap; }
     .activity-feed .toolbar .who { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .activity-feed .toolbar #allBtn { min-height:32px; padding:6px 10px; font-size:12px;
+    .activity-feed .toolbar #allBtn { min-height:28px; height:28px; padding:0 8px; font-size:12px;
                                       margin-left:auto; flex:0 0 auto; }
     #attemptsTable th, #attemptsTable td { padding:8px 10px; font-size:12.5px; }
     .activity-feed .pager { padding:7px 10px 8px; }
-    .activity-feed .pager-btn { min-height:32px; padding:6px 12px; font-size:12.5px; }
+    .activity-feed .pager-btn { min-height:28px; height:28px; padding:0 10px; font-size:12.5px; }
     .stats { gap:8px; }
     .stat { padding:9px 10px; }
     .stat b, .stat .stat-num { font-size:20px; }
@@ -400,8 +434,8 @@
        cells: squeezing those further would have cost readability. */
     .wrap { padding-block: 16px 84px; }
     .wrap { padding-inline: 10px; }
-    .sort-mobile { display:block; min-height:40px; padding:9px 34px 9px 11px; border-radius:var(--r-sm);
-                   font-size:13px; font-family:inherit; background-color:#fff; color:var(--ink); }
+    .sort-mobile { display:block; min-height:32px; padding:4px 30px 4px 11px; border-radius:var(--r);
+                   font-size:13px; font-family:inherit; background-color:#fff; color:var(--text); }
     /* Two columns give way, and only these two, because the row already says
        both: a disabled account is faded, struck through and offers Enable
        instead of Disable, and the early-access state is the toggle's own
@@ -426,9 +460,9 @@
     .who-name { display:inline-block; max-width:76px; overflow:hidden;
                 text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }
     .who-cell { gap:6px; }
-    #usersTable th { font-size:10px; letter-spacing:.02em; }
-    .avatar { width:24px; height:24px; border-radius:7px; font-size:10.5px; }
-    .pill { padding:2px 6px; font-size:10px; }
+    #usersTable th { font-size:12px; }
+    .avatar { width:24px; height:24px; font-size:10.5px; }
+    .pill { padding:0 5px; font-size:11px; line-height:18px; }
 
     /* The buttons keep their icon and drop the word. Three labelled buttons
        need ~220px of a 351px screen, which is what pushed them off-screen. */
@@ -440,30 +474,25 @@
     #usersTable th:first-child, #usersTable td:first-child {
       position:sticky; left:0; z-index:1; background:var(--card);
     }
-    #usersTable thead th:first-child { background:var(--surface); }
-    #usersTable tr.selected td:first-child { background:#eaf6ff; }
+    #usersTable thead th:first-child { background:var(--table-head); }
+    #usersTable tr.selected td:first-child { background:#e6f4ff; }
 
-    header.bar h1 { font-size:18px; }
-    /* Three full-size buttons wrapped into stacked blocks. One compact row
-       instead: the toggle takes what is left, the other two stay their size. */
+    header.bar h1 { font-size:16px; }
+    /* Four full-size buttons wrapped into stacked blocks. A 2×2 grid under the
+       title instead: each control keeps a readable width. */
     header.bar .bar-actions { width:100%; margin-left:0; display:grid;
-                              grid-template-columns:minmax(0,1fr) auto auto; gap:8px; flex-wrap:nowrap; }
-    header.bar .bar-actions .btn { padding:7px 10px; font-size:12.5px; min-height:38px;
-                                   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+                              grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; flex-wrap:nowrap; }
+    header.bar .bar-actions .btn { padding:4px 10px; font-size:12.5px; min-height:32px;
+                                   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; }
+    /* "🔢 Cửu chương: [60] giây" is 190px of content in a 177px cell. */
+    #ccSecondsWrap { gap:4px; padding-inline:8px; }
+    #ccSecondsWrap input { width:46px; padding:0 4px; }
     /* Three tiles in one row rather than 2 + a stranded 1: the point of the
        row is that the three numbers can be compared at a glance. */
-    .stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-bottom:18px; }
-    .stat { padding:12px 12px 13px; gap:3px; }
-    .stat::before { width:20px; }
+    .stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px; }
+    .stat { padding:12px; gap:2px; }
     .stat b { font-size:22px; }
-    .stat span { font-size:11.5px; line-height:1.35; }
-    /* Four tabs never fit one phone-width row, and a strip that scrolls can
-       hide the very tab you are on — which is exactly what happened to
-       "Daily task". Two rows of two instead: every section stays visible and
-       the selected one is always on screen. It gives up the sticky strip,
-       because 2 rows pinned to the top would eat a third of the fold. */
-    .admin-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; overflow:visible; }
-    .admin-tab { flex:none; padding-inline:10px; font-size:13px; }
+    .stat span { font-size:12px; line-height:1.35; }
     .card > h2, .tools, .toolbar, .learning-head, .learning-summary,
     .skill-section-title, .skill-list, .menu-overview { padding-inline:14px; }
     .skill-section-title, .learning-empty, .priority-card, .daily-form { margin-inline:14px; }
@@ -473,19 +502,20 @@
     .learning-filters { margin-top:14px; justify-content:stretch; gap:10px; }
     .learning-filters label { flex:1 1 100%; }
     .learning-filters select { width:100%; min-width:0; }
-    .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:16px 14px; }
     .skill-row { grid-template-columns:minmax(0,1fr) 62px; gap:9px 12px; }
     .skill-track { grid-column:1 / -1; grid-row:2; }
     .skill-status { grid-column:1; grid-row:3; justify-self:start; }
     .skill-score { grid-column:2; grid-row:1; }
     .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .priority-card { align-items:flex-start; }
-    .daily-form { padding:15px; }
+    .daily-form { padding:16px; }
     .daily-form-actions .btn { flex:1 1 auto; }
     /* One column: the number, its unit and its save button belong on the same
        line as each other, but under the sentence that explains them. */
     .raid-example, .raid-group { margin-inline:14px; }
     .raid-group { padding-inline:15px; }
+    .raid-group-title { margin-inline:-15px; padding-inline:15px; }
     .raid-row { grid-template-columns:minmax(0,1fr); gap:8px; padding:14px 0; }
     .raid-copy, .raid-edit, .raid-foot, .raid-note { grid-column:1; grid-row:auto; }
     .raid-edit input { flex:1 1 auto; width:auto; min-width:0; }
@@ -494,14 +524,12 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
-    .menu-card:hover { transform:none; }
   }
 
   #dash { display:none; }
 </style>
 </head>
 <body>
-<div class="wrap">
   <!-- Login -->
   <div id="login" class="login">
     <h1>🎯 FlashLingo Admin</h1>
@@ -515,24 +543,39 @@
     <div class="err" id="loginErr"></div>
   </div>
 
-  <!-- Dashboard -->
+  <!-- Dashboard: an Ant Design Pro layout. The sider carries the section
+       menu, which is the old tab bar under a new coat — same buttons, same
+       data-tab, same switchAdminTab(). Below 900px the sider is a drawer. -->
   <div id="dash">
+    <aside class="sider" id="sider">
+      <div class="logo"><span class="logo-mark" aria-hidden="true">🎯</span><span>FlashLingo Admin</span></div>
+      <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
+        <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
+        <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Nhiệm vụ</button>
+        <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
+      </nav>
+      <div class="sider-foot">Bảng điều khiển của phụ huynh</div>
+    </aside>
+    <div class="sider-mask" id="siderMask" hidden></div>
+    <div class="main">
     <header class="bar">
-      <h1>🎯 FlashLingo Admin</h1>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Mở menu" aria-controls="sider" aria-expanded="false">☰</button>
+      <h1 id="pageTitle">Người học</h1>
       <div class="bar-actions">
         <button class="btn btn-ghost" id="mathFightFlag" aria-pressed="false"
                 title="Đấu Toán: friend-vs-friend maths duels. Off means the tab is hidden for EVERY child.">🥊 Đấu Toán: …</button>
-        <label class="btn btn-ghost" id="ccSecondsWrap" style="display:inline-flex;align-items:center;gap:6px;cursor:default"
+        <label class="btn btn-ghost" id="ccSecondsWrap"
                title="Bảng cửu chương: giây cho MỖI lượt 10 câu, dùng chung cho cả 6 bài. Đổi ở đây là đổi cho TẤT CẢ các bé.">
           🔢 Cửu chương:
-          <input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric"
-                 style="width:64px;background:transparent;border:1px solid currentColor;border-radius:6px;color:inherit;padding:2px 4px;font:inherit;text-align:right">
+          <input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric">
           giây
         </label>
         <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
     </header>
+    <div class="wrap">
     <div class="stats" id="stats"></div>
 
     <!-- The landing view: the three totals read first as the summary, then
@@ -554,12 +597,6 @@
     </div>
 
 
-    <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
-      <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
-      <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
-      <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Nhiệm vụ</button>
-      <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
-    </nav>
 
     <div class="card admin-panel" id="usersPanel" role="tabpanel" aria-labelledby="tabUsers">
       <h2>Users</h2>
@@ -689,8 +726,9 @@
       <div id="raidExample" class="raid-example"></div>
       <div id="raidGroups"></div>
     </section>
+    </div><!-- /.wrap -->
+    </div><!-- /.main -->
   </div>
-</div>
 
 <script src="js/daily-task-catalog.js"></script>
 <script>
@@ -981,9 +1019,13 @@ function renderUsers(){
   });
 }
 
+const TAB_TITLES = { users:'Người học', skills:'Năng lực', daily:'Nhiệm vụ hằng ngày', raid:'Cướp Đêm' };
 function switchAdminTab(tab){
   document.querySelectorAll('.admin-tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)));
   document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id !== tab + 'Panel'; });
+  const title = document.getElementById('pageTitle');
+  if (title) title.textContent = TAB_TITLES[tab] || 'FlashLingo Admin';
+  closeSider();
   if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
   if (tab === 'daily') loadDailyTasks().catch(()=>{});
   if (tab === 'raid') loadRaidConfig().catch(()=>{});
@@ -1463,8 +1505,8 @@ function paintAppFlags(){
   const on = !!_appFlags.math_fight;
   btn.textContent = on ? '🥊 Đấu Toán: ON' : '🥊 Đấu Toán: OFF';
   btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.style.background = on ? '#12603a' : '';
-  btn.style.color = on ? '#eafff3' : '';
+  btn.style.background = on ? '#389e0d' : '';
+  btn.style.color = on ? '#fff' : '';
 }
 // Bảng cửu chương's round length. One number for all six drills and for every
 // child — how long a ten-question round runs. The server clamps it too; this
@@ -1557,6 +1599,19 @@ syncDailySave();
 // The cascade wires its own change handlers each time it renders.
 document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
 document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
+// The sider is a drawer below 900px: ☰ opens it, the mask or a pick closes it.
+function setSider(open){
+  const sider = document.getElementById('sider'), mask = document.getElementById('siderMask'),
+        btn = document.getElementById('menuBtn');
+  if (!sider) return;
+  sider.classList.toggle('open', open);
+  if (mask) mask.hidden = !open;
+  if (btn) btn.setAttribute('aria-expanded', String(open));
+}
+function closeSider(){ setSider(false); }
+document.getElementById('menuBtn').addEventListener('click', ()=>setSider(!document.getElementById('sider').classList.contains('open')));
+document.getElementById('siderMask').addEventListener('click', closeSider);
+document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closeSider(); });
 document.getElementById('sortSel').addEventListener('change', e=>{
   const key = e.target.value;
   _sort = { key, dir: key === 'username' ? 1 : -1 };

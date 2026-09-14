@@ -280,7 +280,7 @@ suite('admin on a phone: still a table at 393px', () => {
         // Otherwise scrolling right to reach Actions loses track of whose row
         // you are on — which would defeat the comparison the table is for.
         assert.truthy(/#usersTable th:first-child, #usersTable td:first-child \{[\s\S]{0,80}position:sticky/.test(phoneBlock));
-        assert.truthy(/#usersTable tr\.selected td:first-child \{ background:#eaf6ff/.test(phoneBlock),
+        assert.truthy(/#usersTable tr\.selected td:first-child \{ background:#[0-9a-f]{6}/.test(phoneBlock),
             'a sticky cell needs its own selected background, or the highlight stops at it');
     });
 
@@ -439,6 +439,54 @@ suite('admin: the Daily task tab', () => {
             'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ']) {
             assert.truthy(adminHtml.includes(copy), 'admin assignment copy is missing: ' + copy);
         }
+    });
+});
+
+suite('admin: Ant Design Pro layout', () => {
+    // The console is laid out like an Ant Design Pro app: a fixed dark sider
+    // carrying the section menu, a white header, grey content. The menu IS the
+    // old tab bar — same buttons, same data-tab, same switchAdminTab — so the
+    // tab tests above keep meaning what they meant.
+    const phoneBlock = adminHtml.slice(adminHtml.indexOf('@media (max-width: 900px)'),
+        adminHtml.indexOf('@media (max-width: 720px)'));
+
+    test('the section menu lives in the sider and is still the tablist', () => {
+        const sider = adminHtml.match(/<aside class="sider"[\s\S]*?<\/aside>/);
+        assert.truthy(sider, 'no <aside class="sider">');
+        assert.truthy(/role="tablist"/.test(sider[0]), 'the menu must stay a tablist');
+        for (const tab of ['users', 'skills', 'daily', 'raid']) {
+            assert.truthy(sider[0].includes(`data-tab="${tab}"`), `${tab} is not in the sider menu`);
+        }
+    });
+
+    test('the header names the open section, because the menu may be off-screen', () => {
+        assert.truthy(adminHtml.includes('id="pageTitle"'), 'no title element');
+        const fn = adminHtml.slice(adminHtml.indexOf('function switchAdminTab('),
+                                   adminHtml.indexOf('function selectSkillUser('));
+        assert.truthy(/pageTitle/.test(fn), 'switchAdminTab must update the title');
+    });
+
+    test('on a phone the sider is a drawer behind a menu button', () => {
+        assert.truthy(phoneBlock.length > 0, 'no 900px breakpoint');
+        assert.truthy(/\.sider \{[^}]*transform:translateX\(-100%\)/.test(phoneBlock), 'the sider must slide out of view');
+        assert.truthy(/\.sider\.open \{[^}]*transform:none/.test(phoneBlock), 'and back in when open');
+        assert.truthy(adminHtml.includes('id="menuBtn"'), 'no button to open it');
+        assert.truthy(adminHtml.includes('id="siderMask"'), 'no mask to close it');
+        assert.truthy(/\.menu-btn \{ display:inline-flex/.test(phoneBlock), 'the button must appear on phones');
+        assert.truthy(/\.menu-btn \{ display:none/.test(adminHtml), 'and be absent on desktop');
+    });
+
+    test('picking a section closes the drawer', () => {
+        assert.truthy(/function closeSider\(\)/.test(adminHtml));
+        const fn = adminHtml.slice(adminHtml.indexOf('function switchAdminTab('),
+                                   adminHtml.indexOf('function selectSkillUser('));
+        assert.truthy(/closeSider\(\)/.test(fn), 'switchAdminTab must close the drawer');
+    });
+
+    test('Ant Design 5 tokens, not the old Duolingo-blue ramp', () => {
+        assert.truthy(/--primary:#1677ff/.test(adminHtml));
+        assert.falsy(/--brand:#1cb0f6/.test(adminHtml), 'the old accent must be gone');
+        assert.truthy(/--sider-bg:#001529/.test(adminHtml), 'Ant Pro dark sider');
     });
 });
 
