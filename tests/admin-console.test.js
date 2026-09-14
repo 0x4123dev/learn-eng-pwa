@@ -169,11 +169,11 @@ suite('admin: the users table reads clearly', () => {
         const now = Date.now();
         const at = (ms) => new Date(now - ms).toISOString().replace('T', ' ').slice(0, 19);
         assert.equal(dash.relTime(null), '—');
-        assert.equal(dash.relTime(at(30 * 1000)), 'just now');
-        assert.equal(dash.relTime(at(45 * 60000)), '45m ago');
-        assert.equal(dash.relTime(at(3 * 3600000)), '3h ago');
-        assert.equal(dash.relTime(at(5 * 86400000)), '5d ago');
-        assert.equal(dash.relTime(at(60 * 86400000)), '2mo ago');
+        assert.equal(dash.relTime(at(30 * 1000)), 'vừa xong');
+        assert.equal(dash.relTime(at(45 * 60000)), '45 phút trước');
+        assert.equal(dash.relTime(at(3 * 3600000)), '3 giờ trước');
+        assert.equal(dash.relTime(at(5 * 86400000)), '5 ngày trước');
+        assert.equal(dash.relTime(at(60 * 86400000)), '2 tháng trước');
         assert.truthy(/title="\$\{esc\(fmtDate\(u\.last_activity\)\)\}"/.test(adminHtml),
             'the exact stamp must stay on hover');
     });
@@ -186,19 +186,15 @@ suite('admin: the users table reads clearly', () => {
             'clicking the same column must toggle direction');
     });
 
-    test('the activity feed is paged at ten, so the menu below it stays reachable', () => {
-        // Shipped once without this: on a 375x812 iPhone the unpaged feed put
-        // the tab bar at y=901 — a whole screen down — and the parent had to
-        // scroll past every activity to reach the menu.
-        assert.truthy(/const ACT_PAGE_SIZE = 10;/.test(adminHtml), 'ten rows a page');
-        assert.truthy(/_activity\.slice\(from, from \+ ACT_PAGE_SIZE\)/.test(adminHtml),
-            'the page must be a slice, not the whole list');
-        assert.truthy(/id="actPager"/.test(adminHtml), 'the page controls need somewhere to render');
-        assert.truthy(/_actPage = 0;\s*\/\/ a new filter always starts at the top/.test(adminHtml),
-            'changing the filter must not leave you on a page that no longer exists');
-        // The feed must not be a tabpanel any more, or switching tabs hides it.
-        assert.falsy(/id="activityPanel"[^>]*role="tabpanel"/.test(adminHtml));
-        assert.falsy(/id="tabActivity"/.test(adminHtml), 'its tab was replaced by the always-on feed');
+    test('the history is grouped by day and the old ten-row pager is gone', () => {
+        // The landing page is every child's history grouped by day, with the
+        // two most recent days open and the rest folded (executed in
+        // tests/admin-overview.test.js). A flat list paged by ten made a
+        // parent click through "1–10 / 43" to find yesterday.
+        assert.falsy(adminHtml.includes('ACT_PAGE_SIZE'), 'the paged feed was replaced by day groups');
+        assert.truthy(/<details class="day"\$\{open\}>/.test(adminHtml), 'each day is a collapsible group');
+        assert.truthy(/const open = i < 2 \? ' open' : ''/.test(adminHtml), 'today and yesterday open, older days folded');
+        assert.truthy(adminHtml.includes('Không ai học'), 'a day nobody studied is said out loud');
     });
 
     test('the activity meter is anchored to the number it belongs to', () => {
@@ -300,8 +296,8 @@ suite('admin on a phone: still a table at 393px', () => {
     test('headers are abbreviated, because the header sets the column width', () => {
         // "LAST SEEN" is 62px against a 48px value, "ACTIVITY" 52px against
         // 25px — so the words, not the data, were what did not fit.
-        assert.truthy(adminHtml.includes('<span class="th-short">Seen</span>'));
-        assert.truthy(adminHtml.includes('<span class="th-short">Acts</span>'));
+        assert.truthy(adminHtml.includes('<span class="th-short">Gần nhất</span>'));
+        assert.truthy(adminHtml.includes('<span class="th-short">Lượt</span>'));
         assert.truthy(/\.th-short \{ display:none; \}/.test(adminHtml), 'desktop keeps the full words');
         assert.truthy(/\.th-full \{ display:none; \}/.test(phoneBlock));
         assert.truthy(/\.th-short \{ display:inline; \}/.test(phoneBlock));
@@ -323,7 +319,7 @@ suite('admin on a phone: still a table at 393px', () => {
         // instead of Disable, and the bot state is the toggle's own colour.
         // The numbers an admin compares must all survive.
         assert.truthy(/th\.hide-xs, td\.hide-xs \{ display:none; \}/.test(phoneBlock));
-        assert.truthy(adminHtml.includes('<th class="hide-xs">Status</th>'));
+        assert.truthy(adminHtml.includes('<th class="hide-xs">Trạng thái</th>'));
         for (const kept of ['data-sort="total_count"', 'data-sort="last_activity"', 'data-sort="username"']) {
             assert.truthy(adminHtml.includes(kept), `${kept} column must survive on a phone`);
         }
@@ -393,8 +389,8 @@ suite('device profiles: the app stops offering a form that would be refused', ()
 
 suite('admin: the Daily task tab', () => {
     test('the Daily task tab has a panel and the catalog it needs', () => {
-        assert.truthy(/<button class="admin-tab" id="tabDaily"[^>]*aria-controls="dailyPanel"/.test(adminHtml));
-        assert.truthy(adminHtml.includes('id="dailyPanel"'), 'aria-controls must point at a real panel');
+        assert.truthy(/<button class="admin-tab" id="tabTasks"[^>]*aria-controls="tasksPanel"/.test(adminHtml));
+        assert.truthy(adminHtml.includes('id="tasksPanel"'), 'aria-controls must point at a real panel');
         assert.truthy(adminHtml.includes('<script src="js/daily-task-catalog.js">'),
             'DailyTaskCatalog fills both dropdowns');
     });
@@ -409,8 +405,12 @@ suite('admin: the Daily task tab', () => {
     });
 
     test('daily-task picker omits disabled accounts and has one clear save action', () => {
-        assert.truthy(/dailySelect\.innerHTML[\s\S]*?\.filter\(u=>u\.role!==['"]admin['"]&&!u\.disabled\)/.test(adminHtml),
+        // The sider is the only way to a child's page, and the picker lives
+        // on that page — so the sider's filter is what keeps a disabled or
+        // admin account from being assigned a task.
+        assert.truthy(/function kids\(\)\{ return _users\.filter\(u=>u\.role!=='admin'&&!u\.disabled\); \}/.test(adminHtml),
             'disabled children must not be assignable from the Daily task picker');
+        assert.truthy(/host\.innerHTML = kids\(\)\.map/.test(adminHtml), 'the sider lists kids() and nothing else');
         assert.falsy(adminHtml.includes('id="dailyAdd"'), 'the redundant add/reset button must stay removed');
         assert.falsy(adminHtml.includes("getElementById('dailyAdd')"), 'no dead event binding may remain');
     });
@@ -442,45 +442,47 @@ suite('admin: the Daily task tab', () => {
     });
 });
 
-suite('admin: Ant Design Pro layout', () => {
-    // The console is laid out like an Ant Design Pro app: a fixed dark sider
-    // carrying the section menu, a white header, grey content. The menu IS the
-    // old tab bar — same buttons, same data-tab, same switchAdminTab — so the
-    // tab tests above keep meaning what they meant.
-    const phoneBlock = adminHtml.slice(adminHtml.indexOf('@media (max-width: 900px)'),
+suite('admin: Ant Design Pro layout, organised around the children', () => {
+    // A fixed dark sider carries the menu, and the menu is mostly the
+    // children: one row each, with today's task progress. Below 900px the
+    // sider becomes a strip of chips across the top — picking a child is the
+    // most frequent act on this console, so it is never hidden in a drawer.
+    const tabletBlock = adminHtml.slice(adminHtml.indexOf('@media (max-width: 900px)'),
         adminHtml.indexOf('@media (max-width: 720px)'));
 
-    test('the section menu lives in the sider and is still the tablist', () => {
+    test('the sider lists the overview, the children, settings and accounts', () => {
         const sider = adminHtml.match(/<aside class="sider"[\s\S]*?<\/aside>/);
         assert.truthy(sider, 'no <aside class="sider">');
-        assert.truthy(/role="tablist"/.test(sider[0]), 'the menu must stay a tablist');
-        for (const tab of ['users', 'skills', 'daily', 'raid']) {
-            assert.truthy(sider[0].includes(`data-tab="${tab}"`), `${tab} is not in the sider menu`);
-        }
+        assert.truthy(sider[0].includes('data-route="overview"'));
+        assert.truthy(sider[0].includes('id="siderKids"'), 'the children are rendered into the sider');
+        assert.truthy(sider[0].includes('data-route="settings"') && sider[0].includes('data-route="accounts"'));
     });
 
-    test('the header names the open section, because the menu may be off-screen', () => {
+    test('routes are hashes, so the back button and a reload land where the parent was', () => {
+        assert.truthy(/window\.addEventListener\('hashchange', render\)/.test(adminHtml));
+        assert.truthy(/function parseRoute\(hash\)/.test(adminHtml));
+        assert.truthy(adminHtml.includes("'#/be/' + uid"), 'a child has a URL of its own');
+    });
+
+    test('the header names the open page', () => {
         assert.truthy(adminHtml.includes('id="pageTitle"'), 'no title element');
-        const fn = adminHtml.slice(adminHtml.indexOf('function switchAdminTab('),
-                                   adminHtml.indexOf('function selectSkillUser('));
-        assert.truthy(/pageTitle/.test(fn), 'switchAdminTab must update the title');
+        const fn = adminHtml.slice(adminHtml.indexOf('function render(){'), adminHtml.indexOf('window.addEventListener(\'hashchange\''));
+        assert.truthy(/title\.textContent = 'Tổng quan'/.test(fn) && /title\.textContent = 'Cài đặt app'/.test(fn));
     });
 
-    test('on a phone the sider is a drawer behind a menu button', () => {
-        assert.truthy(phoneBlock.length > 0, 'no 900px breakpoint');
-        assert.truthy(/\.sider \{[^}]*transform:translateX\(-100%\)/.test(phoneBlock), 'the sider must slide out of view');
-        assert.truthy(/\.sider\.open \{[^}]*transform:none/.test(phoneBlock), 'and back in when open');
-        assert.truthy(adminHtml.includes('id="menuBtn"'), 'no button to open it');
-        assert.truthy(adminHtml.includes('id="siderMask"'), 'no mask to close it');
-        assert.truthy(/\.menu-btn \{ display:inline-flex/.test(phoneBlock), 'the button must appear on phones');
-        assert.truthy(/\.menu-btn \{ display:none/.test(adminHtml), 'and be absent on desktop');
+    test('on a tablet or phone the sider is a strip across the top, not a drawer', () => {
+        assert.truthy(tabletBlock.length > 0, 'no 900px breakpoint');
+        assert.truthy(/\.sider \{[^}]*flex-direction:row/.test(tabletBlock), 'the sider lays its items out in a row');
+        assert.truthy(/\.sider \{[^}]*overflow-x:auto/.test(tabletBlock), 'and scrolls sideways');
+        assert.falsy(adminHtml.includes('id="menuBtn"'), 'no hamburger: the children must stay visible');
+        assert.truthy(/\.main \{ margin-left:0; \}/.test(tabletBlock), 'the content takes the full width');
     });
 
-    test('picking a section closes the drawer', () => {
-        assert.truthy(/function closeSider\(\)/.test(adminHtml));
-        const fn = adminHtml.slice(adminHtml.indexOf('function switchAdminTab('),
-                                   adminHtml.indexOf('function selectSkillUser('));
-        assert.truthy(/closeSider\(\)/.test(fn), 'switchAdminTab must close the drawer');
+    test('the child page has the three tabs, tasks first', () => {
+        const strip = adminHtml.match(/<nav class="tabs" role="tablist" aria-label="Mục của bé">[\s\S]*?<\/nav>/);
+        assert.truthy(strip, 'no child tab strip');
+        const tabs = [...strip[0].matchAll(/data-tab="(\w+)"/g)].map(m => m[1]);
+        assert.deepEqual(tabs, ['tasks', 'history', 'skills']);
     });
 
     test('Ant Design 5 tokens, not the old Duolingo-blue ramp', () => {

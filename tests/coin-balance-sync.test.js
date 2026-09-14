@@ -41,7 +41,7 @@ suite('daily coin balance recovery snapshots', () => {
   });
   test('admin activity exposes the recoverable balance beside its source activity', () => {
     assert.equal((adminApi.match(/AS coin_balance/g) || []).length, 2);
-    assert.truthy(admin.includes('<th>Balance</th>'));
+    assert.truthy(admin.includes('<th class="num">Xu</th>'), 'the history shows the wallet beside each activity');
     assert.truthy(admin.includes('a.coin_balance!=null'));
   });
   test('the users list flags a suspected wipe and pre-fills the restore grant', () => {

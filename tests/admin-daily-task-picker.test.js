@@ -1,14 +1,12 @@
-// admin-daily-task-picker.test.js — the admin assigns a task the way a child
-// finds it: Eng or Math, then the menu, then the sub-menu, as deep as the
-// app goes, until a task is picked.
+// admin-daily-task-picker.test.js — the admin assigns a task by searching
+// for it (accents ignored, over label and path) or by browsing the same
+// Eng / Math tree a child walks.
 //
 // Two halves. The catalog's tree() is pure and is checked as data: every
 // task sits at exactly one path, the top menus are in the app's own order,
 // and nothing is deeper than three sub-menus above the task. The admin
-// page's cascade is EXECUTED: its functions are lifted out of admin.html
-// into a vm with a stub DOM that understands just enough of the markup it
-// writes, and a walk Math › Toán 7 › Học kì 2 › Luyện chương › Chương 6 must
-// end with #dailyKind = 'math-chapter:6'.
+// page's search is EXECUTED: searchTasks() and fold() are lifted out of
+// admin.html into a vm and run against the real catalog.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const vm = require('vm');
@@ -73,98 +71,78 @@ suite('daily-task catalog: the tree', () => {
   });
 });
 
-suite('admin page: the cascade picker, executed', () => {
-  // Lift the picker's functions out of admin.html. They are plain top-level
-  // functions between the "Daily task tab" banner and saveDailyTask.
+suite('admin page: the task search, executed', () => {
+  // The admin hands out a task by typing what she remembers of it — "hk2",
+  // "cuu chuong", "tenses" — and the picker searches the whole catalog,
+  // accents ignored, over the label AND the path a child would walk. The
+  // functions are lifted out of admin.html by name and run for real.
   const html = read('admin.html');
-  const start = html.indexOf('// ── Daily task tab');
-  const end = html.indexOf('async function saveDailyTask');
-  assert.truthy(start > 0 && end > start, 'picker functions not found in admin.html');
-  const code = html.slice(start, end);
+  const script = html.match(/<script>([\s\S]*)<\/script>/)[1];
+  const pick = (name) => {
+    const start = script.indexOf('function ' + name + '(');
+    if (start < 0) throw new Error(name + ' not found in admin.html');
+    return script.slice(start, script.indexOf('\n}', start) + 2);
+  };
+  const ctx = vm.createContext({ String, Set, Map });
+  vm.runInContext([pick('fold'), pick('searchTasks')].join('\n') + '\nthis.searchTasks = searchTasks;', ctx);
+  const search = (q, assigned, limit) => ctx.searchTasks(q, Catalog.all(), assigned || [], limit);
+  const keys = (r) => r.groups.flatMap(g => g.items.map(i => i.entry.key));
 
-  function page() {
-    const els = {};
-    const mk = (id) => ({ id, innerHTML: '', value: '', textContent: '', dataset: {}, focus() {}, querySelectorAll() { return []; } });
-    for (const id of ['dailyPath', 'dailyKind', 'dailyPathHint', 'dailyTarget']) els[id] = mk(id);
-    // The host parses the <select>s it was handed, so a change can be fired
-    // on one of them the way a real DOM would.
-    els.dailyPath.querySelectorAll = () => [...els.dailyPath.innerHTML.matchAll(/<select class="daily-level" data-depth="(\d+)"/g)]
-      .map(m => { const s = { dataset: { depth: m[1] }, value: '', onchange: null }; (els.dailyPath._selects = els.dailyPath._selects || []).push(s); return s; });
-    const ctx = vm.createContext({
-      document: { getElementById: (id) => els[id] || null, querySelector: () => els.dailyPath },
-      DailyTaskCatalog: Catalog,
-      esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'),
-      console,
-    });
-    vm.runInContext(code + '\nglobalThis.__render = renderDailyPath; globalThis.__reset = resetDailyForm;', ctx);
-    const selects = () => {
-      els.dailyPath._selects = [];
-      els.dailyPath.querySelectorAll();
-      return els.dailyPath._selects;
-    };
-    const pick = (depth, value) => {
-      // re-render happens inside onchange; find the live select for this depth
-      const live = ctx.__lastSelects || [];
-      const s = live.find(x => Number(x.dataset.depth) === depth);
-      assert.truthy(s, 'no select at depth ' + depth);
-      s.value = value; s.onchange();
-    };
-    // Capture the selects the page wired on each render.
-    const origQSA = els.dailyPath.querySelectorAll;
-    els.dailyPath.querySelectorAll = (...a) => { const r = origQSA(...a); ctx.__lastSelects = r; return r; };
-    return { els, ctx, pick, selects };
-  }
-
-  test('a fresh form shows one select — Eng or Math — and no task', () => {
-    const { els, ctx } = page();
-    ctx.__reset();
-    const depths = [...els.dailyPath.innerHTML.matchAll(/data-depth="(\d+)"/g)].map(m => m[1]);
-    assert.deepEqual(depths, ['0']);
-    assert.truthy(els.dailyPath.innerHTML.includes('› Eng') && els.dailyPath.innerHTML.includes('› Math'));
-    assert.equal(els.dailyKind.value, '');
-    assert.equal(els.dailyTarget.value, '5');
+  test('"hk2" finds every Toán 7 HK2 paper, grouped under the path a child would walk', () => {
+    const r = search('hk2');
+    const g = r.groups.find(x => x.path === 'Math › Toán 7 › Học kì 2 › Đề thi');
+    assert.truthy(g, 'the HK2 exam group is missing: ' + r.groups.map(x => x.path).join(' | '));
+    assert.truthy(g.items.some(i => i.entry.key === 'math-exam:any-hk2'), 'the "bất kỳ" paper must be in the group');
+    assert.truthy(g.items.length > 10, 'all the HK2 papers, not a handful');
   });
 
-  test('Math › Toán 7 › Học kì 2 › Luyện chương › Chương 6 ends with the task key', () => {
-    const { els, ctx, pick } = page();
-    ctx.__reset();
-    pick(0, 'sub:Math');
-    assert.truthy(els.dailyPath.innerHTML.includes('› Toán 7'));
-    pick(1, 'sub:Toán 7');
-    pick(2, 'sub:Học kì 2');
-    assert.truthy(els.dailyPath.innerHTML.includes('› Luyện chương') && els.dailyPath.innerHTML.includes('› Đề thi'));
-    pick(3, 'sub:Luyện chương');
-    assert.truthy(els.dailyPath.innerHTML.includes('task:math-chapter:6'), 'the chapter tasks are listed');
-    pick(4, 'task:math-chapter:6');
-    assert.equal(els.dailyKind.value, 'math-chapter:6');
-    assert.truthy(els.dailyPathHint.textContent.startsWith('✓ Math › Toán 7 › Học kì 2 › Luyện chương ›'));
+  test('accents are ignored on both sides: "cuu chuong" finds Bảng cửu chương', () => {
+    const r = search('cuu chuong');
+    assert.truthy(keys(r).includes('math4:cc'), 'the folded query must match the accented label');
+    assert.truthy(keys(search('Bảng CỬU chương')).includes('math4:cc'), 'and an accented query matches too');
   });
 
-  test('a node with both sub-menus and tasks offers both (PTNK Exams)', () => {
-    const { els, ctx, pick } = page();
-    ctx.__reset();
-    pick(0, 'sub:Eng'); pick(1, 'sub:PTNK Exams');
-    const h = els.dailyPath.innerHTML;
-    assert.truthy(h.includes('› 2024') && h.includes('task:ptnk:any'), 'years AND the any-paper task');
-    pick(2, 'task:ptnk:any');
-    assert.equal(els.dailyKind.value, 'ptnk:any');
+  test('every word must match somewhere in path or label — "grammar 12" is Unit 12 only', () => {
+    const r = search('grammar 12');
+    assert.truthy(r.matched > 0);
+    for (const k of keys(r)) assert.truthy(/^grammar:unit12/.test(k), k + ' is not Unit 12');
   });
 
-  test('changing an upper level throws away everything below it', () => {
-    const { els, ctx, pick } = page();
-    ctx.__reset();
-    pick(0, 'sub:Math'); pick(1, 'sub:Toán 4'); pick(2, 'task:math4:pre');
-    assert.equal(els.dailyKind.value, 'math4:pre');
-    pick(0, 'sub:Eng');
-    assert.equal(els.dailyKind.value, '', 'a task picked under Math must not survive a switch to Eng');
-    const depths = [...els.dailyPath.innerHTML.matchAll(/data-depth="(\d+)"/g)].map(m => m[1]);
-    assert.deepEqual(depths, ['0', '1']);
+  test('a path word alone works: "toán 7 luyện chương" lists the chapters', () => {
+    const r = search('toan 7 luyen chuong');
+    assert.truthy(keys(r).includes('math-chapter:6'));
+    assert.truthy(keys(r).includes('math-chapter:1'));
   });
 
-  test('the form refuses to save without a task, and the old two-dropdown ids are gone', () => {
-    assert.truthy(html.includes("if (!kind){ alert('Chọn bài bé sẽ làm"), 'saveDailyTask must refuse an empty kind');
-    assert.falsy(html.includes('id="dailyGroup"'), 'the old group dropdown must be gone');
-    assert.truthy(html.includes('<input type="hidden" id="dailyKind"'), 'the chosen key travels in the hidden input saveDailyTask reads');
+  test('an empty query matches the whole catalog, capped, and says how many were held back', () => {
+    const r = search('', [], 20);
+    assert.equal(r.shown, 20);
+    assert.equal(r.matched, Catalog.all().length);
+    assert.truthy(r.matched > r.shown);
+  });
+
+  test('a task the child already has is marked, not hidden', () => {
+    const r = search('đề thi hk2', ['math-exam:any-hk2']);
+    const it = r.groups.flatMap(g => g.items).find(i => i.entry.key === 'math-exam:any-hk2');
+    assert.truthy(it, 'the assigned task must still be listed');
+    assert.equal(it.assigned, true);
+    assert.truthy(r.groups.flatMap(g => g.items).some(i => !i.assigned), 'others stay assignable');
+  });
+
+  test('nonsense matches nothing, cleanly', () => {
+    const r = search('xyzzy plugh');
+    assert.deepEqual(r.groups, []);
+    assert.equal(r.matched, 0);
+  });
+
+  test('the page wires the search to the picker and has one target box the server agrees with', () => {
+    assert.truthy(html.includes('id="taskSearch"'), 'no search box');
+    assert.truthy(/getElementById\('taskSearch'\)\.addEventListener\('input'/.test(html), 'typing must re-render');
+    assert.truthy(/DailyTaskCatalog\.tree\(\)/.test(html), 'the browse mode walks the catalog tree');
+    const client = html.match(/id="dailyTarget"[^>]*max="(\d+)"/);
+    const server = read('functions/api/_daily-task.js').match(/export const MAX_TARGET = (\d+);/);
+    assert.truthy(client && server, 'both caps must exist');
+    assert.equal(Number(client[1]), Number(server[1]));
   });
 });
 

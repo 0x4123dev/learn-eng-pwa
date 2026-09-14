@@ -93,7 +93,6 @@ suite('skill analytics: background producers', () => {
 suite('skill analytics: admin-only dashboard', () => {
   test('admin can filter a selected user by menu and time range', () => {
     assert.truthy(admin.includes('id="skillMenu"'));
-    assert.truthy(admin.includes('id="skillUser"'));
     assert.truthy(admin.includes('id="skillDays"'));
     assert.truthy(admin.includes('<option value="1">1 ngày</option>'));
     assert.truthy(report.includes("['1', '7', '30', '90', '365', 'all']"));
@@ -104,7 +103,8 @@ suite('skill analytics: admin-only dashboard', () => {
   test('competency analytics is a responsive admin tab with every menu', () => {
     assert.truthy(admin.includes('role="tablist"'));
     assert.truthy(admin.includes('id="skillsPanel"'));
-    assert.truthy(admin.includes("switchAdminTab('skills')"));
+    assert.truthy(admin.includes('data-tab="skills"'), 'the child page has a Năng lực tab');
+    assert.truthy(/if \(tab === 'skills'\) loadSkills\(_skillUser, _skillName\)/.test(admin), 'opening the tab loads the open child');
     assert.truthy(admin.includes('@media (max-width: 640px)'));
     assert.truthy(admin.includes('min-height:44px'));
     for (const menu of ['grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {

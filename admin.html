@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,16 +7,17 @@
 <title>FlashLingo — Admin</title>
 <style>
   /* ============================================================
-     FlashLingo Admin — laid out like an Ant Design Pro app.
-     The child's app is warm, rounded and glassy; this screen is the
-     parent's tool. Ant Design 5 tokens, hand-written (no antd is loaded):
-     a fixed dark sider carrying the section menu, a white header, grey
-     content, cards with a hairline border and no drop shadow.
+     FlashLingo Admin — the parent's console, laid out like an Ant
+     Design Pro app and organised around the CHILDREN, not around
+     features. The sider lists the children; the landing page is the
+     learning history of all of them; a child's own page carries the
+     two things a parent does every day — reads the history and hands
+     out daily tasks. App-wide switches and account admin sit at the
+     bottom of the sider, where things touched once a month belong.
+     Ant Design 5 tokens, hand-written: no antd is loaded.
      ============================================================ */
   :root {
     color-scheme: light;
-
-    /* Ant Design 5 seed + derived tokens */
     --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
     --primary-bg:#e6f4ff; --primary-bg-hover:#bae0ff; --primary-border:#91caff;
     --success:#52c41a; --success-bg:#f6ffed; --success-border:#b7eb8f; --success-text:#389e0d;
@@ -26,8 +27,7 @@
     --border:#d9d9d9; --split:#f0f0f0;
     --fill-2:rgba(0,0,0,.06); --fill-3:rgba(0,0,0,.04); --fill-4:rgba(0,0,0,.02);
     --bg:#f5f5f5; --card:#fff; --table-head:#fafafa;
-    /* Ant Pro layout */
-    --sider-bg:#001529; --sider-w:220px; --header-h:56px;
+    --sider-bg:#001529; --sider-w:232px; --header-h:56px;
     --r:6px; --r-lg:8px;
     --sh-card:0 1px 2px 0 rgba(0,0,0,.03), 0 1px 6px -1px rgba(0,0,0,.02), 0 2px 4px 0 rgba(0,0,0,.02);
     --sh-2:0 6px 16px 0 rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
@@ -42,6 +42,7 @@
   a { color: var(--primary); text-decoration:none; }
   a:hover { color: var(--primary-hover); }
   :focus-visible { outline:2px solid var(--primary); outline-offset:1px; border-radius:var(--r); }
+  [hidden] { display:none !important; }
 
   /* ---- shared controls (Ant Button / Input / Select) ------------------ */
   .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; min-height:32px;
@@ -55,10 +56,11 @@
   .btn-primary:hover:not(:disabled) { background:var(--primary-hover); border-color:var(--primary-hover); color:#fff; }
   .btn-primary:active:not(:disabled) { background:var(--primary-active); border-color:var(--primary-active); color:#fff; }
   .btn-ghost { background:#fff; border-color:var(--border); color:var(--text); }
+  .btn-sm { height:24px; min-height:24px; padding:0 7px; font-size:12px; border-radius:4px; }
   .btn:disabled { color:var(--text-4); background:var(--fill-3); border-color:var(--border); cursor:not-allowed; box-shadow:none; }
 
   input, select, textarea { font-family:inherit; color:var(--text); font-size:14px; }
-  select, input[type=text], input[type=password], input[type=number], input:not([type]) {
+  select, input[type=text], input[type=search], input[type=password], input[type=number], input:not([type]) {
     background:#fff; border:1px solid var(--border); border-radius:var(--r); min-height:32px; padding:4px 11px;
     line-height:1.5715; transition: border-color .2s, box-shadow .2s; }
   select:hover, input:hover { border-color:var(--primary-hover); }
@@ -67,6 +69,18 @@
   select { -webkit-appearance:none; appearance:none; padding-right:30px; cursor:pointer;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='rgba(0,0,0,0.25)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.75 6 6.5 11 1.75'/></svg>");
     background-repeat:no-repeat; background-position:right 11px center; background-size:11px 8px; }
+
+  /* Ant Segmented / Radio.Button: the range and kind filters */
+  .seg { display:inline-flex; gap:2px; padding:2px; background:var(--fill-2); border-radius:var(--r); }
+  .seg button { border:0; background:transparent; color:var(--text-2); font:inherit; font-size:13px; padding:3px 12px;
+                border-radius:4px; cursor:pointer; white-space:nowrap; transition: background .2s, color .2s; }
+  .seg button:hover { color:var(--text); }
+  .seg button[aria-pressed="true"] { background:#fff; color:var(--text); box-shadow:var(--sh-card); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { border:1px solid var(--border); background:#fff; color:var(--text-2); font:inherit; font-size:12px;
+          padding:1px 9px; border-radius:100px; cursor:pointer; line-height:20px; transition: all .2s; }
+  .chip:hover { color:var(--primary); border-color:var(--primary-border); }
+  .chip[aria-pressed="true"] { background:var(--primary-bg); border-color:var(--primary-border); color:var(--primary-active); }
 
   /* ---- Login (Ant Card + Form) ----------------------------------------- */
   .login { max-width: 380px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--split);
@@ -85,82 +99,70 @@
 
   /* ---- Ant Pro layout: sider + header + content ----------------------- */
   .sider { position:fixed; inset:0 auto 0 0; width:var(--sider-w); z-index:30; display:flex; flex-direction:column;
-           background:var(--sider-bg); color:rgba(255,255,255,.65); overflow-y:auto;
-           transition: transform .2s ease; }
+           background:var(--sider-bg); color:rgba(255,255,255,.65); overflow-y:auto; scrollbar-width:thin; }
   .logo { display:flex; align-items:center; gap:10px; height:var(--header-h); padding:0 20px; color:#fff;
-          font-size:16px; font-weight:600; white-space:nowrap; letter-spacing:-.01em; }
+          font-size:16px; font-weight:600; white-space:nowrap; letter-spacing:-.01em; flex:none; }
   .logo-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:var(--r);
                background:var(--primary); font-size:17px; flex:none; }
+  .sider-group { padding:14px 20px 6px; font-size:11px; font-weight:600; letter-spacing:.08em;
+                 text-transform:uppercase; color:rgba(255,255,255,.35); }
+  .sider-nav { display:flex; flex-direction:column; gap:4px; padding:4px 8px; margin:0; }
+  /* Ant Menu (dark): one row per destination. The children ARE the menu. */
+  .nav-item { display:flex; align-items:center; gap:10px; min-height:40px; width:100%; border:0;
+              border-radius:var(--r); padding:0 12px; background:transparent; color:rgba(255,255,255,.65);
+              font:400 14px/40px inherit; cursor:pointer; text-align:left; white-space:nowrap;
+              transition: background .2s, color .2s; text-decoration:none; }
+  .nav-item:hover { color:#fff; background:rgba(255,255,255,.08); }
+  .nav-item[aria-current="page"] { color:#fff; background:var(--primary); }
+  .nav-item .nav-ico { width:22px; text-align:center; flex:none; font-size:15px; }
+  .nav-item .nav-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .nav-item .nav-meta { font-size:12px; color:rgba(255,255,255,.45); font-variant-numeric:tabular-nums; flex:none; }
+  .nav-item[aria-current="page"] .nav-meta { color:rgba(255,255,255,.85); }
+  .nav-item .nav-meta.done { color:#95de64; }
+  .nav-item[aria-current="page"] .nav-meta.done { color:#fff; }
+  .nav-avatar { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; flex:none;
+                font-size:11px; font-weight:600; color:#fff; background:#3b5b8a; position:relative; }
+  /* a green dot: the child has done something today */
+  .nav-avatar.today::after { content:""; position:absolute; right:-2px; bottom:-2px; width:9px; height:9px;
+                             border-radius:50%; background:var(--success); border:2px solid var(--sider-bg); }
+  .sider-sep { height:1px; margin:10px 20px 4px; background:rgba(255,255,255,.1); }
   .sider-foot { margin-top:auto; padding:14px 20px; font-size:12px; color:rgba(255,255,255,.35); }
 
   .main { margin-left:var(--sider-w); min-height:100vh; display:flex; flex-direction:column; }
   .wrap { width:100%; max-width:1200px; margin:0 auto; padding:24px 24px 96px; }
+  .page[hidden] { display:none; }
 
   /* ---- Header ----------------------------------------------------------- */
   header.bar { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px;
                flex-wrap:wrap; min-height:var(--header-h); padding:8px 24px; margin:0;
                background:#fff; border-bottom:1px solid var(--split); }
-  header.bar h1 { font-size:18px; font-weight:600; letter-spacing:-.01em; margin:0; line-height:1.4; }
+  header.bar h1 { font-size:18px; font-weight:600; letter-spacing:-.01em; margin:0; line-height:1.4;
+                  min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; align-items:center; }
-  .menu-btn { display:none; align-items:center; justify-content:center; width:36px; height:36px;
-              border:0; border-radius:var(--r); background:transparent; color:var(--text); font-size:20px;
-              cursor:pointer; font-family:inherit; }
-  .menu-btn:hover { background:var(--fill-3); }
-  /* paintAppFlags() paints this button's colours inline when Đấu Toán is ON,
-     so only properties it does NOT set can be styled here. */
-  #mathFightFlag[aria-pressed="true"] { border-color:transparent; }
-  #ccSecondsWrap { cursor:default; }
-  #ccSecondsWrap input { width:60px; min-height:24px; height:24px; padding:0 6px; border-radius:4px;
-                         border:1px solid var(--border); background:#fff; color:var(--text);
-                         font:inherit; text-align:right; }
-  #ccSecondsWrap:hover { color:var(--text); border-color:var(--border); }
-
-  /* ---- Stat tiles (Ant Statistic in a Card) --------------------------- */
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-           gap:16px; margin-bottom:16px; }
-  .stat { display:flex; flex-direction:column; align-items:flex-start; gap:4px;
-          background:var(--card); border:1px solid var(--split); border-radius:var(--r-lg);
-          padding:20px 24px; box-shadow:var(--sh-card); }
-  .stat b { display:block; font-size:30px; line-height:1.2; font-weight:500; letter-spacing:-.01em;
-            font-variant-numeric:tabular-nums; order:2; }
-  .stat span { color:var(--text-2); font-size:14px; order:1; }
-
-  /* ---- Activity feed --------------------------------------------------- */
-  /* The activity feed is the first thing on the page, whichever section is
-     open — and it is capped, because it is meant to be glanced at on the way
-     to somewhere else, not scrolled forever. */
-  .pager { display:flex; align-items:center; justify-content:flex-end; gap:8px;
-           padding:12px 24px; border-top:1px solid var(--split); }
-  .pager:empty { display:none; }
-  .pager-btn { min-height:32px; padding:4px 12px; }
-  .pager-btn[disabled] { cursor:default; }
-  .pager-info { font-size:14px; color:var(--text-2); font-variant-numeric:tabular-nums; }
-
-  /* ---- Section menu (Ant Menu, dark theme) — the old tab bar ---------- */
-  .admin-tabs { display:flex; flex-direction:column; gap:4px; margin:8px 0 0; padding:4px 8px; }
-  .admin-tab { display:flex; align-items:center; gap:10px; min-height:40px; width:100%; border:0;
-               border-radius:var(--r); padding:0 16px; background:transparent; color:rgba(255,255,255,.65);
-               font:400 14px/40px inherit; cursor:pointer; text-align:left; white-space:nowrap;
-               transition: background .2s, color .2s; }
-  .admin-tab:hover { color:#fff; background:rgba(255,255,255,.08); }
-  .admin-tab[aria-selected="true"] { color:#fff; background:var(--primary); }
-  .admin-panel[hidden] { display:none; }
+  .crumb { color:var(--text-3); font-weight:400; }
 
   /* ---- Cards (Ant Card) ----------------------------------------------- */
   .card { background:var(--card); border:1px solid var(--split); border-radius:var(--r-lg);
           margin-bottom:16px; overflow:hidden; box-shadow:var(--sh-card); }
-  /* The only .card > h2 is "Users", and it sits directly above the search
-     toolbar — one band of chrome, not two stacked rules. */
-  .card > h2 { font-size:16px; margin:0; padding:16px 24px 0; color:var(--text); font-weight:600; line-height:1.5; }
-  .card > h2 + .tools { padding-top:12px; }
+  .card-head { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap; min-height:56px;
+               border-bottom:1px solid var(--split); }
+  .card-head h2 { margin:0; font-size:16px; color:var(--text); font-weight:600; line-height:1.5; }
+  .card-head .sub { font-size:13px; color:var(--text-2); }
+  .card-head .spacer { margin-left:auto; }
+  .card-body { padding:16px 24px; }
   .scroll { overflow-x:auto; }
+  .empty { padding:32px 24px; text-align:center; color:var(--text-3); }
+  .note { font-size:13px; }
+  .note.ok { color:var(--success-text); }
+  .note.bad { color:var(--error-text); }
+  .note:empty { display:none; }
 
   /* ---- Tables (Ant Table) --------------------------------------------- */
   table { width:100%; border-collapse:collapse; font-size:14px; }
-  th, td { text-align:left; padding:12px 16px; white-space:nowrap; }
+  th, td { text-align:left; padding:10px 16px; white-space:nowrap; }
   th:first-child, td:first-child { padding-left:24px; }
   th:last-child, td:last-child { padding-right:24px; }
-  thead th { background:var(--table-head); color:var(--text); font-size:14px; font-weight:600;
+  thead th { background:var(--table-head); color:var(--text); font-size:13px; font-weight:600;
              border-bottom:1px solid var(--split); }
   tbody td { border-bottom:1px solid var(--split); vertical-align:middle; transition: background .2s; }
   tbody tr:last-child td { border-bottom:0; }
@@ -169,9 +171,9 @@
   tr.selected td, tbody tr.clickable.selected:hover td { background:var(--primary-bg); }
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
   .muted { color:var(--text-2); }
-  .empty { padding:32px 24px; text-align:center; color:var(--text-3); }
+  .dim { color:var(--text-3); }
 
-  /* ---- Pills (Ant Tag, preset colours) -------------------------------- */
+  /* ---- Pills (Ant Tag) ------------------------------------------------- */
   .pill { display:inline-block; padding:0 7px; border:1px solid transparent; border-radius:4px;
           font-size:12px; font-weight:400; line-height:20px; white-space:nowrap; }
   .pill.admin { background:#f9f0ff; border-color:#d3adf7; color:#531dab; }
@@ -197,86 +199,136 @@
   .pct-mid  { color:var(--warning-text); font-weight:500; }
   .pct-low  { color:var(--error-text); font-weight:500; }
 
-  /* ---- Toolbars (Ant Card head) --------------------------------------- */
-  .toolbar { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap; min-height:56px;
-             border-bottom:1px solid var(--split); }
-  .toolbar h2 { margin:0; font-size:16px; color:var(--text); font-weight:600; line-height:1.5; }
-  .toolbar .who { font-size:14px; color:var(--text-2); }
-  #allBtn { margin-left:auto; }
-  .tools { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap;
-           border-bottom:1px solid var(--split); }
-  .search { flex:1; min-width:200px; max-width:360px; position:relative; }
-  .search input { width:100%; min-height:32px; padding:4px 11px 4px 32px; font-size:14px;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='rgba(0,0,0,0.45)' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.6'/><path d='M10.5 10.5 14 14'/></svg>");
-    background-repeat:no-repeat; background-position:left 10px center; background-size:14px 14px; }
-  .count { color:var(--text-2); font-size:14px; font-variant-numeric:tabular-nums; }
-  .sort-mobile { display:none; }
+  /* ---- Overview: the "who studied, who skipped" grid -------------------
+     One row per child, one column per day, the cell is the number of
+     activities that day tinted by the average score. An empty cell is a
+     skipped day — which is the thing a parent is actually looking for. */
+  .grid-table th, .grid-table td { padding:8px 6px; text-align:center; }
+  .grid-table th:first-child, .grid-table td:first-child { text-align:left; padding-left:24px; }
+  .grid-table th.today, .grid-table td.today { background:var(--primary-bg); }
+  .grid-table thead th { font-size:12px; }
+  .grid-table thead th small { display:block; font-weight:400; color:var(--text-3); font-size:11px; }
+  .grid-table .cell { display:inline-grid; place-items:center; min-width:34px; height:28px; padding:0 6px;
+                      border-radius:4px; font-size:13px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .cell.good { background:#d9f7be; color:#237804; }
+  .cell.mid  { background:#fff1b8; color:#ad6800; }
+  .cell.low  { background:#ffccc7; color:#a8071a; }
+  .cell.none { background:var(--fill-2); color:var(--text); }
+  .cell.zero { color:var(--text-4); font-weight:400; }
+  .grid-table td.tasks { text-align:left; white-space:nowrap; }
+  .grid-table .kid { display:inline-flex; align-items:center; gap:8px; font-weight:500; color:var(--text);
+                     background:none; border:0; padding:0; font:inherit; cursor:pointer; }
+  .grid-table .kid:hover { color:var(--primary); }
+  .grid-table .kid .avatar { width:26px; height:26px; font-size:11px; }
+  .grid-table .kid-name { display:flex; flex-direction:column; align-items:flex-start; line-height:1.3; }
+  .grid-table .kid-tasks { display:none; }
+  .grid-legend { display:flex; flex-wrap:wrap; gap:14px; padding:10px 24px 14px; font-size:12px; color:var(--text-3); align-items:center; }
+  .grid-legend .cell { min-width:26px; height:20px; font-size:11px; }
 
-  #usersTable th.sortable { cursor:pointer; user-select:none; transition: background .2s; }
-  #usersTable th.sortable:hover { background:var(--fill-2); }
-  #usersTable th .arrow { color:var(--text-4); font-size:9px; }
-  #usersTable th.sorted { color:var(--primary); }
-  #usersTable th.sorted .arrow { color:var(--primary); }
-  .th-short { display:none; }
+  /* ---- History: grouped by day ---------------------------------------- */
+  .hist-filters { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:12px 24px;
+                  border-bottom:1px solid var(--split); background:#fafafa; }
+  .hist-filters .search { min-width:180px; flex:1; max-width:280px; }
+  .hist-filters .search input { width:100%; }
+  .day { border-bottom:1px solid var(--split); }
+  .day:last-child { border-bottom:0; }
+  .day > summary { list-style:none; display:flex; align-items:center; gap:12px; padding:12px 24px; cursor:pointer;
+                   flex-wrap:wrap; user-select:none; }
+  .day > summary::-webkit-details-marker { display:none; }
+  .day > summary:hover { background:var(--fill-4); }
+  .day-caret { width:14px; color:var(--text-3); transition: transform .15s; font-size:11px; }
+  .day[open] > .day-caret, .day[open] > summary .day-caret { transform:rotate(90deg); }
+  .day-title { font-weight:600; min-width:150px; }
+  .day-title.today { color:var(--primary); }
+  .day-sum { display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--text-2); font-variant-numeric:tabular-nums; }
+  .day-sum b { color:var(--text); font-weight:500; }
+  .day-sum .skipped { color:var(--error-text); }
+  .day-tasks { font-size:12px; margin-left:auto; }
+  .day table { font-size:13.5px; }
+  .day thead th { font-size:12px; padding:6px 16px; background:#fff; color:var(--text-3); border-top:1px solid var(--split); }
+  .day td { padding:8px 16px; }
+  .who { display:inline-flex; align-items:center; gap:8px; }
+  .who .avatar { width:22px; height:22px; font-size:10px; }
+  .hist-more { padding:10px 24px 14px; text-align:center; }
 
-  .who-cell { display:flex; align-items:center; gap:10px; }
-  .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
-            font-weight:500; font-size:13px; color:#fff; background:var(--primary); flex:none; }
-  .avatar.admin { background:#722ed1; }
-  .who-name { font-weight:500; }
-  .who-sub { font-size:12px; color:var(--text-3); }
-  tr.disabled td { opacity:.55; }
-  tr.disabled .who-name { text-decoration:line-through; }
-  /* Named .meter, NOT .bar: <header class="bar"> already exists, and a bare
-     .bar rule styled the page header as a 4px blue strip 24px tall with its
-     buttons spilling over the stats below. A generic class name in a single
-     stylesheet is how that happens. */
-  .meter { height:4px; border-radius:999px; background:var(--primary); opacity:.7; margin:3px 0 0 auto; }
+  /* ---- Child page ------------------------------------------------------- */
+  .child-head { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .child-head .avatar { width:48px; height:48px; font-size:18px; }
+  .child-head h2 { margin:0; font-size:22px; font-weight:600; line-height:1.3; }
+  .child-head .facts { display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-2); margin-top:2px; }
+  .child-head .facts b { color:var(--text); font-weight:500; }
+  /* Ant Tabs: an ink bar under the active tab */
+  .tabs { display:flex; gap:0; border-bottom:1px solid var(--split); margin-bottom:16px; overflow-x:auto; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .admin-tab { border:0; background:transparent; font:inherit; font-size:14px; color:var(--text); padding:10px 4px;
+               margin:0 28px -1px 0; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap;
+               min-height:44px; transition: color .2s, border-color .2s; }
+  .admin-tab:hover { color:var(--primary-hover); }
+  .admin-tab[aria-selected="true"] { color:var(--primary); border-bottom-color:var(--primary); font-weight:500; }
+  .admin-panel[hidden] { display:none; }
 
-  .row-actions { display:flex; gap:6px; justify-content:flex-end; }
-  .mini { display:inline-flex; align-items:center; justify-content:center; gap:2px;
-          min-height:24px; height:24px; border:1px solid var(--border); background:#fff; border-radius:4px;
-          padding:0 7px; font-size:12px; font-weight:400; cursor:pointer; font-family:inherit;
-          color:var(--text); white-space:nowrap; box-shadow:var(--sh-btn);
-          transition: background .2s, border-color .2s, color .2s; }
-  .mini:hover:not(:disabled) { color:var(--primary-hover); border-color:var(--primary-hover); }
-  .mini:disabled { color:var(--text-4); background:var(--fill-3); cursor:default; box-shadow:none; }
-  .mini.on { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
-  .mini.on:hover:not(:disabled) { background:#d9f7be; border-color:#95de64; color:var(--success-text); }
-  .mini.danger { color:var(--error); border-color:var(--error-border); }
-  .mini.danger:hover:not(:disabled) { background:var(--error-bg); border-color:var(--error); color:var(--error-text); }
-  .mini.revive { color:var(--success-text); border-color:var(--success-border); }
+  /* ---- Daily tasks --------------------------------------------------- */
+  .status-line { padding:12px 24px; background:var(--primary-bg); border-bottom:1px solid var(--primary-border);
+                 font-size:14px; display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; }
+  .status-line:empty { display:none; }
+  .task-kind { font-size:11px; color:var(--text-3); }
+  .task-count { font-variant-numeric:tabular-nums; }
+  .target-edit { display:inline-flex; align-items:center; gap:6px; }
+  .target-edit input { width:64px; text-align:right; min-height:28px; height:28px; padding:2px 8px; }
+  .target-edit .btn { display:none; }
+  .target-edit.changed input { border-color:var(--warning); box-shadow:0 0 0 2px rgba(250,173,20,.16); }
+  .target-edit.changed .btn { display:inline-flex; }
 
-  /* ---- learning strengths / weaknesses (admin only) ------------------- */
-  .learning-card { padding-bottom:24px; }
-  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:24px;
-                   padding:16px 24px; border-bottom:1px solid var(--split); }
-  .learning-title { display:flex; gap:12px; align-items:flex-start; }
-  .learning-icon { width:40px; height:40px; border-radius:var(--r-lg); display:grid; place-items:center;
-                   font-size:20px; color:var(--primary); background:var(--primary-bg); flex:none; }
-  .learning-icon svg { width:22px; height:22px; }
-  .learning-title h2 { margin:0 0 2px; color:var(--text); font-size:16px; font-weight:600; line-height:1.5;
-                       text-transform:none; }
-  .learning-title p { margin:0; max-width:52ch; color:var(--text-2); font-size:14px; line-height:1.5715; }
-  .learning-filters { display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
-  .learning-filters label { display:block; font-size:14px; color:var(--text); }
-  .learning-filters select { display:block; min-height:32px; margin-top:6px; min-width:140px;
-                             padding:4px 30px 4px 11px; font:400 14px/1.5715 inherit; }
+  .picker-top { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:flex-end; padding:16px 24px;
+                border-bottom:1px solid var(--split); }
+  .picker-top .field { flex:1; min-width:240px; }
+  .picker-top .field-num { flex:0 0 auto; }
+  .field label { display:block; margin-bottom:6px; font-size:13px; color:var(--text-2); }
+  .field input { width:100%; }
+  .field-num input { width:120px; }
+  .picker-modes { display:flex; gap:8px; align-items:center; padding:10px 24px; border-bottom:1px solid var(--split);
+                  font-size:13px; color:var(--text-2); flex-wrap:wrap; }
+  .picker-results { padding:8px 0 12px; }
+  .res-group { padding:6px 24px 4px; }
+  .res-path { font-size:12px; color:var(--text-3); padding:8px 0 4px; }
+  .res-path b { color:var(--text-2); font-weight:500; }
+  .res-row { display:flex; align-items:center; gap:12px; padding:7px 10px; border-radius:var(--r);
+             transition: background .15s; }
+  .res-row:hover { background:var(--fill-4); }
+  .res-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .res-row.assigned .res-label { color:var(--text-3); }
+  .res-row .btn { flex:none; }
+  .tree details { border-top:1px solid var(--split); }
+  .tree > details { border-top:0; }
+  .tree summary { list-style:none; cursor:pointer; padding:9px 24px; font-weight:500; display:flex; align-items:center; gap:8px; user-select:none; }
+  .tree summary::-webkit-details-marker { display:none; }
+  .tree summary:hover { background:var(--fill-4); }
+  .tree summary .n { font-weight:400; color:var(--text-3); font-size:12px; }
+  .tree details details summary { padding-left:44px; }
+  .tree details details details summary { padding-left:64px; }
+  .tree details details details details summary { padding-left:84px; }
+  .tree .res-row { margin-left:24px; }
+  .tree details details .res-row { margin-left:44px; }
+  .tree details details details .res-row { margin-left:64px; }
+  .tree details details details details .res-row { margin-left:84px; }
+  .tree .res-row .res-label { padding-left:10px; }
 
+  /* ---- Skills (kept from the previous console) ------------------------ */
+  .learning-filters { display:flex; gap:12px; flex-wrap:wrap; align-items:center; padding:12px 24px; border-bottom:1px solid var(--split); background:#fafafa; }
+  .learning-filters label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); }
+  .learning-filters select { min-width:150px; }
   .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; padding:24px; }
   .learning-stat { border:1px solid var(--split); border-radius:var(--r-lg); padding:16px 20px; background:var(--card);
                    box-shadow:var(--sh-card); display:flex; flex-direction:column; }
-  .learning-stat b { display:block; font-size:24px; font-weight:500; line-height:1.3; order:2;
-                     font-variant-numeric:tabular-nums; }
+  .learning-stat b { display:block; font-size:24px; font-weight:500; line-height:1.3; order:2; font-variant-numeric:tabular-nums; }
   .learning-stat span { display:block; margin-bottom:4px; color:var(--text-2); font-size:14px; order:1; }
   .skill-section-title { margin:8px 24px 12px; font-size:14px; color:var(--text); font-weight:600; }
-  .skill-list { display:grid; gap:8px; padding:0 24px; }
+  .skill-list { display:grid; gap:8px; padding:0 24px 24px; }
   .skill-row { display:grid; grid-template-columns:minmax(170px,1.6fr) minmax(120px,1fr) 62px 118px;
                gap:16px; align-items:center; padding:12px 16px; border:1px solid var(--split);
                border-radius:var(--r-lg); background:#fff; }
   .skill-name { min-width:0; }
-  .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-                       font-size:14px; font-weight:500; }
+  .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; font-weight:500; }
   .skill-name small { display:block; margin-top:2px; color:var(--text-2); font-size:12px; }
   .skill-track { height:8px; border-radius:100px; overflow:hidden; background:var(--fill-2); }
   .skill-fill { height:100%; border-radius:inherit; background:var(--warning); }
@@ -299,157 +351,188 @@
   .menu-card strong { display:block; font-size:14px; font-weight:500; margin-bottom:8px; color:var(--text-2); }
   .menu-card b { font-size:24px; font-weight:500; font-variant-numeric:tabular-nums; }
   .menu-card small { display:block; margin-top:4px; color:var(--text-3); font-size:12px; }
-  /* Ant Alert (warning) */
   .priority-card { display:flex; gap:12px; align-items:center; margin:0 24px 24px; padding:12px 16px;
-                   border:1px solid var(--warning-border); border-radius:var(--r-lg);
-                   background:var(--warning-bg); }
-  .priority-icon { width:32px; height:32px; flex:none; display:grid; place-items:center;
-                   border-radius:50%; background:#ffe58f; }
+                   border:1px solid var(--warning-border); border-radius:var(--r-lg); background:var(--warning-bg); }
+  .priority-icon { width:32px; height:32px; flex:none; display:grid; place-items:center; border-radius:50%; background:#ffe58f; }
   .priority-card strong,.priority-card span { display:block; }
   .priority-card strong { font-size:14px; font-weight:500; }
   .priority-card span { margin-top:2px; color:var(--text-2); font-size:14px; line-height:1.5715; }
 
-  /* ---- Daily task panel ----------------------------------------------
-     The two dropdowns carry strings like "Toán 7 · Đề thi HK1 4 (THCS Tương
-     Bình Hiệp)". They used to sit in the right-hand filter bar and were
-     squeezed to ~60px, so the parent could not read what she was assigning.
-     They now get their own labelled grid with full-width controls. */
-  .daily-status { margin:0; padding:12px 24px; background:var(--primary-bg);
-                  border-bottom:1px solid var(--primary-border); font-size:14px; color:var(--text); }
-  .daily-status:empty { display:none; }
-  .daily-form { margin:24px 24px 0; padding:24px; border:1px solid var(--split);
-                border-radius:var(--r-lg); background:#fafafa; }
-  .daily-form-title { margin:0 0 16px; font-size:16px; color:var(--text); font-weight:600; }
-  .daily-form-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
-  .daily-path { display:flex; flex-direction:column; gap:8px; }
-  .daily-path select { width:100%; }
-  .daily-path select[data-depth="1"] { margin-left:12px; width:calc(100% - 12px); }
-  .daily-path select[data-depth="2"] { margin-left:24px; width:calc(100% - 24px); }
-  .daily-path select[data-depth="3"] { margin-left:36px; width:calc(100% - 36px); }
-  .daily-path select[data-depth="4"] { margin-left:48px; width:calc(100% - 48px); }
-  .daily-path-hint { margin-top:6px; font-size:14px; color:var(--text-2); min-height:1.2em; }
-  .field { min-width:0; }
-  .field label { display:block; margin-bottom:8px; font-size:14px; color:var(--text); }
-  .field select, .field input { display:block; width:100%; min-height:32px; padding:4px 11px;
-                                font-size:14px; }
-  .field select { padding-right:30px; }
-  .field-num input { max-width:220px; }
-  .daily-form-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
-  @media (min-width: 760px) {
-    .daily-form-grid { grid-template-columns:minmax(0,1fr) 210px; align-items:end; }
-    .field-num input { max-width:none; }
-  }
+  /* ---- Settings ------------------------------------------------------- */
+  .setting-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px; align-items:center;
+                 padding:16px 24px; border-bottom:1px solid var(--split); }
+  .setting-row:last-child { border-bottom:0; }
+  .setting-row label, .setting-row .lbl-main { font-weight:500; display:block; }
+  .setting-row p { margin:4px 0 0; color:var(--text-2); font-size:13px; max-width:64ch; }
+  .setting-ctl { display:flex; align-items:center; gap:8px; }
+  .setting-ctl input[type=number] { width:88px; text-align:right; }
+  /* Ant Switch */
+  .switch { width:44px; height:22px; border-radius:100px; border:0; background:rgba(0,0,0,.25); position:relative;
+            cursor:pointer; transition: background .2s; padding:0; }
+  .switch::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+                   background:#fff; transition: left .2s; box-shadow:0 2px 4px rgba(0,35,11,.2); }
+  .switch[aria-pressed="true"] { background:var(--primary); }
+  .switch[aria-pressed="true"]::after { left:24px; }
+  .switch:disabled { opacity:.5; cursor:not-allowed; }
 
-  /* ---- Cướp Đêm rulebook ----------------------------------------------
-     Eight integers that decide how generous a robbery is. Each one keeps its
-     own sentence and its own save button, because this screen is used sitting
-     next to the child, tuning ONE number and watching what it does — not
-     filling a form and submitting it. The worked example above the groups is
-     the whole point of the card: it turns "win_pct = 10" into "bé mang về
-     100 xu", which is the number the parent actually has an opinion about. */
-  /* Ant Alert (info) */
+  /* ---- Cướp Đêm rulebook (kept) -------------------------------------- */
   .raid-example { margin:24px 24px 0; padding:12px 16px; border:1px solid var(--primary-border);
-                  border-radius:var(--r-lg); background:var(--primary-bg); color:var(--text);
-                  font-size:14px; line-height:1.6; }
+                  border-radius:var(--r-lg); background:var(--primary-bg); color:var(--text); font-size:14px; line-height:1.6; }
   .raid-example b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
   .raid-example-title { display:block; margin-bottom:4px; font-size:14px; font-weight:600; color:var(--text); }
-  .raid-group { margin:16px 24px 0; padding:0 20px 8px; border:1px solid var(--split);
-                border-radius:var(--r-lg); background:#fff; }
+  .raid-group { margin:16px 24px 0; padding:0 20px 8px; border:1px solid var(--split); border-radius:var(--r-lg); background:#fff; }
   .raid-group:last-child { margin-bottom:24px; }
   .raid-group-title { margin:0 -20px 4px; padding:12px 20px; font-size:14px; color:var(--text); font-weight:600;
                       background:var(--table-head); border-bottom:1px solid var(--split); }
-  .raid-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px;
-              align-items:start; padding:16px 0; border-top:1px solid var(--split); }
+  .raid-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px; align-items:start; padding:16px 0; border-top:1px solid var(--split); }
   .raid-row:first-of-type { border-top:0; }
   .raid-copy { grid-column:1; grid-row:1 / span 2; min-width:0; }
   .raid-copy label { display:block; font-size:14px; font-weight:500; color:var(--text); }
   .raid-help { margin:4px 0 0; max-width:64ch; color:var(--text-2); font-size:14px; line-height:1.5715; }
   .raid-edit { grid-column:2; grid-row:1; display:flex; align-items:center; gap:8px; }
-  .raid-edit input { width:112px; min-height:32px; padding:4px 11px; font-size:14px;
-                     text-align:right; font-variant-numeric:tabular-nums; }
+  .raid-edit input { width:112px; min-height:32px; padding:4px 11px; font-size:14px; text-align:right; font-variant-numeric:tabular-nums; }
   .raid-unit { font-size:14px; color:var(--text-2); }
-  /* .btn, not .mini: on a phone every .mini collapses to a 34px icon square,
-     and "did that save?" is not a question to answer with a bare 💾. */
   .raid-save { min-height:32px; }
-  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:12px;
-               color:var(--text-3); font-variant-numeric:tabular-nums; }
+  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:12px; color:var(--text-3); font-variant-numeric:tabular-nums; }
   .raid-note { grid-column:1 / -1; grid-row:3; margin-top:2px; font-size:14px; }
   .raid-note:empty { display:none; }
   .raid-note.ok { color:var(--success-text); }
   .raid-note.bad { color:var(--error-text); }
-  /* An edited-but-unsaved box must not be mistaken for the rule in force. */
   .raid-row.changed .raid-edit input { border-color:var(--warning); box-shadow:0 0 0 2px rgba(250,173,20,.16); }
   .raid-dirty { color:var(--warning-text); font-weight:500; font-size:12px; }
   .raid-dirty:empty { display:none; }
 
-  /* ---- tablets and phones: the sider becomes a Drawer ------------------
-     Ant Pro's own behaviour below the lg breakpoint: the menu slides in from
-     the left over a mask when the ☰ button is pressed, and goes away when a
-     section is picked or the mask is tapped. The header names the open
-     section, so the menu being off-screen never leaves you lost. */
-  .sider-mask { position:fixed; inset:0; z-index:29; background:rgba(0,0,0,.45); }
-  .sider-mask[hidden] { display:none; }
+  /* ---- Accounts table (kept from the previous console) ---------------- */
+  .tools { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap; border-bottom:1px solid var(--split); }
+  .search { flex:1; min-width:200px; max-width:360px; position:relative; }
+  .search input { width:100%; min-height:32px; padding:4px 11px 4px 32px; font-size:14px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='rgba(0,0,0,0.45)' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.6'/><path d='M10.5 10.5 14 14'/></svg>");
+    background-repeat:no-repeat; background-position:left 10px center; background-size:14px 14px; }
+  .count { color:var(--text-2); font-size:14px; font-variant-numeric:tabular-nums; }
+  .sort-mobile { display:none; }
+  #usersTable th.sortable { cursor:pointer; user-select:none; transition: background .2s; }
+  #usersTable th.sortable:hover { background:var(--fill-2); }
+  #usersTable th .arrow { color:var(--text-4); font-size:9px; }
+  #usersTable th.sorted { color:var(--primary); }
+  #usersTable th.sorted .arrow { color:var(--primary); }
+  .th-short { display:none; }
+  .who-cell { display:flex; align-items:center; gap:10px; }
+  .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+            font-weight:500; font-size:13px; color:#fff; background:var(--primary); flex:none; }
+  .avatar.admin { background:#722ed1; }
+  .who-name { font-weight:500; }
+  .who-sub { font-size:12px; color:var(--text-3); }
+  tr.disabled td { opacity:.55; }
+  tr.disabled .who-name { text-decoration:line-through; }
+  /* Named .meter, NOT .bar: <header class="bar"> already exists, and a bare
+     .bar rule styled the page header as a 4px blue strip. */
+  .meter { height:4px; border-radius:999px; background:var(--primary); opacity:.7; margin:3px 0 0 auto; }
+  .row-actions { display:flex; gap:6px; justify-content:flex-end; }
+  .mini { display:inline-flex; align-items:center; justify-content:center; gap:2px;
+          min-height:24px; height:24px; border:1px solid var(--border); background:#fff; border-radius:4px;
+          padding:0 7px; font-size:12px; font-weight:400; cursor:pointer; font-family:inherit;
+          color:var(--text); white-space:nowrap; box-shadow:var(--sh-btn);
+          transition: background .2s, border-color .2s, color .2s; }
+  .mini:hover:not(:disabled) { color:var(--primary-hover); border-color:var(--primary-hover); }
+  .mini:disabled { color:var(--text-4); background:var(--fill-3); cursor:default; box-shadow:none; }
+  .mini.on { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+  .mini.on:hover:not(:disabled) { background:#d9f7be; border-color:#95de64; color:var(--success-text); }
+  .mini.danger { color:var(--error); border-color:var(--error-border); }
+  .mini.danger:hover:not(:disabled) { background:var(--error-bg); border-color:var(--error); color:var(--error-text); }
+  .mini.revive { color:var(--success-text); border-color:var(--success-border); }
+
+  /* ---- tablets and phones ----------------------------------------------
+     Below 900px the sider becomes a strip of chips across the top of the
+     page. Picking a child is the most frequent act on this console, so it
+     is never hidden behind a drawer. */
   @media (max-width: 900px) {
-    .sider { transform:translateX(-100%); box-shadow:none; }
-    .sider.open { transform:none; box-shadow:var(--sh-2); }
+    .sider { position:sticky; top:0; inset:auto; width:auto; flex-direction:row; align-items:center; gap:4px;
+             overflow-x:auto; overflow-y:hidden; padding:0 8px; height:48px; scrollbar-width:none; }
+    .sider::-webkit-scrollbar { display:none; }
+    .logo { height:48px; padding:0 6px 0 4px; font-size:0; }
+    .logo-mark { width:28px; height:28px; font-size:15px; }
+    .sider-group, .sider-sep, .sider-foot { display:none; }
+    .sider-nav { flex-direction:row; padding:0; gap:4px; }
+    .nav-item { min-height:34px; height:34px; line-height:34px; padding:0 10px; font-size:13px; border-radius:100px; }
+    .nav-item .nav-ico { width:auto; }
     .main { margin-left:0; }
-    .menu-btn { display:inline-flex; margin-left:-8px; }
-    header.bar { padding:8px 16px; }
+    header.bar { top:48px; padding:8px 16px; }
     .wrap { padding:16px 16px 96px; }
+    .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
   }
 
+  /* Five labelled row buttons need ~420px; below this width they keep the
+     icon (the label stays in title= and aria-label=) so the table fits. */
+  @media (max-width: 1240px) { #usersTable .mini .lbl { display:none; } #usersTable .mini { padding:0 6px; font-size:14px; } }
   @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
 
-  /* ---- phones: stay a TABLE, but fit ----
+  /* ---- phones: the accounts table stays a TABLE, but fits ----
      A card layout was tried and reverted: cards make one user easy to read and
-     several users impossible to COMPARE, which is the whole reason to look at
-     this screen. So the table stays, and everything else gives way instead —
-     smaller type, tighter cells, icon-only buttons, and a user column that
-     stays put while the rest scrolls.
-     Measured on an iPhone 16 (393x852): 577px of table in a 351px box before,
-     fitting after. */
+     several users impossible to COMPARE. So the table stays, and everything
+     else gives way instead — smaller type, tighter cells, icon-only buttons,
+     and a user column that stays put while the rest scrolls. */
   @media (max-width: 640px) {
-    /* The feed is the landing view, so on a phone the menu underneath it has
-       to stay reachable: with ten rows the card was 658px tall and pushed the
-       tab bar to y=901 on a 375x812 iPhone — one screen down. These three
-       trims (heading on one line, shorter rows, compact stat tiles) bring it
-       back above the fold without dropping a single row. */
-    .activity-feed .toolbar { padding:10px 12px 8px; gap:2px 8px; min-height:0; }
-    .activity-feed .toolbar h2 { margin:0; font-size:15px; white-space:nowrap; }
-    .activity-feed .toolbar .who { font-size:12px; }
-    /* The three toolbar items fit one line if the middle one is allowed to
-       shrink; wrapping the button onto its own row cost a whole line of the
-       screen the tab bar needed. */
-    .activity-feed .toolbar { flex-wrap:nowrap; }
-    .activity-feed .toolbar .who { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .activity-feed .toolbar #allBtn { min-height:28px; height:28px; padding:0 8px; font-size:12px;
-                                      margin-left:auto; flex:0 0 auto; }
-    #attemptsTable th, #attemptsTable td { padding:8px 10px; font-size:12.5px; }
-    .activity-feed .pager { padding:7px 10px 8px; }
-    .activity-feed .pager-btn { min-height:28px; height:28px; padding:0 10px; font-size:12.5px; }
-    .stats { gap:8px; }
-    .stat { padding:9px 10px; }
-    .stat b, .stat .stat-num { font-size:20px; }
-    /* The last pixels a phone needs come from the page gutter, not from the
-       cells: squeezing those further would have cost readability. */
     .wrap { padding-block: 16px 84px; }
     .wrap { padding-inline: 10px; }
+    .card-head, .card-body, .tools, .hist-filters, .status-line, .picker-top, .picker-modes, .res-group,
+    .learning-filters, .grid-legend { padding-inline:14px; }
+    .day > summary { padding-inline:14px; }
+    th:first-child, td:first-child { padding-left:14px; }
+    th:last-child, td:last-child { padding-right:14px; }
+    /* Seven days must fit beside the name, with today and the task column
+       on screen: the total column goes, the task progress moves under the
+       name, and the cells tighten. Measured at 393px. */
+    .grid-table th:first-child, .grid-table td:first-child { padding-left:14px; position:sticky; left:0; background:#fff; z-index:1; }
+    .grid-table thead th:first-child { background:var(--table-head); }
+    .grid-table th, .grid-table td { padding:6px 2px; }
+    .grid-table .cell { min-width:26px; height:24px; padding:0 3px; font-size:12px; }
+    .grid-table thead th { font-size:11px; }
+    .grid-table thead th small { font-size:10px; }
+    .grid-table .col-total, .grid-table .col-tasks { display:none; }
+    .grid-table .kid .avatar { display:none; }
+    .grid-table .kid-name { max-width:84px; }
+    .grid-table .kid-name > span:first-child, .grid-table .kid-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .grid-table .kid-tasks { display:block; font-size:11px; font-weight:400; }
+    .grid-table .kid-tasks .pill { padding:0 4px; font-size:10px; line-height:16px; }
+    .grid-legend { gap:8px; font-size:11px; }
+    /* the task table: the label gets the width, the controls give way */
+    #dailyTable th, #dailyTable td { padding:8px 6px; }
+    #dailyTable th:first-child, #dailyTable td:first-child { padding-left:14px; }
+    #dailyTable th:last-child, #dailyTable td:last-child { padding-right:14px; }
+    .target-edit input { width:44px; padding:2px 4px; }
+    .target-edit > .dim { display:none; }
+    .task-kind { display:none; }
+    .child-head { flex-wrap:nowrap; align-items:flex-start; gap:12px; }
+    .child-head .facts { gap:6px 12px; }
+    .day-title { min-width:0; }
+    .day-tasks { margin-left:0; }
+    .child-head h2 { font-size:18px; }
+    .admin-tab { margin-right:20px; }
+    .skill-row { grid-template-columns:minmax(0,1fr) 62px; gap:9px 12px; }
+    .skill-track { grid-column:1 / -1; grid-row:2; }
+    .skill-status { grid-column:1; grid-row:3; justify-self:start; }
+    .skill-score { grid-column:2; grid-row:1; }
+    .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .setting-row { grid-template-columns:minmax(0,1fr); }
+    .raid-example, .raid-group { margin-inline:14px; }
+    .raid-group { padding-inline:15px; }
+    .raid-group-title { margin-inline:-15px; padding-inline:15px; }
+    .raid-row { grid-template-columns:minmax(0,1fr); gap:8px; padding:14px 0; }
+    .raid-copy, .raid-edit, .raid-foot, .raid-note { grid-column:1; grid-row:auto; }
+    .raid-edit input { flex:1 1 auto; width:auto; min-width:0; }
+    .raid-foot { text-align:left; }
+    header.bar h1 { font-size:16px; }
+    header.bar .bar-actions .btn { padding:4px 10px; font-size:12.5px; }
+
     .sort-mobile { display:block; min-height:32px; padding:4px 30px 4px 11px; border-radius:var(--r);
                    font-size:13px; font-family:inherit; background-color:#fff; color:var(--text); }
     /* Two columns give way, and only these two, because the row already says
        both: a disabled account is faded, struck through and offers Enable
        instead of Disable, and the early-access state is the toggle's own
-       colour. The
-       numbers an admin actually compares — activity, exams, last seen — all
-       stay. */
+       colour. The numbers an admin compares — activity, last seen — stay. */
     th.hide-xs, td.hide-xs { display:none; }
     .who-sub { display:none; }            /* the #id is not what you scan for */
     .dev { margin-left:5px; font-size:11px; }
-    /* The page gutter and the cell padding both give way before the content
-       does: the users table has to fit a 393px screen without the horizontal
-       scroll swallowing the Actions column. */
-    th:first-child, td:first-child { padding-left:10px; }
-    th:last-child, td:last-child { padding-right:10px; }
     #usersTable { font-size:12.5px; }
     #usersTable th, #usersTable td { padding:8px 4px; }
     #usersTable th:first-child, #usersTable td:first-child { padding-left:8px; }
@@ -462,64 +545,19 @@
     .who-cell { gap:6px; }
     #usersTable th { font-size:12px; }
     .avatar { width:24px; height:24px; font-size:10.5px; }
+    .child-head .avatar { width:40px; height:40px; font-size:15px; }
     .pill { padding:0 5px; font-size:11px; line-height:18px; }
-
     /* The buttons keep their icon and drop the word. Three labelled buttons
        need ~220px of a 351px screen, which is what pushed them off-screen. */
     .mini .lbl { display:none; }
     .mini { padding:0; width:34px; height:34px; font-size:15px; }
     .row-actions { gap:4px; }
-
     /* Scrolling right must not lose track of WHOSE row you are reading. */
     #usersTable th:first-child, #usersTable td:first-child {
       position:sticky; left:0; z-index:1; background:var(--card);
     }
     #usersTable thead th:first-child { background:var(--table-head); }
     #usersTable tr.selected td:first-child { background:#e6f4ff; }
-
-    header.bar h1 { font-size:16px; }
-    /* Four full-size buttons wrapped into stacked blocks. A 2×2 grid under the
-       title instead: each control keeps a readable width. */
-    header.bar .bar-actions { width:100%; margin-left:0; display:grid;
-                              grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; flex-wrap:nowrap; }
-    header.bar .bar-actions .btn { padding:4px 10px; font-size:12.5px; min-height:32px;
-                                   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; }
-    /* "🔢 Cửu chương: [60] giây" is 190px of content in a 177px cell. */
-    #ccSecondsWrap { gap:4px; padding-inline:8px; }
-    #ccSecondsWrap input { width:46px; padding:0 4px; }
-    /* Three tiles in one row rather than 2 + a stranded 1: the point of the
-       row is that the three numbers can be compared at a glance. */
-    .stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px; }
-    .stat { padding:12px; gap:2px; }
-    .stat b { font-size:22px; }
-    .stat span { font-size:12px; line-height:1.35; }
-    .card > h2, .tools, .toolbar, .learning-head, .learning-summary,
-    .skill-section-title, .skill-list, .menu-overview { padding-inline:14px; }
-    .skill-section-title, .learning-empty, .priority-card, .daily-form { margin-inline:14px; }
-    th, td { padding:12px 14px; }
-    .daily-status { padding:12px 14px; }
-    .learning-head { display:block; }
-    .learning-filters { margin-top:14px; justify-content:stretch; gap:10px; }
-    .learning-filters label { flex:1 1 100%; }
-    .learning-filters select { width:100%; min-width:0; }
-    .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:16px 14px; }
-    .skill-row { grid-template-columns:minmax(0,1fr) 62px; gap:9px 12px; }
-    .skill-track { grid-column:1 / -1; grid-row:2; }
-    .skill-status { grid-column:1; grid-row:3; justify-self:start; }
-    .skill-score { grid-column:2; grid-row:1; }
-    .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .priority-card { align-items:flex-start; }
-    .daily-form { padding:16px; }
-    .daily-form-actions .btn { flex:1 1 auto; }
-    /* One column: the number, its unit and its save button belong on the same
-       line as each other, but under the sentence that explains them. */
-    .raid-example, .raid-group { margin-inline:14px; }
-    .raid-group { padding-inline:15px; }
-    .raid-group-title { margin-inline:-15px; padding-inline:15px; }
-    .raid-row { grid-template-columns:minmax(0,1fr); gap:8px; padding:14px 0; }
-    .raid-copy, .raid-edit, .raid-foot, .raid-note { grid-column:1; grid-row:auto; }
-    .raid-edit input { flex:1 1 auto; width:auto; min-width:0; }
-    .raid-foot { text-align:left; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -533,199 +571,219 @@
   <!-- Login -->
   <div id="login" class="login">
     <h1>🎯 FlashLingo Admin</h1>
-    <p>Sign in with the admin account.</p>
-    <label for="u">Username</label>
+    <p>Đăng nhập bằng tài khoản admin.</p>
+    <label for="u">Tên đăng nhập</label>
     <input id="u" autocomplete="username" autocapitalize="off" spellcheck="false">
-    <label for="p">Password</label>
+    <label for="p">Mật khẩu</label>
     <input id="p" type="password" autocomplete="current-password">
     <label class="keep"><input type="checkbox" id="keepMe" checked> Keep me signed in on this device</label>
-    <button class="btn btn-primary" id="loginBtn">Sign in</button>
+    <button class="btn btn-primary" id="loginBtn">Đăng nhập</button>
     <div class="err" id="loginErr"></div>
   </div>
 
-  <!-- Dashboard: an Ant Design Pro layout. The sider carries the section
-       menu, which is the old tab bar under a new coat — same buttons, same
-       data-tab, same switchAdminTab(). Below 900px the sider is a drawer. -->
   <div id="dash">
+    <!-- The sider is the menu, and the children are most of it. Built by
+         renderSider() from the users list: active, non-admin accounts only;
+         disabled ones live under Tài khoản. -->
     <aside class="sider" id="sider">
       <div class="logo"><span class="logo-mark" aria-hidden="true">🎯</span><span>FlashLingo Admin</span></div>
-      <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
-        <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
-        <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
-        <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Nhiệm vụ</button>
-        <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
+      <nav class="sider-nav" aria-label="Trang">
+        <a class="nav-item" href="#/" data-route="overview"><span class="nav-ico">🏠</span><span class="nav-name">Tổng quan</span></a>
+      </nav>
+      <div class="sider-group">Các bé</div>
+      <nav class="sider-nav" id="siderKids" aria-label="Các bé"></nav>
+      <div class="sider-sep"></div>
+      <nav class="sider-nav" aria-label="Quản trị">
+        <a class="nav-item" href="#/cai-dat" data-route="settings"><span class="nav-ico">⚙️</span><span class="nav-name">Cài đặt app</span></a>
+        <a class="nav-item" href="#/tai-khoan" data-route="accounts"><span class="nav-ico">👥</span><span class="nav-name">Tài khoản</span><span class="nav-meta" id="accountsMeta"></span></a>
       </nav>
       <div class="sider-foot">Bảng điều khiển của phụ huynh</div>
     </aside>
-    <div class="sider-mask" id="siderMask" hidden></div>
+
     <div class="main">
     <header class="bar">
-      <button class="menu-btn" id="menuBtn" type="button" aria-label="Mở menu" aria-controls="sider" aria-expanded="false">☰</button>
-      <h1 id="pageTitle">Người học</h1>
+      <h1 id="pageTitle">Tổng quan</h1>
       <div class="bar-actions">
-        <button class="btn btn-ghost" id="mathFightFlag" aria-pressed="false"
-                title="Đấu Toán: friend-vs-friend maths duels. Off means the tab is hidden for EVERY child.">🥊 Đấu Toán: …</button>
-        <label class="btn btn-ghost" id="ccSecondsWrap"
-               title="Bảng cửu chương: giây cho MỖI lượt 10 câu, dùng chung cho cả 6 bài. Đổi ở đây là đổi cho TẤT CẢ các bé.">
-          🔢 Cửu chương:
-          <input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric">
-          giây
-        </label>
-        <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
-        <button class="btn btn-ghost" id="logoutBtn">Log out</button>
+        <button class="btn btn-ghost" id="refreshBtn">↻ Tải lại</button>
+        <button class="btn btn-ghost" id="logoutBtn">Đăng xuất</button>
       </div>
     </header>
     <div class="wrap">
-    <div class="stats" id="stats"></div>
 
-    <!-- The landing view: the three totals read first as the summary, then
-         this feed answers "what have they actually been doing?" — both before
-         any tab has to be chosen. It is no longer a tabpanel: it stays on
-         screen whichever tab is open, and the per-user filter still works
-         through "Show all users". -->
-    <div class="card activity-feed" id="activityPanel">
-      <div class="toolbar">
-        <h2>Hoạt động gần nhất</h2>
-        <span class="who" id="whoLabel">All users · last 30 days</span>
-        <button class="btn btn-ghost" id="allBtn">Show all users</button>
-      </div>
-      <div class="scroll"><table id="attemptsTable">
-        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Balance</th><th>Time</th></tr></thead>
-        <tbody id="attemptsBody"></tbody>
-      </table></div>
-      <div class="pager" id="actPager" aria-live="polite"></div>
-    </div>
-
-
-
-    <div class="card admin-panel" id="usersPanel" role="tabpanel" aria-labelledby="tabUsers">
-      <h2>Users</h2>
-      <div class="tools">
-        <div class="search"><input id="userSearch" placeholder="Search by name…" autocomplete="off" spellcheck="false"></div>
-        <!-- The sortable column headers are hidden in card layout, so phones
-             get this instead. Both write to the same _sort state. -->
-        <select class="sort-mobile" id="sortSel" aria-label="Sort users by">
-          <option value="last_activity">Recently seen</option>
-          <option value="total_count">Most activity</option>
-          <option value="exam_count">Most exams</option>
-          <option value="username">Name A–Z</option>
-          <option value="created_at">Newest</option>
-        </select>
-        <span class="count" id="userCount"></span>
-      </div>
-      <div class="scroll"><table id="usersTable">
-        <thead><tr>
-          <th class="sortable" data-sort="username">User <span class="arrow">▼</span></th>
-          <th class="sortable" data-sort="total_count"><span class="th-full">Activity</span><span class="th-short">Acts</span> <span class="arrow">▼</span></th>
-          <th class="sortable hide-sm" data-sort="exam_count">Exams <span class="arrow">▼</span></th>
-          <th class="sortable" data-sort="last_activity"><span class="th-full">Last seen</span><span class="th-short">Seen</span> <span class="arrow">▼</span></th>
-          <th class="sortable hide-sm" data-sort="created_at">Joined <span class="arrow">▼</span></th>
-          <th class="hide-xs">Status</th>
-          <th style="text-align:right">Actions</th>
-        </tr></thead>
-        <tbody id="usersBody"></tbody>
-      </table></div>
-    </div>
-
-    <section class="card learning-card admin-panel" id="skillsPanel" role="tabpanel" aria-labelledby="tabSkills" hidden>
-      <div class="learning-head">
-        <div class="learning-title">
-          <span class="learning-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/><path d="m4 6 5-3 6 5 5-4"/></svg>
-          </span>
-          <div><h2 id="learningHeading">Phân tích năng lực</h2>
-            <p id="skillWho">Chọn một user để xem dạng bài mạnh và yếu.</p></div>
-        </div>
-        <div class="learning-filters">
-          <label>Người học
-            <select id="skillUser" aria-label="Chọn người học"><option value="">Toàn bộ người học</option></select>
-          </label>
-          <label>Menu
-            <select id="skillMenu">
-              <option value="">Tất cả menu</option><option value="math7">Toán 7</option>
-              <option value="mathwars">Math Wars</option><option value="grade4">Grade 4</option>
-              <option value="grammar">Grammar</option><option value="phrases">Phrases</option>
-              <option value="verbs">Verbs</option><option value="wordform">Word Form</option>
-              <option value="rewrite">Rewrite</option><option value="collocation">Collocation</option>
-            </select>
-          </label>
-          <label>Thời gian
-            <select id="skillDays"><option value="1">1 ngày</option><option value="7">7 ngày</option><option value="30" selected>30 ngày</option>
-              <option value="90">90 ngày</option><option value="365">1 năm</option><option value="all">Toàn bộ</option>
-            </select>
-          </label>
-        </div>
-      </div>
-      <div id="skillAnalytics" aria-live="polite">
-        <div class="learning-empty">Đang tổng hợp dữ liệu năng lực…</div>
-      </div>
-    </section>
-
-    <section class="card learning-card admin-panel" id="dailyPanel" role="tabpanel" aria-labelledby="tabDaily" hidden>
-      <div class="learning-head">
-        <div class="learning-title">
-          <span class="learning-icon" aria-hidden="true">📋</span>
-          <div><h2>Nhiệm vụ hằng ngày</h2>
-            <p id="dailyWho">Chọn bé, chọn đúng loại bài và số lượt phải hoàn thành 100% mỗi ngày. Hoàn thành toàn bộ nhiệm vụ trong ngày, bé nhận 200 xu và 1 Khiên Đêm.</p></div>
-        </div>
-        <div class="learning-filters">
-          <label>Người học
-            <select id="dailyUser" aria-label="Chọn người học"><option value="">— chọn bé —</option></select>
-          </label>
-        </div>
-      </div>
-      <div id="dailyStatus" class="daily-status" aria-live="polite"></div>
-      <div class="scroll"><table id="dailyTable">
-        <thead><tr><th>Bài</th><th>Mục tiêu</th><th>Hôm nay</th><th class="hide-sm">Tạo lúc</th><th style="text-align:right">Xoá</th></tr></thead>
-        <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem nhiệm vụ.</td></tr></tbody>
-      </table></div>
-      <!-- Full-width labelled controls, not a filter bar: every option here is a
-           long sentence ("Grammar · Unit 12: Tenses · 25 câu"), and squeezing
-           these two selects into a flex row made them unreadable. -->
-      <form id="dailyForm" class="daily-form" autocomplete="off">
-        <h3 class="daily-form-title">Giao nhiệm vụ hằng ngày</h3>
-        <div class="daily-form-grid">
-          <!-- The task is picked the way a child finds it: Eng or Math, then
-               the menu, then the sub-menu, as deep as the app goes (Math ›
-               Toán 7 › Học kì 2 › Luyện chương › Chương 6). One <select> per
-               level, drawn from DailyTaskCatalog.tree(); the chosen task's
-               key lands in the hidden #dailyKind that saveDailyTask reads. -->
-          <div class="field daily-path-field">
-            <label>Bài bé sẽ làm — chọn như trên máy bé</label>
-            <div id="dailyPath" class="daily-path"></div>
-            <input type="hidden" id="dailyKind" value="">
-            <div id="dailyPathHint" class="daily-path-hint"></div>
-          </div>
-          <div class="field field-num">
-            <label for="dailyTarget">Số lần phải đạt 100% mỗi ngày</label>
-            <input id="dailyTarget" type="number" min="1" max="50" value="5" inputmode="numeric">
+    <!-- ═══ Tổng quan: the learning history of every child ═══ -->
+    <section class="page" id="overviewPage">
+      <div class="card">
+        <div class="card-head">
+          <h2>Ai học, ai bỏ</h2>
+          <span class="sub" id="gridSub"></span>
+          <span class="spacer"></span>
+          <div class="seg" id="rangeSeg" role="group" aria-label="Khoảng thời gian">
+            <button type="button" data-days="7" aria-pressed="true">7 ngày</button>
+            <button type="button" data-days="14" aria-pressed="false">14 ngày</button>
+            <button type="button" data-days="30" aria-pressed="false">30 ngày</button>
           </div>
         </div>
-        <div class="daily-form-actions">
-          <button class="btn btn-primary" type="submit" id="dailySave">Giao nhiệm vụ</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- The Cướp Đêm economy. Every number here used to be a literal in the
-         raid handlers, so making a robbery kinder meant a deploy; they now
-         live in one table this card writes to, and the game reads on the very
-         next raid. The rows are BUILT from RAID_FIELDS below, never written
-         out by hand, so a new rule cannot land in the game with no way to
-         tune it (tests/admin-night-raid-config.test.js pins that). -->
-    <section class="card learning-card admin-panel" id="raidPanel" role="tabpanel" aria-labelledby="tabRaid" hidden>
-      <div class="learning-head">
-        <div class="learning-title">
-          <span class="learning-icon" aria-hidden="true">🌙</span>
-          <div><h2>Cướp Đêm — luật &amp; tiền</h2>
-            <p>Chỉnh xem một trận cướp hào phóng hay khắc nghiệt tới đâu. Lưu xong là áp dụng ngay
-               cho tất cả các bé, không cần cập nhật app.</p></div>
+        <div class="scroll" id="gridHost"><div class="empty">Đang tải…</div></div>
+        <div class="grid-legend">
+          <span>ô = số lượt trong ngày, màu = % đúng trung bình:</span>
+          <span class="cell good">≥ 75</span><span class="cell mid">50–74</span><span class="cell low">&lt; 50</span>
+          <span class="cell none">không chấm điểm</span><span>· trống = không học</span>
         </div>
       </div>
-      <div id="raidStatus" class="daily-status" aria-live="polite"></div>
-      <div id="raidExample" class="raid-example"></div>
-      <div id="raidGroups"></div>
+
+      <div class="card" id="historyAllCard">
+        <div class="card-head">
+          <h2>Lịch sử học</h2>
+          <span class="sub">tất cả các bé, gom theo ngày</span>
+        </div>
+        <div class="hist-filters" id="histAllFilters"></div>
+        <div id="histAllHost"><div class="empty">Đang tải…</div></div>
+      </div>
     </section>
+
+    <!-- ═══ One child ═══ -->
+    <section class="page" id="childPage" hidden>
+      <div class="child-head" id="childHead"></div>
+      <nav class="tabs" role="tablist" aria-label="Mục của bé">
+        <button class="admin-tab" id="tabTasks" role="tab" aria-controls="tasksPanel" aria-selected="true" data-tab="tasks">📋 Nhiệm vụ</button>
+        <button class="admin-tab" id="tabHistory" role="tab" aria-controls="historyPanel" aria-selected="false" data-tab="history">📖 Lịch sử học</button>
+        <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
+      </nav>
+
+      <!-- Nhiệm vụ hằng ngày: what the child owes today, then a picker to
+           hand out more. The picker is a search over all 185 tasks, with a
+           browsable tree beside it for when you do not know what to type. -->
+      <div class="admin-panel" id="tasksPanel" role="tabpanel" aria-labelledby="tabTasks">
+        <div class="card">
+          <div class="card-head"><h2>Nhiệm vụ hằng ngày</h2><span class="sub" id="dailyDate"></span></div>
+          <div id="dailyStatus" class="status-line" aria-live="polite"></div>
+          <div class="scroll"><table id="dailyTable">
+            <thead><tr><th>Bài</th><th>Số lần / ngày</th><th>Hôm nay</th><th class="hide-sm">Giao lúc</th><th style="text-align:right">Xoá</th></tr></thead>
+            <tbody id="dailyBody"><tr><td colspan="5" class="empty">Đang tải…</td></tr></tbody>
+          </table></div>
+        </div>
+
+        <div class="card" id="assignCard">
+          <div class="card-head"><h2>Giao nhiệm vụ mới</h2><span class="sub">tối đa 10 nhiệm vụ một bé</span></div>
+          <div class="picker-top">
+            <div class="field">
+              <label for="taskSearch">Bài bé sẽ làm — gõ để tìm (không cần dấu: "cuu chuong", "hk2", "tenses")</label>
+              <input id="taskSearch" type="search" autocomplete="off" spellcheck="false" placeholder="ví dụ: đề thi hk2, grammar unit 12, bảng nhân…">
+            </div>
+            <div class="field field-num">
+              <label for="dailyTarget">Số lần phải đạt 100% mỗi ngày</label>
+              <input id="dailyTarget" type="number" min="1" max="50" value="5" inputmode="numeric">
+            </div>
+          </div>
+          <div class="picker-modes">
+            <span>hoặc duyệt theo mục:</span>
+            <div class="seg" id="pickMode" role="group">
+              <button type="button" data-mode="search" aria-pressed="true">Kết quả tìm</button>
+              <button type="button" data-mode="tree" aria-pressed="false">Cây Eng / Math</button>
+            </div>
+            <span class="note" id="assignNote" aria-live="polite"></span>
+          </div>
+          <div class="picker-results" id="pickerHost"></div>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="historyPanel" role="tabpanel" aria-labelledby="tabHistory" hidden>
+        <div class="card">
+          <div class="card-head"><h2>Lịch sử học</h2><span class="sub" id="childHistSub"></span></div>
+          <div class="hist-filters" id="histChildFilters"></div>
+          <div id="histChildHost"><div class="empty">Đang tải…</div></div>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="skillsPanel" role="tabpanel" aria-labelledby="tabSkills" hidden>
+        <div class="card">
+          <div class="card-head"><h2>Phân tích năng lực</h2><span class="sub" id="skillWho">chỉ kết luận mạnh/yếu khi có ít nhất 5 câu</span></div>
+          <div class="learning-filters">
+            <label>Menu
+              <select id="skillMenu">
+                <option value="">Tất cả menu</option><option value="math7">Toán 7</option>
+                <option value="mathwars">Math Wars</option><option value="grade4">Grade 4</option>
+                <option value="grammar">Grammar</option><option value="phrases">Phrases</option>
+                <option value="verbs">Verbs</option><option value="wordform">Word Form</option>
+                <option value="rewrite">Rewrite</option><option value="collocation">Collocation</option>
+              </select>
+            </label>
+            <label>Thời gian
+              <select id="skillDays"><option value="1">1 ngày</option><option value="7">7 ngày</option><option value="30" selected>30 ngày</option>
+                <option value="90">90 ngày</option><option value="365">1 năm</option><option value="all">Toàn bộ</option>
+              </select>
+            </label>
+          </div>
+          <div id="skillAnalytics" aria-live="polite"><div class="learning-empty">Đang tổng hợp dữ liệu năng lực…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Cài đặt app ═══ -->
+    <section class="page" id="settingsPage" hidden>
+      <nav class="tabs" role="tablist" aria-label="Cài đặt">
+        <button class="admin-tab" id="tabFlags" role="tab" aria-controls="flagsPanel" aria-selected="true" data-tab="flags">🎛 Chung</button>
+        <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
+      </nav>
+      <div class="admin-panel" id="flagsPanel" role="tabpanel" aria-labelledby="tabFlags">
+        <div class="card">
+          <div class="card-head"><h2>Cài đặt chung</h2><span class="sub">áp dụng cho TẤT CẢ các bé</span></div>
+          <div class="setting-row">
+            <div><span class="lbl-main">🥊 Đấu Toán</span>
+              <p>Đấu toán giữa hai bé là bạn. Tắt là ẩn tab này với mọi bé. Một công tắc cho cả app: một trận cần hai bé, nên công tắc theo từng bé chỉ tạo ra danh sách bạn không có ai để đấu.</p></div>
+            <div class="setting-ctl"><span class="dim" id="mathFightLabel">…</span>
+              <button class="switch" id="mathFightFlag" type="button" role="switch" aria-pressed="false" aria-label="Bật Đấu Toán"></button></div>
+          </div>
+          <div class="setting-row">
+            <div><label for="ccSeconds">🔢 Bảng cửu chương — giây mỗi lượt</label>
+              <p>Một lượt 10 câu được bấy nhiêu giây, dùng chung cho cả 6 bài. Ghi xong Enter hoặc bấm ra ngoài là lưu.</p></div>
+            <div class="setting-ctl"><input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric"><span class="dim">giây</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- The Cướp Đêm economy. Every number here used to be a literal in the
+           raid handlers; they now live in one table this card writes to, and
+           the game reads on the very next raid. The rows are BUILT from
+           RAID_FIELDS below (tests/admin-night-raid-config.test.js pins that). -->
+      <section class="card admin-panel" id="raidPanel" role="tabpanel" aria-labelledby="tabRaid" hidden>
+        <div class="card-head"><h2>Cướp Đêm — luật &amp; tiền</h2>
+          <span class="sub">Lưu xong là áp dụng ngay cho tất cả các bé, không cần cập nhật app.</span></div>
+        <div id="raidStatus" class="status-line" aria-live="polite"></div>
+        <div id="raidExample" class="raid-example"></div>
+        <div id="raidGroups"></div>
+      </section>
+    </section>
+
+    <!-- ═══ Tài khoản ═══ -->
+    <section class="page" id="accountsPage" hidden>
+      <div class="card">
+        <div class="card-head"><h2>Tài khoản</h2><span class="sub">bật tắt tính năng, tặng xu, khoá tài khoản</span></div>
+        <div class="tools">
+          <div class="search"><input id="userSearch" placeholder="Tìm theo tên…" autocomplete="off" spellcheck="false"></div>
+          <!-- The sortable column headers are hard to hit on a phone, so
+               phones get this instead. Both write to the same _sort state. -->
+          <select class="sort-mobile" id="sortSel" aria-label="Sắp xếp">
+            <option value="last_activity">Mới học gần đây</option>
+            <option value="total_count">Học nhiều nhất</option>
+            <option value="username">Tên A–Z</option>
+            <option value="created_at">Mới tạo</option>
+          </select>
+          <span class="count" id="userCount"></span>
+        </div>
+        <div class="scroll"><table id="usersTable">
+          <thead><tr>
+            <th class="sortable" data-sort="username">Bé <span class="arrow">▼</span></th>
+            <th class="sortable" data-sort="total_count"><span class="th-full">Lượt học</span><span class="th-short">Lượt</span> <span class="arrow">▼</span></th>
+            <th class="sortable" data-sort="last_activity"><span class="th-full">Học gần nhất</span><span class="th-short">Gần nhất</span> <span class="arrow">▼</span></th>
+            <th class="sortable hide-sm" data-sort="created_at">Tạo <span class="arrow">▼</span></th>
+            <th class="hide-xs">Trạng thái</th>
+            <th style="text-align:right">Thao tác</th>
+          </tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
     </div><!-- /.wrap -->
     </div><!-- /.main -->
   </div>
@@ -753,17 +811,174 @@ function writeToken(t, keep) {
 }
 let token = readToken();
 
-// All five HTML-significant characters, quotes included. Stopping at & < > is
-// only safe between tags; most uses here are INSIDE attributes (data-name,
-// title, aria-label), where one bare `"` in a username would close the
-// attribute and let the rest of the name be parsed as markup. The username
-// rule forbids quotes today — this must not rely on a rule kept in two other
-// files (js/auth.js, functions/api/register.js) staying that way.
+// All five HTML-significant characters, quotes included. Most uses here are
+// INSIDE attributes (data-name, title, aria-label), where one bare `"` in a
+// username would close the attribute and let the rest be parsed as markup.
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function pctClass(p){ return p>=75?'pct-good':p>=50?'pct-mid':'pct-low'; }
-function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString(); }
+function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString('vi-VN'); }
 function fmtTime(sec){ if(sec==null) return '—'; const m=Math.floor(sec/60), r=sec%60; return m+':'+String(r).padStart(2,'0'); }
 
+// ── pure helpers ─────────────────────────────────────────────────────────
+// Plain functions of their arguments, closed with `}` at column 0: the test
+// suite lifts them out by name (tests/admin-console.test.js,
+// tests/admin-overview.test.js) and runs them, so none may touch the DOM.
+
+// Vietnamese names are full of diacritics, so a literal match makes a search
+// box useless: typing "bo" would never find "Bố ck". Fold accents on both
+// sides and compare the bare letters. đ/Đ decompose to nothing under NFD,
+// so they are mapped by hand.
+function fold(s){
+  return String(s == null ? '' : s)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+    .toLowerCase();
+}
+
+function initials(name){
+  const parts = String(name||'?').trim().split(/\s+/);
+  const s = (parts[0]||'?')[0] + (parts.length > 1 ? parts[parts.length-1][0] : '');
+  return s.toUpperCase();
+}
+
+// "3 giờ trước" answers the question a parent actually has; the exact stamp
+// stays on hover for when it matters.
+function relTime(s){
+  if (!s) return '—';
+  const d = new Date(String(s).replace(' ','T')+'Z');
+  if (isNaN(d)) return s;
+  const secs = Math.round((Date.now() - d.getTime()) / 1000);
+  if (secs < 60) return 'vừa xong';
+  const mins = Math.round(secs/60);   if (mins < 60) return mins + ' phút trước';
+  const hrs  = Math.round(mins/60);   if (hrs  < 24) return hrs  + ' giờ trước';
+  const days = Math.round(hrs/24);    if (days < 30) return days + ' ngày trước';
+  const mos  = Math.round(days/30);   if (mos  < 12) return mos  + ' tháng trước';
+  return Math.round(mos/12) + ' năm trước';
+}
+
+// Server stamps are UTC ('YYYY-MM-DD HH:MM:SS'); a "day" on this console is
+// a day in Vietnam (GMT+7), the same clock the server's daily tasks and coin
+// snapshots use (date(created_at,'+7 hours')). Fixed offset, on purpose: a
+// parent abroad still wants the child's day, not their own.
+const VN_OFFSET_MS = 7 * 3600000;
+function dayKeyOf(stamp){
+  const d = new Date(String(stamp == null ? '' : stamp).replace(' ','T') + 'Z');
+  if (isNaN(d)) return null;
+  return new Date(d.getTime() + VN_OFFSET_MS).toISOString().slice(0, 10);
+}
+function todayKey(now){
+  return new Date((now == null ? Date.now() : now) + VN_OFFSET_MS).toISOString().slice(0, 10);
+}
+function shiftDay(key, delta){
+  const d = new Date(key + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + delta);
+  return d.toISOString().slice(0, 10);
+}
+function timeOf(stamp){
+  const d = new Date(String(stamp == null ? '' : stamp).replace(' ','T') + 'Z');
+  if (isNaN(d)) return '';
+  return new Date(d.getTime() + VN_OFFSET_MS).toISOString().slice(11, 16);
+}
+// 'Hôm nay · CN 14/09', 'Hôm qua · T7 13/09', then plain 'T6 12/09'.
+function dayLabel(key, today){
+  const d = new Date(key + 'T00:00:00Z');
+  const wd = ['CN','T2','T3','T4','T5','T6','T7'][d.getUTCDay()];
+  const dm = key.slice(8, 10) + '/' + key.slice(5, 7);
+  const rel = key === today ? 'Hôm nay' : key === shiftDay(today, -1) ? 'Hôm qua' : '';
+  return (rel ? rel + ' · ' : '') + wd + ' ' + dm;
+}
+function shortDayLabel(key){
+  const d = new Date(key + 'T00:00:00Z');
+  return { wd: ['CN','T2','T3','T4','T5','T6','T7'][d.getUTCDay()], dm: key.slice(8, 10) + '/' + key.slice(5, 7) };
+}
+
+// What a set of activity rows adds up to: how many, by how many children,
+// the score across every scored row (a sum, not a mean of means, so one
+// 2/2 does not weigh as much as a 38/40), and the exam minutes.
+function summarize(rows){
+  let score = 0, total = 0, sec = 0;
+  const users = new Set();
+  for (const r of rows) {
+    users.add(r.user_id);
+    if (r.total != null && Number(r.total) > 0) { score += Number(r.score) || 0; total += Number(r.total); }
+    if (r.time_spent_sec != null) sec += Number(r.time_spent_sec) || 0;
+  }
+  return { n: rows.length, users: users.size, pct: total ? Math.round(score / total * 100) : null, minutes: Math.round(sec / 60) };
+}
+
+// Every day in the range, newest first, INCLUDING the empty ones: a day with
+// no rows is the "nobody studied" line the parent is scanning for.
+function groupByDay(rows, days, today){
+  const byDay = new Map();
+  for (const r of rows) {
+    const k = dayKeyOf(r.created_at);
+    if (!k) continue;
+    if (!byDay.has(k)) byDay.set(k, []);
+    byDay.get(k).push(r);
+  }
+  const out = [];
+  for (let i = 0; i < days; i++) {
+    const key = shiftDay(today, -i);
+    const list = byDay.get(key) || [];
+    out.push({ key, label: dayLabel(key, today), rows: list, sum: summarize(list) });
+  }
+  return out;
+}
+
+// The overview grid: for each child, for each of the last `days` days, the
+// count of activities and the summed score. Children ordered busiest first.
+function buildGrid(rows, users, days, today){
+  const keys = [];
+  for (let i = days - 1; i >= 0; i--) keys.push(shiftDay(today, -i));
+  const byUser = new Map();
+  for (const u of users) byUser.set(String(u.id), { user: u, cells: {}, n: 0 });
+  for (const r of rows) {
+    const cell = byUser.get(String(r.user_id));
+    const k = dayKeyOf(r.created_at);
+    if (!cell || !k || keys.indexOf(k) < 0) continue;
+    const c = cell.cells[k] || (cell.cells[k] = { n: 0, score: 0, total: 0 });
+    c.n++;
+    if (r.total != null && Number(r.total) > 0) { c.score += Number(r.score) || 0; c.total += Number(r.total); }
+    cell.n++;
+  }
+  const list = [...byUser.values()].sort((a, b) => b.n - a.n || String(a.user.username).localeCompare(String(b.user.username), 'vi'));
+  return { keys, rows: list };
+}
+function cellClass(c){
+  if (!c || !c.n) return 'zero';
+  if (!c.total) return 'none';
+  const p = c.score / c.total * 100;
+  return p >= 75 ? 'good' : p >= 50 ? 'mid' : 'low';
+}
+
+// The task picker's search: every word typed must appear somewhere in the
+// task's path or label, accents ignored. Results keep the catalog's order
+// and come back grouped by path, so "hk2" reads as
+//   Math › Toán 7 › Học kì 2 › Đề thi
+//     Đề thi HK2 bất kỳ · Đề thi HK2 Exam 1 · …
+// rather than as 41 rows that all start with "Toán 7 · Đề thi HK2".
+function searchTasks(query, entries, assignedKeys, limit){
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  const assigned = new Set(assignedKeys || []);
+  const cap = limit || 60;
+  const groups = [];
+  const byPath = new Map();
+  let shown = 0, matched = 0;
+  for (const e of entries) {
+    const hay = fold(e.path.join(' ') + ' ' + e.label);
+    if (!words.every(w => hay.indexOf(w) >= 0)) continue;
+    matched++;
+    if (shown >= cap) continue;
+    const p = e.path.join(' › ');
+    let g = byPath.get(p);
+    if (!g) { g = { path: p, items: [] }; byPath.set(p, g); groups.push(g); }
+    g.items.push({ entry: e, assigned: assigned.has(e.key) });
+    shown++;
+  }
+  return { groups, matched, shown };
+}
+
+// ── API ───────────────────────────────────────────────────────────────────
 async function api(path, opts){
   opts = opts || {};
   const headers = { 'Authorization': 'Bearer '+token };
@@ -777,8 +992,7 @@ async function api(path, opts){
   const data = await res.json().catch(()=>null);
   if (!res.ok) {
     // Carry the server's machine-readable code alongside the prose, so callers
-    // can branch on `duplicate`/`too_many` instead of matching Vietnamese text
-    // that any copy edit would silently break.
+    // can branch on `duplicate`/`too_many` instead of matching Vietnamese text.
     const e = new Error((data && data.error) || ('HTTP '+res.status));
     e.code = data && data.code;
     e.status = res.status;
@@ -795,12 +1009,12 @@ async function doLogin(){
   try {
     const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, passcode:p}) });
     const data = await res.json();
-    if (!res.ok){ errEl.textContent = data.error || 'Login failed'; return; }
-    if (data.user.role !== 'admin'){ errEl.textContent = 'This account is not an admin.'; return; }
+    if (!res.ok){ errEl.textContent = data.error || 'Đăng nhập thất bại'; return; }
+    if (data.user.role !== 'admin'){ errEl.textContent = 'Tài khoản này không phải admin.'; return; }
     token = data.token;
     writeToken(token, document.getElementById('keepMe').checked);
     showDash();
-  } catch(e){ errEl.textContent = 'Network error'; }
+  } catch(e){ errEl.textContent = 'Lỗi mạng'; }
 }
 
 function logout(){
@@ -810,11 +1024,7 @@ function logout(){
   document.getElementById('login').style.display='block';
 }
 
-let _selectedUser = null;
-let _selectedName = null;
-let _skillUser = null;
-let _skillName = null;
-
+// ── state ─────────────────────────────────────────────────────────────────
 const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', math:'🔢 Toán', battle:'⚔️ Battle' };
 const SKILL_MENU_LABEL = {
   math7:'Toán 7', mathwars:'Math Wars', grade4:'Grade 4', grammar:'Grammar',
@@ -823,220 +1033,415 @@ const SKILL_MENU_LABEL = {
 const SKILL_MENU_ICON = { math7:'📐', mathwars:'⚡', grade4:'📚', grammar:'🎓', phrases:'🔗', verbs:'🏃', wordform:'🔤', rewrite:'✍️', collocation:'🧩' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
-// ---- users table ----------------------------------------------------------
-let _users = [];
-let _sort = { key: 'last_activity', dir: -1 };   // most recently seen first
-let _filter = '';
+let _users = [];                 // every account, from admin/users
+let _activityAll = [];           // admin/activity for everyone (newest first, ≤1000)
+let _activityChild = { uid:null, rows:[] };   // admin/activity?user_id=… for the open child
+let _tasksByUser = {};           // uid → admin/daily-tasks response
+let _range = 7;                  // overview grid + history range, days
+let _hist = { kind:'', q:'', uid:'' };          // overview history filters
+let _childHist = { range:30, kind:'', q:'' };   // child history filters
+let _skillUser = null, _skillName = null;
+let _route = { view:'overview', uid:null, tab:'tasks' };
 
-// "3 hours ago" answers the question an admin actually has; the exact stamp
-// stays on hover for when it matters.
-function relTime(s){
-  if (!s) return '—';
-  const d = new Date(String(s).replace(' ','T')+'Z');
-  if (isNaN(d)) return s;
-  const secs = Math.round((Date.now() - d.getTime()) / 1000);
-  if (secs < 60) return 'just now';
-  const mins = Math.round(secs/60);   if (mins < 60) return mins + 'm ago';
-  const hrs  = Math.round(mins/60);   if (hrs  < 24) return hrs  + 'h ago';
-  const days = Math.round(hrs/24);    if (days < 30) return days + 'd ago';
-  const mos  = Math.round(days/30);   if (mos  < 12) return mos  + 'mo ago';
-  return Math.round(mos/12) + 'y ago';
-}
-// Vietnamese names are full of diacritics, so a literal match makes the box
-// useless: typing "bo" would never find "Bố ck", and "vk" never "Vk shidou".
-// Fold accents on both sides and compare the bare letters. đ/Đ decompose to
-// nothing under NFD, so they are mapped by hand.
-function fold(s){
-  return String(s == null ? '' : s)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd').replace(/Đ/g, 'D')
-    .toLowerCase();
+function kids(){ return _users.filter(u=>u.role!=='admin'&&!u.disabled); }
+function userById(id){ return _users.find(u => String(u.id) === String(id)) || null; }
+function todayTasks(uid){ return _tasksByUser[String(uid)] || null; }
+function taskProgress(uid){
+  const t = todayTasks(uid);
+  if (!t || !t.tasks || !t.tasks.length) return null;
+  return { done: t.tasks.filter(x=>x.done).length, total: t.tasks.length, rewarded: !!t.rewardedToday, shields: (t.shields && t.shields.count) || 0 };
 }
 
-function initials(name){
-  const parts = String(name||'?').trim().split(/\s+/);
-  const s = (parts[0]||'?')[0] + (parts.length > 1 ? parts[parts.length-1][0] : '');
-  return s.toUpperCase();
+// ── routing ──────────────────────────────────────────────────────────────
+// Hash routes so the back button and a reload land where the parent was:
+//   #/                      overview
+//   #/be/12  #/be/12/lich-su  #/be/12/nang-luc
+//   #/cai-dat  #/cai-dat/cuop-dem
+//   #/tai-khoan
+const CHILD_TABS = { '':'tasks', 'nhiem-vu':'tasks', 'lich-su':'history', 'nang-luc':'skills' };
+const CHILD_SLUG = { tasks:'', history:'lich-su', skills:'nang-luc' };
+function parseRoute(hash){
+  const parts = String(hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
+  if (parts[0] === 'be' && /^\d+$/.test(parts[1] || '')) return { view:'child', uid: parts[1], tab: CHILD_TABS[parts[2] || ''] || 'tasks' };
+  if (parts[0] === 'cai-dat') return { view:'settings', uid:null, tab: parts[1] === 'cuop-dem' ? 'raid' : 'flags' };
+  if (parts[0] === 'tai-khoan') return { view:'accounts', uid:null, tab:null };
+  return { view:'overview', uid:null, tab:null };
 }
+function childHref(uid, tab){ const s = CHILD_SLUG[tab] || ''; return '#/be/' + uid + (s ? '/' + s : ''); }
+function go(hash){ if (location.hash !== hash) location.hash = hash; else render(); }
+function openChild(uid, tab){ go(childHref(uid, tab || 'tasks')); }
 
-async function loadUsers(){
-  const { users } = await api('admin/users');
-  _users = users || [];
-  const totalActs = _users.reduce((s,u)=>s+(u.total_count||0),0);
-  const totalExams = _users.reduce((s,u)=>s+(u.exam_count||0),0);
-  const off = _users.filter(u=>u.disabled).length;
-  document.getElementById('stats').innerHTML =
-    `<div class="stat"><b>${_users.length}</b><span>Users${off?` · ${off} disabled`:''}</span></div>`+
-    `<div class="stat"><b>${totalActs}</b><span>Activities (30d)</span></div>`+
-    `<div class="stat"><b>${totalExams}</b><span>Exam attempts</span></div>`;
-  const learnerSelect = document.getElementById('skillUser');
-  const previous = learnerSelect.value;
-  learnerSelect.innerHTML = '<option value="">Toàn bộ người học</option>' + _users
-    .filter(u=>u.role!=='admin')
-    .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
-    .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
-  if ([...learnerSelect.options].some(o=>o.value===previous)) learnerSelect.value = previous;
-  const dailySelect = document.getElementById('dailyUser');
-  const prevDaily = dailySelect.value;
-  dailySelect.innerHTML = '<option value="">— chọn bé —</option>' + _users
-    .filter(u=>u.role!=='admin'&&!u.disabled)
-    .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
-    .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
-  if ([...dailySelect.options].some(o=>o.value===prevDaily)) dailySelect.value = prevDaily;
-  renderUsers();
-}
-
-function renderUsers(){
-  const body = document.getElementById('usersBody');
-  const q = fold(_filter.trim());
-  const rows = _users.filter(u => !q || fold(u.username).includes(q));
-
-  const { key, dir } = _sort;
-  rows.sort((a,b)=>{
-    let x = a[key], y = b[key];
-    if (key === 'username') return String(x).localeCompare(String(y), 'vi') * dir;
-    x = (x == null || x === '') ? (typeof y === 'number' ? -1 : '') : x;
-    y = (y == null || y === '') ? (typeof x === 'number' ? -1 : '') : y;
-    return (x < y ? -1 : x > y ? 1 : 0) * dir;
+function render(){
+  _route = parseRoute(location.hash);
+  const { view, uid, tab } = _route;
+  document.getElementById('overviewPage').hidden = view !== 'overview';
+  document.getElementById('childPage').hidden = view !== 'child';
+  document.getElementById('settingsPage').hidden = view !== 'settings';
+  document.getElementById('accountsPage').hidden = view !== 'accounts';
+  document.querySelectorAll('.sider .nav-item').forEach(a => {
+    const on = a.dataset.route === view && (view !== 'child' || a.dataset.uid === String(uid));
+    if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
-
-  document.getElementById('userCount').textContent =
-    rows.length === _users.length ? `${_users.length} users` : `${rows.length} of ${_users.length}`;
-  // Header clicks and the phone dropdown drive the same state, so neither can
-  // show an order the other is not in.
-  const sel = document.getElementById('sortSel');
-  if (sel && sel.value !== key) sel.value = key;
-  document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
-    const on = th.getAttribute('data-sort') === key;
-    th.classList.toggle('sorted', on);
-    th.querySelector('.arrow').textContent = on ? (dir === 1 ? '▲' : '▼') : '▼';
-  });
-
-  if (!rows.length){
-    body.innerHTML = `<tr><td colspan="7" class="empty">${q ? 'No user matches “'+esc(q)+'”.' : 'No users yet.'}</td></tr>`;
-    return;
-  }
-  const busiest = Math.max(1, ...rows.map(u=>u.total_count||0));
-  body.innerHTML = rows.map(u=>{
-    const pct = Math.round((u.total_count||0) / busiest * 100);
-    // A latest snapshot far below this week's peak is the signature of a
-    // wiped device (cleared storage, re-created profile). Flag it and offer
-    // the difference as the restore grant. Peaks under 200 xu stay quiet —
-    // that is normal spending noise, not a wipe.
-    const coinDrop = (u.coin_peak7 != null && u.coin_latest != null
-        && u.coin_peak7 >= 200 && u.coin_latest < u.coin_peak7 / 2)
-      ? (u.coin_peak7 - u.coin_latest) : 0;
-    return `<tr class="clickable ${u.disabled?'disabled':''}" data-uid="${u.id}" data-name="${esc(u.username)}">
-      <td>
-        <div class="who-cell">
-          <span class="avatar ${u.role==='admin'?'admin':''}">${esc(initials(u.username))}</span>
-          <span>
-            <span class="who-name">${esc(u.username)}</span>
-            <span class="who-sub">${u.role==='admin'?'admin · ':''}#${u.id}</span>${u.has_device?'<span class="dev" title="Holds a slot on a device">📱</span>':''}
-          </span>
-        </div>
-      </td>
-      <td class="num"><b>${u.total_count||0}</b><div class="meter" style="width:${pct}%"></div></td>
-      <td class="num hide-sm">${u.exam_count||0}</td>
-      <td class="muted" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
-      <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
-      <td class="hide-xs">${u.disabled
-            ? '<span class="pill dead">Disabled</span>'
-            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🌱 Chơi trước':'Active'}</span>`}${coinDrop
-            ? `<span class="pill dead" title="Wallet dropped: ${u.coin_latest} xu now vs ${u.coin_peak7} xu peak this week — possible wiped device. The Coins button pre-fills the ${coinDrop} xu to restore.">▼ ${coinDrop} xu</span>` : ''}</td>
-      <td>
-        <div class="row-actions">
-          <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
-                  aria-label="Chơi trước for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
-                  title="Chơi trước cho bé này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
-          <button class="mini chuyen-toggle ${u.allow_chuyen?'on':''}" data-uid="${u.id}"
-                  aria-label="Chuyên tier for ${esc(u.username)}: currently ${u.allow_chuyen?'on':'off'}"
-                  title="Bài Chuyên cho bé này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
-          <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
-                  aria-label="Give coins to ${esc(u.username)}"
-                  title="${coinDrop?`Restore — pre-filled with the ${coinDrop} xu this wallet lost vs its weekly peak`:'Give coins — the child\'s app claims them on its next sync'}">💰<span class="lbl"> ${coinDrop?'Restore':'Coins'}</span></button>
-          ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
-                  aria-label="Free the device slot held by ${esc(u.username)}"
-                  title="Free this account's slot on its device (max 2 accounts per device)">📱<span class="lbl"> Free slot</span></button>` : ''}
-          ${u.role === 'admin' ? '' : (u.disabled
-            ? `<button class="mini revive act-enable" data-uid="${u.id}" aria-label="Enable ${esc(u.username)}">↩︎<span class="lbl"> Enable</span></button>`
-            : `<button class="mini danger act-disable" data-uid="${u.id}" data-name="${esc(u.username)}"
-                  aria-label="Disable ${esc(u.username)}"
-                  title="Sign this account out everywhere and block sign-in. Nothing is deleted.">🚫<span class="lbl"> Disable</span></button>`)}
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-
-  // Buttons live inside a clickable row, so each must stop the row selecting.
-  const act = (sel, run) => body.querySelectorAll(sel).forEach(btn=>{
-    btn.onclick = async (e)=>{
-      e.stopPropagation();
-      btn.disabled = true;
-      try { await run(btn); await loadUsers(); }
-      catch (err) { alert('Could not do that: ' + (err && err.message ? err.message : err)); btn.disabled = false; }
-    };
-  });
-  act('.bot-toggle', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
-  // The Chuyên tier — its own switch, nothing to do with 🌱 Chơi trước.
-  act('.chuyen-toggle', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), allowChuyen: !b.classList.contains('on') } }));
-  act('.act-clear', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
-  act('.act-coins', b => {
-    // A detected wipe pre-fills the exact difference to restore; otherwise 50.
-    const suggested = (Number(b.dataset.refill) > 0) ? String(Math.trunc(Number(b.dataset.refill))) : '50';
-    const raw = prompt('Give coins to \u201c' + b.dataset.name + '\u201d \u2014 how many?', suggested);
-    if (raw === null) return Promise.reject(new Error('cancelled'));
-    const amount = Math.trunc(Number(raw));
-    if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
-      return Promise.reject(new Error('amount must be 1\u2013100000'));
-    }
-    return api('admin/grant-coins', { method:'POST', body:{ userId: Number(b.dataset.uid), amount } })
-      .then(() => alert('\u2705 \u0110\u00e3 t\u1eb7ng ' + amount + ' xu cho ' + b.dataset.name + '. B\u00e9 s\u1ebd nh\u1eadn khi m\u1edf app.'));
-  });
-
-  act('.act-enable', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), disabled: false } }));
-  act('.act-disable', b => {
-    // Disabling signs a child out of every device at once. Worth one question.
-    if (!confirm('Disable “' + b.dataset.name + '”?\n\nThey will be signed out everywhere and cannot sign in. Nothing is deleted — you can enable them again at any time.')) {
-      return Promise.reject(new Error('cancelled'));
-    }
-    return api('admin/user-flags', { method:'POST', body:{ userId: Number(b.dataset.uid), disabled: true } });
-  });
-
-  body.querySelectorAll('tr.clickable').forEach(tr=>{
-    tr.onclick = ()=>{
-      body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));
-      tr.classList.add('selected');
-      const uid = tr.getAttribute('data-uid'), name = tr.getAttribute('data-name');
-      loadActivity(uid, name);
-      selectSkillUser(uid, name);
-      switchAdminTab('skills');
-    };
-  });
-}
-
-const TAB_TITLES = { users:'Người học', skills:'Năng lực', daily:'Nhiệm vụ hằng ngày', raid:'Cướp Đêm' };
-function switchAdminTab(tab){
-  document.querySelectorAll('.admin-tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)));
-  document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id !== tab + 'Panel'; });
   const title = document.getElementById('pageTitle');
-  if (title) title.textContent = TAB_TITLES[tab] || 'FlashLingo Admin';
-  closeSider();
+  if (view === 'overview') { title.textContent = 'Tổng quan'; renderOverview(); }
+  else if (view === 'child') {
+    const u = userById(uid);
+    title.innerHTML = '<span class="crumb">Bé › </span>' + esc(u ? u.username : '#' + uid);
+    renderChild(uid, tab);
+  }
+  else if (view === 'settings') { title.textContent = 'Cài đặt app'; switchAdminTab(tab); }
+  else if (view === 'accounts') { title.textContent = 'Tài khoản'; renderUsers(); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', render);
+
+// One function for both tab strips (the child's and the settings'): it
+// only touches the buttons in the strip that owns `tab`, and the panel of
+// that name. Landing on a tab is what triggers its load.
+const TAB_GROUPS = { child:['tasks','history','skills'], settings:['flags','raid'] };
+function switchAdminTab(tab){
+  const group = TAB_GROUPS.child.indexOf(tab) >= 0 ? 'child' : 'settings';
+  const names = TAB_GROUPS[group];
+  document.querySelectorAll('.admin-tab').forEach(btn=>{ if (names.indexOf(btn.dataset.tab) >= 0) btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)); });
+  document.querySelectorAll('.admin-panel').forEach(panel=>{ const n = panel.id.replace(/Panel$/, ''); if (names.indexOf(n) >= 0) panel.hidden = n !== tab; });
+  if (group === 'child' && _route.view === 'child' && _route.tab !== tab) { location.hash = childHref(_route.uid, tab); return; }
+  if (group === 'settings' && _route.view === 'settings' && _route.tab !== tab) { location.hash = tab === 'raid' ? '#/cai-dat/cuop-dem' : '#/cai-dat'; return; }
+  if (tab === 'tasks') loadDailyTasks().catch(()=>{});
+  if (tab === 'history') loadChildHistory().catch(()=>{});
   if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
-  if (tab === 'daily') loadDailyTasks().catch(()=>{});
   if (tab === 'raid') loadRaidConfig().catch(()=>{});
 }
 
+// ── sider ────────────────────────────────────────────────────────────────
+function renderSider(){
+  const host = document.getElementById('siderKids');
+  const today = todayKey();
+  const activeToday = new Set(_activityAll.filter(r => dayKeyOf(r.created_at) === today).map(r => String(r.user_id)));
+  host.innerHTML = kids().map(u => {
+    const p = taskProgress(u.id);
+    const meta = p ? `<span class="nav-meta ${p.done >= p.total ? 'done' : ''}" title="Nhiệm vụ hôm nay">${p.done >= p.total ? '✓ ' : ''}${p.done}/${p.total}</span>` : '';
+    return `<a class="nav-item" href="${childHref(u.id, 'tasks')}" data-route="child" data-uid="${u.id}" title="${esc(u.username)}">
+      <span class="nav-avatar ${activeToday.has(String(u.id)) ? 'today' : ''}" aria-hidden="true">${esc(initials(u.username))}</span>
+      <span class="nav-name">${esc(u.username)}</span>${meta}</a>`;
+  }).join('') || '<div class="sider-foot" style="margin:0">Chưa có bé nào.</div>';
+  const off = _users.filter(u => u.disabled).length;
+  document.getElementById('accountsMeta').textContent = off ? off + ' đã khoá' : '';
+  document.querySelectorAll('.sider .nav-item').forEach(a => {
+    const on = a.dataset.route === _route.view && (_route.view !== 'child' || a.dataset.uid === String(_route.uid));
+    if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+}
+
+// ── data loading ─────────────────────────────────────────────────────────
+async function loadUsers(){
+  const { users } = await api('admin/users');
+  _users = users || [];
+  renderSider();
+  if (_route.view === 'accounts') renderUsers();
+}
+async function loadActivityAll(){
+  const { activity } = await api('admin/activity');
+  _activityAll = Array.isArray(activity) ? activity : [];
+  renderSider();
+  if (_route.view === 'overview') renderOverview();
+  if (_route.view === 'child') renderChildHead(_route.uid);
+}
+// One call per child, in parallel: the grid's last column and the sider's
+// "2/3" need every child's tasks, and there are ten children, not ten thousand.
+async function loadAllTasks(){
+  await Promise.all(kids().map(async u => {
+    try { _tasksByUser[String(u.id)] = await api('admin/daily-tasks?user_id=' + encodeURIComponent(u.id)); }
+    catch (e) { if (e.message === 'unauth') throw e; }
+  }));
+  renderSider();
+  if (_route.view === 'overview') renderOverview();
+}
+
+// ── Tổng quan ────────────────────────────────────────────────────────────
+function renderOverview(){
+  renderGrid();
+  renderHistory({
+    host: document.getElementById('histAllHost'), filtersHost: document.getElementById('histAllFilters'),
+    rows: _activityAll, days: _range, showUser: true, state: _hist, withUserFilter: true,
+    onChange: renderOverview,
+  });
+}
+function renderGrid(){
+  const host = document.getElementById('gridHost');
+  const today = todayKey();
+  const list = kids();
+  document.getElementById('gridSub').textContent = list.length + ' bé · ' + _range + ' ngày qua';
+  if (!list.length) { host.innerHTML = '<div class="empty">Chưa có bé nào.</div>'; return; }
+  const g = buildGrid(_activityAll, list, _range, today);
+  const head = g.keys.map(k => { const s = shortDayLabel(k); return `<th class="${k === today ? 'today' : ''}">${s.wd}<small>${s.dm}</small></th>`; }).join('');
+  const body = g.rows.map(r => {
+    const u = r.user;
+    const cells = g.keys.map(k => {
+      const c = r.cells[k];
+      const cls = cellClass(c);
+      const title = c && c.n ? `${c.n} lượt` + (c.total ? ` · ${Math.round(c.score / c.total * 100)}% đúng` : '') : 'không học';
+      return `<td class="${k === today ? 'today' : ''}"><span class="cell ${cls}" title="${title}">${c && c.n ? c.n : '·'}</span></td>`;
+    }).join('');
+    const p = taskProgress(u.id);
+    const tasks = p
+      ? `<span class="pill ${p.done >= p.total ? 'on' : 'off'}">${p.done >= p.total ? '✓' : '○'} ${p.done}/${p.total}</span>${p.rewarded ? ' <span class="dim" title="đã thưởng 200 xu + 1 khiên">🎁</span>' : ''}${p.shields ? ` <span class="dim" title="khiên đêm">🛡️${p.shields}</span>` : ''}`
+      : '<span class="dim">chưa giao</span>';
+    return `<tr><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total">${r.n}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
+  }).join('');
+  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total">Tổng</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>`;
+  host.querySelectorAll('.kid').forEach(b => b.onclick = () => openChild(b.dataset.uid, 'tasks'));
+}
+
+// ── history (shared by the overview and the child page) ──────────────────
+function renderHistory(o){
+  const st = o.state;
+  const today = todayKey();
+  const kindsPresent = [...new Set(o.rows.map(r => r.kind))].filter(k => KIND_LABEL[k]);
+  // filters
+  const uf = o.withUserFilter
+    ? `<select id="histUser_${o.host.id}" aria-label="Bé"><option value="">Tất cả các bé</option>${kids().map(u => `<option value="${u.id}"${String(st.uid) === String(u.id) ? ' selected' : ''}>${esc(u.username)}</option>`).join('')}</select>`
+    : (o.rangeSeg ? `<div class="seg" role="group" aria-label="Khoảng thời gian">${[7,14,30,90].map(d => `<button type="button" data-days="${d}" aria-pressed="${st.range === d}">${d} ngày</button>`).join('')}</div>` : '');
+  o.filtersHost.innerHTML = `${uf}
+    <div class="chips" role="group" aria-label="Loại bài"><button type="button" class="chip" data-kind="" aria-pressed="${!st.kind}">Tất cả</button>${kindsPresent.map(k => `<button type="button" class="chip" data-kind="${k}" aria-pressed="${st.kind === k}">${KIND_LABEL[k]}</button>`).join('')}</div>
+    <div class="search"><input type="search" placeholder="Tìm tên bài…" value="${esc(st.q)}" aria-label="Tìm tên bài"></div>`;
+  const sel = o.filtersHost.querySelector('select');
+  if (sel) sel.onchange = () => { st.uid = sel.value; o.onChange(); };
+  o.filtersHost.querySelectorAll('.chip').forEach(c => c.onclick = () => { st.kind = c.dataset.kind; o.onChange(); });
+  o.filtersHost.querySelectorAll('[data-days]').forEach(b => b.onclick = () => { st.range = Number(b.dataset.days); o.onChange(); });
+  const inp = o.filtersHost.querySelector('input[type=search]');
+  inp.oninput = () => { st.q = inp.value; renderHistoryBody(o, today); };
+  renderHistoryBody(o, today);
+}
+function renderHistoryBody(o, today){
+  const st = o.state;
+  const q = fold(st.q.trim());
+  const rows = o.rows.filter(r => (!st.kind || r.kind === st.kind)
+    && (!st.uid || String(r.user_id) === String(st.uid))
+    && (!q || fold((r.title || r.ref || '') + ' ' + (r.username || '')).indexOf(q) >= 0));
+  const days = groupByDay(rows, o.days, today);
+  const anyRow = days.some(d => d.rows.length);
+  if (!anyRow) { o.host.innerHTML = `<div class="empty">${o.rows.length ? 'Không có lượt nào khớp bộ lọc.' : 'Chưa có hoạt động nào.'}</div>`; return; }
+  o.host.innerHTML = days.map((d, i) => {
+    const s = d.sum;
+    const sum = d.rows.length
+      ? `<span class="day-sum">${o.showUser ? `<span><b>${s.users}</b> bé</span>` : ''}<span><b>${s.n}</b> lượt</span>${s.pct != null ? `<span><b class="${pctClass(s.pct)}">${s.pct}%</b> đúng</span>` : ''}${s.minutes ? `<span><b>${s.minutes}</b> phút thi</span>` : ''}</span>`
+      : `<span class="day-sum"><span class="skipped">${o.showUser ? 'Không ai học' : 'Không học'} ✗</span></span>`;
+    if (!d.rows.length) return `<div class="day"><div style="display:flex;gap:12px;padding:10px 24px;flex-wrap:wrap" class="day-empty"><span class="day-caret" style="visibility:hidden">▶</span><span class="day-title dim">${d.label}</span>${sum}</div></div>`;
+    const open = i < 2 ? ' open' : '';
+    const body = d.rows.map(a => {
+      const hasScore = (a.total!=null && a.total>0);
+      const pct = hasScore ? Math.round(a.score/a.total*100) : null;
+      return `<tr>
+        <td class="muted">${timeOf(a.created_at)}</td>
+        ${o.showUser ? `<td><span class="who"><span class="avatar">${esc(initials(a.username))}</span><b>${esc(a.username)}</b></span></td>` : ''}
+        <td>${kindPill(a.kind)}</td>
+        <td style="white-space:normal">${esc(a.title||a.ref||'—')}${Number(a.retake)===1 ? '<span class="pill retake" title="Làm lại cùng một bài — không tính vào nhiệm vụ ngày">🔁 làm lại</span>' : ''}</td>
+        <td class="num">${hasScore ? (a.score+'/'+a.total) : '—'}</td>
+        <td class="num">${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
+        <td class="num muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
+        <td class="num muted">${a.coin_balance!=null ? Number(a.coin_balance).toLocaleString('vi-VN') : '—'}</td>
+      </tr>`;
+    }).join('');
+    return `<details class="day"${open}><summary><span class="day-caret">▶</span><span class="day-title ${d.key === today ? 'today' : ''}">${d.label}</span>${sum}</summary>
+      <div class="scroll"><table><thead><tr><th>Giờ</th>${o.showUser ? '<th>Bé</th>' : ''}<th>Loại</th><th>Bài</th><th class="num">Điểm</th><th class="num">%</th><th class="num">Thời gian</th><th class="num">Xu</th></tr></thead><tbody>${body}</tbody></table></div></details>`;
+  }).join('');
+}
+
+// ── the child page ───────────────────────────────────────────────────────
+function renderChild(uid, tab){
+  const u = userById(uid);
+  if (!u) { document.getElementById('childHead').innerHTML = '<div class="empty">Không tìm thấy bé này.</div>'; return; }
+  _skillUser = String(u.id); _skillName = u.username;
+  renderChildHead(uid);
+  switchAdminTab(tab || 'tasks');
+}
+// The header's numbers arrive after the page does (tasks and activity load
+// in the background), so it is repainted whenever either lands.
+function renderChildHead(uid){
+  if (_route.view !== 'child' || String(_route.uid) !== String(uid)) return;
+  const u = userById(uid);
+  const head = document.getElementById('childHead');
+  if (!u) return;
+  const p = taskProgress(u.id);
+  const n30 = _activityAll.filter(r => String(r.user_id) === String(u.id)).length;
+  head.innerHTML = `<span class="avatar ${u.role==='admin'?'admin':''}">${esc(initials(u.username))}</span>
+    <div><h2>${esc(u.username)}</h2>
+      <div class="facts">
+        <span>Nhiệm vụ hôm nay: <b>${p ? p.done + '/' + p.total : 'chưa giao'}</b></span>
+        <span>Lượt học gần đây: <b>${n30}</b></span>
+        <span>Học gần nhất: <b title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</b></span>
+        ${u.allow_chuyen ? '<span class="pill on">🎓 Chuyên</span>' : ''}${u.allow_bot ? '<span class="pill on">🌱 Chơi trước</span>' : ''}
+      </div></div>`;
+}
+
+// ── Nhiệm vụ hằng ngày ───────────────────────────────────────────────────
+function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
+function assignedKeys(uid){ const t = todayTasks(uid); return t && t.tasks ? t.tasks.map(x => x.kind) : []; }
+
+async function loadDailyTasks(){
+  const uid = _route.uid;
+  if (!uid) return;
+  const body = document.getElementById('dailyBody');
+  const status = document.getElementById('dailyStatus');
+  // A failed reload must not leave another child's rows on screen looking
+  // like today's truth, so the table is emptied here and the error rethrown.
+  let r;
+  try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)); }
+  catch(e){
+    status.textContent = 'Không tải được (' + e.message + ')';
+    body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách nhiệm vụ.</td></tr>';
+    throw e;
+  }
+  _tasksByUser[String(uid)] = r;
+  if (String(_route.uid) !== String(uid)) return;      // the parent moved on meanwhile
+  renderSider();
+  renderChildHead(uid);
+  renderTaskList(r);
+  renderPicker();
+}
+
+function renderTaskList(r){
+  const uid = _route.uid;
+  const body = document.getElementById('dailyBody');
+  const status = document.getElementById('dailyStatus');
+  const shield = r.shields || {count:0,activeUntil:0};
+  const done = r.tasks.filter(t=>t.done).length;
+  document.getElementById('dailyDate').textContent = 'hôm nay ' + r.date;
+  status.innerHTML = `<span><b>${done}/${r.tasks.length}</b> nhiệm vụ xong</span>`
+    + `<span>${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}</span>`
+    + `<span>🛡️ <b>${shield.count}</b> khiên${shield.activeUntil>Date.now()?' · đang bật đến '+esc(fmtUntil(shield.activeUntil)):''}</span>`;
+  if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao nhiệm vụ nào — chọn bài bên dưới để giao.</td></tr>'; return; }
+  body.innerHTML = r.tasks.map(t=>`<tr data-id="${t.id}">
+      <td style="white-space:normal"><b>${esc(t.label)}</b><div class="task-kind">${esc((DailyTaskCatalog.get(t.kind) || {path:[]}).path.join(' › '))}</div></td>
+      <td><span class="target-edit" data-kind="${esc(t.kind)}" data-target="${t.target}"><input type="number" min="1" max="50" value="${t.target}" inputmode="numeric" aria-label="Số lần mỗi ngày cho ${esc(t.label)}"><span class="dim">lần</span><button type="button" class="btn btn-sm btn-primary save-target">Lưu</button></span></td>
+      <td class="task-count">${t.done?`<span class="pill on">✓ ${t.count}/${t.target}</span>`:`<span class="pill off">${t.count}/${t.target}</span>`}</td>
+      <td class="muted hide-sm" title="${esc(fmtDate(t.created_at))}">${relTime(t.created_at)}</td>
+      <td style="text-align:right"><button class="mini act-daily-del" data-id="${t.id}" aria-label="Xoá nhiệm vụ ${esc(t.label)}">🗑</button></td>
+    </tr>`).join('');
+  // The rows were just rendered from r.tasks in order, so the task each button
+  // belongs to is right here — no need to smuggle its label through the DOM.
+  [...body.querySelectorAll('.act-daily-del')].forEach((b, i)=>{
+    const t = r.tasks[i];
+    b.onclick = async ()=>{
+      if (!confirm('Xoá nhiệm vụ “'+t.label+'”?\n\nBé sẽ không còn phải làm nhiệm vụ này từ hôm nay.')) return;
+      try { await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' }); }
+      catch(e){
+        if (e.message !== 'unauth') alert('Không xoá được: '+e.message);
+        return;
+      }
+      loadDailyTasks().catch(()=>{});
+    };
+  });
+  // Changing the number of times: the API has no "edit", so a new target is
+  // delete + create. The create goes first in spirit — it is validated here
+  // before anything is removed — and a create that fails after the delete
+  // is reported loudly, never silently.
+  [...body.querySelectorAll('.target-edit')].forEach((box, i)=>{
+    const t = r.tasks[i];
+    const input = box.querySelector('input');
+    const sync = () => box.classList.toggle('changed', String(input.value).trim() !== String(t.target));
+    input.addEventListener('input', sync);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') box.querySelector('.save-target').click(); });
+    box.querySelector('.save-target').onclick = async () => {
+      const target = Math.trunc(Number(input.value));
+      if (!Number.isFinite(target) || target < 1 || target > 50) { alert('Số lần phải từ 1 đến 50.'); return; }
+      if (target === t.target) { sync(); return; }
+      box.querySelector('.save-target').disabled = true;
+      try {
+        await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' });
+        await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind:t.kind, target } });
+      } catch(e){
+        if (e.message !== 'unauth') alert('Không đổi được số lần: ' + e.message + '\n\nKiểm tra lại danh sách — nhiệm vụ có thể đã bị xoá, giao lại nếu cần.');
+      }
+      loadDailyTasks().catch(()=>{});
+    };
+  });
+}
+
+// The picker. Two views over the same catalog — search results, or the
+// Eng / Math tree — and one "Giao" per task. The number of times lives in
+// ONE box above both views, so it is set once, not per row.
+let _pickMode = 'search';
+function renderPicker(){
+  const host = document.getElementById('pickerHost');
+  const uid = _route.uid;
+  const assigned = new Set(assignedKeys(uid));
+  const q = document.getElementById('taskSearch').value;
+  document.querySelectorAll('#pickMode button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === _pickMode)));
+  const row = (e) => `<div class="res-row ${assigned.has(e.key) ? 'assigned' : ''}"><span class="res-label" title="${esc(e.label)}">${esc(e.label)}</span>${assigned.has(e.key)
+      ? '<span class="pill on">đã giao</span>'
+      : `<button type="button" class="btn btn-sm btn-primary assign" data-key="${esc(e.key)}">Giao</button>`}</div>`;
+  if (_pickMode === 'search') {
+    if (!q.trim()) {
+      host.innerHTML = '<div class="empty">Gõ vào ô tìm ở trên — hoặc chuyển sang “Cây Eng / Math” để duyệt.</div>';
+    } else {
+      const r = searchTasks(q, DailyTaskCatalog.all(), [...assigned]);
+      host.innerHTML = r.groups.length
+        ? r.groups.map(g => `<div class="res-group"><div class="res-path">${g.path.split(' › ').map((s, i, a) => i === a.length - 1 ? '<b>' + esc(s) + '</b>' : esc(s)).join(' › ')}</div>${g.items.map(it => row(it.entry)).join('')}</div>`).join('')
+          + (r.matched > r.shown ? `<div class="hist-more dim">…và ${r.matched - r.shown} bài nữa — gõ thêm chữ để thu hẹp.</div>` : '')
+        : `<div class="empty">Không có bài nào khớp “${esc(q)}”.</div>`;
+    }
+  } else {
+    const tree = DailyTaskCatalog.tree();
+    const node = (n, depth) => `<details${depth === 0 ? ' open' : ''}><summary>${esc(n.label)} <span class="n">${countTasks(n)} bài</span></summary>${n.entries.map(row).join('')}${n.children.map(c => node(c, depth + 1)).join('')}</details>`;
+    host.innerHTML = `<div class="tree">${tree.children.map(c => node(c, 0)).join('')}</div>`;
+  }
+  host.querySelectorAll('.assign').forEach(b => b.onclick = () => assignTask(b.dataset.key, b));
+}
+function countTasks(n){ return n.entries.length + n.children.reduce((s, c) => s + countTasks(c), 0); }
+
+async function assignTask(kind, btn){
+  const uid = _route.uid;
+  const note = document.getElementById('assignNote');
+  const entry = DailyTaskCatalog.get(kind);
+  if (!uid || !entry){ return; }
+  const target = Math.trunc(Number(document.getElementById('dailyTarget').value));
+  if (!Number.isFinite(target) || target<1 || target>50){ note.className = 'note bad'; note.textContent = 'Số lần phải từ 1 đến 50.'; return; }
+  if (btn) btn.disabled = true;
+  note.className = 'note'; note.textContent = 'Đang giao…';
+  try {
+    await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind, target } });
+    note.className = 'note ok'; note.textContent = '✓ Đã giao “' + entry.label + '” — ' + target + ' lần mỗi ngày.';
+  } catch(e){
+    if (e.message === 'unauth') return;
+    note.className = 'note bad';
+    note.textContent = e.code === 'duplicate' ? 'Bé đã có nhiệm vụ này — đổi số lần ngay trên dòng của nó ở bảng trên.'
+      : e.code === 'too_many' ? e.message + '. Xoá bớt nhiệm vụ cũ trước khi thêm.'
+      : 'Không lưu được: ' + e.message;
+    if (btn) btn.disabled = false;
+  }
+  loadDailyTasks().catch(()=>{});
+}
+
+// ── Lịch sử của một bé ───────────────────────────────────────────────────
+async function loadChildHistory(){
+  const uid = _route.uid;
+  if (!uid) return;
+  if (String(_activityChild.uid) !== String(uid)) {
+    document.getElementById('histChildHost').innerHTML = '<div class="empty">Đang tải…</div>';
+    const { activity } = await api('admin/activity?user_id=' + encodeURIComponent(uid));
+    if (String(_route.uid) !== String(uid)) return;
+    _activityChild = { uid: String(uid), rows: Array.isArray(activity) ? activity : [] };
+  }
+  renderChildHistory();
+}
+function renderChildHistory(){
+  const rows = _activityChild.rows;
+  const days = groupByDay(rows, _childHist.range, todayKey());
+  const studied = days.filter(d => d.rows.length).length;
+  const s = summarize(days.flatMap(d => d.rows));
+  document.getElementById('childHistSub').textContent = `${_childHist.range} ngày qua: học ${studied}/${_childHist.range} ngày · ${s.n} lượt` + (s.pct != null ? ` · ${s.pct}% đúng` : '');
+  renderHistory({
+    host: document.getElementById('histChildHost'), filtersHost: document.getElementById('histChildFilters'),
+    rows, days: _childHist.range, showUser: false, state: _childHist, rangeSeg: true,
+    onChange: renderChildHistory,
+  });
+}
+
+// ── Năng lực (kept from the previous console) ────────────────────────────
 function selectSkillUser(userId, name){
   _skillUser = userId ? String(userId) : null;
   _skillName = name || null;
-  const select = document.getElementById('skillUser');
-  if (select) select.value = _skillUser || '';
-  loadSkills(_skillUser, _skillName).catch(()=>{});
 }
 
 function skillState(row){
@@ -1049,7 +1454,7 @@ function skillState(row){
 function renderSkills(skills){
   const root = document.getElementById('skillAnalytics');
   if (!skills.length){
-    root.innerHTML = '<div class="learning-empty">Chưa đủ dữ liệu kỹ năng trong khoảng thời gian này. Kết quả mới sẽ tự động xuất hiện sau khi user hoàn thành bài.</div>';
+    root.innerHTML = '<div class="learning-empty">Chưa đủ dữ liệu kỹ năng trong khoảng thời gian này. Kết quả mới sẽ tự động xuất hiện sau khi bé hoàn thành bài.</div>';
     return;
   }
   const attempts = skills.reduce((n,s)=>n+s.attempts,0);
@@ -1069,8 +1474,8 @@ function renderSkills(skills){
   });
   const menuOverview = !document.getElementById('skillMenu').value
     ? `<div class="skill-section-title">Tổng quan theo menu</div><div class="menu-overview">${Object.keys(menuGroups)
-        .sort((a,b)=>SKILL_MENU_LABEL[a].localeCompare(SKILL_MENU_LABEL[b],'vi'))
-        .map(menu=>{ const g=menuGroups[menu], p=g.attempts?Math.round(g.correct/g.attempts*100):0; return `<button class="menu-card" onclick="setSkillMenu('${menu}')"><strong>${SKILL_MENU_ICON[menu]||'📘'} ${esc(SKILL_MENU_LABEL[menu]||menu)}</strong><b class="${pctClass(p)}">${p}%</b><small>${g.attempts} câu${g.weak?' · '+g.weak+' kỹ năng yếu':''}</small></button>`; }).join('')}</div>`
+        .sort((a,b)=>(SKILL_MENU_LABEL[a]||a).localeCompare(SKILL_MENU_LABEL[b]||b,'vi'))
+        .map(menu=>{ const g=menuGroups[menu], p=g.attempts?Math.round(g.correct/g.attempts*100):0; return `<button type="button" class="menu-card" data-menu="${esc(menu)}"><strong>${SKILL_MENU_ICON[menu]||'📘'} ${esc(SKILL_MENU_LABEL[menu]||menu)}</strong><b class="${pctClass(p)}">${p}%</b><small>${g.attempts} câu${g.weak?' · '+g.weak+' kỹ năng yếu':''}</small></button>`; }).join('')}</div>`
     : '';
   const priority = ordered.find(s=>s.attempts>=5 && s.mastery<80);
   const priorityHtml = priority ? `<div class="priority-card"><span class="priority-icon" aria-hidden="true">🎯</span><div><strong>Ưu tiên giao bài: ${esc(priority.skillLabel)}</strong><span>${esc(SKILL_MENU_LABEL[priority.menu]||priority.menu)} · đúng ${priority.accuracy}% sau ${priority.attempts} câu. Nên cho luyện thêm dạng này trước.</span></div></div>` : '';
@@ -1088,6 +1493,7 @@ function renderSkills(skills){
         <span class="skill-status ${state.cls}">${state.label}</span>
       </div>`;
     }).join('')}</div>`;
+  root.querySelectorAll('.menu-card').forEach(b => b.onclick = () => setSkillMenu(b.dataset.menu));
 }
 
 function setSkillMenu(menu){
@@ -1098,216 +1504,150 @@ function setSkillMenu(menu){
 async function loadSkills(userId, name){
   _skillUser = userId || null;
   _skillName = name || null;
-  document.getElementById('skillWho').textContent = userId
-    ? ('Người học: ' + (name || ('#' + userId)) + ' · chỉ kết luận mạnh/yếu khi có ít nhất 5 câu')
-    : 'Toàn bộ người học · xem điểm yếu theo từng menu và từng loại bài.';
+  if (!userId) return;
+  document.getElementById('skillWho').textContent = (name || ('#' + userId)) + ' · chỉ kết luận mạnh/yếu khi có ít nhất 5 câu';
   const menu = document.getElementById('skillMenu').value;
   const days = document.getElementById('skillDays').value;
-  const query = `admin/skills?days=${encodeURIComponent(days)}${userId?'&user_id='+encodeURIComponent(userId):''}${menu?'&menu='+encodeURIComponent(menu):''}`;
+  const query = `admin/skills?days=${encodeURIComponent(days)}&user_id=${encodeURIComponent(userId)}${menu?'&menu='+encodeURIComponent(menu):''}`;
   document.getElementById('skillAnalytics').innerHTML = '<div class="learning-empty">Đang tổng hợp dữ liệu…</div>';
   const { skills } = await api(query);
+  if (String(_skillUser) !== String(userId)) return;
   renderSkills(skills || []);
 }
 
-// The feed is the first thing on the page, so it must never push the rest of
-// the console below the fold. On a 375x812 iPhone the unpaginated list put the
-// tab bar at y=823 — one row past the screen — and the parent had to scroll
-// through every activity to reach the menu. Ten rows a page, and the page
-// controls sit right under the table.
-const ACT_PAGE_SIZE = 10;
-let _activity = [];
-let _actPage = 0;
+// ── Tài khoản ────────────────────────────────────────────────────────────
+let _sort = { key: 'last_activity', dir: -1 };   // most recently seen first
+let _filter = '';
 
-async function loadActivity(userId, name){
-  _selectedUser = userId || null;
-  document.getElementById('whoLabel').textContent = userId ? ('User: '+name) : 'All users · last 30 days';
-  const q = userId ? ('admin/activity?user_id='+encodeURIComponent(userId)) : 'admin/activity';
-  const { activity } = await api(q);
-  _activity = Array.isArray(activity) ? activity : [];
-  _actPage = 0;                       // a new filter always starts at the top
-  renderActivityPage();
-}
+function renderUsers(){
+  const body = document.getElementById('usersBody');
+  const q = fold(_filter.trim());
+  const rows = _users.filter(u => !q || fold(u.username).includes(q));
 
-function actPageCount(){ return Math.max(1, Math.ceil(_activity.length / ACT_PAGE_SIZE)); }
+  const { key, dir } = _sort;
+  rows.sort((a,b)=>{
+    let x = a[key], y = b[key];
+    if (key === 'username') return String(x).localeCompare(String(y), 'vi') * dir;
+    x = (x == null || x === '') ? (typeof y === 'number' ? -1 : '') : x;
+    y = (y == null || y === '') ? (typeof x === 'number' ? -1 : '') : y;
+    return (x < y ? -1 : x > y ? 1 : 0) * dir;
+  });
 
-function goActivityPage(delta){
-  const last = actPageCount() - 1;
-  const next = Math.min(last, Math.max(0, _actPage + delta));
-  if (next === _actPage) return;
-  _actPage = next;
-  renderActivityPage();
-  // Keep the table head in view: paging is a read, not a jump to the top.
-  const card = document.getElementById('activityPanel');
-  if (card && card.scrollIntoView) card.scrollIntoView({ block:'start', behavior:'smooth' });
-}
+  document.getElementById('userCount').textContent =
+    rows.length === _users.length ? `${_users.length} tài khoản` : `${rows.length} / ${_users.length}`;
+  // Header clicks and the phone dropdown drive the same state, so neither can
+  // show an order the other is not in.
+  const sel = document.getElementById('sortSel');
+  if (sel && sel.value !== key) sel.value = key;
+  document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
+    const on = th.getAttribute('data-sort') === key;
+    th.classList.toggle('sorted', on);
+    th.querySelector('.arrow').textContent = on ? (dir === 1 ? '▲' : '▼') : '▼';
+  });
 
-function renderActivityPage(){
-  const body = document.getElementById('attemptsBody');
-  const foot = document.getElementById('actPager');
-  if (!_activity.length){
-    body.innerHTML = `<tr><td colspan="8" class="empty">No activity yet.</td></tr>`;
-    if (foot) foot.innerHTML = '';
+  if (!rows.length){
+    body.innerHTML = `<tr><td colspan="6" class="empty">${q ? 'Không có tài khoản nào khớp “'+esc(q)+'”.' : 'Chưa có tài khoản nào.'}</td></tr>`;
     return;
   }
-  const pages = actPageCount();
-  if (_actPage > pages - 1) _actPage = pages - 1;
-  const from = _actPage * ACT_PAGE_SIZE;
-  const rows = _activity.slice(from, from + ACT_PAGE_SIZE);
-  body.innerHTML = rows.map(a=>{
-    const hasScore = (a.total!=null && a.total>0);
-    const pct = hasScore ? Math.round(a.score/a.total*100) : null;
-    return `<tr>
-      <td class="muted">${fmtDate(a.created_at)}</td>
-      <td><b>${esc(a.username)}</b></td>
-      <td>${kindPill(a.kind)}</td>
-      <td>${esc(a.title||a.ref||'—')}${Number(a.retake)===1 ? '<span class="pill retake" title="Làm lại cùng một bài — không tính vào nhiệm vụ ngày">🔁 làm lại</span>' : ''}</td>
-      <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
-      <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
-      <td>${a.coin_balance!=null ? `<b>${Number(a.coin_balance).toLocaleString('en-US')} xu</b>` : '—'}</td>
-      <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
+  const busiest = Math.max(1, ...rows.map(u=>u.total_count||0));
+  body.innerHTML = rows.map(u=>{
+    const pct = Math.round((u.total_count||0) / busiest * 100);
+    // A latest snapshot far below this week's peak is the signature of a
+    // wiped device (cleared storage, re-created profile). Flag it and offer
+    // the difference as the restore grant. Peaks under 200 xu stay quiet —
+    // that is normal spending noise, not a wipe.
+    const coinDrop = (u.coin_peak7 != null && u.coin_latest != null
+        && u.coin_peak7 >= 200 && u.coin_latest < u.coin_peak7 / 2)
+      ? (u.coin_peak7 - u.coin_latest) : 0;
+    return `<tr class="clickable ${u.disabled?'disabled':''}" data-uid="${u.id}" data-name="${esc(u.username)}">
+      <td>
+        <div class="who-cell">
+          <span class="avatar ${u.role==='admin'?'admin':''}">${esc(initials(u.username))}</span>
+          <span>
+            <span class="who-name">${esc(u.username)}</span>
+            <span class="who-sub">${u.role==='admin'?'admin · ':''}#${u.id}</span>${u.has_device?'<span class="dev" title="Đang giữ một chỗ trên thiết bị">📱</span>':''}
+          </span>
+        </div>
+      </td>
+      <td class="num"><b>${u.total_count||0}</b><div class="meter" style="width:${pct}%"></div></td>
+      <td class="muted" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
+      <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
+      <td class="hide-xs">${u.disabled
+            ? '<span class="pill dead">Đã khoá</span>'
+            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🌱 Chơi trước':'Đang dùng'}</span>`}${coinDrop
+            ? `<span class="pill dead" title="Ví tụt: còn ${u.coin_latest} xu so với đỉnh ${u.coin_peak7} xu trong tuần — có thể thiết bị bị xoá dữ liệu. Nút Xu điền sẵn ${coinDrop} xu để bù.">▼ ${coinDrop} xu</span>` : ''}</td>
+      <td>
+        <div class="row-actions">
+          <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
+                  aria-label="Chơi trước cho ${esc(u.username)}: đang ${u.allow_bot?'bật':'tắt'}"
+                  title="Chơi trước cho bé này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'Bật':'Tắt'}</span></button>
+          <button class="mini chuyen-toggle ${u.allow_chuyen?'on':''}" data-uid="${u.id}"
+                  aria-label="Bài Chuyên cho ${esc(u.username)}: đang ${u.allow_chuyen?'bật':'tắt'}"
+                  title="Bài Chuyên cho bé này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
+          <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
+                  aria-label="Tặng xu cho ${esc(u.username)}"
+                  title="${coinDrop?`Bù xu — điền sẵn ${coinDrop} xu ví này đã mất so với đỉnh tuần`:'Tặng xu — app của bé nhận khi đồng bộ lần tới'}">💰<span class="lbl"> ${coinDrop?'Bù xu':'Xu'}</span></button>
+          ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
+                  aria-label="Trả chỗ trên thiết bị của ${esc(u.username)}"
+                  title="Trả chỗ tài khoản này đang giữ trên thiết bị (mỗi máy tối đa 2 tài khoản)">📱<span class="lbl"> Trả chỗ</span></button>` : ''}
+          ${u.role === 'admin' ? '' : (u.disabled
+            ? `<button class="mini revive act-enable" data-uid="${u.id}" aria-label="Mở khoá ${esc(u.username)}">↩︎<span class="lbl"> Mở khoá</span></button>`
+            : `<button class="mini danger act-disable" data-uid="${u.id}" data-name="${esc(u.username)}"
+                  aria-label="Khoá ${esc(u.username)}"
+                  title="Đăng xuất tài khoản này khỏi mọi thiết bị và chặn đăng nhập. Không xoá gì cả.">🚫<span class="lbl"> Khoá</span></button>`)}
+        </div>
+      </td>
     </tr>`;
   }).join('');
-  if (!foot) return;
-  const to = from + rows.length;
-  foot.innerHTML = `
-    <button type="button" class="btn btn-ghost pager-btn" id="actPrev" ${_actPage===0?'disabled':''} aria-label="Trang trước">‹ Trước</button>
-    <span class="pager-info">${from+1}–${to} / ${_activity.length}${pages>1?` · trang ${_actPage+1}/${pages}`:''}</span>
-    <button type="button" class="btn btn-ghost pager-btn" id="actNext" ${_actPage>=pages-1?'disabled':''} aria-label="Trang sau">Sau ›</button>`;
-  const prev = document.getElementById('actPrev'), next = document.getElementById('actNext');
-  if (prev) prev.onclick = ()=>goActivityPage(-1);
-  if (next) next.onclick = ()=>goActivityPage(1);
-}
 
-// ── Daily task tab ──────────────────────────────────────────────────────
-// The picker is a cascade of <select>s over DailyTaskCatalog.tree(). Level 0
-// is Eng / Math; each pick that lands on a sub-menu adds a level, and a pick
-// that lands on a task fills #dailyKind. Each level lists that node's
-// sub-menus first ("› Học kì 2") and then its own tasks, so a node that has
-// both (PTNK Exams: "bất kỳ đề" beside the years) shows both.
-let _dailyTree = null;
-function dailyNodeAt(labels){
-  let node = _dailyTree;
-  for (const l of labels) { node = (node.children || []).find(c => c.label === l); if (!node) return null; }
-  return node;
-}
-function dailyLevelOptions(node, chosen){
-  const subs = node.children.map(c => `<option value="sub:${esc(c.label)}"${chosen === 'sub:' + c.label ? ' selected' : ''}>› ${esc(c.label)}</option>`);
-  const tasks = node.entries.map(e => `<option value="task:${esc(e.key)}"${chosen === 'task:' + e.key ? ' selected' : ''}>${esc(e.label)}</option>`);
-  return `<option value=""${chosen ? '' : ' selected'} disabled>— chọn —</option>` + subs.join('') + tasks.join('');
-}
-function renderDailyPath(labels, chosenKey){
-  if (!_dailyTree) _dailyTree = DailyTaskCatalog.tree();
-  const host = document.getElementById('dailyPath');
-  const hidden = document.getElementById('dailyKind');
-  const hint = document.getElementById('dailyPathHint');
-  const rows = [];
-  // One select per level already chosen, plus one for the next pick.
-  for (let depth = 0; depth <= labels.length; depth++) {
-    const node = dailyNodeAt(labels.slice(0, depth));
-    if (!node) break;
-    const chosen = depth < labels.length ? 'sub:' + labels[depth] : (chosenKey ? 'task:' + chosenKey : '');
-    if (!node.children.length && !node.entries.length) break;
-    rows.push(`<select class="daily-level" data-depth="${depth}" aria-label="Cấp ${depth + 1}">${dailyLevelOptions(node, chosen)}</select>`);
-    if (depth === labels.length) break;
-  }
-  host.innerHTML = rows.join('');
-  hidden.value = chosenKey || '';
-  const entry = chosenKey ? DailyTaskCatalog.get(chosenKey) : null;
-  hint.textContent = entry
-    ? '✓ ' + entry.path.join(' › ') + ' › ' + entry.label
-    : (labels.length ? labels.join(' › ') + ' › …' : 'Bắt đầu từ Eng hoặc Math.');
-  host.querySelectorAll('select.daily-level').forEach(sel => {
-    sel.onchange = () => {
-      const depth = Number(sel.dataset.depth);
-      const v = sel.value;
-      const kept = labels.slice(0, depth);
-      if (v.startsWith('sub:')) renderDailyPath(kept.concat([v.slice(4)]), '');
-      else if (v.startsWith('task:')) renderDailyPath(kept, v.slice(5));
+  // Buttons live inside a clickable row, so each must stop the row opening.
+  const act = (sel, run) => body.querySelectorAll(sel).forEach(btn=>{
+    btn.onclick = async (e)=>{
+      e.stopPropagation();
+      btn.disabled = true;
+      try { await run(btn); await loadUsers(); }
+      catch (err) { alert('Không làm được: ' + (err && err.message ? err.message : err)); btn.disabled = false; }
     };
   });
-}
-function fillDailyKinds(){ renderDailyPath([], ''); }
-function resetDailyForm(){
-  renderDailyPath([], '');
-  document.getElementById('dailyTarget').value = '5';
-  const first = document.querySelector('#dailyPath select');
-  if (first) first.focus();
-}
-function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
-// Saving needs a child. Say so by greying the button rather than letting the
-// admin fill the form and only then be told to pick one.
-function syncDailySave(){
-  const btn = document.getElementById('dailySave');
-  if (btn) btn.disabled = !document.getElementById('dailyUser').value;
-}
-async function loadDailyTasks(){
-  fillDailyKinds();
-  syncDailySave();
-  const uid = document.getElementById('dailyUser').value;
-  const body = document.getElementById('dailyBody');
-  const status = document.getElementById('dailyStatus');
-  if (!uid){ body.innerHTML = '<tr><td colspan="5" class="empty">Chọn một bé để xem nhiệm vụ.</td></tr>'; status.textContent=''; return; }
-  // A failed reload must not leave the previous child's rows on screen looking
-  // like today's truth, so the table is emptied here and the error rethrown.
-  let r;
-  try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)); }
-  catch(e){
-    status.textContent = 'Không tải được (' + e.message + ')';
-    body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách nhiệm vụ.</td></tr>';
-    throw e;
-  }
-  const shield = r.shields || {count:0,activeUntil:0};
-  const done = r.tasks.filter(t=>t.done).length;
-  status.innerHTML = `Hôm nay ${esc(r.date)}: <b>${done}/${r.tasks.length}</b> nhiệm vụ xong · ${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}`
-    + ` · 🛡️ <b>${shield.count}</b> khiên${shield.activeUntil>Date.now()?' · đang bật đến '+esc(fmtUntil(shield.activeUntil)):''}`;
-  if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao nhiệm vụ nào.</td></tr>'; return; }
-  body.innerHTML = r.tasks.map(t=>`<tr>
-      <td><b>${esc(t.label)}</b><div class="muted" style="font-size:11px">${esc(t.kind)}</div></td>
-      <td class="num">${t.target} lượt đạt</td>
-      <td>${t.done?`<span class="pill on">✓ ${t.count}/${t.target}</span>`:`<span class="pill off">${t.count}/${t.target}</span>`}</td>
-      <td class="muted hide-sm" title="${esc(fmtDate(t.created_at))}">${relTime(t.created_at)}</td>
-      <td style="text-align:right"><button class="mini act-daily-del" data-id="${t.id}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
-    </tr>`).join('');
-  // The rows were just rendered from r.tasks in order, so the task each button
-  // belongs to is right here — no need to smuggle its label through the DOM.
-  [...body.querySelectorAll('.act-daily-del')].forEach((b, i)=>{
-    const t = r.tasks[i];
-    b.onclick = async ()=>{
-      if (!confirm('Xoá nhiệm vụ “'+t.label+'”?\n\nBé sẽ không còn phải làm nhiệm vụ này từ hôm nay.')) return;
-      try { await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' }); }
-      catch(e){
-        // A logged-out admin has already been bounced to the login screen by
-        // api(); an alert and a reload on top of that are just noise.
-        if (e.message !== 'unauth') alert('Không xoá được: '+e.message);
-        return;
-      }
-      loadDailyTasks().catch(()=>{});
+  act('.bot-toggle', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
+  // The Chuyên tier — its own switch, nothing to do with 🌱 Chơi trước.
+  act('.chuyen-toggle', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), allowChuyen: !b.classList.contains('on') } }));
+  act('.act-clear', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
+  act('.act-coins', b => {
+    // A detected wipe pre-fills the exact difference to restore; otherwise 50.
+    const suggested = (Number(b.dataset.refill) > 0) ? String(Math.trunc(Number(b.dataset.refill))) : '50';
+    const raw = prompt('Tặng xu cho “' + b.dataset.name + '” — bao nhiêu?', suggested);
+    if (raw === null) return Promise.reject(new Error('đã huỷ'));
+    const amount = Math.trunc(Number(raw));
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
+      return Promise.reject(new Error('số xu phải từ 1 đến 100000'));
+    }
+    return api('admin/grant-coins', { method:'POST', body:{ userId: Number(b.dataset.uid), amount } })
+      .then(() => alert('✅ Đã tặng ' + amount + ' xu cho ' + b.dataset.name + '. Bé sẽ nhận khi mở app.'));
+  });
+  act('.act-enable', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), disabled: false } }));
+  act('.act-disable', b => {
+    // Disabling signs a child out of every device at once. Worth one question.
+    if (!confirm('Khoá “' + b.dataset.name + '”?\n\nBé sẽ bị đăng xuất khỏi mọi thiết bị và không đăng nhập được. Không xoá gì cả — mở khoá lại lúc nào cũng được.')) {
+      return Promise.reject(new Error('đã huỷ'));
+    }
+    return api('admin/user-flags', { method:'POST', body:{ userId: Number(b.dataset.uid), disabled: true } });
+  });
+
+  // A row opens the child's page; a disabled child has no page to open.
+  body.querySelectorAll('tr.clickable').forEach(tr=>{
+    tr.onclick = ()=>{
+      const uid = tr.getAttribute('data-uid'), name = tr.getAttribute('data-name');
+      const u = userById(uid);
+      if (!u || u.role === 'admin' || u.disabled) return;
+      selectSkillUser(uid, name);
+      openChild(uid, 'tasks');
     };
   });
-}
-async function saveDailyTask(ev){
-  ev.preventDefault();
-  const uid = document.getElementById('dailyUser').value;
-  if (!uid){ alert('Chọn một bé trước.'); return; }
-  const kind = document.getElementById('dailyKind').value;
-  if (!kind){ alert('Chọn bài bé sẽ làm — đi hết các cấp tới một bài cụ thể.'); return; }
-  const target = Math.trunc(Number(document.getElementById('dailyTarget').value));
-  if (!Number.isFinite(target) || target<1 || target>50){ alert('Số bài phải từ 1 đến 50.'); return; }
-  const btn = document.getElementById('dailySave'); btn.disabled = true;
-  // Only the POST decides whether the task was saved. A reload that fails
-  // afterwards is a display problem, and must never be reported as "not saved"
-  // for a task the server already has.
-  let saved = false;
-  try {
-    await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind, target } });
-    saved = true;
-  } catch(e){
-    alert(e.code === 'duplicate' ? 'Bé đã có nhiệm vụ này. Xoá nhiệm vụ cũ rồi tạo lại nếu muốn đổi số lần.'
-      : e.code === 'too_many' ? e.message + '. Xoá bớt nhiệm vụ cũ trước khi thêm.'
-      : 'Không lưu được: '+e.message);
-  } finally { btn.disabled = false; }
-  if (saved) resetDailyForm();
-  loadDailyTasks().catch(()=>{});
 }
 
 // ---- Cướp Đêm: the raid rulebook -----------------------------------------
@@ -1398,7 +1738,7 @@ function paintRaidStatus(){
   const status = document.getElementById('raidStatus');
   if (!status || !_raidCfg) return;
   const changed = RAID_FIELDS.filter(f => Number(_raidCfg[f.key]) !== Number(_raidDefaults[f.key]));
-  status.innerHTML = '<b>' + RAID_FIELDS.length + '</b> luật đang chạy · '
+  status.innerHTML = '<span><b>' + RAID_FIELDS.length + '</b> luật đang chạy</span>'
     + (changed.length ? '<span class="pill on">' + changed.length + ' luật đã chỉnh tay</span>'
                       : '<span class="pill off">tất cả đang để mặc định</span>');
 }
@@ -1496,6 +1836,7 @@ async function saveRaidKey(row){
   paintRaidExample();
 }
 
+// ── app-wide switches ────────────────────────────────────────────────────
 // One switch for the whole app, not per child: a duel needs two children, so
 // a per-child switch would mostly produce friend lists with nobody to fight.
 let _appFlags = {};
@@ -1503,10 +1844,8 @@ function paintAppFlags(){
   const btn = document.getElementById('mathFightFlag');
   if (!btn) return;
   const on = !!_appFlags.math_fight;
-  btn.textContent = on ? '🥊 Đấu Toán: ON' : '🥊 Đấu Toán: OFF';
   btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.style.background = on ? '#389e0d' : '';
-  btn.style.color = on ? '#fff' : '';
+  document.getElementById('mathFightLabel').textContent = on ? 'đang BẬT' : 'đang tắt';
 }
 // Bảng cửu chương's round length. One number for all six drills and for every
 // child — how long a ten-question round runs. The server clamps it too; this
@@ -1537,7 +1876,7 @@ async function saveCcSeconds(){
   try {
     const r = await api('admin/app-flags', { method:'POST', body:{ key:'cuuchuong_seconds', value: next } });
     _appSettings = (r && r.settings) || _appSettings;
-  } catch (e) { alert('Could not do that: ' + (e && e.message ? e.message : e)); }
+  } catch (e) { alert('Không làm được: ' + (e && e.message ? e.message : e)); }
   el.disabled = false;
   paintAppSettings();
 }
@@ -1551,67 +1890,56 @@ async function toggleMathFight(){
     const r = await api('admin/app-flags', { method:'POST', body:{ key:'math_fight', value: next } });
     _appFlags = (r && r.flags) || _appFlags;
     paintAppFlags();
-  } catch (e) { alert('Could not do that: ' + (e && e.message ? e.message : e)); }
+  } catch (e) { alert('Không làm được: ' + (e && e.message ? e.message : e)); }
   btn.disabled = false;
 }
 
-function showDash(){
+// ── boot ──────────────────────────────────────────────────────────────────
+async function showDash(){
   document.getElementById('login').style.display='none';
   document.getElementById('dash').style.display='block';
-  loadUsers().catch(()=>{});
-  loadActivity(null, null).catch(()=>{});
-  loadSkills(null, null).catch(()=>{});
+  render();
+  // Users first (the sider and every page need them), then the rest at once.
+  try { await loadUsers(); } catch (e) { return; }
+  render();
+  loadActivityAll().catch(()=>{});
+  loadAllTasks().catch(()=>{});
   loadAppFlags().catch(()=>{});
+}
+function refreshAll(){
+  loadUsers().catch(()=>{});
+  loadActivityAll().catch(()=>{});
+  loadAllTasks().catch(()=>{});
+  loadAppFlags().catch(()=>{});
+  _activityChild = { uid:null, rows:[] };
+  if (_route.view === 'child') renderChild(_route.uid, _route.tab);
+  // Only if the card has been opened once: an admin who never went near the
+  // raid rules should not have their unsaved edits — or a fetch — appear out
+  // of a Refresh they pressed for the users table.
+  if (_raidCfg && _route.view === 'settings') loadRaidConfig().catch(()=>{});
 }
 
 document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
+document.getElementById('refreshBtn').onclick = refreshAll;
 document.getElementById('mathFightFlag').onclick = toggleMathFight;
 // Commit on blur and on Enter, not on every keystroke: typing "120" would
 // otherwise POST 1, then 12, then 120 — and briefly give every child a
 // one-second round.
 document.getElementById('ccSeconds').onchange = saveCcSeconds;
 document.getElementById('ccSeconds').onkeydown = (e) => { if (e.key === 'Enter') e.target.blur(); };
-document.getElementById('refreshBtn').onclick = ()=>{
-  loadUsers().catch(()=>{});
-  loadActivity(_selectedUser, _selectedName).catch(()=>{});
-  loadSkills(_skillUser, _skillName).catch(()=>{});
-  loadDailyTasks().catch(()=>{});
-  // Only if the card has been opened once: an admin who never went near the
-  // raid rules should not have their unsaved edits — or a fetch — appear out
-  // of a Refresh they pressed for the users table.
-  if (_raidCfg) loadRaidConfig().catch(()=>{});
-};
-document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
-document.getElementById('skillUser').addEventListener('change', e=>{
-  const id=e.target.value;
-  const option=e.target.options[e.target.selectedIndex];
-  selectSkillUser(id || null, id ? option.textContent : null);
+document.querySelectorAll('#rangeSeg button').forEach(b => b.onclick = () => {
+  _range = Number(b.dataset.days);
+  document.querySelectorAll('#rangeSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  renderOverview();
 });
+document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
+document.getElementById('taskSearch').addEventListener('input', ()=>{ _pickMode = 'search'; renderPicker(); });
+document.querySelectorAll('#pickMode button').forEach(b => b.onclick = () => { _pickMode = b.dataset.mode; renderPicker(); });
 document.getElementById('skillMenu').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
 document.getElementById('skillDays').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
-document.getElementById('dailyUser').addEventListener('change', ()=>{
-  syncDailySave();
-  loadDailyTasks().catch(()=>{});
-});
-syncDailySave();
-// The cascade wires its own change handlers each time it renders.
-document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
-document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
-// The sider is a drawer below 900px: ☰ opens it, the mask or a pick closes it.
-function setSider(open){
-  const sider = document.getElementById('sider'), mask = document.getElementById('siderMask'),
-        btn = document.getElementById('menuBtn');
-  if (!sider) return;
-  sider.classList.toggle('open', open);
-  if (mask) mask.hidden = !open;
-  if (btn) btn.setAttribute('aria-expanded', String(open));
-}
-function closeSider(){ setSider(false); }
-document.getElementById('menuBtn').addEventListener('click', ()=>setSider(!document.getElementById('sider').classList.contains('open')));
-document.getElementById('siderMask').addEventListener('click', closeSider);
-document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closeSider(); });
+document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
 document.getElementById('sortSel').addEventListener('change', e=>{
   const key = e.target.value;
   _sort = { key, dir: key === 'username' ? 1 : -1 };
@@ -1627,10 +1955,6 @@ document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
     renderUsers();
   };
 });
-document.getElementById('allBtn').onclick = ()=>{
-  document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected'));
-  loadActivity(null,null);
-};
 
 // Auto-enter dashboard if we already have a token (verify by loading).
 if (token){ showDash(); }
