@@ -59,6 +59,18 @@ var NightRaidRules = (() => {
   //                      từ localStorage cũ). Đây KHÔNG phải luật chơi.
   const ARMY_DISPLAY_CAP = 10;
   const SOLDIER_SANITY_CAP = 1000000;
+  // Visual identities trained by the barracks. Production still awards one
+  // ordinary soldier per owned barracks; the stock index only chooses which
+  // complete atlas row represents that soldier. Keeping this cosmetic means
+  // every soldier remains worth the same +20 DAM and old accounts migrate
+  // automatically: soldiers 7-10 simply reveal the four new identities.
+  const SOLDIER_VARIANTS = Object.freeze([
+    'goblin-swordsman','fox-knight','bat-mage','bomb-rat',
+    'puppy-knight','wood-guard','rabbit-lancer','turtle-knight',
+    'bear-hammer-guard','lion-axe-captain',
+  ]);
+  const SOLDIER_VARIANT_COUNT = SOLDIER_VARIANTS.length;
+  const soldierVariantFor = index => int(index, 0, SOLDIER_SANITY_CAP) % SOLDIER_VARIANT_COUNT;
 
   // ---- Parade formation on the home lawn -----------------------------------
   // The soldier sprite is sized in PERCENT of the yard: 6.4% of the width in
@@ -92,7 +104,7 @@ var NightRaidRules = (() => {
       slots.push({
         x: (col - (rankCount - 1) / 2) * ARMY_GAP + (rank ? ARMY_GAP * 0.48 : 0),
         y: rank * ARMY_ROW_STEP,
-        row: i % 6,
+        row: soldierVariantFor(i),
       });
     }
     return slots;
@@ -565,7 +577,7 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_SANITY_CAP,SWORD_METER_PIPS,SCENES,
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,SOLDIER_VARIANTS,SOLDIER_VARIANT_COUNT,soldierVariantFor,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_SANITY_CAP,SWORD_METER_PIPS,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),itemById,farmRules:Farm,footprintFor,rectsOverlap,
     makeRng,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     FARM_PLOT_POSITIONS,FARM_PLOT_DOCKS,FARM_PLOT_BOUNDS,nearestFarmPlotDock,

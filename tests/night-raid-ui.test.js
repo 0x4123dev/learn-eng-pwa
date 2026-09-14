@@ -218,15 +218,15 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('5.2*dt')&&ui.includes('state.targetY'),'vertical movement is time-based rather than a one-frame teleport');
     assert.falsy(ui.includes('state.y=alternatives[Math.floor(Math.random()*alternatives.length)]'),'collision handling must never jump directly to a distant lane');
     assert.truthy(ui.includes('startArmyParade(petPatrolRoot)')&&ui.includes('startArmyParade(activeMap)'),'the parade starts against the explicit visible map in both habitats');
-    assert.truthy(css.includes("raider-actions-v2.webp"),'the home parade reuses the authored animated soldier atlas');
-    assert.truthy(css.includes("raider-walk-v3.webp"),'marching uses the dedicated six-frame locomotion atlas');
+    assert.truthy(css.includes("raider-actions-v3.webp"),'the home parade reuses the complete ten-soldier action atlas');
+    assert.truthy(css.includes("raider-walk-v4.webp"),'marching uses the complete ten-soldier locomotion atlas');
     assert.truthy(css.includes('aspect-ratio:1.5'),'soldier boxes preserve the authored 3:2 frame instead of squashing the body');
     assert.falsy(css.includes('aspect-ratio:2.25'),'the old wide, flattened soldier frame must not return');
     assert.truthy(css.includes('.nr-home-soldier::after{'),'a separate contact shadow seats each raised soldier on the grass');
     assert.truthy(css.includes('drop-shadow(0 .48cqw .28cqw'),'the sprite body has a deeper layered shadow for readable 3D separation');
     assert.truthy(ui.includes("%6"),'the six authored gait frames all play');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the homepage parade remains visible offline');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v3.webp'"),'the walk cycle remains visible offline');
+    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v3.webp'"),'the homepage parade remains visible offline');
+    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v4.webp'"),'the walk cycle remains visible offline');
     assert.truthy(css.includes('.nr-yard-army[data-mode="attention"]'),'attention has a visually distinct pose');
     assert.truthy(css.includes('.nr-yard-army[data-mode="rest"]'),'rest has a visually distinct pose');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'the squad can stand still for reduced-motion users');
@@ -494,8 +494,8 @@ suite('night raid: app integration',()=>{
   test('Phaser units walk and attack with real animation frames, planted footprints and battle audio',()=>{
     // Production atlases now supply distinct paw/leg, weapon, hit and fallen
     // poses; the old deformation of one still image must not come back.
-    assert.truthy(phaser.includes("raider-actions-v2.webp"),'raider action atlas');
-    assert.truthy(phaser.includes("raider-walk-v3.webp"),'six-frame raider walk atlas');
+    assert.truthy(phaser.includes("raider-actions-v3.webp"),'ten-row raider action atlas');
+    assert.truthy(phaser.includes("raider-walk-v4.webp"),'ten-row, six-frame raider walk atlas');
     assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
     assert.truthy(phaser.includes("actor.sprite.setTexture(p.texture,p.prefix+p.frame)"),'runtime swaps between walk and action frames');
     assert.truthy(phaser.includes("texture='nr-squad-walk'"),'moving soldiers use the dedicated walk cycle');
@@ -531,9 +531,9 @@ suite('night raid: app integration',()=>{
   });
   test('generated battle-only atlases stay lazy while the home parade remains offline',()=>{
     const files=['pet-actions-small-v2.webp','pet-actions-large-v2.webp','defense-damage-v2.webp','economy-damage-v2.webp','castle-damage-a-v2.webp','castle-damage-b-v2.webp'];
-    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-actions-v2.webp')));
-    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v3.webp')),'the dedicated walk atlas ships with the app');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the atlas now used on Home is part of the offline shell');
+    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-actions-v3.webp')));
+    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v4.webp')),'the dedicated ten-row walk atlas ships with the app');
+    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v3.webp'"),'the atlas now used on Home is part of the offline shell');
     for(const file of files){
       assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',file)),file);
       assert.falsy(sw.includes("'/img/night-raid/animation/"+file+"'"),file+' must not bloat app install; runtime fetch cache owns it');

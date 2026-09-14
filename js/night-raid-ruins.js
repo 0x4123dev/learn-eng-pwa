@@ -39,7 +39,7 @@ var NightRaidRuins = (() => {
         DURATION_MS=RETREAT_END+BEATS.hold;
 
   // ── Assets already on disk for the auto-battle ───────────────────────────
-  const SOLDIER_SHEET='img/night-raid/animation/raider-walk-v3.webp',SOLDIER_COLS=6,SOLDIER_ROWS=6;
+  const SOLDIER_SHEET='img/night-raid/animation/raider-walk-v4.webp',SOLDIER_COLS=6,SOLDIER_ROWS=10;
   // Frame 3 is the only pose in the walk strip with both feet under the body,
   // so it doubles as "standing still" and we never load the action atlas too.
   const SOLDIER_IDLE=3;
@@ -53,6 +53,7 @@ var NightRaidRuins = (() => {
     [ .0171, .0432,-.0091, .0200, .0493, .0448],[ .0090, .0019, .0312,-.0161, .0262,-.0002],
     [ .0214, .0347,-.0014, .0089, .0192, .0005],[ .0414, .0339, .0021,-.0140, .0268, .0007],
     [ .0139, .0248, .0458, .0302, .0965, .0499],[ .0195,-.0087, .0066,-.0249, .0101, .0688],
+    [0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],
   ].map(r=>Object.freeze(r)));
   // The dog stands about 90% of its square cell tall, the goblins about 98% of
   // theirs, so the dog's cell is scaled up 1.14x to read a head taller than the

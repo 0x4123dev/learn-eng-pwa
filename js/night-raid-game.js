@@ -10,11 +10,13 @@ var NightRaidGame = (() => {
     [ .0171, .0432,-.0091, .0200, .0493, .0448],[ .0090, .0019, .0312,-.0161, .0262,-.0002],
     [ .0214, .0347,-.0014, .0089, .0192, .0005],[ .0414, .0339, .0021,-.0140, .0268, .0007],
     [ .0139, .0248, .0458, .0302, .0965, .0499],[ .0195,-.0087, .0066,-.0249, .0101, .0688],
+    [0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],
   ];
   const SQUAD_ACTION_ANCHORS=[
     [ .0417, .0627,-.0409,-.1082,-.0933, .0596, .0789, .0448],[ .0739, .0755,-.0054,-.0582,-.0105, .0622,-.0050,-.0340],
     [ .0413, .0371,-.0104,-.0612,-.0775, .0071, .0074, .0069],[ .0485, .0810, .0646,-.0368,-.0574,-.0848,-.0274,-.0240],
     [ .0231, .0013,-.0445,-.1180,-.0979, .0197,-.0273,-.0433],[ .0311, .0345,-.0086,-.0825,-.1500,-.0150,-.0619,-.0989],
+    [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
   ];
 
   class Game {
@@ -78,8 +80,8 @@ var NightRaidGame = (() => {
       this.duration=this.reduce?2000:this.choreo.durationMs;this.boundFrame=t=>this.frame(t);
       this.size=800;this.assets={};
       this.loadAsset('board','img/night-raid/isometric-home-board-frame-v4.webp');
-      this.loadAsset('squadActions','img/night-raid/animation/raider-actions-v2.webp');
-      this.loadAsset('squadWalk','img/night-raid/animation/raider-walk-v3.webp');
+      this.loadAsset('squadActions','img/night-raid/animation/raider-actions-v3.webp');
+      this.loadAsset('squadWalk','img/night-raid/animation/raider-walk-v4.webp');
       if(options.pet)this.loadAsset('pet','img/night-raid/pet-soldiers-'+(options.pet.atlas==='large'?'large':'small')+'-v2.webp');
       NightRaidArt.preloadDefenses(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
       if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
@@ -107,7 +109,7 @@ var NightRaidGame = (() => {
       ctx.save();ctx.beginPath();ctx.rect(-w*.55,top-2,w*1.1,split-top+8);ctx.clip();ctx.drawImage(img,sx,0,sw,img.height,-w*.5,top,w,h);ctx.restore();
       ctx.save();ctx.beginPath();ctx.rect(-w*.58,split-5,w*1.16,h-(split-top)+13);ctx.clip();if(swap)ctx.scale(-1,1);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,top,w,h);ctx.restore();
     }
-    drawSquadMember(index,x,y,size,alpha=1,step=0,moving=false,motion=1,state='idle',flash=0){const ctx=this.ctx,row=index%6,walk=this.assets.squadWalk,actions=this.assets.squadActions,img=moving&&walk?walk:actions;if(!img)return;const cols=moving?6:8,rows=6,raw=moving?Math.floor(step/Math.PI*2):state==='fallen'?7:flash>.2?6:(state==='engage'||state==='loot')?4+Math.floor(step/3):0,frame=((raw%cols)+cols)%cols,x0=Math.round(frame*img.width/cols),x1=Math.round((frame+1)*img.width/cols),y0=Math.round(row*img.height/rows),y1=Math.round((row+1)*img.height/rows),sw=x1-x0,sh=y1-y0,h=size,w=h*1.32,anchor=(moving?SQUAD_WALK_ANCHORS:SQUAD_ACTION_ANCHORS)[row][frame];this.drawStepContact(x,y,step,false,alpha);ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.drawImage(img,x0,y0,sw,sh,-w*(.5+anchor),-h*.88,w,h);ctx.restore();}
+    drawSquadMember(index,x,y,size,alpha=1,step=0,moving=false,motion=1,state='idle',flash=0){const ctx=this.ctx,rows=NightRaidRules.SOLDIER_VARIANT_COUNT,row=NightRaidRules.soldierVariantFor(index),walk=this.assets.squadWalk,actions=this.assets.squadActions,img=moving&&walk?walk:actions;if(!img)return;const cols=moving?6:8,raw=moving?Math.floor(step/Math.PI*2):state==='fallen'?7:flash>.2?6:(state==='engage'||state==='loot')?4+Math.floor(step/3):0,frame=((raw%cols)+cols)%cols,x0=Math.round(frame*img.width/cols),x1=Math.round((frame+1)*img.width/cols),y0=Math.round(row*img.height/rows),y1=Math.round((row+1)*img.height/rows),sw=x1-x0,sh=y1-y0,h=size,w=h*1.32,anchor=(moving?SQUAD_WALK_ANCHORS:SQUAD_ACTION_ANCHORS)[row][frame];this.drawStepContact(x,y,step,false,alpha);ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.drawImage(img,x0,y0,sw,sh,-w*(.5+anchor),-h*.88,w,h);ctx.restore();}
     drawPetLeader(x,y,size,alpha=1,showBadge=true,step=0,moving=false,motion=1){const ctx=this.ctx,img=this.assets.pet,pet=this.options.pet;if(!img||!pet)return;const sw=img.width/5,sx=Math.max(0,Math.min(4,pet.cell||0))*sw,h=size,w=h*sw/img.height,stride=moving?Math.sin(step)*motion:0,bounce=moving?Math.abs(stride)*10:0;this.drawStepContact(x,y,step,true,alpha);ctx.save();ctx.globalAlpha=alpha;ctx.translate(x+stride*5,y-bounce);ctx.rotate(-.035+stride*.085);if(moving)ctx.scale(1+Math.abs(stride)*.04,1-Math.abs(stride)*.055);this.drawStrideSprite(img,sx,sw,h,w,-h*.82,step,moving);ctx.restore();if(!showBadge)return;ctx.save();ctx.globalAlpha=alpha;ctx.textAlign='center';ctx.font='900 13px system-ui';const name=String(pet.name||pet.breed||'Dog').slice(0,12),labelW=Math.max(52,ctx.measureText(name).width+16);ctx.fillStyle='rgba(42,31,50,.88)';NightRaidArt.roundRect(ctx,x-labelW/2,y+4,labelW,22,11);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(name,x,y+19);ctx.font='950 11px system-ui';ctx.fillStyle='#f48b2d';NightRaidArt.roundRect(ctx,x+labelW/2-24,y-53,42,20,10);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('LV '+pet.level,x+labelW/2-3,y-39);ctx.restore();}
     // Renders the NightRaidChoreo script at one point in time. Projectiles
     // fly with real travel time and only explode at their scripted impact.
@@ -182,7 +184,7 @@ var NightRaidGame = (() => {
       for(const a of actors){
         ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.rot);if(a.facing===1)ctx.scale(-1,1);
         if(a.u.kind==='pet')this.drawPetLeader(0,0,145,a.alpha,a.facing===-1&&a.state!=='fallen',a.step,a.moving,motion);
-        else this.drawSquadMember(a.u.index%6,0,0,108,a.alpha,a.step,a.moving,motion,a.state,a.flash);
+        else this.drawSquadMember(a.u.index,0,0,108,a.alpha,a.step,a.moving,motion,a.state,a.flash);
         if(a.flash&&!this.reduce){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a.flash*.45;ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-58,24,50,0,0,Math.PI*2);ctx.fill();}
         ctx.restore();
         if(!this.reduce&&a.moving){const beat=(Math.sin(a.step)+1)/2;if(beat>.82){ctx.globalAlpha=.1+(beat-.82)*.8;ctx.fillStyle='#e7dcc0';ctx.beginPath();ctx.arc(a.x+(a.facing===1?-18:18),a.y-1,4+(beat-.82)*18,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}}
