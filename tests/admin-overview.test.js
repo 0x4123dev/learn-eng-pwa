@@ -188,7 +188,7 @@ suite('admin overview: the grid is about daily tasks, and the history shows how 
     test('the page asks for 31 days of task history per child and draws the cells from it', () => {
         assert.truthy(adminHtml.includes("'&days=31'"), 'the grid needs every day in the 30-day range');
         assert.truthy(/taskDay\(hist, k\)/.test(adminHtml), 'cells come from the task history');
-        assert.truthy(adminHtml.includes('xong hết'), 'the legend explains the colours');
+        assert.falsy(adminHtml.includes('grid-legend'), 'no legend: the cells say ✓ / 1/3 / 0/2 themselves');
     });
 
     test('"bắt đầu → xong · phút" from the end stamp and the seconds it took', () => {
