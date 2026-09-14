@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v620';
+const CACHE_NAME = 'flashlingo-v621';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -211,7 +211,7 @@ const PRECACHE = {
   '/js/lazy-data.js': '693da5fa1172b12f',
   '/js/app.js': 'f3993a1956877c52',
   '/js/srs.js': '9f98ba86f249bef8',
-  '/js/home.js': '3f632ac49f7c604f',
+  '/js/home.js': '2e3d647ea28966e9',
   '/js/lessons.js': '2f7e4be284ac076c',
   '/js/verbs.js': '642747574edd8d16',
   '/js/exam.js': 'f964d5895d249249',
