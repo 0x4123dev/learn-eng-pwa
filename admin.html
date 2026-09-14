@@ -245,7 +245,7 @@
   .day-sum b { color:var(--text); font-weight:500; }
   .day-sum .skipped { color:var(--error-text); }
   .day-tasks { margin-left:auto; }
-  .day tr.more[hidden] { display:none; }
+  .day tr.more[hidden], .grid-table tr.more[hidden] { display:none; }
   .day table { font-size:13.5px; }
   .day thead th { font-size:12px; padding:6px 16px; background:#fff; color:var(--text-3); border-top:1px solid var(--split); }
   .day td { padding:8px 16px; }
@@ -1195,6 +1195,10 @@ function renderOverview(){
     onChange: renderOverview,
   });
 }
+// Two children by default, the rest behind "Xem thêm": the grid sits above
+// the history, and seven rows pushed today's activity a screen down.
+const GRID_ROWS_SHOWN = 2;
+let _gridAll = false;
 function renderGrid(){
   const host = document.getElementById('gridHost');
   const today = todayKey();
@@ -1203,7 +1207,7 @@ function renderGrid(){
   if (!list.length) { host.innerHTML = '<div class="empty">Chưa có bé nào.</div>'; return; }
   const g = buildGrid(_activityAll, list, _range, today);
   const head = g.keys.map(k => { const s = shortDayLabel(k); return `<th class="${k === today ? 'today' : ''}">${s.wd}<small>${s.dm}</small></th>`; }).join('');
-  const body = g.rows.map(r => {
+  const body = g.rows.map((r, idx) => {
     const u = r.user;
     const hist = (todayTasks(u.id) || {}).history;
     let daysDone = 0, daysWithTasks = 0;
@@ -1221,10 +1225,16 @@ function renderGrid(){
       ? `<span class="pill ${p.done >= p.total ? 'on' : 'off'}">${p.done >= p.total ? '✓' : '○'} ${p.done}/${p.total}</span>${p.rewarded ? ' <span class="dim" title="đã thưởng 200 xu + 1 khiên">🎁</span>' : ''}${p.shields ? ` <span class="dim" title="khiên đêm">🛡️${p.shields}</span>` : ''}`
       : '<span class="dim">chưa giao</span>';
     const total = daysWithTasks ? `<b>${daysDone}</b><span class="dim">/${daysWithTasks}</span>` : '<span class="dim">—</span>';
-    return `<tr><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total" title="${daysDone} ngày xong hết nhiệm vụ / ${daysWithTasks} ngày có nhiệm vụ">${total}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
+    return `<tr${!_gridAll && idx >= GRID_ROWS_SHOWN ? ' class="more" hidden' : ''}><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total" title="${daysDone} ngày xong hết nhiệm vụ / ${daysWithTasks} ngày có nhiệm vụ">${total}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
   }).join('');
-  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total" title="ngày xong hết / ngày có nhiệm vụ">Xong</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>`;
+  const hiddenKids = _gridAll ? 0 : Math.max(0, g.rows.length - GRID_ROWS_SHOWN);
+  const more = hiddenKids ? `<div class="hist-more"><button type="button" class="btn btn-sm" id="gridMore">Xem thêm ${hiddenKids} bé</button></div>`
+    : (_gridAll && g.rows.length > GRID_ROWS_SHOWN ? `<div class="hist-more"><button type="button" class="btn btn-sm" id="gridLess">Thu gọn</button></div>` : '');
+  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total" title="ngày xong hết / ngày có nhiệm vụ">Xong</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>${more}`;
   host.querySelectorAll('.kid').forEach(b => b.onclick = () => openChild(b.dataset.uid, 'tasks'));
+  const moreBtn = document.getElementById('gridMore'), lessBtn = document.getElementById('gridLess');
+  if (moreBtn) moreBtn.onclick = () => { _gridAll = true; renderGrid(); };
+  if (lessBtn) lessBtn.onclick = () => { _gridAll = false; renderGrid(); };
 }
 
 // ── history (shared by the overview and the child page) ──────────────────

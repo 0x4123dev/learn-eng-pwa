@@ -200,6 +200,15 @@ suite('admin overview: the grid is about daily tasks, and the history shows how 
         assert.equal(page.spanOf('garbage', 60), '');
     });
 
+    test('the grid shows two children, then a button for the rest', () => {
+        assert.truthy(/const GRID_ROWS_SHOWN = 2;/.test(adminHtml));
+        assert.truthy(/!_gridAll && idx >= GRID_ROWS_SHOWN \? ' class="more" hidden' : ''/.test(adminHtml), 'rows past the second start hidden');
+        assert.truthy(/Xem thêm \$\{hiddenKids\} bé/.test(adminHtml), 'the button says how many children are folded');
+        assert.truthy(/_gridAll = true; renderGrid\(\);/.test(adminHtml) && /_gridAll = false; renderGrid\(\);/.test(adminHtml), 'and it folds back');
+        const fn = adminHtml.slice(adminHtml.indexOf('function buildGrid('), adminHtml.indexOf('function cellClass('));
+        assert.truthy(/sort\(\(a, b\) => b\.n - a\.n/.test(fn), 'the two shown are the busiest, so the fold hides the quiet ones');
+    });
+
     test('five rows a day, then a button for the rest', () => {
         assert.truthy(/const HIST_ROWS_SHOWN = 5;/.test(adminHtml));
         assert.truthy(/j >= HIST_ROWS_SHOWN \? ' class="more" hidden' : ''/.test(adminHtml), 'rows past the fifth start hidden');
