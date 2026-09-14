@@ -99,6 +99,7 @@ function rewriteHistory() {
 }
 function saveRewriteSession(session) {
   const hist = rewriteHistory();
+  if (session && session.sec == null && typeof ActivityClock !== 'undefined') session.sec = ActivityClock.take();
   hist.unshift(session);
   if (hist.length > RW_HISTORY_CAP) hist.length = RW_HISTORY_CAP;
   if (typeof appState !== 'undefined' && typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {

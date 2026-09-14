@@ -37075,6 +37075,7 @@ function saveGrammarSession(unitId, questions, answers) {
         id: 'g-' + Date.now(),
         unitId,
         date: Date.now(),
+        sec: typeof ActivityClock !== 'undefined' ? ActivityClock.take() : undefined,
         score: correctCount,
         total: questions.length,
         skills: grammarSkillSummaries(questions, answers),

@@ -215,6 +215,7 @@
   .cell.low  { background:#ffccc7; color:#a8071a; }
   .cell.none { background:var(--fill-2); color:var(--text); }
   .cell.zero { color:var(--text-4); font-weight:400; }
+  .cell.zero.acts { color:var(--text-3); }
   .grid-table td.tasks { text-align:left; white-space:nowrap; }
   .grid-table .kid { display:inline-flex; align-items:center; gap:8px; font-weight:500; color:var(--text);
                      background:none; border:0; padding:0; font:inherit; cursor:pointer; }
@@ -243,7 +244,8 @@
   .day-sum { display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--text-2); font-variant-numeric:tabular-nums; }
   .day-sum b { color:var(--text); font-weight:500; }
   .day-sum .skipped { color:var(--error-text); }
-  .day-tasks { font-size:12px; margin-left:auto; }
+  .day-tasks { margin-left:auto; }
+  .day tr.more[hidden] { display:none; }
   .day table { font-size:13.5px; }
   .day thead th { font-size:12px; padding:6px 16px; background:#fff; color:var(--text-3); border-top:1px solid var(--split); }
   .day td { padding:8px 16px; }
@@ -614,7 +616,7 @@
     <section class="page" id="overviewPage">
       <div class="card">
         <div class="card-head">
-          <h2>Ai học, ai bỏ</h2>
+          <h2>Ai làm nhiệm vụ, ai bỏ</h2>
           <span class="sub" id="gridSub"></span>
           <span class="spacer"></span>
           <div class="seg" id="rangeSeg" role="group" aria-label="Khoảng thời gian">
@@ -625,9 +627,11 @@
         </div>
         <div class="scroll" id="gridHost"><div class="empty">Đang tải…</div></div>
         <div class="grid-legend">
-          <span>ô = số lượt trong ngày, màu = % đúng trung bình:</span>
-          <span class="cell good">≥ 75</span><span class="cell mid">50–74</span><span class="cell low">&lt; 50</span>
-          <span class="cell none">không chấm điểm</span><span>· trống = không học</span>
+          <span>ô = nhiệm vụ hằng ngày của bé hôm đó:</span>
+          <span class="cell good">✓</span><span>xong hết</span>
+          <span class="cell mid">1/3</span><span>làm dở</span>
+          <span class="cell low">0/2</span><span>chưa làm</span>
+          <span>· trống = chưa giao nhiệm vụ ngày đó</span>
         </div>
       </div>
 
@@ -886,6 +890,31 @@ function dayLabel(key, today){
   const dm = key.slice(8, 10) + '/' + key.slice(5, 7);
   const rel = key === today ? 'Hôm nay' : key === shiftDay(today, -1) ? 'Hôm qua' : '';
   return (rel ? rel + ' · ' : '') + wd + ' ' + dm;
+}
+// "16:20 → 16:32 · 12 phút" from an end stamp and the seconds it took;
+// '' when the row predates the clock. Under a minute reads as "< 1 phút".
+function spanOf(stamp, sec){
+  const end = new Date(String(stamp == null ? '' : stamp).replace(' ','T') + 'Z');
+  if (sec == null || sec === '') return '';        // Number(null) is 0, and 0 would read as "took no time"
+  const s = Number(sec);
+  if (isNaN(end) || !Number.isFinite(s) || s < 0) return '';
+  const start = new Date(end.getTime() - s * 1000).toISOString();
+  const hhmm = (d) => new Date(d.getTime() + VN_OFFSET_MS).toISOString().slice(11, 16);
+  const mins = Math.round(s / 60);
+  return hhmm(new Date(start)) + ' → ' + hhmm(end) + ' · ' + (mins < 1 ? '< 1' : mins) + ' phút';
+}
+// One day's task state — { done, total, allDone, rewarded } — out of the
+// per-day history admin/daily-tasks?days= returns; null when no task was in
+// force that day.
+function taskDay(history, key){
+  const h = (history || []).find(d => d.date === key);
+  if (!h || !h.tasks || !h.tasks.length) return null;
+  return { done: h.tasks.filter(t => t.done).length, total: h.tasks.length, allDone: !!h.allDone, rewarded: !!h.rewarded };
+}
+function taskCellClass(t){
+  if (!t) return 'zero';
+  if (t.allDone) return 'good';
+  return t.done > 0 ? 'mid' : 'low';
 }
 function shortDayLabel(key){
   const d = new Date(key + 'T00:00:00Z');
@@ -1150,7 +1179,7 @@ async function loadActivityAll(){
 // "2/3" need every child's tasks, and there are ten children, not ten thousand.
 async function loadAllTasks(){
   await Promise.all(kids().map(async u => {
-    try { _tasksByUser[String(u.id)] = await api('admin/daily-tasks?user_id=' + encodeURIComponent(u.id)); }
+    try { _tasksByUser[String(u.id)] = await api('admin/daily-tasks?user_id=' + encodeURIComponent(u.id) + '&days=31'); }
     catch (e) { if (e.message === 'unauth') throw e; }
   }));
   renderSider();
@@ -1176,19 +1205,25 @@ function renderGrid(){
   const head = g.keys.map(k => { const s = shortDayLabel(k); return `<th class="${k === today ? 'today' : ''}">${s.wd}<small>${s.dm}</small></th>`; }).join('');
   const body = g.rows.map(r => {
     const u = r.user;
+    const hist = (todayTasks(u.id) || {}).history;
+    let daysDone = 0, daysWithTasks = 0;
     const cells = g.keys.map(k => {
       const c = r.cells[k];
-      const cls = cellClass(c);
-      const title = c && c.n ? `${c.n} lượt` + (c.total ? ` · ${Math.round(c.score / c.total * 100)}% đúng` : '') : 'không học';
-      return `<td class="${k === today ? 'today' : ''}"><span class="cell ${cls}" title="${title}">${c && c.n ? c.n : '·'}</span></td>`;
+      const t = taskDay(hist, k);
+      if (t) { daysWithTasks++; if (t.allDone) daysDone++; }
+      const acts = c && c.n ? `${c.n} lượt` + (c.total ? ` · ${Math.round(c.score / c.total * 100)}% đúng` : '') : 'không học';
+      const title = (t ? `nhiệm vụ ${t.done}/${t.total}${t.allDone ? ' ✓ xong' : ''}${t.rewarded ? ' · đã thưởng' : ''}` : 'không có nhiệm vụ') + ' · ' + acts;
+      const text = t ? (t.allDone ? '✓' : `${t.done}/${t.total}`) : (c && c.n ? '·' : '');
+      return `<td class="${k === today ? 'today' : ''}"><span class="cell ${taskCellClass(t)} ${!t && c && c.n ? 'acts' : ''}" title="${title}">${text}</span></td>`;
     }).join('');
     const p = taskProgress(u.id);
     const tasks = p
       ? `<span class="pill ${p.done >= p.total ? 'on' : 'off'}">${p.done >= p.total ? '✓' : '○'} ${p.done}/${p.total}</span>${p.rewarded ? ' <span class="dim" title="đã thưởng 200 xu + 1 khiên">🎁</span>' : ''}${p.shields ? ` <span class="dim" title="khiên đêm">🛡️${p.shields}</span>` : ''}`
       : '<span class="dim">chưa giao</span>';
-    return `<tr><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total">${r.n}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
+    const total = daysWithTasks ? `<b>${daysDone}</b><span class="dim">/${daysWithTasks}</span>` : '<span class="dim">—</span>';
+    return `<tr><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total" title="${daysDone} ngày xong hết nhiệm vụ / ${daysWithTasks} ngày có nhiệm vụ">${total}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
   }).join('');
-  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total">Tổng</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>`;
+  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total" title="ngày xong hết / ngày có nhiệm vụ">Xong</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>`;
   host.querySelectorAll('.kid').forEach(b => b.onclick = () => openChild(b.dataset.uid, 'tasks'));
 }
 
@@ -1212,6 +1247,9 @@ function renderHistory(o){
   inp.oninput = () => { st.q = inp.value; renderHistoryBody(o, today); };
   renderHistoryBody(o, today);
 }
+// Five rows a day, then a "Xem thêm" for the rest: a busy day must not
+// push the next one a screen down.
+const HIST_ROWS_SHOWN = 5;
 function renderHistoryBody(o, today){
   const st = o.state;
   const q = fold(st.q.trim());
@@ -1228,23 +1266,34 @@ function renderHistoryBody(o, today){
       : `<span class="day-sum"><span class="skipped">${o.showUser ? 'Không ai học' : 'Không học'} ✗</span></span>`;
     if (!d.rows.length) return `<div class="day"><div style="display:flex;gap:12px;padding:10px 24px;flex-wrap:wrap" class="day-empty"><span class="day-caret" style="visibility:hidden">▶</span><span class="day-title dim">${d.label}</span>${sum}</div></div>`;
     const open = i < 2 ? ' open' : '';
-    const body = d.rows.map(a => {
+    const t = o.taskHistory ? taskDay(o.taskHistory, d.key) : null;
+    const taskNote = t ? `<span class="day-tasks"><span class="pill ${t.allDone ? 'on' : 'off'}">nhiệm vụ ${t.allDone ? '✓ ' : ''}${t.done}/${t.total}</span></span>` : '';
+    const body = d.rows.map((a, j) => {
       const hasScore = (a.total!=null && a.total>0);
       const pct = hasScore ? Math.round(a.score/a.total*100) : null;
-      return `<tr>
+      return `<tr${j >= HIST_ROWS_SHOWN ? ' class="more" hidden' : ''}>
         <td class="muted">${timeOf(a.created_at)}</td>
         ${o.showUser ? `<td><span class="who"><span class="avatar">${esc(initials(a.username))}</span><b>${esc(a.username)}</b></span></td>` : ''}
         <td>${kindPill(a.kind)}</td>
         <td style="white-space:normal">${esc(a.title||a.ref||'—')}${Number(a.retake)===1 ? '<span class="pill retake" title="Làm lại cùng một bài — không tính vào nhiệm vụ ngày">🔁 làm lại</span>' : ''}</td>
         <td class="num">${hasScore ? (a.score+'/'+a.total) : '—'}</td>
         <td class="num">${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
-        <td class="num muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
+        <td class="muted" style="white-space:nowrap">${spanOf(a.created_at, a.time_spent_sec) || '—'}</td>
         <td class="num muted">${a.coin_balance!=null ? Number(a.coin_balance).toLocaleString('vi-VN') : '—'}</td>
       </tr>`;
     }).join('');
-    return `<details class="day"${open}><summary><span class="day-caret">▶</span><span class="day-title ${d.key === today ? 'today' : ''}">${d.label}</span>${sum}</summary>
-      <div class="scroll"><table><thead><tr><th>Giờ</th>${o.showUser ? '<th>Bé</th>' : ''}<th>Loại</th><th>Bài</th><th class="num">Điểm</th><th class="num">%</th><th class="num">Thời gian</th><th class="num">Xu</th></tr></thead><tbody>${body}</tbody></table></div></details>`;
+    const hidden = Math.max(0, d.rows.length - HIST_ROWS_SHOWN);
+    const more = hidden ? `<div class="hist-more"><button type="button" class="btn btn-sm show-more">Xem thêm ${hidden} lượt</button></div>` : '';
+    return `<details class="day"${open}><summary><span class="day-caret">▶</span><span class="day-title ${d.key === today ? 'today' : ''}">${d.label}</span>${sum}${taskNote}</summary>
+      <div class="scroll"><table><thead><tr><th>Giờ</th>${o.showUser ? '<th>Bé</th>' : ''}<th>Loại</th><th>Bài</th><th class="num">Điểm</th><th class="num">%</th><th>Bắt đầu → xong</th><th class="num">Xu</th></tr></thead><tbody>${body}</tbody></table>${more}</div></details>`;
   }).join('');
+  // "Xem thêm" reveals the rest of that day only; the table stays short by
+  // default so a phone can scroll past a busy day to the next one.
+  o.host.querySelectorAll('.show-more').forEach(b => b.onclick = () => {
+    const day = b.closest('.day');
+    day.querySelectorAll('tr.more').forEach(tr => { tr.hidden = false; });
+    b.parentNode.remove();
+  });
 }
 
 // ── the child page ───────────────────────────────────────────────────────
@@ -1286,7 +1335,7 @@ async function loadDailyTasks(){
   // A failed reload must not leave another child's rows on screen looking
   // like today's truth, so the table is emptied here and the error rethrown.
   let r;
-  try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)); }
+  try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)+'&days=31'); }
   catch(e){
     status.textContent = 'Không tải được (' + e.message + ')';
     body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách nhiệm vụ.</td></tr>';
@@ -1434,6 +1483,7 @@ function renderChildHistory(){
   renderHistory({
     host: document.getElementById('histChildHost'), filtersHost: document.getElementById('histChildFilters'),
     rows, days: _childHist.range, showUser: false, state: _childHist, rangeSeg: true,
+    taskHistory: (todayTasks(_activityChild.uid) || {}).history,
     onChange: renderChildHistory,
   });
 }

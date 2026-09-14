@@ -428,6 +428,7 @@ function mathTablesSaveRun(run) {
   if (typeof saveMathSession === 'function') { saveMathSession(run); return; }
   if (typeof appState === 'undefined' || !appState) return;
   if (!Array.isArray(appState.mathHistory)) appState.mathHistory = [];
+  if (run && run.sec == null && typeof ActivityClock !== 'undefined') run.sec = ActivityClock.take();
   appState.mathHistory.unshift(run);
   if (appState.mathHistory.length > TABLES_HISTORY_CAP) {
     appState.mathHistory.length = TABLES_HISTORY_CAP;

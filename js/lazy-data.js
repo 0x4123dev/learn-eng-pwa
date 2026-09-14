@@ -138,7 +138,13 @@ var LazyData = (() => {
         el.async = false;              // banks must run in the order listed
       }
       const script = el;
-      script.onload = () => { loaded[file] = true; resolve(); };
+      script.onload = () => {
+        loaded[file] = true;
+        // A lazy code group brings its own start* functions (startMathExam,
+        // startWarsRound…); the history clock wraps them the moment they exist.
+        if (typeof ActivityClock !== 'undefined' && /\.js$/.test(file)) ActivityClock.hook();
+        resolve();
+      };
       script.onerror = () => {
         console.warn('lazy bank failed', file);
         // Forget the failed attempt. Leaving the resolved promise in

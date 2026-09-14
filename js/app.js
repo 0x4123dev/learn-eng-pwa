@@ -589,6 +589,7 @@ function applyTheme(themeId) {
 }
 
 function init() {
+    if (typeof ActivityClock !== 'undefined') ActivityClock.hook();
     setupAvatarPicker();
     checkExistingUsers();
     // A reload is not a logout. Resume the profile already authenticated in
@@ -1537,6 +1538,9 @@ var openNightRaid = lazyEntry('arena', 'openNightRaid', 'nightRaidScreen');
 // than switch (openPetBattle starts polling) MUST check it: carrying on after a
 // refusal is how the Arena once ended up running behind a live đề thi.
 function switchScreen(screenId) {
+    // A new screen is a new exercise as far as the parent's history clock
+    // is concerned (js/auth.js ActivityClock).
+    if (typeof ActivityClock !== 'undefined') ActivityClock.mark();
     // Guard the live Ghost Offering scene. Previously the bottom navigation
     // merely hid the Arena screen, leaving go-event-active/overflow:hidden on
     // it. Returning to Arena then showed a lobby that could no longer scroll.

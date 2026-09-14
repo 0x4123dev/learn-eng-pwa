@@ -391,6 +391,7 @@ function _showTopicBonusReward(bonus, levelBefore) {
     appState.lessonHistory.push({
         lessonNum: lessonState.lessonNumber,
         date: Date.now(),
+        sec: typeof ActivityClock !== 'undefined' ? ActivityClock.take() : undefined,
         points: lessonState.lessonPoints,
         accuracy: accuracy
     });

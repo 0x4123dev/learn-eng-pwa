@@ -924,6 +924,48 @@ suite('daily task: admin API', () => {
     assert.equal(again.status, 200, 'a deleted kind can be assigned again');
   });
 
+  test('days=N adds a per-day history: task in force that day, count that day, reward that day', async () => {
+    // The admin's who-studied-who-skipped grid. Three GMT+7 days ending on
+    // "today" (2026-09-02, NOW): a phrases task assigned on the 1st (so the
+    // 31st of August must not count it), done on the 1st, missed on the 2nd.
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const id = addTask(world, kid.uid, 'phrases', 1);
+    world.db.prepare("UPDATE daily_tasks SET created_at = '2026-09-01 01:00:00' WHERE id = ?").run(id);
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-01 05:00:00' });
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-08-31 16:30:00' }); // 23:30 VN on the 31st
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 19, total: 20, at: '2026-09-02 05:00:00' }); // not perfect
+    world.db.prepare('INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, 200, 1)').run(kid.uid, '2026-09-01');
+    const realNow = Date.now; Date.now = () => NOW;
+    let g;
+    try { g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid + '&days=3', method: 'GET', token: admin.token }); }
+    finally { Date.now = realNow; }
+    assert.equal(g.status, 200);
+    assert.deepEqual(g.data.history.map(h => h.date), ['2026-08-31', '2026-09-01', '2026-09-02'], 'oldest first, ending today');
+    const [d31, d1, d2] = g.data.history;
+    assert.deepEqual(d31.tasks, [], 'the task did not exist on the 31st, so its perfect run that night counts for nothing');
+    assert.equal(d31.allDone, false);
+    assert.equal(d1.tasks.length, 1);
+    assert.equal(d1.tasks[0].count, 1);
+    assert.equal(d1.allDone, true);
+    assert.equal(d1.rewarded, true);
+    assert.equal(d2.tasks[0].count, 0, '19/20 is not a completed task');
+    assert.equal(d2.allDone, false);
+    assert.equal(d2.rewarded, false);
+    assert.equal(g.data.tasks.length, 1, 'today\'s list is still there beside the history');
+  });
+
+  test('days= is clamped to 1–31 and ignored when not a number', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const big = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid + '&days=400', method: 'GET', token: admin.token });
+    assert.equal(big.data.history.length, 31);
+    const junk = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid + '&days=abc', method: 'GET', token: admin.token });
+    assert.equal(junk.data.history, undefined, 'no history unless asked for');
+  });
+
   test('GET without a numeric user_id is a 400', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });

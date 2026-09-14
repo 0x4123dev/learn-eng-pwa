@@ -455,6 +455,7 @@ function completeSpeedChallenge() {
     if (!appState.speedChallenge.history) appState.speedChallenge.history = [];
     appState.speedChallenge.history.push({
         date: Date.now(),
+        sec: typeof ActivityClock !== 'undefined' ? ActivityClock.take() : undefined,
         level: speedState.level,
         score: speedState.score,
         correct: speedState.correctCount,

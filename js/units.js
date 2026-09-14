@@ -840,6 +840,7 @@ function finishUnitPractice() {
     });
     appState.unitsHistory.unshift({
       unit: st.unit, score, total, date, wrong: wrong.map(w => w.en),
+      sec: typeof ActivityClock !== 'undefined' ? ActivityClock.take() : undefined,
       skills: Object.keys(skillMap).map(k => skillMap[k])
     });
     if (appState.unitsHistory.length > 300) appState.unitsHistory.length = 300;

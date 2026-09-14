@@ -1,8 +1,10 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { progress, shieldStatus, taskSpec, rewardedOn, MAX_TARGET, MAX_ACTIVE_TASKS } from '../_daily-task.js';
+import { progress, progressRange, shieldStatus, taskSpec, rewardedOn, MAX_TARGET, MAX_ACTIVE_TASKS } from '../_daily-task.js';
 
 // Admin-only CRUD for a child's daily tasks.
 //   GET    /api/admin/daily-tasks?user_id=N   → tasks with today's progress (read-only, never pays)
+//          &days=D (1–31) adds `history`: the same progress for each of the
+//          last D GMT+7 days, oldest first, for the who-studied grid
 //   POST   /api/admin/daily-tasks { userId, kind, target }
 //   DELETE /api/admin/daily-tasks?id=N        → active = 0 (history kept)
 async function requireAdmin(request, env) {
@@ -23,10 +25,13 @@ export async function onRequestGet({ request, env }) {
   const uid = Number(raw);
   const now = Date.now();
   const p = await progress(env, uid, now);
+  const daysRaw = new URL(request.url).searchParams.get('days');
+  const days = daysRaw && /^\d+$/.test(daysRaw) ? Math.max(1, Math.min(31, Number(daysRaw))) : 0;
   return json({
     date: p.date, tasks: p.tasks, allDone: p.allDone,
     rewardedToday: await rewardedOn(env, uid, p.date),
     shields: await shieldStatus(env, uid, now),
+    ...(days ? { history: await progressRange(env, uid, days, now) } : {}),
   });
 }
 

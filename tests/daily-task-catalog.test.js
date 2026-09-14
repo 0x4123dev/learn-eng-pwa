@@ -181,7 +181,7 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
     [
       "'Vocabulary lesson #'", "'Phrases practice ('", "'Word form practice ('",
       "'Rewrite practice ('", "'Collocation practice ('", "'Verbs challenge ('",
-      "' words practice'", "'Mix 12 units'", 'detail: { unitId',
+      "' words practice'", "'Mix 12 units'", '{ unitId: h.unitId, unitQs',
       'examId: h.examId, chapter: h.chapter',
       "'Math Wars · '",
     ].forEach(needle => assert.truthy(auth.includes(needle), 'js/auth.js is missing: ' + needle));

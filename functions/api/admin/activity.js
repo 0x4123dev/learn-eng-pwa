@@ -11,7 +11,10 @@ export async function onRequestGet({ request, env }) {
   const userId = url.searchParams.get('user_id');
   const filter = (userId && /^\d+$/.test(userId)) ? userId : null;
 
-  // exam_attempts and activities share a shape via UNION ALL. `retake` is 1
+  // exam_attempts and activities share a shape via UNION ALL. time_spent_sec
+  // is the exam's own timer for an attempt and detail.sec (js/auth.js
+  // ActivityClock) for an activity — NULL on rows from before either
+  // existed, which the admin shows as "—". `retake` is 1
   // when an activities row is a "Làm lại" of the same paper (detail.retake,
   // js/auth.js): admin.html shows it as a tag so the parent can see why a
   // 100% did not move the daily-task counter (_daily-task.js progress()).
@@ -29,7 +32,8 @@ export async function onRequestGet({ request, env }) {
         UNION ALL
         SELECT c.created_at AS created_at, c.user_id AS user_id, u.username AS username,
                c.type AS kind, c.title AS title, NULL AS ref,
-               c.score AS score, c.total AS total, NULL AS time_spent_sec,
+               c.score AS score, c.total AS total,
+               json_extract(c.detail_json, '$.sec') AS time_spent_sec,
                0 AS auto_submitted,
                CASE WHEN COALESCE(json_extract(c.detail_json, '$.retake'), 0) = 1 THEN 1 ELSE 0 END AS retake,
                (SELECT s.balance FROM user_coin_snapshots s

@@ -266,6 +266,7 @@ function warsStats(list) {
 function warsSaveRun(run) {
   if (typeof appState === 'undefined' || !appState) return;
   const list = warsHistory();
+  if (run && run.sec == null && Number.isFinite(+run.elapsedMs)) run.sec = Math.round(run.elapsedMs / 1000);
   list.unshift(run);
   if (list.length > WARS_HISTORY_CAP) list.length = WARS_HISTORY_CAP;
   if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {

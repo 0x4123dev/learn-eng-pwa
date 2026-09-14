@@ -188,6 +188,7 @@ function wordformHistory() {
 }
 function saveWordformSession(session) {
   const hist = wordformHistory();
+  if (session && session.sec == null && typeof ActivityClock !== 'undefined') session.sec = ActivityClock.take();
   hist.unshift(session);
   if (hist.length > WF_HISTORY_CAP) hist.length = WF_HISTORY_CAP;
   if (typeof appState !== 'undefined' && typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {

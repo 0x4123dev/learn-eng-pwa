@@ -422,12 +422,20 @@ const EngAuth = (function () {
     // treats "no key" as "counts", which is also what every row written
     // before this flag existed must mean.
     const retakeDetail = (h) => (h && h.retake === true) ? { retake: true } : {};
+    // How long it took, in seconds — the exam engine's own timer where there
+    // is one (timeSpentSec), the ActivityClock everywhere else (sec). Absent
+    // on rows written before either existed; the admin shows those as "—".
+    const secDetail = (h) => {
+      const v = h && (Number.isFinite(+h.sec) ? +h.sec : Number.isFinite(+h.timeSpentSec) ? +h.timeSpentSec : NaN);
+      return Number.isFinite(v) && v >= 0 ? { sec: Math.round(v) } : {};
+    };
+    const withDetail = (d) => Object.keys(d).length ? { detail: d } : {};
     if (typeof appState === 'undefined' || !appState) return items;
 
     (appState.lessonHistory || []).forEach(h => add({
       type: 'lesson', title: 'Vocabulary lesson #' + ((h.lessonNum || 0) + 1),
       score: Math.round((h.accuracy || 0) / 100 * 5), total: 5,
-      at: h.date, detail: { accuracy: h.accuracy },
+      at: h.date, detail: Object.assign({ accuracy: h.accuracy }, secDetail(h)),
     }));
     (appState.grammarHistory || []).forEach(h => {
       let name = h.unitId;
@@ -437,32 +445,32 @@ const EngAuth = (function () {
         // can name one button ('Unit 12 · 10 câu'). Grammar has no follow-up
         // screens, so its total IS the question count. unitId stays for the
         // size-agnostic tasks and for anything already assigned.
-        detail: { unitId: h.unitId, unitQs: h.unitId + ':' + (h.total || 0) } });
+        detail: Object.assign({ unitId: h.unitId, unitQs: h.unitId + ':' + (h.total || 0) }, secDetail(h)) });
     });
     (appState.phrasesHistory || []).forEach(h => add({
       type: 'phrases', title: 'Phrases practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
-      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
+      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
     }));
     (appState.wordformHistory || []).forEach(h => add({
       type: 'wordform', title: 'Word form practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
-      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
+      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
     }));
     (appState.rewriteHistory || []).forEach(h => add({
       type: 'rewrite', title: 'Rewrite practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
-      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
+      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
     }));
     (appState.collocHistory || []).forEach(h => add({
       type: 'collocation', title: 'Collocation practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
-      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
+      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
     }));
     (appState.unitsHistory || []).forEach(h => add({
       type: 'lesson',
       title: (h.unit === 'mix' ? 'Mix 12 units' : 'Unit ' + h.unit) + ' words practice',
-      score: h.score, total: h.total, at: h.date,
+      score: h.score, total: h.total, at: h.date, ...withDetail(secDetail(h)),
     }));
     (appState.mathHistory || []).forEach(h => add({
       // A mock exam and a chapter drill are different things to a parent
@@ -479,7 +487,7 @@ const EngAuth = (function () {
       detail: Object.assign(
         h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
           : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
-        retakeDetail(h)),
+        retakeDetail(h), secDetail(h)),
     }));
     // PTNK papers. Their history lives on appState (not the Exam tab's
     // localStorage key) precisely so it reaches this list: an admin assigns
@@ -497,7 +505,7 @@ const EngAuth = (function () {
       type: 'exam',
       title: h.title || (set + ' ' + (h.examId || '')),
       score: h.score, total: h.total, at: h.ts,
-      detail: Object.assign({ examId: h.examId, set: set }, retakeDetail(h)),
+      detail: Object.assign({ examId: h.examId, set: set }, retakeDetail(h), secDetail(h)),
     });
     (appState.ptnkHistory || []).forEach(examSet('ptnk'));
     (appState.readingHistory || []).forEach(examSet('reading'));
@@ -513,7 +521,7 @@ const EngAuth = (function () {
       score: h.correct, total: h.total, at: h.date,
       // level = the hidden difficulty bậc the round was played at (1 = đáp án
       // dưới 20). The child never sees it; a parent reading the timeline can.
-      detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut, level: h.level, max: h.max },
+      detail: Object.assign({ meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut, level: h.level, max: h.max }, secDetail(h)),
     }));
     (appState.nightRaidHistory || []).forEach(h => add({
       type: 'battle', title: 'Castle Night Raid · ' + (h.won ? 'thắng' : 'thua'),
@@ -522,7 +530,7 @@ const EngAuth = (function () {
     }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
-      score: h.correct, total: h.total, at: h.date, detail: { score: h.score },
+      score: h.correct, total: h.total, at: h.date, detail: Object.assign({ score: h.score }, secDetail(h)),
     }));
     return items;
   }
@@ -713,3 +721,50 @@ async function syncNowUI() {
       : '⚠️ Sync failed');
   }
 }
+
+// ActivityClock — how long the child spent on the exercise just finished,
+// for the parent's history ("16:20 → 16:32 · 12 phút"). Most exercises never
+// recorded a start time, so rather than teach fifteen modules to, the clock
+// is marked centrally: on every screen switch (js/app.js switchScreen) and
+// whenever an exercise's entry function runs (startGrammarQuiz, startMathExam
+// … — ENTRY below, wrapped in place by hook(), again after a lazy code group
+// lands). Each history write then take()s the seconds since the last mark,
+// and taking re-marks, so three quizzes in a row on one screen each get their
+// own time. Capped at three hours: a tab left open overnight is not a lesson.
+const ActivityClock = {
+  CAP_SEC: 3 * 3600,
+  _mark: Date.now(),
+  mark() { this._mark = Date.now(); },
+  take() {
+    const s = Math.round((Date.now() - this._mark) / 1000);
+    this._mark = Date.now();
+    return Math.max(0, Math.min(this.CAP_SEC, s));
+  },
+  ENTRY: Object.freeze([
+    'startLesson', 'startNextLesson', 'startReviewLesson', 'startReviewSession', 'startTopicReviewSession',
+    'startTopicLesson', 'startTopicLessonChunk', 'startTopicPractice', 'startUnitPractice', 'startUnitRetry',
+    'startGrammarQuiz', 'startCustomQuiz', 'startMistakesQuiz', 'startPhrasesQuiz', 'startPhrasesReviewQuiz',
+    'startCollocPractice', 'startWordformQuiz', 'startRewriteQuiz', 'startRewriteReviewQuiz',
+    'startSpeedChallenge', 'startExam', 'startPtnkExam', 'startReadingPassage', 'startClozePassage',
+    'startErrorsRound', 'startGrammarVocabRound', 'startPhoneticsRound', 'startRetryDrill',
+    'startMathExam', 'startMathQuiz', 'startMathQuizForLesson', 'startMathLtQuiz', 'startMathRetry',
+    'startMathWrongPractice', 'startMath4Pre', 'startMath4Mix', 'startMathTables', 'startWarsRound',
+    'startDailyChallenge',
+  ]),
+  // Wrap every entry function that exists right now. Top-level function
+  // declarations are properties of the global object, so reassigning the
+  // property is what every caller — inline onclick included — then reaches.
+  hook(root) {
+    const g = root || (typeof window !== 'undefined' ? window : globalThis);
+    const clock = this;
+    let n = 0;
+    this.ENTRY.forEach(name => {
+      const fn = g[name];
+      if (typeof fn !== 'function' || fn.__clocked) return;
+      const wrapped = function () { clock.mark(); return fn.apply(this, arguments); };
+      wrapped.__clocked = true;
+      try { g[name] = wrapped; n++; } catch (e) {}
+    });
+    return n;
+  },
+};

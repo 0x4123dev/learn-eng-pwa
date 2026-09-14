@@ -160,6 +160,7 @@ function phrasesHistory() {
 
 function savePhrasesSession(session) {
   const hist = phrasesHistory();
+  if (session && session.sec == null && typeof ActivityClock !== 'undefined') session.sec = ActivityClock.take();
   hist.unshift(session);
   if (hist.length > PHRASES_HISTORY_CAP) hist.length = PHRASES_HISTORY_CAP;
   if (typeof appState !== 'undefined' && typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {

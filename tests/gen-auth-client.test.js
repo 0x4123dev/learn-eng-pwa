@@ -54,7 +54,7 @@ globalThis.fetch = function (url, opts) {
 
 const authSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'auth.js'), 'utf8');
 vm.runInContext(
-    authSrc + '\n;globalThis.EngAuth = EngAuth; globalThis.syncNowUI = syncNowUI;\n',
+    authSrc + '\n;globalThis.EngAuth = EngAuth; globalThis.syncNowUI = syncNowUI; globalThis.ActivityClock = ActivityClock;\n',
     ctx, { filename: 'auth.js' }
 );
 const EngAuth = sandbox.EngAuth;
@@ -133,6 +133,73 @@ function makeBtn() {
         classList: { add: (c) => classes.add(c), remove: (c) => classes.delete(c), contains: (c) => classes.has(c) },
     };
 }
+
+// ── ActivityClock ────────────────────────────────────────────────────────────
+suite('gen: ActivityClock times an exercise from its entry function to its history write', () => {
+    const Clock = sandbox.ActivityClock;
+    const ROOT = path.join(__dirname, '..');
+    // The clock reads the context's own Date, so time is faked there.
+    const freeze = () => { vm.runInContext('globalThis.__realNow = Date.now;', ctx); };
+    const setNow = (t) => { vm.runInContext('Date.now = () => ' + t + ';', ctx); };
+    const thaw = () => { vm.runInContext('Date.now = globalThis.__realNow;', ctx); };
+
+    test('take() is the seconds since the last mark, and re-marks', () => {
+        let t = 1000000;
+        freeze(); setNow(t);
+        try {
+            Clock.mark();
+            t += 12 * 60 * 1000 + 400; setNow(t);
+            assert.equal(Clock.take(), 720, '12 minutes, rounded');
+            t += 30 * 1000; setNow(t);
+            assert.equal(Clock.take(), 30, 'the next quiz on the same screen is timed from the previous finish');
+            t += 9 * 3600 * 1000; setNow(t);
+            assert.equal(Clock.take(), 3 * 3600, 'a tab left open overnight is capped, not a nine-hour lesson');
+        } finally { thaw(); }
+    });
+
+    test('hook() wraps the entry functions that exist, once, and the wrapper marks', () => {
+        let t = 5000000;
+        freeze(); setNow(t);
+        try {
+            const g = { startGrammarQuiz(a, b) { return 'quiz:' + a + b; }, notAnEntry() {} };
+            assert.equal(Clock.hook(g), 1);
+            assert.equal(Clock.hook(g), 0, 'a second pass wraps nothing again');
+            t += 60 * 1000; setNow(t);
+            assert.equal(g.startGrammarQuiz('u', 12), 'quiz:u12', 'arguments and the return value pass through');
+            t += 45 * 1000; setNow(t);
+            assert.equal(Clock.take(), 45, 'the clock started when the quiz did, not a minute earlier');
+        } finally { thaw(); }
+    });
+
+    test('every entry name is a real top-level function somewhere in js/', () => {
+        const src = fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && f !== 'phaser.min.js')
+            .map(f => fs.readFileSync(path.join(ROOT, 'js', f), 'utf8')).join('\n');
+        for (const name of Clock.ENTRY) {
+            assert.truthy(new RegExp('^function ' + name + '\\s*\\(', 'm').test(src), name + ' is not a function in the app');
+        }
+    });
+
+    test('the app marks on every screen switch and hooks at boot and after a lazy group lands', () => {
+        const app = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js', 'lazy-data.js'), 'utf8');
+        assert.truthy(/function switchScreen\(screenId\) \{[\s\S]{0,300}ActivityClock\.mark\(\)/.test(app));
+        assert.truthy(/function init\(\) \{[\s\S]{0,120}ActivityClock\.hook\(\)/.test(app));
+        assert.truthy(/loaded\[file\] = true;[\s\S]{0,400}ActivityClock\.hook\(\)/.test(lazy),
+            'startMathExam and friends only exist after the math group loads');
+    });
+
+    test('every history writer stamps sec', () => {
+        for (const f of ['lessons.js', 'grammar-units.js', 'phrases.js', 'wordform.js', 'rewrite.js', 'collocation.js',
+                         'units.js', 'verbs.js', 'math.js', 'math-tables.js']) {
+            const src = fs.readFileSync(path.join(ROOT, 'js', f), 'utf8');
+            assert.truthy(/ActivityClock\.take\(\)/.test(src), 'js/' + f + ' writes history without timing it');
+        }
+        const wars = fs.readFileSync(path.join(ROOT, 'js', 'mathwars.js'), 'utf8');
+        assert.truthy(/run\.sec = Math\.round\(run\.elapsedMs \/ 1000\)/.test(wars), 'Math Wars has its own timer');
+        const activity = fs.readFileSync(path.join(ROOT, 'functions', 'api', 'admin', 'activity.js'), 'utf8');
+        assert.truthy(activity.includes("json_extract(c.detail_json, '$.sec') AS time_spent_sec"), 'the admin must be able to read it back');
+    });
+});
 
 // ── Account store round-trip (localStorage stub) ───────────────────────────
 suite('gen: auth account store', () => {
@@ -320,6 +387,22 @@ suite('gen: syncNow batch', () => {
         seedRich();
         vmAwait('EngAuth.syncNow()');
         assert.deepEqual(sentItems()[3], { type: 'wordform', title: 'Word form practice (10 Qs)', score: 9, total: 10, at: AT.wf });
+    });
+
+    test('how long it took rides up as detail.sec — the clock\'s sec or the exam engine\'s timeSpentSec', () => {
+        // Rows written before the clock existed carry no key at all, and a
+        // module that never had a detail must not grow an empty one.
+        const st = richAppState();
+        st.phrasesHistory[0].sec = 754.4;
+        st.grammarHistory[0].sec = 90;
+        st.ptnkHistory = [{ examId: 'ptnk-2024-kc', title: 'PTNK 2024', score: 30, total: 40, ts: AT.phr, timeSpentSec: 1800 }];
+        seedRich({ appState: st });
+        vmAwait('EngAuth.syncNow()');
+        const items = sentItems();
+        assert.deepEqual(items.find(i => i.type === 'phrases').detail, { sec: 754 }, 'rounded to whole seconds');
+        assert.equal(items.find(i => i.type === 'grammar').detail.sec, 90);
+        assert.equal(items.find(i => i.type === 'wordform').detail, undefined, 'no clock, no detail');
+        assert.equal(items.find(i => i.type === 'exam').detail.sec, 1800, 'the exam engine already timed itself');
     });
 
     test('rewrite item shape', () => {

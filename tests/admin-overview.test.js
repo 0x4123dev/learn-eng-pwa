@@ -31,7 +31,8 @@ const page = (() => {
         + script.match(/const CHILD_TABS = [^;]+;/)[0]
         + script.match(/const CHILD_SLUG = [^;]+;/)[0];
     const names = ['fold', 'dayKeyOf', 'todayKey', 'shiftDay', 'timeOf', 'dayLabel', 'shortDayLabel',
-                   'summarize', 'groupByDay', 'buildGrid', 'cellClass', 'parseRoute', 'childHref'];
+                   'summarize', 'groupByDay', 'buildGrid', 'cellClass', 'parseRoute', 'childHref',
+                   'spanOf', 'taskDay', 'taskCellClass'];
     const sandbox = { String, Number, Math, Date, Set, Map, isNaN };
     vm.createContext(sandbox);
     vm.runInContext(consts + '\n' + names.map(pick).join('\n') + '\n' + names.map(n => `this.${n} = ${n};`).join(''), sandbox);
@@ -158,6 +159,59 @@ suite('admin overview: the who-studied grid', () => {
         const g = page.buildGrid([], users, 7, today);
         assert.equal(g.rows.length, 3);
         assert.deepEqual(g.rows.map(r => r.n), [0, 0, 0]);
+    });
+});
+
+suite('admin overview: the grid is about daily tasks, and the history shows how long each took', () => {
+    const hist = [
+        { date: '2026-09-12', tasks: [{ done: true }, { done: true }], allDone: true, rewarded: true },
+        { date: '2026-09-13', tasks: [{ done: true }, { done: false }, { done: false }], allDone: false, rewarded: false },
+        { date: '2026-09-14', tasks: [{ done: false }], allDone: false, rewarded: false },
+        { date: '2026-09-11', tasks: [], allDone: false, rewarded: false },
+    ];
+
+    test('a day\'s cell is done/total of the tasks in force that day, or nothing when none were', () => {
+        assert.deepEqual(page.taskDay(hist, '2026-09-12'), { done: 2, total: 2, allDone: true, rewarded: true });
+        assert.deepEqual(page.taskDay(hist, '2026-09-13'), { done: 1, total: 3, allDone: false, rewarded: false });
+        assert.equal(page.taskDay(hist, '2026-09-11'), null, 'no task that day is not "0 done"');
+        assert.equal(page.taskDay(hist, '2026-09-10'), null);
+        assert.equal(page.taskDay(undefined, '2026-09-12'), null, 'before the tasks have loaded');
+    });
+
+    test('cell colour: green all done, amber some, red none, grey no task', () => {
+        assert.equal(page.taskCellClass(page.taskDay(hist, '2026-09-12')), 'good');
+        assert.equal(page.taskCellClass(page.taskDay(hist, '2026-09-13')), 'mid');
+        assert.equal(page.taskCellClass(page.taskDay(hist, '2026-09-14')), 'low');
+        assert.equal(page.taskCellClass(null), 'zero');
+    });
+
+    test('the page asks for 31 days of task history per child and draws the cells from it', () => {
+        assert.truthy(adminHtml.includes("'&days=31'"), 'the grid needs every day in the 30-day range');
+        assert.truthy(/taskDay\(hist, k\)/.test(adminHtml), 'cells come from the task history');
+        assert.truthy(adminHtml.includes('xong hết'), 'the legend explains the colours');
+    });
+
+    test('"bắt đầu → xong · phút" from the end stamp and the seconds it took', () => {
+        assert.equal(page.spanOf('2026-09-14 09:32:00', 720), '16:20 → 16:32 · 12 phút');
+        assert.equal(page.spanOf('2026-09-14 09:32:00', 20), '16:31 → 16:32 · < 1 phút');
+        assert.equal(page.spanOf('2026-09-13 17:05:00', 600), '23:55 → 00:05 · 10 phút', 'a span across midnight');
+        assert.equal(page.spanOf('2026-09-14 09:32:00', null), '', 'rows from before the clock have no span');
+        assert.equal(page.spanOf('2026-09-14 09:32:00', -5), '');
+        assert.equal(page.spanOf('garbage', 60), '');
+    });
+
+    test('five rows a day, then a button for the rest', () => {
+        assert.truthy(/const HIST_ROWS_SHOWN = 5;/.test(adminHtml));
+        assert.truthy(/j >= HIST_ROWS_SHOWN \? ' class="more" hidden' : ''/.test(adminHtml), 'rows past the fifth start hidden');
+        assert.truthy(/Xem thêm \$\{hidden\} lượt/.test(adminHtml), 'the button says how many are folded');
+        assert.truthy(/day\.querySelectorAll\('tr\.more'\)\.forEach\(tr => \{ tr\.hidden = false; \}\)/.test(adminHtml),
+            'and reveals only that day');
+    });
+
+    test('the history column is the span for every kind, not the exam timer only', () => {
+        assert.truthy(adminHtml.includes('spanOf(a.created_at, a.time_spent_sec)'));
+        assert.falsy(/a\.kind==='exam' \? fmtTime/.test(adminHtml), 'the exam-only branch must be gone');
+        assert.truthy(adminHtml.includes('<th>Bắt đầu → xong</th>'));
     });
 });
 

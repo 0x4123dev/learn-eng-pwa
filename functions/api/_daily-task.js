@@ -124,6 +124,59 @@ export async function progress(env, uid, now = Date.now()) {
   return { date, tasks, allDone: tasks.length > 0 && tasks.every(t => t.done) };
 }
 
+// The same progress for each of the last `days` GMT+7 days, for the admin's
+// who-studied-who-skipped grid. Batched: ONE count-per-day query for each
+// task that was in force at any point in the range (grouped by the child's
+// calendar day), plus one query for the rewards — not one query per task
+// per day, which at 7 children × 30 days × 3 tasks is 630 reads a page
+// load. A task counts on a day only if it was in force that day, the same
+// effective-interval rule progress() applies to a delayed sync. Never
+// writes.
+export async function progressRange(env, uid, days, now = Date.now()) {
+  const n = Math.max(1, Math.min(31, Math.trunc(+days) || 1));
+  const today = nightDate(now);
+  const dates = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(Date.parse(today + 'T00:00:00Z') - i * 24 * 3600000);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+  const windows = dates.map(dayWindowUtc);
+  const rangeStart = windows[0].startUtc, rangeEnd = windows[windows.length - 1].endUtc;
+  const { results } = await env.DB.prepare(
+    `SELECT id, kind, label, target, activity_type, match_json, created_at, ended_at
+       FROM daily_tasks WHERE user_id = ? AND created_at < ? AND (ended_at IS NULL OR ended_at >= ?) ORDER BY id`
+  ).bind(uid, rangeEnd, rangeStart).all();
+  const specs = await Promise.all((results || []).map(async row => {
+    let match = {};
+    try { match = JSON.parse(row.match_json) || {}; } catch (e) { match = {}; }
+    const m = matchSql(match);
+    const r = await env.DB.prepare(
+      `SELECT date(created_at, '+7 hours') AS d, COUNT(*) AS n FROM activities
+        WHERE user_id = ? AND type = ? AND total > 0 AND score = total
+          AND created_at >= ? AND created_at < ? AND ${NOT_RETAKE_SQL} AND ${m.sql}
+        GROUP BY d`
+    ).bind(uid, row.activity_type, rangeStart, rangeEnd, ...m.binds).all();
+    const byDay = {};
+    for (const x of (r.results || [])) byDay[x.d] = Number(x.n) || 0;
+    const target = Math.min(MAX_TARGET, Math.max(1, Math.trunc(+row.target || 1)));
+    return { row, target, byDay };
+  }));
+  const rw = await env.DB.prepare(
+    'SELECT task_date FROM daily_task_rewards WHERE user_id = ? AND task_date >= ? AND task_date <= ?'
+  ).bind(uid, dates[0], dates[dates.length - 1]).all();
+  const rewarded = new Set((rw.results || []).map(x => x.task_date));
+  return dates.map((date, i) => {
+    const w = windows[i];
+    const tasks = specs
+      .filter(s => s.row.created_at < w.endUtc && (s.row.ended_at == null || s.row.ended_at >= w.startUtc))
+      .map(s => {
+        const count = s.byDay[date] || 0;
+        return { id: s.row.id, kind: s.row.kind, label: s.row.label, target: s.target, count, done: count >= s.target };
+      });
+    return { date, tasks, allDone: tasks.length > 0 && tasks.every(t => t.done), rewarded: rewarded.has(date) };
+  });
+}
+
 export async function rewardedOn(env, uid, date) {
   const row = await env.DB.prepare('SELECT 1 AS x FROM daily_task_rewards WHERE user_id = ? AND task_date = ?')
     .bind(uid, date).first();

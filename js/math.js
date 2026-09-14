@@ -929,6 +929,7 @@ function math7History() { return mathHistory().filter(h => !h || h.grade !== 4);
 function saveMathSession(session) {
   if (typeof appState === 'undefined' || !appState) return;
   const list = mathHistory();
+  if (session && session.sec == null && typeof ActivityClock !== 'undefined') session.sec = ActivityClock.take();
   list.unshift(session);
   if (list.length > MATH_HISTORY_CAP) list.length = MATH_HISTORY_CAP;
   if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {

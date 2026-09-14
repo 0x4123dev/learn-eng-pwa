@@ -678,6 +678,18 @@ async function moneyChecks(add, seenSql, drainLogs) {
       ok ? `task "${entry.key}" completed once → exactly 200 xu (a second look pays nothing more), and the pick turns into 1 khiên; a repeat claim answers 409 and credits nothing`
          : `create=${created.status} view=${view.status} allDone=${view.data && view.data.allDone} paid=${paidOnce}/${paidTwice} claim=${pick.status} repeat=${dup.status} shields=${shields} :: ${JSON.stringify(view.data).slice(0, 250)}`);
 
+    // The admin's per-day history (the who-did-their-tasks grid): the one
+    // assembled query in progressRange() runs here for real, and the day the
+    // session above landed on must show the task as done.
+    const grid = await hit(w, adminTasks.onRequestGet, { method: 'GET', url: '/api/admin/daily-tasks?user_id=' + child.uid + '&days=7', token: boss.token });
+    const hist = (grid.data && grid.data.history) || [];
+    const last = hist[hist.length - 1];
+    const okGrid = grid.status === 200 && hist.length === 7 && last && last.date === view.data.date
+      && last.tasks.length === 1 && last.tasks[0].done === true && last.allDone === true && last.rewarded === true;
+    add('admin.daily-task-history', 'Admin: lưới "ai làm nhiệm vụ, ai bỏ" đọc đúng 7 ngày', okGrid,
+      okGrid ? `7 days back, today ${last.date}: 1 task, done, all done, rewarded — the grid cell would be green`
+             : `status=${grid.status} days=${hist.length} last=${JSON.stringify(last).slice(0, 200)}`);
+
     // claim-all, so the other dynamic UPDATE in _daily-task.js is executed too
     const child2 = await w.createUser({});
     w.db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?,?,200,1)").run(child2.uid, '2026-01-01');
