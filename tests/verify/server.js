@@ -41,7 +41,7 @@ const AREA = [
   ['/api/math-fight/', 'Đấu Toán'],
   ['/api/daily-task/', 'Nhiệm vụ hằng ngày'],
   ['/api/me/daily-tasks', 'Nhiệm vụ hằng ngày'],
-  ['/api/ghost-offering', 'Cúng Cô Hồn'],
+  ['/api/ghost-offering', 'Trung Thu – Hái Quà'],
   ['/api/coins', 'Ví xu'],
   ['/api/friends', 'Bạn bè'],
   ['/api/admin/', 'Trang quản trị'],
@@ -619,22 +619,22 @@ async function moneyChecks(add, seenSql, drainLogs) {
          : `phone=${phone.data && phone.data.granted} tablet=${tablet.data && tablet.data.granted} — a second device being charged again is a double DEBIT`);
   } catch (e) { add('money.coins-negative-once', 'Ví xu: bị trừ đúng một lần', false, 'threw: ' + ((e && e.stack) || e)); }
 
-  // ---- Cúng Cô Hồn: the scene replays, the coins do not ----
+  // ---- Trung Thu – Hái Quà: the scene replays, the coins do not ----
   try {
     const w = newWorld(seenSql);
     const child = await w.createUser({ allowBot: true });
     const g1 = await hit(w, ghost.onRequestGet, { method: 'GET', url: '/api/ghost-offering', token: child.token });
-    const c1 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'pig', sessionId: g1.data.sessionId } });
+    const c1 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'hangnga', sessionId: g1.data.sessionId } });
     const g2 = await hit(w, ghost.onRequestGet, { method: 'GET', url: '/api/ghost-offering', token: child.token });
-    const c2 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'pig', sessionId: g2.data.sessionId } });
+    const c2 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'hangnga', sessionId: g2.data.sessionId } });
     const owed = grantsOf(w, child.uid);
     const ok = c1.status === 200 && Number(c1.data.reward) === 200 && c2.status === 200
       && Number(c2.data.reward) === 0 && c2.data.replay === true
       && g2.data.sessionId !== g1.data.sessionId && owed === 200;
-    add('money.ghost-offering-once-a-day', 'Cúng Cô Hồn: mâm cúng chỉ trả tiền một lần mỗi ngày', ok,
-      ok ? 'reopening the screen mints a fresh preview session and re-lays the table, but the pig pays 200 xu exactly once per event day (ledger total 200)'
+    add('money.ghost-offering-once-a-day', 'Trung Thu – Hái Quà: mỗi món chỉ trả thưởng một lần mỗi ngày', ok,
+      ok ? 'reopening the screen mints a fresh preview session and re-lays the gifts, but Hằng Nga pays 200 xu exactly once per event day (ledger total 200)'
          : `first=${c1.status}/${c1.data && c1.data.reward} second=${c2.status}/${c2.data && c2.data.reward} replay=${c2.data && c2.data.replay} freshSession=${g2.data && g2.data.sessionId !== g1.data.sessionId} owed=${owed}`);
-  } catch (e) { add('money.ghost-offering-once-a-day', 'Cúng Cô Hồn: mâm cúng chỉ trả tiền một lần mỗi ngày', false, 'threw: ' + ((e && e.stack) || e)); }
+  } catch (e) { add('money.ghost-offering-once-a-day', 'Trung Thu – Hái Quà: mỗi món chỉ trả thưởng một lần mỗi ngày', false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- Nhiệm vụ hằng ngày: earn → 200 xu → turn the pick into a shield ----
   try {

@@ -269,7 +269,7 @@ suite('money server: ghost offering rewards ride the receipt-protected grant pip
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
     const claim = () => world.call(ghostHandler().onRequestPost, {
-      token: user.token, body: { itemId: 'chicken1', sessionId: SESSION },
+      token: user.token, body: { itemId: 'mooncake1', sessionId: SESSION },
     });
     const first = await claim();
     assert.equal(first.status, 200, JSON.stringify(first.data));
@@ -278,7 +278,7 @@ suite('money server: ghost offering rewards ride the receipt-protected grant pip
     const rows = grants(world, user.uid);
     assert.equal(rows.length, 1, 'exactly one IOU per awarded item');
     assert.equal(rows[0].amount, 50);
-    assert.truthy(String(rows[0].note).includes('chicken1'), 'the note names the item');
+    assert.truthy(String(rows[0].note).includes('mooncake1'), 'the note names the item');
     assert.falsy(rows[0].claimed_at, 'the IOU waits for the receipt-protected claim');
     // The event must NOT hand-write the raid wallet any more — that mirror
     // was silently overwritten by the next syncHome on another device.
@@ -295,7 +295,7 @@ suite('money server: ghost offering rewards ride the receipt-protected grant pip
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
     await world.call(ghostHandler().onRequestPost, {
-      token: user.token, body: { itemId: 'pig', sessionId: SESSION },
+      token: user.token, body: { itemId: 'hangnga', sessionId: SESSION },
     });
     const paid = await world.call(coinsHandler().onRequestPost,
       { token: user.token, body: { proto: 2 } });

@@ -227,8 +227,10 @@ export class BattleRoom {
 }
 
 const OFFERING_ITEMS = new Set([
-  'pig', 'chicken1', 'chicken2', 'chicken3', 'chicken4', 'chicken5',
-  'fruit1', 'fruit2', 'fruit3', 'fruit4', 'fruit5', 'fruit6', 'fruit7', 'fruit8',
+  'hangnga', 'cuoi',
+  'mooncake1', 'mooncake2', 'mooncake3', 'mooncake4',
+  'lantern1', 'lantern2', 'lantern3', 'lantern4',
+  'lantern5', 'lantern6', 'lantern7', 'lantern8',
 ]);
 
 // Authoritative transient lock manager for the shared offering table. A

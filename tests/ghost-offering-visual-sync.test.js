@@ -9,9 +9,9 @@ const workerSrc = fs.readFileSync(path.join(root, 'battle-worker/src/index.js'),
 const uiSrc = fs.readFileSync(path.join(root, 'js/ghost-offering-event.js'), 'utf8');
 const cssSrc = require('./css-all').readAllCss();
 const ALL_ITEMS = [
-  'pig',
-  'chicken1', 'chicken2', 'chicken3', 'chicken4', 'chicken5',
-  'fruit1', 'fruit2', 'fruit3', 'fruit4', 'fruit5', 'fruit6', 'fruit7', 'fruit8',
+  'hangnga', 'cuoi',
+  'mooncake1', 'mooncake2', 'mooncake3', 'mooncake4',
+  'lantern1', 'lantern2', 'lantern3', 'lantern4', 'lantern5', 'lantern6', 'lantern7', 'lantern8',
 ];
 
 function loadRoomClass() {
@@ -101,10 +101,10 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 29-33: every chicken snap is visible to both observers and frees
+  // Cases 29-33: every mooncake/Cuội snap is visible to both observers and frees
   // the same item, preventing the old instant-teleport/reappearing-food bug.
   [1, 2, 3, 4, 5].forEach((number, index) => {
-    const itemId = `chicken${number}`;
+    const itemId = number === 5 ? 'cuoi' : `mooncake${number}`;
     test(`sync ${String(index + 29).padStart(2, '0')}/50: snapped ${itemId} breaks and returns for both viewers`, async () => {
       const { room, sockets: [a, b, c] } = fixture();
       await grab(room, a, itemId);
@@ -119,9 +119,9 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 34-41: a successful fruit claim disappears for both viewers and is
+  // Cases 34-41: a successful lantern claim disappears for both viewers and is
   // persisted in the shared room inventory for late joiners.
-  Array.from({ length: 8 }, (_, index) => `fruit${index + 1}`).forEach((itemId, index) => {
+  Array.from({ length: 8 }, (_, index) => `lantern${index + 1}`).forEach((itemId, index) => {
     test(`sync ${String(index + 34).padStart(2, '0')}/50: claimed ${itemId} disappears for B and C`, async () => {
       const { room, state, sockets: [a, b, c] } = fixture();
       await grab(room, a, itemId);
@@ -137,56 +137,56 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
 
   // Cases 42-50: boundaries, contention and lifecycle events which previously
   // caused one screen to keep a stale rope, lock or player count.
-  test('sync 42/50: pig snap reason and release frame match for B and C', async () => {
+  test('sync 42/50: Hằng Nga snap reason and release frame match for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'pig');
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'pig', reason: 'snap' }));
-    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'pig', uid: 101, actorId: 'user-101', reason: 'snap' });
+    await grab(room, a, 'hangnga');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'hangnga', reason: 'snap' }));
+    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'hangnga', uid: 101, actorId: 'user-101', reason: 'snap' });
     assert.truthy(uiSrc.includes("bot.classList.add('remote-snapped')"), 'both viewers show the tired dog and broken-rope recovery');
     assert.truthy(cssSrc.includes('.go-bot.remote-snapped .go-bot-sweat'), 'remote snap visibly keeps the sweat state');
   });
 
   test('sync 43/50: ordinary miss releases the same item on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit1');
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'fruit1', reason: 'release' }));
-    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'fruit1', uid: 101, actorId: 'user-101', reason: 'release' });
+    await grab(room, a, 'lantern1');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'lantern1', reason: 'release' }));
+    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'lantern1', uid: 101, actorId: 'user-101', reason: 'release' });
   });
 
   test('sync 44/50: disconnect removes A rope and lock identically for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit2');
+    await grab(room, a, 'lantern2');
     await room.webSocketClose(a);
-    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'fruit2', uid: 101, actorId: 'user-101' });
+    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'lantern2', uid: 101, actorId: 'user-101' });
     sameLast([b, c], 'offering-presence', { t: 'offering-presence', left: 101, actorId: 'user-101', name: 'An', peers: 2 });
   });
 
   test('sync 45/50: socket error removes A rope and lock identically for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit3');
+    await grab(room, a, 'lantern3');
     await room.webSocketError(a);
-    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'fruit3', uid: 101, actorId: 'user-101' });
+    sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'lantern3', uid: 101, actorId: 'user-101' });
     assert.truthy(a.closed, 'failed socket closes after shared cleanup');
   });
 
   test('sync 46/50: maximum angle and rope length clamp identically on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit4');
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'fruit4', angle: 999, length: 999, phase: 'extend' }));
-    sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'fruit4', uid: 101, actorId: 'user-101', name: 'An', angle: 70, length: 1, phase: 'extend' });
+    await grab(room, a, 'lantern4');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'lantern4', angle: 999, length: 999, phase: 'extend' }));
+    sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'lantern4', uid: 101, actorId: 'user-101', name: 'An', angle: 70, length: 1, phase: 'extend' });
   });
 
   test('sync 47/50: minimum angle and rope length clamp identically on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit5');
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'fruit5', angle: -999, length: -999, phase: 'retract' }));
-    sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'fruit5', uid: 101, actorId: 'user-101', name: 'An', angle: -70, length: 0, phase: 'retract' });
+    await grab(room, a, 'lantern5');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'lantern5', angle: -999, length: -999, phase: 'retract' }));
+    sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'lantern5', uid: 101, actorId: 'user-101', name: 'An', angle: -70, length: 0, phase: 'retract' });
   });
 
   test('sync 48/50: spoofed progress never appears on either observer screen', async () => {
     const { room, sockets: [a, b, c] } = fixture();
-    await grab(room, a, 'fruit6');
-    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'fruit6', angle: 20, length: .4, phase: 'extend' }));
+    await grab(room, a, 'lantern6');
+    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'lantern6', angle: 20, length: .4, phase: 'extend' }));
     assert.equal(a.take('offering-progress').length, 0);
     assert.equal(c.take('offering-progress').length, 0);
   });
@@ -194,12 +194,12 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
   test('sync 49/50: same-item race produces one shared lock identity', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await Promise.all([
-      room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'fruit7' })),
-      room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'fruit7' })),
+      room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'lantern7' })),
+      room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'lantern7' })),
     ]);
     const winner = a.attachment.itemId ? a : b;
     const loser = winner === a ? b : a;
-    assert.equal(winner.attachment.itemId, 'fruit7');
+    assert.equal(winner.attachment.itemId, 'lantern7');
     assert.equal(loser.attachment.itemId, null);
     assert.equal(c.take('offering-locked').length, 1, 'neutral viewer sees only the authoritative winner');
     assert.equal(c.last('offering-locked').uid, winner.attachment.uid);
@@ -207,16 +207,16 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
 
   test('sync 50/50: simultaneous different pulls remain attributable on every screen', async () => {
     const { room, sockets: [a, b, c, d] } = fixture(4);
-    await grab(room, a, 'chicken1');
-    await grab(room, b, 'fruit8');
+    await grab(room, a, 'mooncake1');
+    await grab(room, b, 'lantern8');
     a.clear(); b.clear(); c.clear(); d.clear();
     await Promise.all([
-      room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'chicken1', angle: -22, length: .61, phase: 'retract' })),
-      room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'fruit8', angle: 31, length: .37, phase: 'extend' })),
+      room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'mooncake1', angle: -22, length: .61, phase: 'retract' })),
+      room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'lantern8', angle: 31, length: .37, phase: 'extend' })),
     ]);
     assert.deepEqual(c.take('offering-progress'), d.take('offering-progress'), 'two neutral viewers render the same two ropes in the same order');
     assert.deepEqual(c.take('offering-progress').map(message => [message.uid, message.itemId, message.phase]), [
-      [101, 'chicken1', 'retract'], [202, 'fruit8', 'extend'],
+      [101, 'mooncake1', 'retract'], [202, 'lantern8', 'extend'],
     ]);
     assert.deepEqual(a.last('offering-progress'), c.take('offering-progress')[1], 'A sees B exactly as C sees B');
     assert.deepEqual(b.last('offering-progress'), c.take('offering-progress')[0], 'B sees A exactly as C sees A');

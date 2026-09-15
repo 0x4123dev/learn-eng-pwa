@@ -5,10 +5,11 @@ import GhostOfferingSchedule from '../../js/ghost-offering-schedule.js';
 // this API, the child's screen and the websocket Worker cannot disagree on the
 // day. Do not reintroduce a local copy — see js/ghost-offering-schedule.js.
 const ITEMS = Object.freeze({
-  pig: 200,
-  chicken1: 50, chicken2: 50, chicken3: 50, chicken4: 50, chicken5: 50,
-  fruit1: 10, fruit2: 10, fruit3: 10, fruit4: 10,
-  fruit5: 10, fruit6: 10, fruit7: 10, fruit8: 10,
+  hangnga: 200,
+  cuoi: 150,
+  mooncake1: 50, mooncake2: 50, mooncake3: 50, mooncake4: 50,
+  lantern1: 10, lantern2: 10, lantern3: 10, lantern4: 10,
+  lantern5: 10, lantern6: 10, lantern7: 10, lantern8: 10,
 });
 
 function eventWindow(now = Date.now()) {
@@ -108,7 +109,7 @@ export async function onRequestPost({ request, env }) {
   // can replay the scene. But `preview` is simply users.allow_bot, i.e. every
   // child with Cướp Đêm switched on, and each replayed round was writing a
   // real coin_grants row: close the screen, open it again, collect the same
-  // 14 offerings, +530 xu, for as many rounds as the child cares to open.
+  // 14 Mid-Autumn gifts, +630 xu, for as many rounds as the child cares to open.
   //
   // So the scene still replays, and the PAYOUT is gated separately on a ledger
   // keyed by the real calendar day: one offering pays one child once per event
@@ -131,7 +132,7 @@ export async function onRequestPost({ request, env }) {
     // by the next syncHome from any device that had not seen the reward.
     if (paid) await env.DB.prepare(
       'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,0)'
-    ).bind(auth.uid, reward, 'Ghost offering: ' + itemId + (preview ? ' (preview)' : ''))
+    ).bind(auth.uid, reward, 'Mid-Autumn gift: ' + itemId + (preview ? ' (preview)' : ''))
       .run();
   }
   const wallet = await env.DB.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?')
