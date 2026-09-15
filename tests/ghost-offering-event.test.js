@@ -37,13 +37,13 @@ suite('Mid-Autumn gift picking: the final 25 Sep 2026 event', () => {
     assert.truthy(api.includes("if (!preview && !window.open) return err('Event is not open', 403)"), 'bot-off rewards remain server-locked before 22:00');
     assert.truthy(api.includes('preview ? previewClaimKey(window.eventDate, sessionId) : window.eventDate'), 'public rewards share one calendar-day table');
     assert.truthy(ui.includes('SỰ KIỆN TRUNG THU'));
-    assert.truthy(ui.includes('<strong>Trung Thu – Hái Quà</strong>'), 'the banner names the seasonal event');
+    assert.truthy(ui.includes('<strong>Hái Quà – Cướp Hằng Nga</strong>'), 'the banner names the seasonal event');
     assert.truthy(ui.includes('>HÁI QUÀ</button>'), 'the banner action names the gift-picking game');
     assert.falsy(/BOT-ON|TEST MODE|TEST 24\/7/.test(ui), 'test-only labels stay out of the child UI');
     assert.falsy(ui.includes('global.currentUser'), 'top-level let currentUser is not a window property');
     assert.falsy(ui.includes('global.appState'), 'top-level let appState is not a window property');
     assert.truthy(ui.includes("typeof currentUser!=='undefined'"));
-    assert.truthy(ui.includes('TRUNG THU – HÁI QUÀ'), 'the event screen uses the requested Mid-Autumn name');
+    assert.truthy(ui.includes('HÁI QUÀ – CƯỚP HẰNG NGA'), 'the event screen uses the requested Mid-Autumn name');
     assert.falsy(ui.includes('CƯỚP CÔ HỒN'), 'the former ghost-event language is gone');
   });
   test('a local or temporarily offline bot-off profile stays inside the locked preview', () => {
