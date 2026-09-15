@@ -10,6 +10,8 @@ const ITEMS = Object.freeze({
   mooncake1: 50, mooncake2: 50, mooncake3: 50, mooncake4: 50,
   lantern1: 10, lantern2: 10, lantern3: 10, lantern4: 10,
   lantern5: 10, lantern6: 10, lantern7: 10, lantern8: 10,
+  lantern9: 10, lantern10: 10, lantern11: 10, lantern12: 10,
+  lantern13: 10, lantern14: 10, lantern15: 10, lantern16: 10,
 });
 
 function eventWindow(now = Date.now()) {
@@ -109,7 +111,7 @@ export async function onRequestPost({ request, env }) {
   // can replay the scene. But `preview` is simply users.allow_bot, i.e. every
   // child with Cướp Đêm switched on, and each replayed round was writing a
   // real coin_grants row: close the screen, open it again, collect the same
-  // 14 Mid-Autumn gifts, +630 xu, for as many rounds as the child cares to open.
+  // 22 Mid-Autumn gifts, +710 xu, for as many rounds as the child cares to open.
   //
   // So the scene still replays, and the PAYOUT is gated separately on a ledger
   // keyed by the real calendar day: one offering pays one child once per event

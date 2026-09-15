@@ -59,11 +59,14 @@ suite('Mid-Autumn gift picking: the final 25 Sep 2026 event', () => {
     assert.equal(event._items.filter(x => x.type === 'hangnga').length, 1);
     assert.equal(event._items.filter(x => x.type === 'cuoi').length, 1);
     assert.equal(event._items.filter(x => x.type === 'mooncake').length, 4);
-    assert.equal(event._items.filter(x => x.type === 'lantern').length, 8);
+    const lanterns = event._items.filter(x => x.type === 'lantern');
+    assert.equal(lanterns.length, 16);
+    assert.equal(lanterns.filter(x => x.y === 51).length, 8, 'first lantern row stays evenly populated');
+    assert.equal(lanterns.filter(x => x.y === 58).length, 8, 'second lantern row stays evenly populated');
     assert.equal(event._items.find(x => x.id === 'hangnga').reward, 200);
     assert.equal(event._items.find(x => x.id === 'cuoi').reward, 150, 'Chú Cuội is exactly three quarters of Hằng Nga');
-    assert.equal(event._items.reduce((n, x) => n + x.reward, 0), 630);
-    for (const token of ["hangnga: 200", "cuoi: 150", "mooncake1: 50", "mooncake4: 50", "lantern1: 10", "lantern8: 10"])
+    assert.equal(event._items.reduce((n, x) => n + x.reward, 0), 710);
+    for (const token of ["hangnga: 200", "cuoi: 150", "mooncake1: 50", "mooncake4: 50", "lantern1: 10", "lantern16: 10"])
       assert.truthy(api.includes(token), token);
   });
   test('server claims are idempotent and the reward rides the grant pipeline', () => {

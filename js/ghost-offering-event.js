@@ -14,7 +14,7 @@
     {id:'hangnga',type:'hangnga',reward:200,x:54,y:41,label:'Cô Hằng Nga'},
     {id:'cuoi',type:'cuoi',reward:150,x:25,y:44,label:'Chú Cuội'},
     ...[37,48,64,76].map((x,i)=>({id:'mooncake'+(i+1),type:'mooncake',reward:50,x,y:46+(i%2)*2,label:'Bánh Trung Thu'})),
-    ...[18,27,36,45,55,65,74,83].map((x,i)=>({id:'lantern'+(i+1),type:'lantern',reward:10,x,y:51+(i%2)*2,label:'Lồng đèn'})),
+    ...[15,25,35,45,55,65,75,85,20,30,40,50,60,70,80,90].map((x,i)=>({id:'lantern'+(i+1),type:'lantern',reward:10,x,y:51+Math.floor(i/8)*7,label:'Lồng đèn'})),
   ];
   const ASSETS={hangnga:'img/ghost-offering/hang-nga-v1.webp',cuoi:'img/ghost-offering/chu-cuoi-v1.webp',mooncake:'img/ghost-offering/mooncake-v1.webp',lantern:'img/ghost-offering/carp-lantern-v1.webp'};
   let state=null,timer=null,claiming=false,active=false,gameFrame=0,gameLast=0,hookGame=null,realtimeLink=null,pendingGrab=null,lastProgressAt=0,qaBots=[],qaBotTimers=[];

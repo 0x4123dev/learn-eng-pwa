@@ -1,4 +1,4 @@
-// 50 multiplayer synchronization cases for the Ghost Offering shared screen.
+// 74 multiplayer synchronization cases for the Mid-Autumn shared screen.
 // Every case compares the authoritative event received by independent viewers,
 // so a regression cannot make user B see a different rope/item state from C.
 const { suite, test, assert } = require('./harness');
@@ -12,6 +12,7 @@ const ALL_ITEMS = [
   'hangnga', 'cuoi',
   'mooncake1', 'mooncake2', 'mooncake3', 'mooncake4',
   'lantern1', 'lantern2', 'lantern3', 'lantern4', 'lantern5', 'lantern6', 'lantern7', 'lantern8',
+  'lantern9', 'lantern10', 'lantern11', 'lantern12', 'lantern13', 'lantern14', 'lantern15', 'lantern16',
 ];
 
 function loadRoomClass() {
@@ -64,18 +65,18 @@ async function grab(room, actor, itemId) {
   assert.equal(actor.last('offering-granted').itemId, itemId);
 }
 
-suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
-  // Cases 1-14: A casts toward every offering. B and C must render the exact
+suite('Mid-Autumn realtime: 74 shared-screen synchronization cases', () => {
+  // Cases 1-22: A casts toward every gift. B and C must render the exact
   // same extending rope, hook position, actor identity and locked item.
   ALL_ITEMS.forEach((itemId, index) => {
-    test(`sync ${String(index + 1).padStart(2, '0')}/50: A extend ${itemId} is identical for B and C`, async () => {
+    test(`sync ${String(index + 1).padStart(2, '0')}/74: A extend ${itemId} is identical for B and C`, async () => {
       const { room, sockets: [a, b, c] } = fixture();
       await grab(room, a, itemId);
       sameLast([b, c], 'offering-locked', {
         t: 'offering-locked', itemId, uid: 101, actorId: 'user-101', name: 'An',
       });
-      const angle = -52 + index * 8;
-      const length = Number((0.18 + index * 0.04).toFixed(2));
+      const angle = -60 + index * 5;
+      const length = Number((0.12 + index * 0.035).toFixed(3));
       await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId, angle, length, phase: 'extend' }));
       sameLast([b, c], 'offering-progress', {
         t: 'offering-progress', itemId, uid: 101, actorId: 'user-101', name: 'An', angle, length, phase: 'extend',
@@ -83,17 +84,17 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 15-28: reverse direction. B is now the actor; A and C must see the
+  // Cases 23-44: reverse direction. B is now the actor; A and C must see the
   // same retract state and the item attached to the same hook coordinates.
   ALL_ITEMS.forEach((itemId, index) => {
-    test(`sync ${String(index + 15).padStart(2, '0')}/50: B retract ${itemId} is identical for A and C`, async () => {
+    test(`sync ${String(index + 23).padStart(2, '0')}/74: B retract ${itemId} is identical for A and C`, async () => {
       const { room, sockets: [a, b, c] } = fixture();
       await grab(room, b, itemId);
       sameLast([a, c], 'offering-locked', {
         t: 'offering-locked', itemId, uid: 202, actorId: 'user-202', name: 'Binh',
       });
-      const angle = 52 - index * 8;
-      const length = Number((0.82 - index * 0.04).toFixed(2));
+      const angle = 60 - index * 5;
+      const length = Number((0.88 - index * 0.035).toFixed(3));
       await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId, angle, length, phase: 'retract' }));
       sameLast([a, c], 'offering-progress', {
         t: 'offering-progress', itemId, uid: 202, actorId: 'user-202', name: 'Binh', angle, length, phase: 'retract',
@@ -101,11 +102,11 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 29-33: every mooncake/Cuội snap is visible to both observers and frees
+  // Cases 45-49: every mooncake/Cuội snap is visible to both observers and frees
   // the same item, preventing the old instant-teleport/reappearing-food bug.
   [1, 2, 3, 4, 5].forEach((number, index) => {
     const itemId = number === 5 ? 'cuoi' : `mooncake${number}`;
-    test(`sync ${String(index + 29).padStart(2, '0')}/50: snapped ${itemId} breaks and returns for both viewers`, async () => {
+    test(`sync ${String(index + 45).padStart(2, '0')}/74: snapped ${itemId} breaks and returns for both viewers`, async () => {
       const { room, sockets: [a, b, c] } = fixture();
       await grab(room, a, itemId);
       await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId, angle: 18, length: .24, phase: 'retract' }));
@@ -119,10 +120,10 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 34-41: a successful lantern claim disappears for both viewers and is
+  // Cases 50-65: a successful lantern claim disappears for both viewers and is
   // persisted in the shared room inventory for late joiners.
-  Array.from({ length: 8 }, (_, index) => `lantern${index + 1}`).forEach((itemId, index) => {
-    test(`sync ${String(index + 34).padStart(2, '0')}/50: claimed ${itemId} disappears for B and C`, async () => {
+  Array.from({ length: 16 }, (_, index) => `lantern${index + 1}`).forEach((itemId, index) => {
+    test(`sync ${String(index + 50).padStart(2, '0')}/74: claimed ${itemId} disappears for B and C`, async () => {
       const { room, state, sockets: [a, b, c] } = fixture();
       await grab(room, a, itemId);
       await room.webSocketMessage(a, JSON.stringify({ t: 'offering-claimed', itemId }));
@@ -135,9 +136,9 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     });
   });
 
-  // Cases 42-50: boundaries, contention and lifecycle events which previously
+  // Cases 66-74: boundaries, contention and lifecycle events which previously
   // caused one screen to keep a stale rope, lock or player count.
-  test('sync 42/50: Hằng Nga snap reason and release frame match for B and C', async () => {
+  test('sync 66/74: Hằng Nga snap reason and release frame match for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'hangnga');
     await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'hangnga', reason: 'snap' }));
@@ -146,14 +147,14 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     assert.truthy(cssSrc.includes('.go-bot.remote-snapped .go-bot-sweat'), 'remote snap visibly keeps the sweat state');
   });
 
-  test('sync 43/50: ordinary miss releases the same item on B and C', async () => {
+  test('sync 67/74: ordinary miss releases the same item on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern1');
     await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'lantern1', reason: 'release' }));
     sameLast([b, c], 'offering-released', { t: 'offering-released', itemId: 'lantern1', uid: 101, actorId: 'user-101', reason: 'release' });
   });
 
-  test('sync 44/50: disconnect removes A rope and lock identically for B and C', async () => {
+  test('sync 68/74: disconnect removes A rope and lock identically for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern2');
     await room.webSocketClose(a);
@@ -161,7 +162,7 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     sameLast([b, c], 'offering-presence', { t: 'offering-presence', left: 101, actorId: 'user-101', name: 'An', peers: 2 });
   });
 
-  test('sync 45/50: socket error removes A rope and lock identically for B and C', async () => {
+  test('sync 69/74: socket error removes A rope and lock identically for B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern3');
     await room.webSocketError(a);
@@ -169,21 +170,21 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     assert.truthy(a.closed, 'failed socket closes after shared cleanup');
   });
 
-  test('sync 46/50: maximum angle and rope length clamp identically on B and C', async () => {
+  test('sync 70/74: maximum angle and rope length clamp identically on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern4');
     await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'lantern4', angle: 999, length: 999, phase: 'extend' }));
     sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'lantern4', uid: 101, actorId: 'user-101', name: 'An', angle: 70, length: 1, phase: 'extend' });
   });
 
-  test('sync 47/50: minimum angle and rope length clamp identically on B and C', async () => {
+  test('sync 71/74: minimum angle and rope length clamp identically on B and C', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern5');
     await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'lantern5', angle: -999, length: -999, phase: 'retract' }));
     sameLast([b, c], 'offering-progress', { t: 'offering-progress', itemId: 'lantern5', uid: 101, actorId: 'user-101', name: 'An', angle: -70, length: 0, phase: 'retract' });
   });
 
-  test('sync 48/50: spoofed progress never appears on either observer screen', async () => {
+  test('sync 72/74: spoofed progress never appears on either observer screen', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await grab(room, a, 'lantern6');
     await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'lantern6', angle: 20, length: .4, phase: 'extend' }));
@@ -191,7 +192,7 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     assert.equal(c.take('offering-progress').length, 0);
   });
 
-  test('sync 49/50: same-item race produces one shared lock identity', async () => {
+  test('sync 73/74: same-item race produces one shared lock identity', async () => {
     const { room, sockets: [a, b, c] } = fixture();
     await Promise.all([
       room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'lantern7' })),
@@ -205,7 +206,7 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
     assert.equal(c.last('offering-locked').uid, winner.attachment.uid);
   });
 
-  test('sync 50/50: simultaneous different pulls remain attributable on every screen', async () => {
+  test('sync 74/74: simultaneous different pulls remain attributable on every screen', async () => {
     const { room, sockets: [a, b, c, d] } = fixture(4);
     await grab(room, a, 'mooncake1');
     await grab(room, b, 'lantern8');

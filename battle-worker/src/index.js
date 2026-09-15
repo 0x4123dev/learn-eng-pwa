@@ -231,6 +231,8 @@ const OFFERING_ITEMS = new Set([
   'mooncake1', 'mooncake2', 'mooncake3', 'mooncake4',
   'lantern1', 'lantern2', 'lantern3', 'lantern4',
   'lantern5', 'lantern6', 'lantern7', 'lantern8',
+  'lantern9', 'lantern10', 'lantern11', 'lantern12',
+  'lantern13', 'lantern14', 'lantern15', 'lantern16',
 ]);
 
 // Authoritative transient lock manager for the shared offering table. A
