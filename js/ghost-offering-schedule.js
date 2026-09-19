@@ -1,5 +1,5 @@
-// Ghost-offering event schedule — THE ONE SOURCE OF TRUTH for when the
-// ceremony opens, and for the name of every room the players land in.
+// Mid-Autumn gift-picking event schedule — THE ONE SOURCE OF TRUTH for when
+// the festival opens, and for the name of every room the players land in.
 //
 // Three separately-written pieces need these numbers:
 //   js/ghost-offering-event.js   the child's screen (countdown, lock overlay)
@@ -18,12 +18,12 @@
 var GhostOfferingSchedule = (function () {
   const HOUR = 60 * 60 * 1000;
 
-  // 22:00 on 10 Sep 2026 in Vietnam (GMT+7) is 15:00 UTC the same day.
+  // 22:00 on 25 Sep 2026 in Vietnam (GMT+7) is 15:00 UTC the same day.
   // EVENT_DATE is the GMT+7 calendar date, and it is also the public room's
   // name — tests/ghost-offering-schedule.test.js checks the two agree, so a
   // half-edited change fails the suite instead of the event.
-  const EVENT_DATE = '2026-09-10';
-  const OPENS_AT = Date.UTC(2026, 8, 10, 15, 0, 0);
+  const EVENT_DATE = '2026-09-25';
+  const OPENS_AT = Date.UTC(2026, 8, 25, 15, 0, 0);
   const DURATION_MS = 2 * HOUR;
   const CLOSES_AT = OPENS_AT + DURATION_MS;
 

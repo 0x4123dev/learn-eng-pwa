@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v626';
+const CACHE_NAME = 'flashlingo-v628';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -38,7 +38,7 @@ const PRECACHE = {
   '/index.html': 'fc54d8b47f6c812f',
   '/css/styles.css': '756108bde35cadb5',
   '/css/night-raid.css': '49f6c0cb57aff394',
-  '/css/arena.css': 'd525cb14151473bf',
+  '/css/arena.css': 'd4988feafde7892b',
   '/css/math.css': '502ad61b4504bbf1',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
   '/fonts/nunito-var-latin.woff2': '20fc9b6fc618e7c3',
@@ -102,16 +102,17 @@ const PRECACHE = {
   '/js/night-raid-phaser.js': 'e7941f20e8c324b9',
   '/js/phaser.min.js': 'e92ddef111ba42e9',
   '/js/night-raid.js': 'ab394044e51b5166',
-  '/js/ghost-offering-schedule.js': 'ae5aecb3c5bfc10c',
+  '/js/ghost-offering-schedule.js': '3cfd61105bffd64d',
   '/js/ghost-offering-link.js': 'ffdffe7641eb7d36',
-  '/js/ghost-offering-event.js': 'cee57fc77b7065d8',
+  '/js/ghost-offering-event.js': '4861cd7072487009',
   '/js/daily-task-catalog.js': 'f09af62cfff588ab',
   '/js/daily-task.js': 'a471e0e1317049a9',
   '/js/armory.js': '61176c8f2efb15b0',
-  '/img/ghost-offering/courtyard-v1.webp': 'b790dd596c3b6415',
-  '/img/ghost-offering/roast-pig-v2.webp': '5c5ca147b49bae39',
-  '/img/ghost-offering/boiled-chicken-v2.webp': 'fd12d91162111fea',
-  '/img/ghost-offering/fruit-basket-v2.webp': '2a013f9a04dc0110',
+  '/img/ghost-offering/mid-autumn-courtyard-v1.webp': 'e567db4d380552b6',
+  '/img/ghost-offering/hang-nga-v1.webp': 'ddc352cfbef9828b',
+  '/img/ghost-offering/chu-cuoi-v1.webp': 'ee88b671b548059d',
+  '/img/ghost-offering/mooncake-v1.webp': '9a0d93f1d6e7e78a',
+  '/img/ghost-offering/carp-lantern-v1.webp': 'd06546412a6076c3',
   '/img/night-raid/isometric-home-board-skin-pad.webp': '946939c99edbd5b1',
   '/img/night-raid/isometric-home-board-unified-gate-v3.webp': '2512c26a6cc25dbb',
   '/img/night-raid/isometric-home-board-frame-v4.webp': '3e521d7d330b8101',
@@ -211,7 +212,7 @@ const PRECACHE = {
   '/js/lazy-data.js': '56ae15c99514de1e',
   '/js/app.js': 'c7d47606e1efe7e1',
   '/js/srs.js': '9f98ba86f249bef8',
-  '/js/home.js': '7c116134306c6e96',
+  '/js/home.js': 'a39d6f0a90237497',
   '/js/lessons.js': '3bc03799c14238fb',
   '/js/verbs.js': '9aa678d40e4bc795',
   '/js/exam.js': 'f964d5895d249249',

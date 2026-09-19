@@ -6,19 +6,19 @@ const ui = read('js/ghost-offering-event.js'), api = read('functions/api/ghost-o
 const arena = read('js/petbattle.js'), css = require('./css-all').readAllCss(), html = read('index.html'), sw = read('sw.js');
 const event = require('../js/ghost-offering-event.js');
 
-suite('ghost offering: the final 10 Sep 2026 event', () => {
+suite('Mid-Autumn gift picking: the final 25 Sep 2026 event', () => {
   test('the one-off window opens at 22:00 GMT+7 and closes at local midnight', () => {
-    const before = event.localWindow(Date.UTC(2026, 8, 10, 14, 59, 59));
-    const open = event.localWindow(Date.UTC(2026, 8, 10, 15, 0, 0));
-    const last = event.localWindow(Date.UTC(2026, 8, 10, 16, 59, 59));
-    const next = event.localWindow(Date.UTC(2026, 8, 10, 17, 0, 0));
+    const before = event.localWindow(Date.UTC(2026, 8, 25, 14, 59, 59));
+    const open = event.localWindow(Date.UTC(2026, 8, 25, 15, 0, 0));
+    const last = event.localWindow(Date.UTC(2026, 8, 25, 16, 59, 59));
+    const next = event.localWindow(Date.UTC(2026, 8, 25, 17, 0, 0));
     assert.falsy(before.open); assert.truthy(open.open); assert.truthy(last.open); assert.falsy(next.open);
     assert.equal(open.closesAt - open.opensAt, 2 * 60 * 60 * 1000);
-    assert.equal(open.eventDate, '2026-09-10');
-    assert.equal(before.nextOpensAt, Date.UTC(2026, 8, 10, 15, 0, 0));
+    assert.equal(open.eventDate, '2026-09-25');
+    assert.equal(before.nextOpensAt, Date.UTC(2026, 8, 25, 15, 0, 0));
     assert.truthy(next.ended, 'the final night does not silently become a daily event');
-    assert.equal(next.eventDate, '2026-09-10');
-    assert.truthy(ui.includes('Mở 10/09/2026 lúc 22:00'));
+    assert.equal(next.eventDate, '2026-09-25');
+    assert.truthy(ui.includes('Mở 25/09/2026 lúc 22:00'));
     // Ngày giờ nay chỉ có MỘT nguồn; API đọc đúng nguồn ấy chứ không giữ bản sao.
     // tests/ghost-offering-schedule.test.js chốt chính con số của nguồn đó.
     const schedule = require('../js/ghost-offering-schedule.js');
@@ -36,15 +36,15 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(api.includes('preview ? botPreviewWindow() : eventWindow()'), 'bot-off users receive the real locked/open window instead of a 403');
     assert.truthy(api.includes("if (!preview && !window.open) return err('Event is not open', 403)"), 'bot-off rewards remain server-locked before 22:00');
     assert.truthy(api.includes('preview ? previewClaimKey(window.eventDate, sessionId) : window.eventDate'), 'public rewards share one calendar-day table');
-    assert.truthy(ui.includes('SỰ KIỆN ĐẶC BIỆT'));
-    assert.truthy(ui.includes('<strong>Tháng Cô Hồn</strong>'), 'the banner names the seasonal event');
-    assert.truthy(ui.includes('>CƯỚP CÔ HỒN</button>'), 'the banner action keeps the requested battle wording');
+    assert.truthy(ui.includes('SỰ KIỆN TRUNG THU'));
+    assert.truthy(ui.includes('<strong>Hái Quà – Cướp Hằng Nga</strong>'), 'the banner names the seasonal event');
+    assert.truthy(ui.includes('>HÁI QUÀ</button>'), 'the banner action names the gift-picking game');
     assert.falsy(/BOT-ON|TEST MODE|TEST 24\/7/.test(ui), 'test-only labels stay out of the child UI');
     assert.falsy(ui.includes('global.currentUser'), 'top-level let currentUser is not a window property');
     assert.falsy(ui.includes('global.appState'), 'top-level let appState is not a window property');
     assert.truthy(ui.includes("typeof currentUser!=='undefined'"));
-    assert.truthy(ui.includes('CƯỚP CÔ HỒN'), 'the event CTA uses the requested battle language');
-    assert.falsy(ui.includes('VÀO LẤY LỘC'), 'the passive old CTA is gone');
+    assert.truthy(ui.includes('HÁI QUÀ – CƯỚP HẰNG NGA'), 'the event screen uses the requested Mid-Autumn name');
+    assert.falsy(ui.includes('CƯỚP CÔ HỒN'), 'the former ghost-event language is gone');
   });
   test('a local or temporarily offline bot-off profile stays inside the locked preview', () => {
     assert.truthy(ui.includes('function localPreviewState'), 'the full scene has a local locked state');
@@ -55,12 +55,18 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(ui.includes('Bé cần học đủ bài hôm nay được giao mới tham gia được.'), 'the locked scene explains the daily-learning requirement');
     assert.truthy(css.includes('.go-lock .go-study-rule'), 'the second rule sits below the opening-time line');
   });
-  test('the exact offering inventory and rewards are fixed on both sides', () => {
-    assert.equal(event._items.filter(x => x.type === 'pig').length, 1);
-    assert.equal(event._items.filter(x => x.type === 'chicken').length, 5);
-    assert.equal(event._items.filter(x => x.type === 'fruit').length, 8);
-    assert.equal(event._items.reduce((n, x) => n + x.reward, 0), 530);
-    for (const token of ["pig: 200", "chicken1: 50", "chicken5: 50", "fruit1: 10", "fruit8: 10"])
+  test('the exact Mid-Autumn inventory and rewards are fixed on both sides', () => {
+    assert.equal(event._items.filter(x => x.type === 'hangnga').length, 1);
+    assert.equal(event._items.filter(x => x.type === 'cuoi').length, 1);
+    assert.equal(event._items.filter(x => x.type === 'mooncake').length, 4);
+    const lanterns = event._items.filter(x => x.type === 'lantern');
+    assert.equal(lanterns.length, 16);
+    assert.equal(lanterns.filter(x => x.y === 51).length, 8, 'first lantern row stays evenly populated');
+    assert.equal(lanterns.filter(x => x.y === 58).length, 8, 'second lantern row stays evenly populated');
+    assert.equal(event._items.find(x => x.id === 'hangnga').reward, 200);
+    assert.equal(event._items.find(x => x.id === 'cuoi').reward, 150, 'Chú Cuội is exactly three quarters of Hằng Nga');
+    assert.equal(event._items.reduce((n, x) => n + x.reward, 0), 710);
+    for (const token of ["hangnga: 200", "cuoi: 150", "mooncake1: 50", "mooncake4: 50", "lantern1: 10", "lantern16: 10"])
       assert.truthy(api.includes(token), token);
   });
   test('server claims are idempotent and the reward rides the grant pipeline', () => {
@@ -103,12 +109,12 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(css.includes(':focus-visible'), 'keyboard focus remains visible');
     assert.truthy(css.includes('prefers-reduced-motion:reduce'), 'decorative motion can be disabled');
   });
-  test('a bot hook cannot pass through fruit to reach a chicken behind it', () => {
+  test('a bot hook cannot pass through a lantern to reach a mooncake behind it', () => {
     const hit=event._rayFirstCollision({x:50,y:100},{x:50,y:10},[
-      {item:{id:'fruit1'},x:50,y:62,rx:8,ry:8},
-      {item:{id:'chicken1'},x:50,y:22,rx:10,ry:10},
+      {item:{id:'lantern1'},x:50,y:62,rx:8,ry:8},
+      {item:{id:'mooncake1'},x:50,y:22,rx:10,ry:10},
     ]);
-    assert.equal(hit.item.id,'fruit1','the first physical offering on the ray wins');
+    assert.equal(hit.item.id,'lantern1','the first physical offering on the ray wins');
     assert.truthy(ui.includes('qaBotFirstCollision(actor,intended,available)'), 'QA bot resolves collision before requesting its server lock');
   });
   test('the two-person QA button is visible only to bot-on accounts', () => {
@@ -123,19 +129,19 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(ui.includes("if(humanTest&&!currentState()?.allowBot)return"), 'the entry function repeats the client permission check');
     assert.truthy(css.includes('.go-human-test-btn')&&css.includes('min-height:54px'), 'the secondary QA action stays compact but touch-safe');
   });
-  test('an off-axis fruit does not block a bot hook aimed at a chicken', () => {
+  test('an off-axis lantern does not block a bot hook aimed at a mooncake', () => {
     const hit=event._rayFirstCollision({x:50,y:100},{x:50,y:10},[
-      {item:{id:'fruit1'},x:76,y:62,rx:8,ry:8},
-      {item:{id:'chicken1'},x:50,y:22,rx:10,ry:10},
+      {item:{id:'lantern1'},x:76,y:62,rx:8,ry:8},
+      {item:{id:'mooncake1'},x:50,y:22,rx:10,ry:10},
     ]);
-    assert.equal(hit.item.id,'chicken1');
+    assert.equal(hit.item.id,'mooncake1');
     assert.truthy(ui.includes('itemStageGeometry(item)'), 'the rope aims at the rendered image centre rather than its CSS anchor edge');
   });
   test('valuable offerings feel heavier and require the promised repeated hooks', () => {
     assert.truthy(ui.includes('THROW_SPEED=260'), 'the outgoing rope is slowed to half the previous speed');
     assert.truthy(ui.includes('EMPTY_RETRACT_SPEED=130'), 'the return rope is half as fast as the outgoing rope');
-    assert.truthy(ui.includes('BREAKS_REQUIRED={pig:2,chicken:1,fruit:0}'), 'fruit succeeds immediately, chicken breaks once, pig twice');
-    assert.truthy(ui.includes('PULL_SPEED={pig:32.5,chicken:47.5,fruit:130}'), 'pig and chicken now take exactly twice as long to haul while fruit stays quick');
+    assert.truthy(ui.includes('BREAKS_REQUIRED={hangnga:2,cuoi:2,mooncake:1,lantern:0}'), 'lantern succeeds immediately, mooncake breaks once, and both characters break twice');
+    assert.truthy(ui.includes('PULL_SPEED={hangnga:32.5,cuoi:38,mooncake:47.5,lantern:130}'), 'Hằng Nga is heaviest, Cuội is smaller, mooncakes are heavy, and lanterns stay quick');
     assert.truthy(ui.includes('function snapRope'), 'a failed heavy haul has a distinct recovery path');
     assert.truthy(ui.includes('breakProgress[id]=(breakProgress[id]||0)+1'), 'each break advances that exact offering');
     assert.truthy(ui.includes('returnSnappedItem(id)'), 'a snapped offering visibly retreats to the table');
@@ -146,7 +152,7 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(css.includes('.go-stage.rope-broke'), 'rope failure has visible feedback in addition to text');
     assert.truthy(css.includes('.go-rope-fray'), 'the snapped ends visibly fray');
     assert.truthy(css.includes('.go-item.snapping-back'), 'the offering visibly recoils to the altar');
-    assert.truthy(css.includes('.go-stage.hauling-heavy .go-dog-strain-art'), 'the dog visibly strains while pulling heavy food');
+    assert.truthy(css.includes('.go-stage.hauling-heavy .go-dog-strain-art'), 'the dog visibly strains while pulling heavy gifts');
     assert.truthy(ui.includes('function snapNearDogLength'), 'heavy offerings only break near the dog');
     assert.truthy(ui.includes('(actor.hitLength-actor.idleLength)*.18'), 'only about the final fifth of the haul remains at a break');
     assert.falsy(ui.includes('actor.hitLength*.72'), 'the old mid-route break point is gone');
@@ -223,11 +229,11 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     const arena = require('../js/lazy-data.js').GROUP_FILES.arena;
     assert.truthy(arena.indexOf('js/ghost-offering-event.js') > -1 && arena.indexOf('js/ghost-offering-event.js') < arena.indexOf('js/petbattle.js'));
     assert.falsy(html.includes('ghost-offering-event.js'), 'the event must not block the first paint');
-    for (const asset of ['courtyard-v1.webp','roast-pig-v2.webp','boiled-chicken-v2.webp','fruit-basket-v2.webp']) {
+    for (const asset of ['mid-autumn-courtyard-v1.webp','hang-nga-v1.webp','chu-cuoi-v1.webp','mooncake-v1.webp','carp-lantern-v1.webp']) {
       assert.truthy(fs.existsSync(path.join(root, 'img/ghost-offering', asset)), asset + ' exists');
       assert.truthy(sw.includes("'/img/ghost-offering/" + asset + "'"), asset + ' precached');
     }
-    for (const asset of ['roast-pig-v2.webp','boiled-chicken-v2.webp','fruit-basket-v2.webp']) {
+    for (const asset of ['hang-nga-v1.webp','chu-cuoi-v1.webp','mooncake-v1.webp','carp-lantern-v1.webp']) {
       // Lossless WebP (VP8L): byte 20 is the 0x2f signature, and bit 4 of
       // byte 24 is alpha_is_used — the WebP twin of PNG colour type 6.
       const webp = fs.readFileSync(path.join(root, 'img/ghost-offering', asset));

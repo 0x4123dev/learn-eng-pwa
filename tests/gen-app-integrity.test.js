@@ -156,7 +156,7 @@ suite('gen: sw.js img assets exist on disk', () => {
         assert.equal(castles.length, 2, `castle atlas count: ${castles.join(', ')}`);
         assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
         assert.equal(nightRaid.length, 23, `night raid art count: ${nightRaid.join(', ')}`);
-        assert.equal(ghostOffering.length, 4, `ghost offering art count: ${ghostOffering.join(', ')}`);
+        assert.equal(ghostOffering.length, 5, `Mid-Autumn gift art count: ${ghostOffering.join(', ')}`);
         assert.equal(farm.length, farmArt.FILES.length, `farm art count: every manifest entry is precached, nothing else`);
         assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length + farm.length, IMG_ASSETS.length);
     });

@@ -319,7 +319,7 @@ suite('ghost offering: the scene replays, the coins do not', () => {
 
     const first = await world.call(ghostHandler().onRequestGet, { url: '/api/ghost-offering', method: 'GET', token: kid.token });
     assert.truthy(first.ok, JSON.stringify(first.data));
-    const a = await claim(world, kid, first.data.sessionId, 'pig');
+    const a = await claim(world, kid, first.data.sessionId, 'hangnga');
     assert.truthy(a.data.awarded, 'the offering is taken off the table');
     assert.equal(a.data.reward, 200, 'and paid, once');
     assert.equal(owedTo(world, kid.uid), 200);
@@ -329,7 +329,7 @@ suite('ghost offering: the scene replays, the coins do not', () => {
     const second = await world.call(ghostHandler().onRequestGet, { url: '/api/ghost-offering', method: 'GET', token: kid.token });
     assert.truthy(second.data.sessionId !== first.data.sessionId, 'the round really is fresh');
     assert.equal((second.data.claimedIds || []).length, 0, 'the table is set again');
-    const b = await claim(world, kid, second.data.sessionId, 'pig');
+    const b = await claim(world, kid, second.data.sessionId, 'hangnga');
     assert.truthy(b.data.awarded, 'the replayed round still lets QA collect it');
     assert.equal(b.data.reward, 0, 'but it is not paid a second time');
     assert.truthy(b.data.replay, 'and the screen is told why');
@@ -342,7 +342,7 @@ suite('ghost offering: the scene replays, the coins do not', () => {
     await world.call(ghostHandler().onRequestGet, { url: '/api/ghost-offering', method: 'GET', token: kid.token });
     let total = 0;
     for (let i = 0; i < 5; i++) {
-      const r = await claim(world, kid, 'deadbeef-1111-2222-3333-44444444' + String(i).padStart(4, '0'), 'chicken1');
+      const r = await claim(world, kid, 'deadbeef-1111-2222-3333-44444444' + String(i).padStart(4, '0'), 'mooncake1');
       total += Number(r.data.reward || 0);
     }
     assert.equal(total, 50, 'five sessions, one chicken, one payout');

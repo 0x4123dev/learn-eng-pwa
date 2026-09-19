@@ -34,29 +34,29 @@ suite('ghost offering realtime: two-user concurrency', () => {
   test('simultaneous grabs of the same chicken produce exactly one lock owner', async () => {
     const { room, a, b } = roomFixture();
     await Promise.all([
-      room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'chicken1' })),
-      room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'chicken1' })),
+      room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake1' })),
+      room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake1' })),
     ]);
     const grants = a.take('offering-granted').length + b.take('offering-granted').length;
     const denials = a.take('offering-denied').length + b.take('offering-denied').length;
     assert.equal(grants, 1); assert.equal(denials, 1);
-    assert.equal([a, b].filter(s => s.attachment.itemId === 'chicken1').length, 1);
+    assert.equal([a, b].filter(s => s.attachment.itemId === 'mooncake1').length, 1);
   });
 
   test('A pulling a chicken is broadcast to B with trusted A identity and motion', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'chicken2' }));
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'chicken2', angle: 21, length: .42 }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake2' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'mooncake2', angle: 21, length: .42 }));
     const locked = b.take('offering-locked')[0], progress = b.take('offering-progress')[0];
-    assert.deepEqual([locked.itemId, locked.uid, locked.name], ['chicken2', 101, 'An']);
-    assert.deepEqual([progress.itemId, progress.uid, progress.angle, progress.length], ['chicken2', 101, 21, .42]);
+    assert.deepEqual([locked.itemId, locked.uid, locked.name], ['mooncake2', 101, 'An']);
+    assert.deepEqual([progress.itemId, progress.uid, progress.angle, progress.length], ['mooncake2', 101, 21, .42]);
     assert.falsy(a.take('offering-progress').length, 'sender does not receive its own echo');
   });
 
   test('B offering moves toward B dog on A screen, never toward A local dog', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'chicken1' }));
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'chicken1', angle:19, length:.48, phase:'retract', x:.413, y:.527, haul:.62 }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'mooncake1' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'mooncake1', angle:19, length:.48, phase:'retract', x:.413, y:.527, haul:.62 }));
     const progress=b.take('offering-progress').slice(-1)[0];
     assert.deepEqual([progress.x,progress.y,progress.haul],[.413,.527,.62]);
     const snapshot=await room._snapshot(b,202);
@@ -74,31 +74,31 @@ suite('ghost offering realtime: two-user concurrency', () => {
 
   test('server clamps forged coordinates and haul progress', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'fruit2' }));
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'fruit2', angle:0, length:.5, x:9, y:-4, haul:7 }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'lantern2' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'lantern2', angle:0, length:.5, x:9, y:-4, haul:7 }));
     const progress=b.take('offering-progress').slice(-1)[0];
     assert.deepEqual([progress.x,progress.y,progress.haul],[1,0,1]);
   });
 
   test('socket preserves throw/pull phases and the snap reason for every viewer', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'chicken2' }));
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'chicken2', angle:12, length:.5, phase:'extend' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'mooncake2' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'mooncake2', angle:12, length:.5, phase:'extend' }));
     assert.equal(b.take('offering-progress').slice(-1)[0].phase, 'extend');
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-release', itemId:'chicken2', reason:'snap' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-release', itemId:'mooncake2', reason:'snap' }));
     assert.equal(b.take('offering-released').slice(-1)[0].reason, 'snap');
   });
 
   test('B joining mid-haul receives A exact current frame and current altar inventory', async () => {
     const { room, state, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'chicken2' }));
-    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'chicken2', angle:27, length:.63, phase:'retract' }));
-    await room.webSocketMessage(b, JSON.stringify({ t:'offering-grab', itemId:'fruit1' }));
-    await room.webSocketMessage(b, JSON.stringify({ t:'offering-claimed', itemId:'fruit1' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-grab', itemId:'mooncake2' }));
+    await room.webSocketMessage(a, JSON.stringify({ t:'offering-progress', itemId:'mooncake2', angle:27, length:.63, phase:'retract' }));
+    await room.webSocketMessage(b, JSON.stringify({ t:'offering-grab', itemId:'lantern1' }));
+    await room.webSocketMessage(b, JSON.stringify({ t:'offering-claimed', itemId:'lantern1' }));
     const late=new FakeSocket(303,'Chi'),snapshot=await room._snapshot(late,303);
     assert.deepEqual(snapshot.players.map(p=>p.actorId),['user-101','user-202'], 'a late player sees everybody already waiting, even when they are not casting');
-    assert.deepEqual(snapshot.claimed,['fruit1'],'B starts with gifts already taken removed from the altar');
-    assert.deepEqual(snapshot.locks,[{itemId:'chicken2',uid:101,actorId:'user-101',name:'An',angle:27,length:.63,phase:'retract'}], 'B enters at A current rope frame, not frame zero');
+    assert.deepEqual(snapshot.claimed,['lantern1'],'B starts with gifts already taken removed from the altar');
+    assert.deepEqual(snapshot.locks,[{itemId:'mooncake2',uid:101,actorId:'user-101',name:'An',angle:27,length:.63,phase:'retract'}], 'B enters at A current rope frame, not frame zero');
     assert.equal(snapshot.peers,state.sockets.length-1);
     assert.truthy(uiSrc.includes("onRealtimeMessage(Object.assign({t:'offering-progress'},lock))"), 'client paints the snapshot motion immediately after the lock');
     assert.truthy(uiSrc.includes('snapshot:true')&&uiSrc.includes('if(!m.snapshot)'), 'already claimed gifts disappear without replaying an old celebration');
@@ -106,52 +106,52 @@ suite('ghost offering realtime: two-user concurrency', () => {
 
   test('B cannot spoof progress for an item locked by A', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'pig' }));
-    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'pig', angle: 50, length: .1 }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'hangnga' }));
+    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-progress', itemId: 'hangnga', angle: 50, length: .1 }));
     assert.equal(a.take('offering-progress').length, 0);
     assert.equal(b.attachment.itemId, null);
   });
 
   test('B may lock a different gift while A is pulling a chicken', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'chicken3' }));
-    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'fruit1' }));
-    assert.equal(a.attachment.itemId, 'chicken3');
-    assert.equal(b.attachment.itemId, 'fruit1');
-    assert.equal(a.take('offering-locked').slice(-1)[0].itemId, 'fruit1');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake3' }));
+    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'lantern1' }));
+    assert.equal(a.attachment.itemId, 'mooncake3');
+    assert.equal(b.attachment.itemId, 'lantern1');
+    assert.equal(a.take('offering-locked').slice(-1)[0].itemId, 'lantern1');
   });
 
   test('rope snap releases the gift so B can acquire it immediately', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'chicken4' }));
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'chicken4', reason: 'snap' }));
-    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'chicken4' }));
-    assert.equal(a.attachment.itemId, null); assert.equal(b.attachment.itemId, 'chicken4');
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake4' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-release', itemId: 'mooncake4', reason: 'snap' }));
+    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'mooncake4' }));
+    assert.equal(a.attachment.itemId, null); assert.equal(b.attachment.itemId, 'mooncake4');
     assert.equal(b.take('offering-granted').length, 1);
   });
 
   test('disconnect releases A lock and announces it to B', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'fruit2' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'lantern2' }));
     await room.webSocketClose(a);
     const released = b.take('offering-released').slice(-1)[0];
-    assert.deepEqual([released.itemId, released.uid], ['fruit2', 101]);
+    assert.deepEqual([released.itemId, released.uid], ['lantern2', 101]);
   });
 
   test('server clamps motion and rejects unknown inventory ids', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'fruit3' }));
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'fruit3', angle: 999, length: 99 }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'lantern3' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-progress', itemId: 'lantern3', angle: 999, length: 99 }));
     const p = b.take('offering-progress')[0]; assert.deepEqual([p.angle, p.length], [70, 1]);
     await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'admin-gift' }));
     assert.equal(b.attachment.itemId, null);
   });
 
-  test('a claimed chicken stays unavailable to a player who joins the active QA round later', async () => {
+  test('a claimed Cuội stays unavailable to a player who joins the active QA round later', async () => {
     const { room, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'chicken5' }));
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-claimed', itemId: 'chicken5' }));
-    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'chicken5' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'cuoi' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-claimed', itemId: 'cuoi' }));
+    await room.webSocketMessage(b, JSON.stringify({ t: 'offering-grab', itemId: 'cuoi' }));
     assert.equal(b.take('offering-denied').slice(-1)[0].claimed, true);
     assert.equal(b.attachment.itemId, null);
   });
@@ -168,10 +168,10 @@ suite('ghost offering realtime: two-user concurrency', () => {
 
   test('the QA table resets only after the final socket leaves', async () => {
     const { room, state, a, b } = roomFixture();
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'fruit8' }));
-    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-claimed', itemId: 'fruit8' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-grab', itemId: 'lantern8' }));
+    await room.webSocketMessage(a, JSON.stringify({ t: 'offering-claimed', itemId: 'lantern8' }));
     state.sockets = [a, b]; await room.webSocketClose(a);
-    assert.deepEqual(await state.storage.get('claimed'), ['fruit8'], 'B still sees A claimed fruit');
+    assert.deepEqual(await state.storage.get('claimed'), ['lantern8'], 'B still sees A claimed fruit');
     state.sockets = [b]; await room.webSocketClose(b);
     assert.equal(await state.storage.get('claimed'), undefined, 'empty room starts a fresh QA round next time');
   });
@@ -185,7 +185,7 @@ suite('ghost offering realtime: two-user concurrency', () => {
 
   test('the checked-in SQLite migration rejects the second winner atomically', () => {
     const migration = fs.readFileSync(path.join(root, 'db/012-ghost-offering-event.sql'), 'utf8');
-    const sql = `${migration}\nINSERT OR IGNORE INTO ghost_offering_world_claims VALUES('2026-08-27','chicken1',101,50,1); SELECT changes(); INSERT OR IGNORE INTO ghost_offering_world_claims VALUES('2026-08-27','chicken1',202,50,2); SELECT changes(); SELECT user_id FROM ghost_offering_world_claims WHERE event_date='2026-08-27' AND item_id='chicken1';`;
+    const sql = `${migration}\nINSERT OR IGNORE INTO ghost_offering_world_claims VALUES('2026-08-27','mooncake1',101,50,1); SELECT changes(); INSERT OR IGNORE INTO ghost_offering_world_claims VALUES('2026-08-27','mooncake1',202,50,2); SELECT changes(); SELECT user_id FROM ghost_offering_world_claims WHERE event_date='2026-08-27' AND item_id='mooncake1';`;
     const out = child.execFileSync('sqlite3', [':memory:'], { input: sql, encoding: 'utf8' }).trim().split(/\s+/);
     assert.deepEqual(out.slice(-3), ['1', '0', '101'], 'first insert wins, second insert changes zero rows');
   });
@@ -221,10 +221,10 @@ suite('ghost offering realtime: two-user concurrency', () => {
     const values=new Map(),state={sockets:[main,milo,luna],getWebSockets(){return this.sockets;},storage:{get:async k=>values.get(k),put:async(k,v)=>values.set(k,v),delete:async k=>values.delete(k)}};
     const Room=loadRoomClass(),room=new Room(state,{});
     await Promise.all([
-      room.webSocketMessage(milo,JSON.stringify({t:'offering-grab',itemId:'chicken1'})),
-      room.webSocketMessage(luna,JSON.stringify({t:'offering-grab',itemId:'fruit1'})),
+      room.webSocketMessage(milo,JSON.stringify({t:'offering-grab',itemId:'mooncake1'})),
+      room.webSocketMessage(luna,JSON.stringify({t:'offering-grab',itemId:'lantern1'})),
     ]);
-    assert.deepEqual([milo.attachment.itemId,luna.attachment.itemId],['chicken1','fruit1']);
+    assert.deepEqual([milo.attachment.itemId,luna.attachment.itemId],['mooncake1','lantern1']);
     assert.deepEqual(main.take('offering-locked').map(m=>m.actorId).sort(),['bot-101-0','bot-101-1']);
   });
 
@@ -271,15 +271,15 @@ suite('ghost offering realtime: browser transport', () => {
     global.WebSocket=FakeWS; const received=[];
     const l=new linkMod.GhostOfferingLink({roomId:'2026-08-27',token:'signed',onMessage:m=>received.push(m)});
     l.start(); assert.truthy(FakeWS.last.url.includes('/offering/2026-08-27?token=signed'));
-    FakeWS.last.open(); l.grab('chicken1'); l.progress('chicken1',20,.5); l.release('chicken1','snap');
+    FakeWS.last.open(); l.grab('mooncake1'); l.progress('mooncake1',20,.5); l.release('mooncake1','snap');
     assert.deepEqual(FakeWS.last.sent.map(m=>m.t),['offering-grab','offering-progress','offering-release']);
-    FakeWS.last.recv({t:'offering-locked',itemId:'chicken2',uid:2}); assert.equal(received.length,1); l.close();
+    FakeWS.last.recv({t:'offering-locked',itemId:'mooncake2',uid:2}); assert.equal(received.length,1); l.close();
   });
   test('transport includes normalized haul progress when the renderer supplies it', () => {
     global.WebSocket=FakeWS;
     const l=new linkMod.GhostOfferingLink({roomId:'qa-human-2026-08-27',token:'signed'});l.start();FakeWS.last.open();
-    l.progress('chicken1',20,.5,'retract',.41,.53,.62);
-    assert.deepEqual(FakeWS.last.sent[0],{t:'offering-progress',itemId:'chicken1',angle:20,length:.5,phase:'retract',x:.41,y:.53,haul:.62});l.close();
+    l.progress('mooncake1',20,.5,'retract',.41,.53,.62);
+    assert.deepEqual(FakeWS.last.sent[0],{t:'offering-progress',itemId:'mooncake1',angle:20,length:.5,phase:'retract',x:.41,y:.53,haul:.62});l.close();
   });
   test('a QA bot opens its own socket identity without exposing it to normal users', () => {
     global.WebSocket=FakeWS;

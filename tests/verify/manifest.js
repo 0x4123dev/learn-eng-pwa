@@ -120,7 +120,7 @@ const FEATURES = [
     routes: ['night-raid/home', 'night-raid/start', 'night-raid/finish', 'night-raid/targets',
              'night-raid/friends', 'night-raid/reports', 'night-raid/collect', 'night-raid/shield', 'night-raid/plant'],
     verifiedBy: 'client+server' },
-  { id: 'ghost-offering', name: 'Cúng cô hồn (sự kiện)',
+  { id: 'ghost-offering', name: 'Hái Quà – Cướp Hằng Nga (sự kiện)',
     banks: ['js/ghost-offering-schedule.js', 'js/ghost-offering-link.js', 'js/ghost-offering-event.js'],
     routes: ['ghost-offering'], verifiedBy: 'client+server' },
   { id: 'daily-task', name: 'Nhiệm vụ hằng ngày',

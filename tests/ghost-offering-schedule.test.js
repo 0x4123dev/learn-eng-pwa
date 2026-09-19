@@ -73,12 +73,12 @@ suite('ghost offering: the schedule is one source of truth', () => {
 });
 
 suite('ghost offering: the night of the event', () => {
-    // 22:00 GMT+7 on 10 Sep 2026. Written out as an absolute instant so a
+    // 22:00 GMT+7 on 25 Sep 2026. Written out as an absolute instant so a
     // mistyped month or hour fails here rather than on the night.
-    const OPEN = Date.parse('2026-09-10T15:00:00.000Z');
+    const OPEN = Date.parse('2026-09-25T15:00:00.000Z');
 
     test('the window opens at 22:00 GMT+7 and lasts two hours', () => {
-        assert.equal(SCHEDULE.OPENS_AT, OPEN, 'the event does not open at 22:00 GMT+7 on 10 Sep 2026');
+        assert.equal(SCHEDULE.OPENS_AT, OPEN, 'the event does not open at 22:00 GMT+7 on 25 Sep 2026');
         assert.equal(SCHEDULE.DURATION_MS, 2 * HOUR, 'the ceremony is a two-hour window');
         assert.equal(SCHEDULE.CLOSES_AT, OPEN + 2 * HOUR);
         assert.equal(new Date(SCHEDULE.OPENS_AT + SCHEDULE.TZ_OFFSET_MS).toISOString().slice(11, 16), '22:00');
