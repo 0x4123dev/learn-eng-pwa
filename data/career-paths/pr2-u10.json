@@ -3,16 +3,16 @@
   "unit": 10,
   "title": "Releases 1",
   "words": [
-    { "en": "CD", "vi": "đĩa quang lưu dữ liệu", "emoji": "💿" },
-    { "en": "e-kit", "vi": "bộ tài liệu báo chí điện tử", "emoji": "💻📁" },
-    { "en": "e-release", "vi": "thông cáo báo chí phát trực tuyến", "emoji": "📧📰" },
-    { "en": "fact sheet", "vi": "bản tóm tắt thông tin", "emoji": "📄✅" },
-    { "en": "mat release", "vi": "bài viết có sẵn kèm ảnh cho báo", "emoji": "📰🖼️" },
-    { "en": "media alert", "vi": "thư mời báo chí đến sự kiện", "emoji": "📣📅" },
-    { "en": "media kit", "vi": "bộ tài liệu dành cho phóng viên", "emoji": "📦📰" },
-    { "en": "pitch letter", "vi": "thư chào tin gửi phóng viên", "emoji": "✉️🎯" },
-    { "en": "print release", "vi": "thông cáo báo chí bản in", "emoji": "🖨️📰" },
-    { "en": "professional", "vi": "chuyên nghiệp, thuộc nghề chuyên môn", "emoji": "👔🎓" },
-    { "en": "publicity photo", "vi": "ảnh quảng bá", "emoji": "📸✨" }
+    { "en": "CD", "vi": "đĩa quang lưu dữ liệu", "emoji": "💿", "ex": "We put all the photos and documents on a CD so reporters could open them on their computers.", "exVi": "Chúng tôi lưu toàn bộ ảnh và tài liệu vào một đĩa CD để phóng viên có thể mở trên máy tính." },
+    { "en": "e-kit", "vi": "bộ tài liệu báo chí điện tử", "emoji": "💻📁", "ex": "Instead of printing folders, we made an e-kit that reporters can download from our website.", "exVi": "Thay vì in các tập tài liệu, chúng tôi làm một bộ tài liệu báo chí điện tử để phóng viên tải về từ trang web." },
+    { "en": "e-release", "vi": "thông cáo báo chí phát trực tuyến", "emoji": "📧📰", "ex": "The company sent an e-release by email so news websites could post the story right away.", "exVi": "Công ty gửi một thông cáo báo chí phát trực tuyến qua email để các trang tin có thể đăng bài ngay." },
+    { "en": "fact sheet", "vi": "bản tóm tắt thông tin", "emoji": "📄✅", "ex": "The fact sheet lists the product's price, size and launch date on a single page.", "exVi": "Bản tóm tắt thông tin liệt kê giá, kích thước và ngày ra mắt sản phẩm trên một trang." },
+    { "en": "mat release", "vi": "bài viết có sẵn kèm ảnh cho báo", "emoji": "📰🖼️", "ex": "The newspaper printed our mat release exactly as we wrote it, pictures and all.", "exVi": "Tờ báo đăng nguyên bài viết có sẵn kèm ảnh của chúng tôi, không sửa một chữ." },
+    { "en": "media alert", "vi": "thư mời báo chí đến sự kiện", "emoji": "📣📅", "ex": "We sent a media alert a week early so reporters would know when and where the launch was.", "exVi": "Chúng tôi gửi thư mời báo chí trước một tuần để phóng viên biết buổi ra mắt diễn ra khi nào và ở đâu." },
+    { "en": "media kit", "vi": "bộ tài liệu dành cho phóng viên", "emoji": "📦📰", "ex": "Every reporter at the party received a media kit with photos, facts and a press release.", "exVi": "Mỗi phóng viên dự tiệc nhận được một bộ tài liệu dành cho phóng viên gồm ảnh, dữ kiện và thông cáo báo chí." },
+    { "en": "pitch letter", "vi": "thư chào tin gửi phóng viên", "emoji": "✉️🎯", "ex": "The pitch letter explains in a few lines why a reporter should cover our story.", "exVi": "Thư chào tin giải thích trong vài dòng vì sao phóng viên nên đưa tin về câu chuyện của chúng tôi." },
+    { "en": "print release", "vi": "thông cáo báo chí bản in", "emoji": "🖨️📰", "ex": "The print release went out on paper, but it had no pictures to catch the eye.", "exVi": "Thông cáo báo chí bản in được gửi đi trên giấy, nhưng không có hình ảnh thu hút." },
+    { "en": "professional", "vi": "chuyên nghiệp, thuộc nghề chuyên môn", "emoji": "👔🎓", "ex": "We hired a professional photographer because her pictures look much better than ours.", "exVi": "Chúng tôi thuê một nhiếp ảnh gia chuyên nghiệp vì ảnh của cô ấy đẹp hơn ảnh của chúng tôi nhiều." },
+    { "en": "publicity photo", "vi": "ảnh quảng bá", "emoji": "📸✨", "ex": "The publicity photo shows the new phone from its best side to attract buyers.", "exVi": "Ảnh quảng bá cho thấy chiếc điện thoại mới ở góc đẹp nhất để thu hút người mua." }
   ]
 }

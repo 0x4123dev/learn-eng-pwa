@@ -3,18 +3,18 @@
   "unit": 6,
   "title": "Education",
   "words": [
-    { "en": "alumni", "vi": "cựu sinh viên, cựu học sinh", "emoji": "🎓👥" },
-    { "en": "community", "vi": "cộng đồng", "emoji": "🏘️👨‍👩‍👧‍👦" },
-    { "en": "elementary", "vi": "thuộc bậc tiểu học", "emoji": "🧒📚" },
-    { "en": "faculty", "vi": "ban giảng viên đại học", "emoji": "👩‍🏫👨‍🏫" },
-    { "en": "funding", "vi": "nguồn tài trợ, kinh phí", "emoji": "💵🏫" },
-    { "en": "initiative", "vi": "sáng kiến, chương trình hành động mới", "emoji": "💡🚀" },
-    { "en": "news bureau", "vi": "phòng tin tức, văn phòng thông tin", "emoji": "🏢📰" },
-    { "en": "president", "vi": "hiệu trưởng, chủ tịch", "emoji": "👔🏛️" },
-    { "en": "prospective", "vi": "tương lai, có triển vọng trở thành", "emoji": "🔮🎓" },
-    { "en": "recruit", "vi": "tuyển mộ, chiêu sinh", "emoji": "📢🙋" },
-    { "en": "resource", "vi": "nguồn lực, tài nguyên hữu ích", "emoji": "📚🧰" },
-    { "en": "secondary", "vi": "thuộc bậc trung học", "emoji": "🧑‍🎓🏫" },
-    { "en": "university", "vi": "trường đại học", "emoji": "🏛️🎓" }
+    { "en": "alumni", "vi": "cựu sinh viên, cựu học sinh", "emoji": "🎓👥", "ex": "Many alumni came back to the school to give money and advice to students.", "exVi": "Nhiều cựu sinh viên đã quay lại trường để góp tiền và lời khuyên cho sinh viên." },
+    { "en": "community", "vi": "cộng đồng", "emoji": "🏘️👨‍👩‍👧‍👦", "ex": "The school invited the whole community to its open day so neighbours could see the new library.", "exVi": "Trường mời cả cộng đồng đến ngày hội mở cửa để hàng xóm được xem thư viện mới." },
+    { "en": "elementary", "vi": "thuộc bậc tiểu học", "emoji": "🧒📚", "ex": "Our elementary school teaches young children from age six to eleven.", "exVi": "Trường tiểu học của chúng tôi dạy trẻ nhỏ từ sáu đến mười một tuổi." },
+    { "en": "faculty", "vi": "ban giảng viên đại học", "emoji": "👩‍🏫👨‍🏫", "ex": "The faculty met on Monday to discuss what the professors will teach next year.", "exVi": "Ban giảng viên họp hôm thứ Hai để bàn về những gì các giáo sư sẽ dạy năm tới." },
+    { "en": "funding", "vi": "nguồn tài trợ, kinh phí", "emoji": "💵🏫", "ex": "Without more funding, the school cannot pay for new computers this year.", "exVi": "Không có thêm kinh phí, trường không thể mua máy tính mới trong năm nay." },
+    { "en": "initiative", "vi": "sáng kiến, chương trình hành động mới", "emoji": "💡🚀", "ex": "The college started a new initiative to help students find jobs after graduation.", "exVi": "Trường cao đẳng bắt đầu một sáng kiến mới để giúp sinh viên tìm việc sau khi tốt nghiệp." },
+    { "en": "news bureau", "vi": "phòng tin tức, văn phòng thông tin", "emoji": "🏢📰", "ex": "The college's news bureau sends stories about campus events to local newspapers.", "exVi": "Phòng tin tức của trường gửi các bài viết về sự kiện trong trường cho báo địa phương." },
+    { "en": "president", "vi": "hiệu trưởng, chủ tịch", "emoji": "👔🏛️", "ex": "The president of the college gave a speech to welcome the new students.", "exVi": "Hiệu trưởng trường cao đẳng đã phát biểu chào đón các sinh viên mới." },
+    { "en": "prospective", "vi": "tương lai, có triển vọng trở thành", "emoji": "🔮🎓", "ex": "The campus tour lets prospective students see the classrooms before they apply.", "exVi": "Chuyến tham quan trường giúp các sinh viên tương lai xem lớp học trước khi nộp đơn." },
+    { "en": "recruit", "vi": "tuyển mộ, chiêu sinh", "emoji": "📢🙋", "ex": "Colleges visit high schools each spring to recruit students for next year.", "exVi": "Các trường cao đẳng đến các trường trung học mỗi mùa xuân để chiêu sinh cho năm tới." },
+    { "en": "resource", "vi": "nguồn lực, tài nguyên hữu ích", "emoji": "📚🧰", "ex": "The library is a useful resource for students who need books and quiet study space.", "exVi": "Thư viện là một nguồn lực hữu ích cho sinh viên cần sách và chỗ học yên tĩnh." },
+    { "en": "secondary", "vi": "thuộc bậc trung học", "emoji": "🧑‍🎓🏫", "ex": "After finishing primary school, children move on to secondary school at age eleven.", "exVi": "Sau khi học xong tiểu học, trẻ em lên học trung học ở tuổi mười một." },
+    { "en": "university", "vi": "trường đại học", "emoji": "🏛️🎓", "ex": "She hopes to study medicine at a top university after she finishes school.", "exVi": "Cô ấy hy vọng học ngành y ở một trường đại học hàng đầu sau khi học xong phổ thông." }
   ]
 }

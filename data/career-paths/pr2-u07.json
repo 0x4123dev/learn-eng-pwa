@@ -3,18 +3,18 @@
   "unit": 7,
   "title": "Entertainment and Sports",
   "words": [
-    { "en": "appearance", "vi": "sự xuất hiện trước công chúng", "emoji": "🎤📺" },
-    { "en": "athlete", "vi": "vận động viên", "emoji": "🏃‍♂️🏅" },
-    { "en": "award", "vi": "giải thưởng", "emoji": "🏆" },
-    { "en": "celebrity", "vi": "người nổi tiếng", "emoji": "🌟📸" },
-    { "en": "damage control", "vi": "kiểm soát thiệt hại, cứu vãn uy tín", "emoji": "🧯🔥" },
-    { "en": "famous", "vi": "nổi tiếng", "emoji": "⭐👀" },
-    { "en": "nickname", "vi": "biệt danh", "emoji": "🏷️😎" },
-    { "en": "personality campaign", "vi": "chiến dịch đánh bóng tên tuổi", "emoji": "📣🧑‍🎤" },
-    { "en": "photo op", "vi": "dịp chụp ảnh quảng bá", "emoji": "📷✨" },
-    { "en": "promote", "vi": "quảng bá, lăng xê", "emoji": "📢🚀" },
-    { "en": "sports", "vi": "thể thao", "emoji": "⚽🏀" },
-    { "en": "star", "vi": "ngôi sao, minh tinh", "emoji": "🌟🎬" },
-    { "en": "wealthy", "vi": "giàu có", "emoji": "💰🤑" }
+    { "en": "appearance", "vi": "sự xuất hiện trước công chúng", "emoji": "🎤📺", "ex": "The singer's appearance at the mall drew hundreds of fans who wanted to see her.", "exVi": "Sự xuất hiện của nữ ca sĩ ở trung tâm thương mại thu hút hàng trăm người hâm mộ muốn gặp cô." },
+    { "en": "athlete", "vi": "vận động viên", "emoji": "🏃‍♂️🏅", "ex": "The athlete trains every morning so she can win the race next month.", "exVi": "Vận động viên tập luyện mỗi sáng để có thể thắng cuộc đua vào tháng tới." },
+    { "en": "award", "vi": "giải thưởng", "emoji": "🏆", "ex": "The actor thanked his fans when he received the award for best performance.", "exVi": "Nam diễn viên cảm ơn người hâm mộ khi nhận giải thưởng cho màn trình diễn xuất sắc nhất." },
+    { "en": "celebrity", "vi": "người nổi tiếng", "emoji": "🌟📸", "ex": "The celebrity could not walk down the street without people asking for photos.", "exVi": "Người nổi tiếng không thể đi bộ trên phố mà không có người xin chụp ảnh." },
+    { "en": "damage control", "vi": "kiểm soát thiệt hại, cứu vãn uy tín", "emoji": "🧯🔥", "ex": "After the singer's rude comment, her team did some damage control by apologising publicly.", "exVi": "Sau lời bình luận thô lỗ của nữ ca sĩ, ê-kíp của cô đã kiểm soát thiệt hại bằng cách xin lỗi công khai." },
+    { "en": "famous", "vi": "nổi tiếng", "emoji": "⭐👀", "ex": "The band became famous after millions of people watched their video online.", "exVi": "Ban nhạc trở nên nổi tiếng sau khi hàng triệu người xem video của họ trên mạng." },
+    { "en": "nickname", "vi": "biệt danh", "emoji": "🏷️😎", "ex": "Fans gave the tall basketball player the nickname 'Giant' because of his height.", "exVi": "Người hâm mộ đặt cho cầu thủ bóng rổ cao lớn biệt danh 'Khổng Lồ' vì chiều cao của anh." },
+    { "en": "personality campaign", "vi": "chiến dịch đánh bóng tên tuổi", "emoji": "📣🧑‍🎤", "ex": "The agency ran a personality campaign to make the young actor known to the public.", "exVi": "Công ty đã thực hiện một chiến dịch đánh bóng tên tuổi để công chúng biết đến nam diễn viên trẻ." },
+    { "en": "photo op", "vi": "dịp chụp ảnh quảng bá", "emoji": "📷✨", "ex": "The team set up a photo op so newspapers could picture the player with young fans.", "exVi": "Ê-kíp sắp xếp một dịp chụp ảnh quảng bá để các báo chụp cầu thủ cùng người hâm mộ nhỏ tuổi." },
+    { "en": "promote", "vi": "quảng bá, lăng xê", "emoji": "📢🚀", "ex": "The actress went on three talk shows to promote her new film.", "exVi": "Nữ diễn viên đã tham gia ba chương trình trò chuyện để quảng bá bộ phim mới của mình." },
+    { "en": "sports", "vi": "thể thao", "emoji": "⚽🏀", "ex": "He loves sports and watches football, tennis and swimming every weekend.", "exVi": "Anh ấy yêu thể thao và xem bóng đá, quần vợt và bơi lội mỗi cuối tuần." },
+    { "en": "star", "vi": "ngôi sao, minh tinh", "emoji": "🌟🎬", "ex": "The film star signed autographs for an hour after the premiere.", "exVi": "Ngôi sao điện ảnh ký tặng suốt một giờ sau buổi công chiếu." },
+    { "en": "wealthy", "vi": "giàu có", "emoji": "💰🤑", "ex": "The wealthy singer bought a huge house with a swimming pool and ten cars.", "exVi": "Ca sĩ giàu có đã mua một ngôi nhà khổng lồ có hồ bơi và mười chiếc xe hơi." }
   ]
 }

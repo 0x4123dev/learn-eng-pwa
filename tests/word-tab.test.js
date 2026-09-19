@@ -39,7 +39,7 @@ globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurre
   currentUnitSet, switchUnitSet, renderGrade4Home, renderWordHome, renderUnitsBar, renderUnitSetTabsHTML,
   startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice, quitUnitPractice, isUnitPracticeActive,
   unitsRetryCount, unitsRetryKey, unitsHostHistory, unitsList, unitsBank, _unitPool, _unitParse, _unitLabel,
-  unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile,
+  unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts,
   quiz: () => _unitQuiz, setQuiz: (q) => { _unitQuiz = q; } };`;
     vm.runInContext(src, ctx, { filename: 'word-tab-engine.js' });
     return { sb: sandbox, x: sandbox.__x, html: id => sandbox.document.__getLastInnerHTML(id) || '' };
@@ -104,6 +104,19 @@ suite('word tab: the bank is the book', () => {
             assert.truthy(/[A-Za-z]/.test(w.en), w.en + ': has letters to blank');
             assert.truthy(!/^[0-9:]+$/.test(w.emoji), w.en + ': emoji is a picture, not a number card');
             assert.truthy(w.vi && w.vi.length >= 3, w.en + ': has a meaning');
+        }
+    });
+
+    test('every word carries an example sentence the engine can blank, and its translation', () => {
+        // The card shows "The ______ holds the leaves up to the sunlight." while
+        // answering: _unitExampleParts must find the exact spelling once.
+        const { x } = loadEngine();
+        for (const w of [].concat(UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3)) {
+            assert.truthy(w.ex && w.exVi, w.en + ': ex/exVi present');
+            const parts = x._unitExampleParts(w);
+            assert.truthy(parts, w.en + ': the sentence contains the word: ' + w.ex);
+            assert.equal(parts.term, w.en, w.en + ': blanked span is the exact spelling');
+            assert.truthy(/[.!?]$/.test(w.ex.trim()) && /[.!?]$/.test(w.exVi.trim()), w.en + ': both are full sentences');
         }
     });
 });
@@ -176,6 +189,8 @@ suite('word tab: two hosts, one engine', () => {
         assert.equal(x.unitPracticeScreen(), 'wordScreen', 'the leave guard is told the Word screen');
         assert.truthy(html('wordDetail').includes('unitTextInput'), 'the question is drawn in #wordDetail');
         assert.equal(html('grade4Detail'), '', 'not in #grade4Detail');
+        assert.truthy(html('wordDetail').includes('unit-ex-blank'), 'the example sentence is shown with the word blanked');
+        assert.truthy(!html('wordDetail').includes('unit-q-exvi'), 'its translation is withheld until answered');
         assert.truthy(st.questions.every(q => q.w.set === 'pr1' && q.w.unit === 1), 'only Book 1 Unit 1 words');
         // Answer the first right, the rest wrong.
         sb.document.getElementById('unitTextInput').value = st.questions[0].w.en;

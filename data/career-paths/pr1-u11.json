@@ -3,18 +3,18 @@
   "unit": 11,
   "title": "Conducting a Survey",
   "words": [
-    { "en": "anonymity", "vi": "sự ẩn danh, giấu tên", "emoji": "🎭🙈" },
-    { "en": "closed-ended", "vi": "(câu hỏi) đóng, chỉ chọn có/không", "emoji": "☑️❌" },
-    { "en": "context", "vi": "bối cảnh, ngữ cảnh", "emoji": "🖼️🔍" },
-    { "en": "courtesy bias", "vi": "thiên lệch do lịch sự, trả lời cho vừa lòng", "emoji": "😊🙏" },
-    { "en": "familiar", "vi": "quen thuộc, đã biết", "emoji": "👋🧠" },
-    { "en": "follow-up", "vi": "(câu hỏi) tiếp nối, hỏi thêm", "emoji": "❓➡️❓" },
-    { "en": "loaded question", "vi": "câu hỏi dẫn dắt, gây cảm xúc", "emoji": "❓💣" },
-    { "en": "open-ended", "vi": "(câu hỏi) mở, tự viết câu trả lời", "emoji": "✍️💬" },
-    { "en": "politically correct", "vi": "đúng đắn về mặt chính trị, an toàn, không mất lòng", "emoji": "🤝🗳️" },
-    { "en": "questionnaire", "vi": "bảng câu hỏi khảo sát", "emoji": "📋❓" },
-    { "en": "range", "vi": "dải lựa chọn, phạm vi câu trả lời", "emoji": "📏↔️" },
-    { "en": "respondent", "vi": "người trả lời khảo sát", "emoji": "🙋✍️" },
-    { "en": "wording", "vi": "cách dùng từ, cách diễn đạt", "emoji": "🔤✏️" }
+    { "en": "anonymity", "vi": "sự ẩn danh, giấu tên", "emoji": "🎭🙈", "ex": "We promise anonymity, so nobody will know which answers came from you.", "exVi": "Chúng tôi cam kết sự ẩn danh, nên sẽ không ai biết câu trả lời nào là của bạn." },
+    { "en": "closed-ended", "vi": "(câu hỏi) đóng, chỉ chọn có/không", "emoji": "☑️❌", "ex": "A closed-ended question only lets people answer yes or no.", "exVi": "Câu hỏi đóng chỉ cho phép mọi người trả lời có hoặc không." },
+    { "en": "context", "vi": "bối cảnh, ngữ cảnh", "emoji": "🖼️🔍", "ex": "Please read the whole paragraph, because the context explains what the writer means.", "exVi": "Hãy đọc cả đoạn văn, vì bối cảnh giải thích ý người viết muốn nói." },
+    { "en": "courtesy bias", "vi": "thiên lệch do lịch sự, trả lời cho vừa lòng", "emoji": "😊🙏", "ex": "Some people say they love our product just to be polite, and that courtesy bias hides the truth.", "exVi": "Một số người nói họ thích sản phẩm của chúng tôi chỉ để lịch sự, và thiên lệch do lịch sự đó che giấu sự thật." },
+    { "en": "familiar", "vi": "quen thuộc, đã biết", "emoji": "👋🧠", "ex": "Use words that are familiar to teenagers, so they understand every question easily.", "exVi": "Hãy dùng những từ quen thuộc với thanh thiếu niên, để các em hiểu mọi câu hỏi dễ dàng." },
+    { "en": "follow-up", "vi": "(câu hỏi) tiếp nối, hỏi thêm", "emoji": "❓➡️❓", "ex": "After she said she disliked the ad, we asked a follow-up question about why.", "exVi": "Sau khi cô ấy nói không thích quảng cáo, chúng tôi hỏi thêm một câu tiếp nối về lý do." },
+    { "en": "loaded question", "vi": "câu hỏi dẫn dắt, gây cảm xúc", "emoji": "❓💣", "ex": "Asking 'Why is our rival's food so unhealthy?' is a loaded question that pushes people toward one answer.", "exVi": "Hỏi 'Tại sao đồ ăn của đối thủ lại không lành mạnh như vậy?' là một câu hỏi dẫn dắt, đẩy mọi người về một câu trả lời." },
+    { "en": "open-ended", "vi": "(câu hỏi) mở, tự viết câu trả lời", "emoji": "✍️💬", "ex": "An open-ended question lets people write their own ideas instead of ticking a box.", "exVi": "Câu hỏi mở cho phép mọi người tự viết ý kiến thay vì đánh dấu vào ô." },
+    { "en": "politically correct", "vi": "đúng đắn về mặt chính trị, an toàn, không mất lòng", "emoji": "🤝🗳️", "ex": "Many people give politically correct answers because they do not want to offend anyone.", "exVi": "Nhiều người đưa ra câu trả lời an toàn, không mất lòng vì họ không muốn làm phật ý ai." },
+    { "en": "questionnaire", "vi": "bảng câu hỏi khảo sát", "emoji": "📋❓", "ex": "Each customer filled in a short questionnaire with ten questions about our new shop.", "exVi": "Mỗi khách hàng điền vào một bảng câu hỏi khảo sát ngắn gồm mười câu về cửa hàng mới của chúng tôi." },
+    { "en": "range", "vi": "dải lựa chọn, phạm vi câu trả lời", "emoji": "📏↔️", "ex": "Give people a range of answers, from 'very unhappy' to 'very happy'.", "exVi": "Hãy cho mọi người một dải lựa chọn câu trả lời, từ 'rất không hài lòng' đến 'rất hài lòng'." },
+    { "en": "respondent", "vi": "người trả lời khảo sát", "emoji": "🙋✍️", "ex": "One respondent wrote that our website was too slow on her phone.", "exVi": "Một người trả lời khảo sát viết rằng trang web của chúng tôi quá chậm trên điện thoại của cô ấy." },
+    { "en": "wording", "vi": "cách dùng từ, cách diễn đạt", "emoji": "🔤✏️", "ex": "Check the wording of every question, because a confusing sentence gives confusing answers.", "exVi": "Hãy kiểm tra cách diễn đạt của từng câu hỏi, vì câu khó hiểu sẽ cho câu trả lời khó hiểu." }
   ]
 }

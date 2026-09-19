@@ -62,7 +62,7 @@ function validateFile(file) {
   doc.words.forEach((w, i) => {
     const at = `words[${i}]` + (w && w.en ? ` (${w.en})` : '');
     if (!w || typeof w !== 'object') { p(`${at}: not an object`); return; }
-    const keys = Object.keys(w).filter(k => !['en', 'vi', 'emoji'].includes(k));
+    const keys = Object.keys(w).filter(k => !['en', 'vi', 'emoji', 'ex', 'exVi'].includes(k));
     if (keys.length) p(`${at}: unexpected keys ${keys.join(', ')}`);
     const en = typeof w.en === 'string' ? w.en : '';
     if (!en.trim()) p(`${at}: en missing`);
@@ -95,6 +95,28 @@ function validateFile(file) {
       if (/^[0-9:]+$/.test(emoji)) p(`${at}: a digits-only emoji renders as a number card`);
       const glyphs = [...emoji.replace(/[‍️]/g, '')].length;
       if (glyphs > 6) p(`${at}: at most 3 emoji`);
+    }
+    // The example sentence: the engine (js/units.js _unitExampleParts) finds
+    // the exact `en` spelling once, bounded by non-letters, and blanks it.
+    const ex = typeof w.ex === 'string' ? w.ex.trim() : '';
+    const exVi = typeof w.exVi === 'string' ? w.exVi.trim() : '';
+    if (!ex) p(`${at}: ex (example sentence) missing`);
+    else if (en) {
+      const words = ex.split(/\s+/).length;
+      if (words < 5) p(`${at}: ex too short (${words} words)`);
+      if (words > 22) p(`${at}: ex too long (${words} words)`);
+      if (!/[.!?]$/.test(ex)) p(`${at}: ex must end with . ! or ?`);
+      const esc = en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const hits = ex.match(new RegExp('(^|[^A-Za-z-])' + esc + '(?![A-Za-z-])', 'gi')) || [];
+      if (hits.length !== 1) p(`${at}: ex must contain "${en}" exactly once as a whole word (found ${hits.length})`);
+      else if (!new RegExp('(^|[^A-Za-z-])' + esc + '(?![A-Za-z-])').test(ex)) p(`${at}: ex spells "${en}" with different capitals`);
+      if (VI_MARK.test(ex)) p(`${at}: ex must be English`);
+    }
+    if (!exVi) p(`${at}: exVi (translation) missing`);
+    else {
+      if (!VI_MARK.test(exVi)) p(`${at}: exVi carries no Vietnamese letter`);
+      if (!/[.!?]$/.test(exVi)) p(`${at}: exVi must end with . ! or ?`);
+      if (exVi.length < 10) p(`${at}: exVi too short`);
     }
     if (junk.test(JSON.stringify(w))) p(`${at}: contains undefined/null/NaN`);
   });

@@ -29,8 +29,17 @@ npm test          # the whole suite (11,000+ tests, tests/run-all.js)
 npm run verify    # "is any feature broken?" — see below
 npm run verify -- --live       # …including on the deployed site
 node tests/foo.test.js          # one file — see the WARNING below
-scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy
+scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy (Cloudflare Pages)
+scripts/deploy-pages.sh -m "msg"  # same ritual for GitHub Pages — the host the user chose on 2026-09-19
+scripts/deploy-audio.sh         # the word MP3s → Cloudflare eng-pwa-audio (js/app.js WORD_AUDIO_PATH), whichever host the app is on
 ```
+
+**Which host?** Since 2026-09-19 the app ships to **GitHub Pages**
+(https://0x4123dev.github.io/learn-eng-pwa/, remote `github`, branch master,
+root; `.nojekyll` required) via `scripts/deploy-pages.sh`. That host is static:
+`functions/api/*` (D1) do not run there and the service worker (registered at
+`/sw.js`) never installs under the subpath — the header of the script says so.
+`scripts/deploy.sh` is the Cloudflare ritual, kept intact.
 
 ⚠️ **Do not bump version numbers by hand.** `scripts/deploy.sh` rewrites all
 four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,

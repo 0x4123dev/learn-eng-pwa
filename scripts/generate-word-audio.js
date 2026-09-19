@@ -229,7 +229,20 @@ const PRONUNCIATION = {
     // The other subject said as letters, "eye-TEE" (Grade 4, unit 4). It comes
     // in through the alias above, so this key is the aliased slug rather than
     // the spelling — "it" must stay the pronoun.
-    'i-t': [['I', 'AY1'], ['T', 'T IY1']]
+    'i-t': [['I', 'AY1'], ['T', 'T IY1']],
+    // The Word tab's Career Paths acronyms (js/word-data.js), said as letter
+    // names. Lowercased on their own, "roi" is read as a word ("roy") and
+    // "psa"/"rfp" as noise; spelled out they are what the book means.
+    rfp: [['R', 'AA1 R'], ['F', 'EH1 F'], ['P', 'P IY1']],
+    roi: [['R', 'AA1 R'], ['O', 'OW1'], ['I', 'AY1']],
+    mbo: [['M', 'EH1 M'], ['B', 'B IY1'], ['O', 'OW1']],
+    cd:  [['C', 'S IY1'], ['D', 'D IY1']],
+    anr: [['A', 'EY1'], ['N', 'EH1 N'], ['R', 'AA1 R']],
+    psa: [['P', 'P IY1'], ['S', 'EH1 S'], ['A', 'EY1']],
+    vnr: [['V', 'V IY1'], ['N', 'EH1 N'], ['R', 'AA1 R']],
+    rss: [['R', 'AA1 R'], ['S', 'EH1 S'], ['S', 'EH1 S']],
+    'b-roll': [['B', 'B IY1'], ['roll', 'R OW1 L']],
+    'pr-specialist': [['P', 'P IY1'], ['R', 'AA1 R'], ['specialist', 'S P EH1 SH AH0 L IH0 S T']]
 };
 
 // How the pieces are joined, measured over ten takes each rather than

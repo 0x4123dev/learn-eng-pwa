@@ -10,8 +10,8 @@
 // before anything is written; a failing file fails the build, and so does a
 // missing unit — the three books have fifteen units each and the cards say so.
 // Emits the same shape the hand-written Grade 4 banks have (js/units-hk2-data.js):
-// { unit, book, en, vi, emoji } per word, one array per set, plus the unit
-// titles the cards print.
+// { unit, book, en, vi, emoji, ex, exVi } per word, one array per set, plus
+// the unit titles the cards print.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -39,7 +39,7 @@ function build(outFile) {
       if (bad.length) { problems.push(...bad.map(m => `${path.relative(ROOT, file)}: ${m}`)); continue; }
       const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
       titles[set][unit] = doc.title;
-      for (const w of doc.words) sets[set].push({ unit, book, en: w.en, vi: w.vi, emoji: w.emoji });
+      for (const w of doc.words) sets[set].push({ unit, book, en: w.en, vi: w.vi, emoji: w.emoji, ex: w.ex, exVi: w.exVi });
     }
   }
   if (problems.length) {
@@ -57,9 +57,11 @@ function build(outFile) {
 //
 // Each book's fifteen units, each carrying EXACTLY the Vocabulary column of
 // the book's Scope and Sequence page (${total} words in all). Same shape as
-// the Grade 4 banks (js/units-hk2-data.js): { unit, book, en, vi, emoji } —
-// emoji is the "picture", vi the Vietnamese meaning in the PR sense the
-// book's Glossary gives. Loaded lazily with the Word tab (js/lazy-data.js
+// the Post-HK bank (js/units-posthk-data.js): { unit, book, en, vi, emoji,
+// ex, exVi } — emoji is the "picture", vi the Vietnamese meaning in the PR
+// sense the book's Glossary gives, ex a sentence that uses the word (shown
+// with the word blanked while answering) and exVi its translation (shown
+// after). Loaded lazily with the Word tab (js/lazy-data.js
 // SCREEN_FILES.wordScreen); js/units.js reads it through unitsBank('pr1'..).
 
 `;
@@ -77,7 +79,7 @@ function build(outFile) {
     let last = 0;
     for (const w of sets[set]) {
       if (w.unit !== last) { out += `  // Unit ${w.unit}: ${titles[set][w.unit]}\n`; last = w.unit; }
-      out += `  { unit: ${w.unit}, book: ${book}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, emoji: ${lit(w.emoji)} },\n`;
+      out += `  { unit: ${w.unit}, book: ${book}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, emoji: ${lit(w.emoji)},\n    ex: ${lit(w.ex)}, exVi: ${lit(w.exVi)} },\n`;
     }
     out += `];\n\n`;
   }
