@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 13,
+  "title": "Evaluating Results 2",
+  "words": [
+    { "en": "action", "vi": "hành động, việc làm phản hồi", "emoji": "🏃💨" },
+    { "en": "attendance", "vi": "số người tham dự", "emoji": "👥🎟️" },
+    { "en": "attitude", "vi": "thái độ, cảm nhận chung", "emoji": "😐🤔" },
+    { "en": "audience", "vi": "khán giả, người nhận thông điệp", "emoji": "👨‍👩‍👧📺" },
+    { "en": "aware", "vi": "nhận biết, có ý thức về", "emoji": "💡👁️" },
+    { "en": "baseline study", "vi": "nghiên cứu nền, so sánh trước và sau", "emoji": "📊⏮️⏭️" },
+    { "en": "day-after recall", "vi": "khả năng nhớ lại vào ngày hôm sau", "emoji": "📅🧠" },
+    { "en": "request", "vi": "yêu cầu, lời đề nghị", "emoji": "🙋📩" },
+    { "en": "ROI", "vi": "lợi tức đầu tư, tiền lời trên vốn bỏ ra", "emoji": "💵🔄📈" },
+    { "en": "systematic", "vi": "có hệ thống, theo phương pháp", "emoji": "🗂️📐" }
+  ]
+}

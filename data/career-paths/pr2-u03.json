@@ -1,0 +1,21 @@
+{
+  "book": 2,
+  "unit": 3,
+  "title": "Tactics",
+  "words": [
+    { "en": "demographic", "vi": "nhóm dân cư có chung đặc điểm", "emoji": "👥📊" },
+    { "en": "general", "vi": "chung, đại trà, cho cả nhóm", "emoji": "🌐👥" },
+    { "en": "in advance", "vi": "trước, từ trước", "emoji": "⏰⬅️" },
+    { "en": "launch phase", "vi": "giai đoạn khởi động chiến dịch", "emoji": "🚀📅" },
+    { "en": "market research", "vi": "nghiên cứu thị trường", "emoji": "🔍📊" },
+    { "en": "meaningful", "vi": "có ý nghĩa, quan trọng", "emoji": "💎❗" },
+    { "en": "prepare", "vi": "chuẩn bị", "emoji": "🧰📝" },
+    { "en": "scheduling", "vi": "lên lịch, sắp xếp thời gian", "emoji": "📅🗓️" },
+    { "en": "seasonal", "vi": "theo mùa", "emoji": "🍂❄️" },
+    { "en": "sequencing", "vi": "sắp xếp theo thứ tự", "emoji": "🔢➡️" },
+    { "en": "specific", "vi": "cụ thể, riêng biệt", "emoji": "🎯📍" },
+    { "en": "tactic", "vi": "chiến thuật, cách đạt mục tiêu", "emoji": "♟️🗺️" },
+    { "en": "think ahead", "vi": "tính trước, lo xa", "emoji": "🤔🔮" },
+    { "en": "timing", "vi": "chọn đúng thời điểm", "emoji": "⏱️✅" }
+  ]
+}

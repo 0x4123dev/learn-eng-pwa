@@ -1,0 +1,20 @@
+{
+  "book": 1,
+  "unit": 11,
+  "title": "Conducting a Survey",
+  "words": [
+    { "en": "anonymity", "vi": "sự ẩn danh, giấu tên", "emoji": "🎭🙈" },
+    { "en": "closed-ended", "vi": "(câu hỏi) đóng, chỉ chọn có/không", "emoji": "☑️❌" },
+    { "en": "context", "vi": "bối cảnh, ngữ cảnh", "emoji": "🖼️🔍" },
+    { "en": "courtesy bias", "vi": "thiên lệch do lịch sự, trả lời cho vừa lòng", "emoji": "😊🙏" },
+    { "en": "familiar", "vi": "quen thuộc, đã biết", "emoji": "👋🧠" },
+    { "en": "follow-up", "vi": "(câu hỏi) tiếp nối, hỏi thêm", "emoji": "❓➡️❓" },
+    { "en": "loaded question", "vi": "câu hỏi dẫn dắt, gây cảm xúc", "emoji": "❓💣" },
+    { "en": "open-ended", "vi": "(câu hỏi) mở, tự viết câu trả lời", "emoji": "✍️💬" },
+    { "en": "politically correct", "vi": "đúng đắn về mặt chính trị, an toàn, không mất lòng", "emoji": "🤝🗳️" },
+    { "en": "questionnaire", "vi": "bảng câu hỏi khảo sát", "emoji": "📋❓" },
+    { "en": "range", "vi": "dải lựa chọn, phạm vi câu trả lời", "emoji": "📏↔️" },
+    { "en": "respondent", "vi": "người trả lời khảo sát", "emoji": "🙋✍️" },
+    { "en": "wording", "vi": "cách dùng từ, cách diễn đạt", "emoji": "🔤✏️" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "book": 3,
+  "unit": 4,
+  "title": "Reputation Management",
+  "words": [
+    { "en": "accuser", "vi": "người buộc tội, người tố cáo", "emoji": "👉😠" },
+    { "en": "apologize", "vi": "xin lỗi", "emoji": "🙇🙏" },
+    { "en": "blame", "vi": "đổ lỗi, quy trách nhiệm", "emoji": "👉😤" },
+    { "en": "bolster", "vi": "củng cố, tăng cường", "emoji": "💪🧱" },
+    { "en": "compensate", "vi": "bồi thường, đền bù", "emoji": "💵🤝" },
+    { "en": "corrective action", "vi": "hành động khắc phục, sửa sai", "emoji": "🔧✅" },
+    { "en": "defeasibility", "vi": "lý lẽ thiếu thông tin nên không chịu trách nhiệm", "emoji": "🤷📉" },
+    { "en": "deny", "vi": "phủ nhận, chối bỏ", "emoji": "✋❌" },
+    { "en": "differentiate", "vi": "phân biệt, chỉ ra sự khác nhau", "emoji": "🔍↔️" },
+    { "en": "evade", "vi": "né tránh, lảng tránh", "emoji": "🏃💨" },
+    { "en": "good intentions", "vi": "ý tốt, thiện chí", "emoji": "💖😇" },
+    { "en": "justify", "vi": "biện minh, giải thích cho hợp lý", "emoji": "⚖️💬" },
+    { "en": "provoke", "vi": "khiêu khích, chọc tức", "emoji": "😡👊" },
+    { "en": "reputation", "vi": "danh tiếng, uy tín", "emoji": "⭐🏆" },
+    { "en": "restore", "vi": "khôi phục, phục hồi", "emoji": "🔄🏗️" }
+  ]
+}

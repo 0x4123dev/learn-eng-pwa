@@ -1,0 +1,20 @@
+{
+  "book": 2,
+  "unit": 6,
+  "title": "Education",
+  "words": [
+    { "en": "alumni", "vi": "cựu sinh viên, cựu học sinh", "emoji": "🎓👥" },
+    { "en": "community", "vi": "cộng đồng", "emoji": "🏘️👨‍👩‍👧‍👦" },
+    { "en": "elementary", "vi": "thuộc bậc tiểu học", "emoji": "🧒📚" },
+    { "en": "faculty", "vi": "ban giảng viên đại học", "emoji": "👩‍🏫👨‍🏫" },
+    { "en": "funding", "vi": "nguồn tài trợ, kinh phí", "emoji": "💵🏫" },
+    { "en": "initiative", "vi": "sáng kiến, chương trình hành động mới", "emoji": "💡🚀" },
+    { "en": "news bureau", "vi": "phòng tin tức, văn phòng thông tin", "emoji": "🏢📰" },
+    { "en": "president", "vi": "hiệu trưởng, chủ tịch", "emoji": "👔🏛️" },
+    { "en": "prospective", "vi": "tương lai, có triển vọng trở thành", "emoji": "🔮🎓" },
+    { "en": "recruit", "vi": "tuyển mộ, chiêu sinh", "emoji": "📢🙋" },
+    { "en": "resource", "vi": "nguồn lực, tài nguyên hữu ích", "emoji": "📚🧰" },
+    { "en": "secondary", "vi": "thuộc bậc trung học", "emoji": "🧑‍🎓🏫" },
+    { "en": "university", "vi": "trường đại học", "emoji": "🏛️🎓" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "book": 2,
+  "unit": 15,
+  "title": "Speeches",
+  "words": [
+    { "en": "anecdote", "vi": "giai thoại, câu chuyện ngắn minh họa", "emoji": "📖😊" },
+    { "en": "conversational", "vi": "theo kiểu trò chuyện, thân mật", "emoji": "💬😊" },
+    { "en": "evidence", "vi": "bằng chứng, dẫn chứng", "emoji": "🔍📊" },
+    { "en": "eye contact", "vi": "sự giao tiếp bằng ánh mắt", "emoji": "👁️👁️" },
+    { "en": "jargon", "vi": "thuật ngữ chuyên môn khó hiểu", "emoji": "🤓🔤❓" },
+    { "en": "nervous", "vi": "lo lắng, hồi hộp", "emoji": "😰" },
+    { "en": "pattern", "vi": "khuôn mẫu, trình tự lặp lại", "emoji": "🔁📐" },
+    { "en": "presentation", "vi": "bài thuyết trình", "emoji": "👩‍🏫📊" },
+    { "en": "speech", "vi": "bài diễn văn, bài phát biểu", "emoji": "🎤🗣️" },
+    { "en": "speechwriting", "vi": "việc soạn thảo bài diễn văn", "emoji": "✍️📜🎤" },
+    { "en": "statement of purpose", "vi": "câu nêu mục đích của bài nói", "emoji": "🎯📝" },
+    { "en": "summary", "vi": "bản tóm tắt", "emoji": "📝✂️" },
+    { "en": "tone", "vi": "giọng điệu, sắc thái lời nói", "emoji": "🎵🗣️" },
+    { "en": "visual aid", "vi": "hình ảnh, đồ vật hỗ trợ minh họa", "emoji": "🖼️📊👀" }
+  ]
+}

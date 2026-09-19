@@ -66,9 +66,13 @@ suite('lazy entry points: executed with nothing lazy loaded', () => {
     const h = await boot();
     h.sandbox.switchScreen('learnHubScreen'); await settle();
     for (const screenId of Object.keys(lazy.SCREEN_FILES)) {
-      if (!/Screen$/.test(screenId) || screenId === 'mathHubScreen' || screenId === 'examScreen') continue;
+      if (!/Screen$/.test(screenId)) continue;
       if (!h.el(screenId)) continue;
       if (/petBattle|nightRaid|armory/.test(screenId)) continue;          // arena tab, below
+      if (screenId === 'mathHubScreen' || screenId === 'wordScreen') {   // bottom-bar tabs
+        assert.truthy(wired(h, 'bottomNav', "switchScreen('" + screenId + "')"), 'no enabled bottom-bar button opens ' + screenId);
+        continue;
+      }
       assert.truthy(wired(h, 'learnHubScreen', "switchScreen('" + screenId + "')"), 'no enabled Learn card opens ' + screenId);
     }
   });

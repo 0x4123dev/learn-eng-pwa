@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 2,
+  "title": "Strategic Planning",
+  "words": [
+    { "en": "characteristic", "vi": "đặc điểm, đặc tính riêng", "emoji": "🏷️✨" },
+    { "en": "current", "vi": "hiện tại, hiện nay", "emoji": "📍🕐" },
+    { "en": "desired", "vi": "mong muốn, ao ước đạt được", "emoji": "🎯💭" },
+    { "en": "main point", "vi": "ý chính, thông điệp chính", "emoji": "📌⭐" },
+    { "en": "MBO", "vi": "quản lý theo mục tiêu (cả nhóm cùng đặt mục tiêu)", "emoji": "🎯👥📋" },
+    { "en": "mindset", "vi": "lối suy nghĩ, thái độ chung", "emoji": "🧠💭" },
+    { "en": "public", "vi": "nhóm công chúng mà tổ chức muốn tiếp cận", "emoji": "👥📣" },
+    { "en": "role", "vi": "vai trò", "emoji": "🎭" },
+    { "en": "strategic planning", "vi": "hoạch định chiến lược", "emoji": "♟️📋" },
+    { "en": "target", "vi": "nhắm tới, hướng tới (nhóm người)", "emoji": "🎯👥" },
+    { "en": "timeframe", "vi": "khung thời gian, khoảng thời gian", "emoji": "📅⏳" },
+    { "en": "trend", "vi": "xu hướng", "emoji": "📈" }
+  ]
+}

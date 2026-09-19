@@ -1,0 +1,18 @@
+{
+  "book": 3,
+  "unit": 6,
+  "title": "Crisis Management",
+  "words": [
+    { "en": "contamination", "vi": "sự ô nhiễm, nhiễm bẩn", "emoji": "☣️🧪" },
+    { "en": "crash", "vi": "vụ đâm xe, tai nạn va chạm", "emoji": "🚗💥" },
+    { "en": "crisis management", "vi": "quản lý khủng hoảng", "emoji": "🚨🧑‍💼" },
+    { "en": "crisis", "vi": "khủng hoảng, tình huống nguy cấp", "emoji": "🔥⚠️" },
+    { "en": "financial", "vi": "thuộc về tài chính, tiền bạc", "emoji": "💵📈" },
+    { "en": "harassment", "vi": "sự quấy rối, sách nhiễu", "emoji": "😠🙅" },
+    { "en": "malpractice", "vi": "sai sót nghề nghiệp, sơ suất chuyên môn", "emoji": "🩺❌" },
+    { "en": "market crash", "vi": "sự sụp đổ thị trường chứng khoán", "emoji": "📉💥" },
+    { "en": "misconduct", "vi": "hành vi sai trái, phi đạo đức", "emoji": "🚫🤥" },
+    { "en": "recall", "vi": "thu hồi sản phẩm lỗi (động từ)", "emoji": "📦↩️" },
+    { "en": "strike", "vi": "cuộc đình công", "emoji": "✊🪧" }
+  ]
+}

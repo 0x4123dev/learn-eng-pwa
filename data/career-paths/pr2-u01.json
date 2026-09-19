@@ -1,0 +1,18 @@
+{
+  "book": 2,
+  "unit": 1,
+  "title": "Skills of a Public Relations Professional",
+  "words": [
+    { "en": "broad", "vi": "rộng, đa dạng nhiều loại người", "emoji": "🌐👥" },
+    { "en": "business sense", "vi": "đầu óc kinh doanh, nhạy bén làm ăn", "emoji": "💼🧠" },
+    { "en": "clarity", "vi": "sự rõ ràng, dễ hiểu", "emoji": "🔍✨" },
+    { "en": "conflict resolution", "vi": "giải quyết mâu thuẫn, xung đột", "emoji": "🤝⚔️" },
+    { "en": "cultural literacy", "vi": "hiểu biết về các nền văn hóa", "emoji": "🌍📚" },
+    { "en": "multi-tasking", "vi": "làm nhiều việc cùng lúc", "emoji": "🤹" },
+    { "en": "networking", "vi": "xây dựng quan hệ nghề nghiệp", "emoji": "🤝🕸️" },
+    { "en": "organized", "vi": "ngăn nắp, có tổ chức", "emoji": "🗂️✅" },
+    { "en": "persuasive", "vi": "có sức thuyết phục", "emoji": "🗣️👍" },
+    { "en": "problem-solving", "vi": "giải quyết vấn đề", "emoji": "🧩💡" },
+    { "en": "tech savvy", "vi": "rành công nghệ, sành công nghệ", "emoji": "💻📱" }
+  ]
+}

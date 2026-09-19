@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 6,
+  "title": "Communication",
+  "words": [
+    { "en": "channel", "vi": "kênh truyền thông tin", "emoji": "📡📺" },
+    { "en": "conversation", "vi": "cuộc trò chuyện, cuộc đối thoại", "emoji": "🗣️💬" },
+    { "en": "distort", "vi": "bóp méo, làm sai lệch (thông điệp)", "emoji": "🪞🌀" },
+    { "en": "feedback", "vi": "phản hồi, ý kiến đáp lại", "emoji": "💬↩️" },
+    { "en": "mass media", "vi": "phương tiện truyền thông đại chúng", "emoji": "📺📰📻" },
+    { "en": "message", "vi": "thông điệp, tin nhắn", "emoji": "✉️" },
+    { "en": "one-way communication", "vi": "truyền thông một chiều", "emoji": "📢➡️🙉" },
+    { "en": "receiver", "vi": "người nhận thông tin", "emoji": "👂📥" },
+    { "en": "source", "vi": "nguồn tin, nơi phát ra thông tin", "emoji": "📰🧑‍💼" },
+    { "en": "two-way communication", "vi": "truyền thông hai chiều", "emoji": "🗣️↔️👂" }
+  ]
+}

@@ -296,9 +296,15 @@ function getHomeSkillStats() {
     });
     skills.push({ key: 'vocab', label: 'Vocabulary', icon: '📚', color: '#22c55e', correct: vc, total: vt });
 
-    // Grade 4 picture-dictionary practice (Topics tab → Grade 4 sub-tab)
-    const u = sum(appState.unitsHistory);
+    // Picture-dictionary practice: the Grade 4 sets and the Word tab's
+    // Career Paths sets share one history (js/units.js), told apart by the
+    // set prefix on the unit key ('pr1-3' is the Word tab).
+    const isWordRow = h => h && /^pr[123]-/.test(String(h.unit));
+    const unitsRows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
+    const u = sum(unitsRows.filter(h => !isWordRow(h)));
     skills.push({ key: 'units', label: 'Grade 4', icon: '📗', color: '#16a34a', correct: u.c, total: u.t });
+    const wd = sum(unitsRows.filter(isWordRow));
+    skills.push({ key: 'word', label: 'Word', icon: '🔤', color: '#0d9488', correct: wd.c, total: wd.t });
 
     const g = sum(appState.grammarHistory);
     skills.push({ key: 'grammar', label: 'Grammar', icon: '🎓', color: '#7c3aed', correct: g.c, total: g.t });
@@ -318,14 +324,6 @@ function getHomeSkillStats() {
     });
     skills.push({ key: 'verbs', label: 'Verbs', icon: '📝', color: '#f59e0b', correct: vbc, total: vbt });
 
-    // Exam attempts (stored app-wide by the Exam tab)
-    let ec = 0, et = 0;
-    try {
-        const eh = (typeof loadExamHistory === 'function') ? loadExamHistory() : [];
-        (eh || []).forEach(a => { ec += a.score || 0; et += a.total || 0; });
-    } catch (e) { /* exam module absent — skip */ }
-    skills.push({ key: 'exam', label: 'Exam', icon: '🎯', color: '#ef4444', correct: ec, total: et });
-
     return skills.map(s => Object.assign({}, s, { pct: s.total ? Math.round(s.correct / s.total * 100) : 0 }));
 }
 
@@ -340,28 +338,26 @@ function _homeSkillSessions() {
     // take the whole boot with it.
     const norm = (arr, map) => (Array.isArray(arr) ? arr : []).map(map).filter(s => s.total > 0)
         .sort((a, b) => (b.date || 0) - (a.date || 0));
-    let exam = [];
-    try {
-        exam = (typeof loadExamHistory === 'function') ? (loadExamHistory() || []) : [];
-    } catch (e) { exam = []; }
+    const isWordRow = h => h && /^pr[123]-/.test(String(h.unit));
+    const unitsRows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
     return {
         vocab: norm(appState.lessonHistory, h => ({
             score: Math.round((h.accuracy || 0) / 100 * wpl), total: (typeof h.accuracy === 'number') ? wpl : 0, date: h.date || 0 })),
-        units: norm(appState.unitsHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        units: norm(unitsRows.filter(h => !isWordRow(h)), h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        word: norm(unitsRows.filter(isWordRow), h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         grammar: norm(appState.grammarHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         phrases: norm(appState.phrasesHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         colloc: norm(appState.collocHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         wordform: norm(appState.wordformHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         rewrite: norm(appState.rewriteHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         verbs: norm((appState.speedChallenge && appState.speedChallenge.history), h => ({ score: h.correct || 0, total: h.total || 0, date: h.date || 0 })),
-        exam: norm(exam, a => ({ score: a.score || 0, total: a.total || 0, date: a.ts || 0 })),
     };
 }
 
 // Total completed sessions across EVERY practice type. The Profile tab's
 // "Lessons" stat uses this so it counts everything the student has done
-// (topic lessons, Grade 4 units, grammar, phrases, word form, rewrite,
-// verbs and exams), not just topic lessons.
+// (topic lessons, Grade 4 and Word units, grammar, phrases, word form,
+// rewrite and verbs), not just topic lessons.
 function _homeAllSessionsCount() {
     if (!appState) return 0;
     const sessions = _homeSkillSessions();
@@ -501,7 +497,7 @@ function goToSkillTab(key) {
         wordform: ['wordformScreen', 'renderWordformHome'],
         rewrite: ['rewriteScreen', 'renderRewriteHome'],
         verbs: ['speedChallengeScreen', null],
-        exam: ['examScreen', 'renderExamHome'],
+        word: ['wordScreen', 'renderWordHome'],
     };
     const target = map[key];
     if (!target || typeof switchScreen !== 'function') return;

@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 12,
+  "title": "Evaluating Results 1",
+  "words": [
+    { "en": "actual", "vi": "thực tế, thật sự", "emoji": "✅🎯" },
+    { "en": "advertising equivalency", "vi": "giá trị quy đổi tương đương quảng cáo", "emoji": "📰💲" },
+    { "en": "evaluate", "vi": "đánh giá, xem xét kết quả", "emoji": "🔍📊" },
+    { "en": "hit", "vi": "lượt truy cập trang web", "emoji": "🖱️🌐" },
+    { "en": "measurable", "vi": "đo lường được bằng con số", "emoji": "📏🔢" },
+    { "en": "media impression", "vi": "lượt người xem trên phương tiện truyền thông", "emoji": "📺👀" },
+    { "en": "message exposure", "vi": "mức độ thông điệp được xuất hiện, tiếp cận", "emoji": "📣👁️" },
+    { "en": "potential", "vi": "tiềm năng, có thể có", "emoji": "🌱✨" },
+    { "en": "production", "vi": "việc sản xuất, tạo ra tài liệu", "emoji": "🖨️📄" },
+    { "en": "result", "vi": "kết quả", "emoji": "🏁📈" }
+  ]
+}

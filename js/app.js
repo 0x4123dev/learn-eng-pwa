@@ -170,8 +170,12 @@ function buildStudyCheckpoint() {
         return Object.assign(base, { kind:'rewrite', screen:'rewriteScreen', state:checkpointClone(_rwQuiz) });
     if (typeof _colQuiz !== 'undefined' && _colQuiz)
         return Object.assign(base, { kind:'collocation', screen:'phrasesScreen', state:checkpointClone(_colQuiz) });
-    if (typeof _unitQuiz !== 'undefined' && _unitQuiz)
-        return Object.assign(base, { kind:'units', screen:'gradeFourScreen', state:checkpointClone(_unitQuiz) });
+    if (typeof _unitQuiz !== 'undefined' && _unitQuiz) {
+        // The host's own screen: a Word practice must come back on the Word
+        // tab (js/units.js UNIT_HOSTS), not on Grade 4.
+        const unitScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'gradeFourScreen';
+        return Object.assign(base, { kind:'units', screen: unitScreen, state:checkpointClone(_unitQuiz) });
+    }
     if (typeof _mathQuiz !== 'undefined' && _mathQuiz)
         return Object.assign(base, { kind:'math', screen:'mathHubScreen', state:checkpointClone(_mathQuiz) });
     if (typeof _warsQuiz !== 'undefined' && _warsQuiz) {
@@ -184,7 +188,7 @@ function buildStudyCheckpoint() {
         state.remainingMs = Math.max(0, _examState.deadlineTs - Date.now());
         // The set's own screen, so a PTNK paper reopens on the PTNK tab.
         const examScreenId = (typeof EXAM_SETS !== 'undefined' && EXAM_SETS[_examState.set])
-            ? EXAM_SETS[_examState.set].screen : 'examScreen';
+            ? EXAM_SETS[_examState.set].screen : 'ptnkScreen';
         return Object.assign(base, { kind:'exam', screen: examScreenId, state });
     }
     const speedOverlay = document.getElementById('speedGameOverlay');
@@ -270,10 +274,13 @@ function restoreStudyCheckpoint() {
     // (renderMathQuestion, renderWars — GROUP_FILES.math), so the same wait
     // is what keeps the calls below from being ReferenceErrors.
     const needsBankOne = {
-        grammar: 'grammarScreen', exam: checkpoint.screen || 'examScreen',
+        grammar: 'grammarScreen', exam: checkpoint.screen || 'ptnkScreen',
         phrases: 'phrasesScreen', collocation: 'phrasesScreen',
         wordform: 'wordformScreen', rewrite: 'rewriteScreen',
         math: 'mathHubScreen', mathwars: 'mathHubScreen',
+        // A Word practice carries its words in the checkpoint, but its results
+        // screen and the cards behind it read the lazy bank (js/word-data.js).
+        units: checkpoint.screen === 'wordScreen' ? 'wordScreen' : null,
     }[checkpoint.kind];
     // A Toán 7 Học kì 2 quiz also needs its own lazy group (js/lazy-data.js
     // GROUP_FILES): the questions travel inside the checkpoint, but hints,
@@ -300,8 +307,10 @@ function restoreStudyCheckpoint() {
     const s = checkpoint.state;
     try {
         // v4.17.63 moved Grade 4 out of Topics. Migrate a checkpoint saved by
-        // an older build instead of restoring its question into a hidden pane.
-        activateCheckpointScreen(checkpoint.kind === 'units' ? 'gradeFourScreen' : checkpoint.screen);
+        // an older build instead of restoring its question into a hidden pane;
+        // a Word practice (checkpoint.screen === 'wordScreen') keeps its screen.
+        const unitScreen = checkpoint.screen === 'wordScreen' ? 'wordScreen' : 'gradeFourScreen';
+        activateCheckpointScreen(checkpoint.kind === 'units' ? unitScreen : checkpoint.screen);
         if (checkpoint.kind === 'grammar') { _grammarQuizState = s; renderGrammarQuestion(); }
         else if (checkpoint.kind === 'phrases') { _phrQuiz = s; renderPhrQuestion(); }
         else if (checkpoint.kind === 'wordform') { _wfQuiz = s; renderWfQuestion(); }
@@ -309,7 +318,16 @@ function restoreStudyCheckpoint() {
         else if (checkpoint.kind === 'collocation') { _colQuiz = s; renderCollocQuestion(); }
         else if (checkpoint.kind === 'units') {
             _unitQuiz = s;
-            ['unitsBar','grade4SubTabs','grade4History'].forEach(id => {
+            // Put the engine on the practice's host first, or the question is
+            // drawn (and the finish scored and owed) on the wrong screen.
+            if (s && s.unit && typeof _unitParse === 'function' && typeof unitHostOfSet === 'function'
+                && typeof unitSelectHost === 'function') {
+                unitSelectHost(unitHostOfSet(_unitParse(s.unit).set));
+            }
+            const pieces = unitScreen === 'wordScreen'
+                ? ['wordUnitsBar','wordSubTabs','wordHistory']
+                : ['unitsBar','grade4SubTabs','grade4History'];
+            pieces.forEach(id => {
                 const el = document.getElementById(id); if (el) el.style.display = 'none';
             });
             renderUnitQuestion();
@@ -1427,7 +1445,7 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     errorsScreen: 'learn',
     grammarVocabScreen: 'learn',
     phoneticsScreen: 'learn',
-    examScreen: 'exam'
+    wordScreen: 'word'
 });
 
 function setBottomNavActive(screenOrKey) {
@@ -1583,9 +1601,9 @@ function switchScreen(screenId) {
         if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
     }
 
-    // Guard: warn before leaving an in-progress timed exam (Exam tab, or the
-    // PTNK tab — both run on the same engine, each on its own screen).
-    const _examOwnScreen = (typeof _examSetCfg === 'function') ? _examSetCfg().screen : 'examScreen';
+    // Guard: warn before leaving an in-progress timed exam (the PTNK tab or a
+    // practice menu — all on the same engine, each on its own screen).
+    const _examOwnScreen = (typeof _examSetCfg === 'function') ? _examSetCfg().screen : 'ptnkScreen';
     if (screenId !== _examOwnScreen &&
         typeof isExamActive === 'function' && isExamActive()) {
         if (!confirm('You are in the middle of a timed exam.\nIf you leave now, your progress will be lost and it will NOT be saved.\n\nLeave anyway?')) {
@@ -1713,8 +1731,10 @@ function switchScreen(screenId) {
         if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
     }
 
-    // Guard: the Grade 4 units practice has its own Learn destination.
-    if (screenId !== 'gradeFourScreen' &&
+    // Guard: a units practice (Grade 4, or the Word tab — one engine, two
+    // screens) belongs to the screen it started on.
+    const _unitOwnScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'gradeFourScreen';
+    if (screenId !== _unitOwnScreen &&
         typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {
         if (!confirm('You are in the middle of a practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
             return false;
@@ -1728,8 +1748,11 @@ function switchScreen(screenId) {
     // isRetryDrillActive() true from whatever tab came next, which holds app
     // updates back (_busyWithTimedActivity) until some other drill replaced
     // it. Same shape as the Toán branch above.
-    if (screenId !== 'gradeFourScreen' &&
-        typeof retryDrillKey === 'function' && retryDrillKey() === 'units') {
+    // Both units hosts: the Grade 4 drill (key 'units') lives on
+    // gradeFourScreen, the Word drill (key 'word') on wordScreen.
+    const _unitDrillScreen = { units: 'gradeFourScreen', word: 'wordScreen' };
+    const _unitDrillKey = (typeof retryDrillKey === 'function') ? retryDrillKey() : null;
+    if (_unitDrillKey && _unitDrillScreen[_unitDrillKey] && screenId !== _unitDrillScreen[_unitDrillKey]) {
         if (!confirm('You are practising the words you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) {
             return false;
         }
@@ -1830,7 +1853,6 @@ function switchScreen(screenId) {
     if (typeof LazyData !== 'undefined' && LazyData.filesFor(screenId).length) {
         const paint = () => {
             if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
-            else if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
             else if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
             else if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
             else if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
@@ -1842,6 +1864,7 @@ function switchScreen(screenId) {
             else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
             else if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
             else if (screenId === 'gradeFourScreen' && typeof renderGrade4Home === 'function') renderGrade4Home();
+            else if (screenId === 'wordScreen' && typeof renderWordHome === 'function') renderWordHome();
             // petBattleScreen, nightRaidScreen and armoryScreen list only a
             // stylesheet here; their openers (openPetBattle, NightRaid.open,
             // Armory.open) render right after this call returns.
@@ -1884,7 +1907,6 @@ function switchScreen(screenId) {
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
     if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
     if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
-    if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
     if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
     if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
     if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();

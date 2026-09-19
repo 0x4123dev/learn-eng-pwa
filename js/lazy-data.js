@@ -31,8 +31,7 @@ var LazyData = (() => {
   // file listed here, so offline is unaffected — only WHEN it is parsed changed.
   const SCREEN_FILES = Object.freeze({
     grammarScreen: ['js/grammar-units.js', 'js/grammar-lessons.js'],
-    examScreen: ['js/exam-data.js', 'js/exam-lessons.js'],
-    // The real PTNK entrance papers. Same engine as examScreen, its own bank.
+    // The real PTNK entrance papers, on the timed-paper engine (js/exam.js).
     ptnkScreen: ['js/ptnk-data.js'],
     // The three PTNK-format practice menus (js/practice-sets.js), one bank each.
     readingScreen: ['js/reading-data.js'],
@@ -51,6 +50,8 @@ var LazyData = (() => {
                     'js/math-fight-bank.js', 'js/mathwars-bank.js',
                     'js/math4-data.js'],
     gradeFourScreen: ['css/math.css'],
+    // The Word tab: Grade 4's engine on the Career Paths word bank.
+    wordScreen: ['css/math.css', 'js/word-data.js'],
     // The Arena lobby mounts the Night Raid yard (NightRaid.mountYardScene),
     // so it needs both feature sheets; Kho Khiên & Kiếm (js/armory.js) is
     // styled with the Arena.

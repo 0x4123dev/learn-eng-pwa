@@ -698,6 +698,8 @@ node scripts/build-grammar-vocab-data.js      # js/grammar-vocab-data.js from da
 node scripts/validate-grammar-vocab.js data/grammar-vocab/gv-*.json
 node scripts/build-phonetics-data.js          # js/phonetics-data.js + js/phonetics-lessons.js from data/phonetics/
 node scripts/validate-phonetics.js data/phonetics/ph-*.json   # (--lesson for data/phonetics/lessons/)
+node scripts/build-word-data.js               # js/word-data.js (Word tab) from data/career-paths/pr<b>-u<NN>.json (3 books × 15 units)
+node scripts/validate-word-data.js data/career-paths/pr1-u*.json   # the contract in data/career-paths/SCHEMA.md
 node scripts/build-dist.js --out /tmp/dist        # the minified bundle deploy.sh ships (size table)
 node scripts/build-sw-manifest.js --check         # are sw.js's precache hashes current for this tree?
 ```

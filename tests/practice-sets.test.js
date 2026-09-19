@@ -86,7 +86,7 @@ function world(extra) {
     setTimeout, clearTimeout, setInterval, clearInterval, Date, Math, JSON,
     appState: { coins: 0 }, currentUser: 'tester', saveUserData: () => {}, confirm: () => true, recordStudy: () => {},
   }, extra || {}));
-  for (const f of ['js/exam-data.js', 'js/exam.js', 'js/practice-sets.js']) vm.runInContext(read(f), ctx, { filename: f });
+  for (const f of ['js/exam.js', 'js/practice-sets.js']) vm.runInContext(read(f), ctx, { filename: f });
   vm.runInContext(STUB + '\nglobalThis.__sets = EXAM_SETS;\nglobalThis.__state = () => _examState;', ctx, { filename: 'stub.js' });
   return { ctx, els, store };
 }
@@ -338,7 +338,7 @@ suite('practice sets: history and coins stay per menu', () => {
     assert.equal(ctx.appState.coins, 3 * 5, '5 a question, no bonus');
     assert.falsy(ctx.appState.clozeHistory && ctx.appState.clozeHistory.length, 'cloze history untouched');
     assert.falsy(ctx.appState.ptnkHistory && ctx.appState.ptnkHistory.length, 'PTNK history untouched');
-    assert.falsy(store.flashlingo_examHistory, 'the HCMC key untouched');
+    assert.deepEqual(Object.keys(store), [], 'no localStorage key of its own is written');
   });
 
   test('an error round records under errorsHistory with its rebuildable id', () => {

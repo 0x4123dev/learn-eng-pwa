@@ -494,16 +494,23 @@ function screenPlaybook() {
         return 'best score 4242 / streak 7 read back from appState';
       },
     },
-    examScreen: {
-      title: 'Đề thi: danh sách các đề',
-      open: async (h) => { h.sandbox.switchScreen('examScreen'); await settle(); },
+    wordScreen: {
+      title: 'Word: 15 thẻ Unit + Mix của Book 1, bộ từ Career Paths đã tải',
+      open: async (h) => { h.sandbox.switchScreen('wordScreen'); await settle(); },
       prove: (h, el) => {
-        const exams = h.peek('EXAMS');
-        must(Array.isArray(exams) && exams.length > 0, 'the exam bank arrived (lazy)');
-        const text = squash(el.textContent);
-        must(text.includes(exams[0].title), 'the first exam is listed by its real title: ' + exams[0].title);
-        must(text.includes(String(exams[0].questions.length)), 'its real question count is shown');
-        return exams.length + ' exams in bank; "' + exams[0].title + '" listed with ' + exams[0].questions.length + ' questions';
+        const bank = h.peek('UNIT_WORDS_PR1');
+        must(Array.isArray(bank) && bank.length > 0, 'the Career Paths bank arrived (lazy)');
+        const bar = h.el('wordUnitsBar');
+        must(bar && bar.innerHTML.trim().length > 0, 'the Word cards are drawn on the Word screen');
+        const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
+        mustEqual(cards.length, 15, 'one card per unit of Book 1');
+        must(bar.querySelectorAll('.g4-mix-card').length === 1, 'and a Mix card');
+        must(bar.querySelectorAll('.g4-set-tabs .grammar-subtab').length === 3, 'Book 1 · 2 · 3 set tabs, and nothing of Grade 4');
+        const titles = h.peek('UNIT_PR_TITLES');
+        must(squash(bar.textContent).includes(titles.pr1[1]), 'the first unit is titled from the bank: ' + titles.pr1[1]);
+        must(el.querySelectorAll('#wordSubTabs .grammar-subtab').length === 2, 'practice/history tabs are drawn');
+        must(!h.el('unitsBar').innerHTML.includes("switchUnitSet('pr1')"), 'no Book tab leaked onto the Grade 4 screen');
+        return '15 unit cards + Mix for Book 1 of ' + bank.length + ' words';
       },
     },
     ptnkScreen: {
@@ -1525,40 +1532,44 @@ async function verifyClient() {
       return 'model answer accepted, nonsense rejected';
     });
 
-  await R.check('play-exam-start-answer-finish-score',
-    'Đề thi: mở đề, trả lời, nộp bài, điểm được lưu lại',
+  await R.check('play-word-type-right-and-wrong-finish',
+    'Word: mở Unit 1 Book 1, gõ đúng, gõ sai, xem kết quả trên màn hình Word',
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('examScreen'); await settle();
-      const exam = h.peek('EXAMS')[0];
-      const before = h.sandbox.loadExamHistory().length;
-      h.sandbox.startExam(exam.id);
-      const s = h.peek('_examState');
-      must(s, 'the exam started');
-      must(h.sandbox.isExamActive(), 'the app knows an exam is running (that is what guards the nav)');
-      const i1 = s.questions.findIndex((q) => q.type !== 'text');
-      must(i1 >= 0, 'there is a multiple-choice question');
-      s.idx = i1; h.sandbox.renderExamQuestion();
-      h.sandbox.answerExamChoice(s.questions[i1].correct);
-      mustEqual(s.answers[i1].isCorrect, true, 'the right answer must be graded correct');
-      const opts = h.el('examScreen').querySelectorAll('.grammar-option');
-      must(opts.length === 0 || opts[s.questions[i1].correct].classList.contains('correct'), 'and shown as correct');
-      const i2 = s.questions.findIndex((q, i) => i > i1 && q.type !== 'text');
-      must(i2 >= 0, 'there is a second multiple-choice question');
-      s.idx = i2; h.sandbox.renderExamQuestion();
-      const q2 = s.questions[i2];
-      h.sandbox.answerExamChoice((q2.correct + 1) % q2.options.length);
-      mustEqual(s.answers[i2].isCorrect, false, 'a wrong answer must be graded wrong');
-      const answered = s.answers.filter((a) => a && a.isCorrect).length;
-      h.sandbox.finishExam(false);
-      const hist = h.sandbox.loadExamHistory();
-      mustEqual(hist.length, before + 1, 'finishing must write one attempt to history');
-      mustEqual(hist[0].examId, exam.id, 'the attempt names the exam that was taken');
-      mustEqual(hist[0].score, answered, 'the recorded score is the number actually answered right');
-      mustEqual(hist[0].total, exam.questions.length, 'out of the real question count');
-      must(!h.sandbox.isExamActive(), 'the exam is over');
-      return '"' + exam.title + '": ' + hist[0].score + '/' + hist[0].total + ' written to history';
+      h.sandbox.switchScreen('wordScreen'); await settle();
+      const bank = h.peek('UNIT_WORDS_PR1');
+      must(Array.isArray(bank) && bank.length, 'the Career Paths bank arrived');
+      const coinsBefore = h.peek('appState').coins;
+      const histBefore = (h.peek('appState').unitsHistory || []).length;
+      h.sandbox.startUnitPractice('pr1-1');
+      const st = h.peek('_unitQuiz');
+      must(st, 'a Word practice started');
+      mustEqual(h.sandbox.unitPracticeScreen(), 'wordScreen', 'the practice belongs to the Word screen');
+      must(h.el('wordDetail').querySelector('#unitTextInput'), 'the typing box is on the Word screen');
+      mustEqual(h.el('grade4Detail').innerHTML.trim(), '', 'and nothing was drawn on Grade 4');
+      must(st.questions.every((q) => q.w.set === 'pr1' && q.w.unit === 1), 'every question is a Book 1 Unit 1 word');
+      // Right answer: the full word.
+      h.el('unitTextInput').value = st.questions[0].w.en;
+      h.sandbox.submitUnitAnswer();
+      mustEqual(st.answers[0].isCorrect, true, 'the right word is graded correct');
+      must(squash(h.el('wordDetail').textContent).includes('Chính xác'), 'and shown as correct');
+      h.sandbox.nextUnitQuestion();
+      // Wrong answer: nonsense.
+      h.el('unitTextInput').value = 'zzzz';
+      h.sandbox.submitUnitAnswer();
+      mustEqual(st.answers[1].isCorrect, false, 'nonsense is graded wrong');
+      must(squash(h.el('wordDetail').textContent).includes(st.questions[1].w.en), 'the right answer is shown');
+      const right = st.answers.filter((a) => a && a.isCorrect).length;
+      h.sandbox.finishUnitPractice();
+      const app = h.peek('appState');
+      mustEqual(app.unitsHistory.length, histBefore + 1, 'finishing writes one history row');
+      mustEqual(String(app.unitsHistory[0].unit), 'pr1-1', 'the row is keyed to the Word unit');
+      mustEqual(app.coins, coinsBefore + right * 5, 'five coins per right answer, no more');
+      must(!h.sandbox.isUnitPracticeActive(), 'the practice is over');
+      must(h.sandbox.unitsRetryCount('word') >= 1, 'the missed word is owed on the Word queue');
+      mustEqual(h.sandbox.unitsRetryCount('units'), 0, 'and not on the Grade 4 queue');
+      return 'Book 1 Unit 1: right graded right, wrong graded wrong, row keyed pr1-1, +' + (right * 5) + ' xu';
     });
 
   await R.check('play-math-answer-right-and-wrong',

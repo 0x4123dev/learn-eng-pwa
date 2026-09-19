@@ -47,6 +47,7 @@ const PRECACHE = {
   '/js/units-data.js': '5c71decf6f1f23b9',
   '/js/units-hk1-data.js': 'd2e4cdd069d3f6c4',
   '/js/units-hk2-data.js': '62fc4fd4f3582f4e',
+  '/js/word-data.js': '0000000000000000',
   '/js/units-posthk-data.js': '377ff9420d4c520f',
   '/js/retrydrill.js': '99283ff3257f3874',
   '/js/wrong-priority.js': 'dc5d6a6389b897d1',
@@ -199,7 +200,6 @@ const PRECACHE = {
   '/js/rewrite-data.js': 'b929edd14e78a20b',
   '/js/rewrite-lessons.js': 'ceb93eab38ce7e8c',
   '/js/rewrite.js': '4872f27d525b25da',
-  '/js/exam-data.js': '21096c15ca2bec98',
   '/js/ptnk-data.js': '299029469113f2f0',
   '/js/reading-data.js': '0898cfb2619ef52d',
   '/js/cloze-data.js': '99c37b7eb696f284',
@@ -207,7 +207,6 @@ const PRECACHE = {
   '/js/grammar-vocab-data.js': 'c626e371a5945700',
   '/js/phonetics-data.js': '9ebca2e9478c163c',
   '/js/phonetics-lessons.js': '8e328ea6b4e6e472',
-  '/js/exam-lessons.js': '6a0e0aaa9f66f5d2',
   '/js/auth.js': '1fc348cacc87e440',
   '/js/lazy-data.js': '56ae15c99514de1e',
   '/js/app.js': 'c7d47606e1efe7e1',
@@ -557,7 +556,7 @@ function networkThenCache(event, manifestHash) {
     // Update cache with fresh response for offline use — but never store the
     // SPA fallback under a script or image key. Pages answers an unknown path
     // with 200 text/html (verified against the live site), so a renamed or
-    // dropped file writes HTML under, say, /js/exam-data.js and poisons that
+    // dropped file writes HTML under, say, /js/ptnk-data.js and poisons that
     // entry for the life of this CACHE_NAME. `nosniff` hides it while online;
     // offline the tab renders empty, and if the poisoned key is /js/app.js the
     // app does not boot at all. `precache()` has guarded this since yesterday;

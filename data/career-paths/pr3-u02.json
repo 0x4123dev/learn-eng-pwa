@@ -1,0 +1,20 @@
+{
+  "book": 3,
+  "unit": 2,
+  "title": "Reaching a Diverse Audience",
+  "words": [
+    { "en": "cultural values", "vi": "giá trị văn hóa", "emoji": "🏮🎎" },
+    { "en": "diverse", "vi": "đa dạng, nhiều thành phần", "emoji": "🌈👥" },
+    { "en": "ethnicity", "vi": "sắc tộc, nguồn gốc văn hóa", "emoji": "🌏🧬" },
+    { "en": "gender", "vi": "giới tính", "emoji": "♀️♂️" },
+    { "en": "immigrant", "vi": "người nhập cư", "emoji": "🛂🧳" },
+    { "en": "lifestyle", "vi": "lối sống", "emoji": "🏃🍽️" },
+    { "en": "minority", "vi": "nhóm thiểu số", "emoji": "👤👥" },
+    { "en": "multicultural", "vi": "đa văn hóa", "emoji": "🌍🤝" },
+    { "en": "race", "vi": "chủng tộc", "emoji": "🧑🏻🧑🏿" },
+    { "en": "religious", "vi": "có tín ngưỡng, sùng đạo", "emoji": "🙏⛪" },
+    { "en": "senior", "vi": "người cao tuổi", "emoji": "👴👵" },
+    { "en": "tolerance", "vi": "sự khoan dung, bao dung", "emoji": "🕊️🤝" },
+    { "en": "youth", "vi": "giới trẻ, thanh niên", "emoji": "🧑‍🎓🎒" }
+  ]
+}

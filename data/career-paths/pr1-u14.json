@@ -1,0 +1,19 @@
+{
+  "book": 1,
+  "unit": 14,
+  "title": "The Budget",
+  "words": [
+    { "en": "afford", "vi": "có đủ tiền để trả, kham nổi", "emoji": "💳👌" },
+    { "en": "allocate", "vi": "phân bổ, dành ra cho mục đích", "emoji": "🥧➗" },
+    { "en": "budget", "vi": "ngân sách, kế hoạch chi tiêu", "emoji": "💰📊" },
+    { "en": "contingency", "vi": "tình huống bất ngờ, dự phòng", "emoji": "⚠️🧯" },
+    { "en": "cost", "vi": "chi phí, giá phải trả", "emoji": "💸🏷️" },
+    { "en": "fee", "vi": "phí dịch vụ, tiền công", "emoji": "🧾💵" },
+    { "en": "flat rate", "vi": "mức giá trọn gói cố định", "emoji": "📦💲" },
+    { "en": "out-of-pocket expense", "vi": "khoản chi tự bỏ tiền túi trước", "emoji": "👖💸" },
+    { "en": "reimburse", "vi": "hoàn tiền, trả lại tiền đã chi", "emoji": "💵↩️" },
+    { "en": "salary", "vi": "tiền lương", "emoji": "👔💰" },
+    { "en": "staff time", "vi": "giờ công của nhân viên", "emoji": "👩‍💼⏱️" },
+    { "en": "unexpected", "vi": "bất ngờ, không lường trước", "emoji": "😲❗" }
+  ]
+}

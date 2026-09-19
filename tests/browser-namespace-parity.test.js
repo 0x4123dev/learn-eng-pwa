@@ -97,7 +97,7 @@ suite('browser namespace parity: what the game actually calls must be there', ()
 // access on an object can silently miss, which is why that is what is checked.
 suite('browser namespace parity: no call anywhere reaches a member that does not exist', () => {
   const JS = path.join(ROOT, 'js');
-  const SKIP = /phaser\.min|-data\.js$|dictionary-data|math4-data|units-|exam-data|grammar-units|grammar-lessons|collocation-(data|followups)|phrases-(data|meanings)|wordform-(data|followups|lessons)|rewrite-(data|lessons)|math-(data|exams|lessons|source|fight-bank)|hot-words|topic-vocab/;
+  const SKIP = /phaser\.min|-data\.js$|dictionary-data|math4-data|units-|word-data|grammar-units|grammar-lessons|collocation-(data|followups)|phrases-(data|meanings)|wordform-(data|followups|lessons)|rewrite-(data|lessons)|math-(data|exams|lessons|source|fight-bank)|hot-words|topic-vocab/;
   const sourceFiles = fs.readdirSync(JS).filter(f => f.endsWith('.js') && !SKIP.test(f));
   const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"])\/\/[^\n]*/g, '$1');
 

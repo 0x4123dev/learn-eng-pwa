@@ -1,0 +1,16 @@
+{
+  "book": 1,
+  "unit": 10,
+  "title": "Types of Research",
+  "words": [
+    {"en": "archival", "vi": "thuộc về lưu trữ, tra cứu hồ sơ cũ", "emoji": "🗄️📜"},
+    {"en": "database", "vi": "cơ sở dữ liệu", "emoji": "💾🗃️"},
+    {"en": "focus group", "vi": "nhóm thảo luận tập trung", "emoji": "👥💬"},
+    {"en": "primary research", "vi": "nghiên cứu sơ cấp, thu thập dữ liệu mới", "emoji": "🆕📋"},
+    {"en": "qualitative", "vi": "định tính (về ý kiến, cảm nhận)", "emoji": "💭❤️"},
+    {"en": "quantitative", "vi": "định lượng (về số liệu)", "emoji": "🔢📊"},
+    {"en": "sampling", "vi": "mẫu đại diện, nhóm lấy mẫu", "emoji": "👤👥🎯"},
+    {"en": "secondary research", "vi": "nghiên cứu thứ cấp, dùng dữ liệu có sẵn", "emoji": "📚🔁"},
+    {"en": "survey", "vi": "cuộc khảo sát", "emoji": "📋✍️"}
+  ]
+}

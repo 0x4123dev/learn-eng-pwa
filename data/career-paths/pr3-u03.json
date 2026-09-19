@@ -1,0 +1,20 @@
+{
+  "book": 3,
+  "unit": 3,
+  "title": "Issues Management",
+  "words": [
+    { "en": "anticipate", "vi": "dự đoán trước, lường trước", "emoji": "🔮👀" },
+    { "en": "complex", "vi": "phức tạp", "emoji": "🧩🌀" },
+    { "en": "conflict", "vi": "mâu thuẫn, xung đột (động từ)", "emoji": "⚔️😠" },
+    { "en": "emerging", "vi": "mới nổi, đang hình thành", "emoji": "🌱📈" },
+    { "en": "familiarity", "vi": "sự quen thuộc, am hiểu", "emoji": "🧠✔️" },
+    { "en": "initiate", "vi": "khởi xướng, bắt đầu", "emoji": "🚦▶️" },
+    { "en": "issue", "vi": "vấn đề, chuyện rắc rối", "emoji": "❗📋" },
+    { "en": "issues management", "vi": "quản lý vấn đề, ngăn khủng hoảng", "emoji": "🗂️🛡️" },
+    { "en": "prevent", "vi": "ngăn chặn, phòng ngừa", "emoji": "🚫🛑" },
+    { "en": "risk communication", "vi": "truyền thông về rủi ro", "emoji": "⚠️📢" },
+    { "en": "scandal", "vi": "vụ bê bối, xì-căng-đan", "emoji": "📰😱" },
+    { "en": "strategic positioning", "vi": "định vị chiến lược, cách trình bày có lợi", "emoji": "♟️🎯" },
+    { "en": "surprise", "vi": "điều bất ngờ", "emoji": "😲🎁" }
+  ]
+}

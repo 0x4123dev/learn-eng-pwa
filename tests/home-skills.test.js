@@ -13,7 +13,7 @@ suite('home skills chart', () => {
     test('exposes all 9 skills in fixed order', () => {
         const env = envWith({});
         const keys = env.getHomeSkillStats().map(s => s.key);
-        assert.deepEqual(keys, ['vocab', 'units', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs', 'exam']);
+        assert.deepEqual(keys, ['vocab', 'units', 'word', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs']);
     });
 
     test('empty state: every skill has total 0 and pct 0', () => {
@@ -58,6 +58,19 @@ suite('home skills chart', () => {
         assert.equal(u.correct, 15); assert.equal(u.total, 20); assert.equal(u.pct, 75);
     });
 
+    // The Word tab (Career Paths, sets pr1/pr2/pr3) shares appState.unitsHistory
+    // with Grade 4 (js/units.js); rows are told apart by the set prefix on the
+    // unit key. A pr row must count for "word" and NOT for "units".
+    test('Word tab practice is split out of the shared units history', () => {
+        const env = envWith({ unitsHistory: [
+            { unit: 'hk1-3', score: 8, total: 10 }, { unit: 'mix', score: 7, total: 10 },
+            { unit: 'pr1-3', score: 3, total: 10 }, { unit: 'pr2-mix', score: 6, total: 10 },
+        ] });
+        const by = Object.fromEntries(env.getHomeSkillStats().map(s => [s.key, s]));
+        assert.equal(by.units.correct, 15); assert.equal(by.units.total, 20); assert.equal(by.units.pct, 75);
+        assert.equal(by.word.correct, 9); assert.equal(by.word.total, 20); assert.equal(by.word.pct, 45);
+    });
+
     // Wiring invariant: every practice type that stores history MUST show up
     // in the home statistics — a new tab whose history is forgotten here
     // renders "today: 0 questions" even after the student practiced (the
@@ -66,7 +79,7 @@ suite('home skills chart', () => {
         const one = (extra) => [Object.assign({ score: 4, total: 5, date: Date.now() }, extra)];
         const env = envWith({
             lessonHistory: [{ lessonNum: 0, accuracy: 80, date: Date.now() }],
-            unitsHistory: one({ unit: 1 }),
+            unitsHistory: one({ unit: 1 }).concat(one({ unit: 'pr1-1' })),
             grammarHistory: one({}),
             phrasesHistory: one({}),
             collocHistory: one({}),
@@ -74,16 +87,15 @@ suite('home skills chart', () => {
             rewriteHistory: one({}),
             speedChallenge: { history: [{ correct: 4, total: 5, date: Date.now() }] },
         });
-        // exam lives in localStorage (absent in the sandbox) — every appState-backed skill must be non-zero
+        // every appState-backed skill must be non-zero
         for (const s of env.getHomeSkillStats()) {
-            if (s.key === 'exam') continue;
             assert.truthy(s.total > 0, `skill "${s.key}" ignores its history`);
         }
         const sessions = env._homeSkillSessions();
-        for (const k of ['vocab', 'units', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs']) {
+        for (const k of ['vocab', 'units', 'word', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs']) {
             assert.equal((sessions[k] || []).length, 1, `sessions "${k}" not wired`);
         }
-        assert.equal(env._homeAllSessionsCount(), 8);
+        assert.equal(env._homeAllSessionsCount(), 9);
     });
 
     test('malformed history entries are tolerated (missing fields count as 0)', () => {

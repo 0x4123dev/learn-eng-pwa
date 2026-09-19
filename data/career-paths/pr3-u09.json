@@ -1,0 +1,18 @@
+{
+  "book": 3,
+  "unit": 9,
+  "title": "Legal Matters 3",
+  "words": [
+    { "en": "bribe", "vi": "hối lộ, đút lót", "emoji": "💵🤫" },
+    { "en": "charge with", "vi": "buộc tội, cáo buộc", "emoji": "👨‍⚖️👉" },
+    { "en": "conspiracy", "vi": "âm mưu, sự thông đồng", "emoji": "🤝🕶️" },
+    { "en": "convict", "vi": "kết án, kết tội (động từ)", "emoji": "🔨⛓️" },
+    { "en": "cooperate", "vi": "hợp tác, cộng tác", "emoji": "🤝👥" },
+    { "en": "cover-up", "vi": "sự che giấu, bưng bít", "emoji": "🙈📁" },
+    { "en": "criminal", "vi": "có tính tội phạm, phạm pháp nghiêm trọng", "emoji": "🦹🚔" },
+    { "en": "defense", "vi": "lời biện hộ, sự bào chữa", "emoji": "🛡️⚖️" },
+    { "en": "illegal", "vi": "bất hợp pháp, trái luật", "emoji": "🚫⚖️" },
+    { "en": "legal", "vi": "hợp pháp, đúng luật", "emoji": "✅⚖️" },
+    { "en": "liable", "vi": "phải chịu trách nhiệm pháp lý", "emoji": "👤⚖️" }
+  ]
+}

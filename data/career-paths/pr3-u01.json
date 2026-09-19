@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 1,
+  "title": "Influencing Public Opinion",
+  "words": [
+    { "en": "articulate", "vi": "nói năng lưu loát, rõ ràng", "emoji": "🗣️✨" },
+    { "en": "catalyst", "vi": "chất xúc tác, người thúc đẩy thay đổi", "emoji": "⚗️🔥" },
+    { "en": "clout", "vi": "quyền lực, thế lực ảnh hưởng", "emoji": "💪👑" },
+    { "en": "credible", "vi": "đáng tin cậy", "emoji": "✅🤝" },
+    { "en": "early adopter", "vi": "người tiên phong dùng sản phẩm mới", "emoji": "🚀📱" },
+    { "en": "formal opinion leader", "vi": "người dẫn dắt dư luận có chức quyền", "emoji": "👔🎤" },
+    { "en": "impact", "vi": "tác động, ảnh hưởng (danh từ)", "emoji": "💥📈" },
+    { "en": "influence", "vi": "gây ảnh hưởng, tác động đến (động từ)", "emoji": "🧲🧠" },
+    { "en": "informal opinion leader", "vi": "người dẫn dắt dư luận không chính thức", "emoji": "⭐👥" },
+    { "en": "informed", "vi": "hiểu biết, nắm rõ thông tin", "emoji": "📰🧠" },
+    { "en": "peer pressure", "vi": "áp lực từ bạn bè đồng trang lứa", "emoji": "👥➡️😰" },
+    { "en": "public opinion", "vi": "dư luận, ý kiến công chúng", "emoji": "🌍💬" }
+  ]
+}

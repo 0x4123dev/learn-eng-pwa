@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 4,
+  "title": "Marketing and PR",
+  "words": [
+    { "en": "advertising", "vi": "quảng cáo", "emoji": "📺🪧" },
+    { "en": "campaign", "vi": "chiến dịch", "emoji": "🚩📅" },
+    { "en": "credibility", "vi": "độ tin cậy, uy tín", "emoji": "✅🛡️" },
+    { "en": "endorsement", "vi": "sự chứng thực, ủng hộ công khai", "emoji": "👍🌟" },
+    { "en": "integrated", "vi": "tích hợp, kết hợp nhiều phương pháp", "emoji": "🧩🔗" },
+    { "en": "marketing", "vi": "tiếp thị", "emoji": "📣🛍️" },
+    { "en": "sales lead", "vi": "khách hàng tiềm năng", "emoji": "🎯🧑" },
+    { "en": "sales literature", "vi": "tài liệu giới thiệu bán hàng", "emoji": "📄🛒" },
+    { "en": "third-party", "vi": "bên thứ ba, người ngoài cuộc", "emoji": "🧑‍⚖️↔️" },
+    { "en": "timely", "vi": "đúng lúc, kịp thời", "emoji": "⏰✅" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "book": 3,
+  "unit": 15,
+  "title": "Careers",
+  "words": [
+    { "en": "account coordinator", "vi": "điều phối viên khách hàng (vị trí mới vào nghề)", "emoji": "🗂️📞" },
+    { "en": "account executive", "vi": "nhân viên quản lý khách hàng", "emoji": "💼🤝" },
+    { "en": "campaign manager", "vi": "người quản lý chiến dịch", "emoji": "📣📋👔" },
+    { "en": "director of communications", "vi": "giám đốc truyền thông", "emoji": "👔📡🏢" },
+    { "en": "graphic designer", "vi": "nhà thiết kế đồ họa", "emoji": "🎨🖥️" },
+    { "en": "media agent", "vi": "người trung gian giữa khách hàng và báo chí", "emoji": "🤵📰🔗" },
+    { "en": "PR specialist", "vi": "chuyên viên quan hệ công chúng", "emoji": "🗣️📣" },
+    { "en": "press representative", "vi": "người đại diện phát ngôn với báo chí", "emoji": "🎤📰" },
+    { "en": "press secretary", "vi": "thư ký báo chí", "emoji": "🎙️🏛️" },
+    { "en": "publicist", "vi": "người làm công tác quảng bá, chuyên viên PR", "emoji": "📢📝" },
+    { "en": "researcher", "vi": "người nghiên cứu, tra cứu thông tin", "emoji": "🔍📊" }
+  ]
+}

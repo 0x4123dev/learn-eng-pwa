@@ -1,0 +1,18 @@
+{
+  "book": 1,
+  "unit": 9,
+  "title": "Conducting Research",
+  "words": [
+    { "en": "analyze", "vi": "phân tích", "emoji": "🔍📊" },
+    { "en": "data", "vi": "dữ liệu, số liệu", "emoji": "📈🔢" },
+    { "en": "fact", "vi": "sự thật, điều có thể chứng minh", "emoji": "✅📌" },
+    { "en": "formal", "vi": "chính thức, có quy củ", "emoji": "📋🎩" },
+    { "en": "informal", "vi": "không chính thức, thân mật", "emoji": "☕🗣️" },
+    { "en": "measure", "vi": "đo lường, đo mức độ", "emoji": "📏⚖️" },
+    { "en": "monitor", "vi": "theo dõi sát, giám sát", "emoji": "👀📡" },
+    { "en": "report", "vi": "báo cáo, tường thuật (động từ)", "emoji": "📝🗣️" },
+    { "en": "research", "vi": "nghiên cứu, tìm hiểu thông tin", "emoji": "🔬📚" },
+    { "en": "results", "vi": "kết quả (sau thử nghiệm)", "emoji": "🏁📊" },
+    { "en": "test", "vi": "thử nghiệm, phép thử", "emoji": "🧪📝" }
+  ]
+}

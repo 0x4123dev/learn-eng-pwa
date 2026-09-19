@@ -133,8 +133,8 @@ const EXITS = [
     go: async (h) => { tap(h, "switchScreen('mathHubScreen')"); await settle(12); } },
   { name: 'the Arena tab on the bottom bar (openPetBattle)', leavesScreen: true, nav: 'arena',
     go: async (h) => { const p = tap(h, 'openPetBattle()'); await p; await settle(12); } },
-  { name: 'the Exam tab on the bottom bar', leavesScreen: true, nav: 'exam',
-    go: async (h) => { tap(h, "switchScreen('examScreen')"); await settle(); } },
+  { name: 'the Word tab on the bottom bar', leavesScreen: true, nav: 'word',
+    go: async (h) => { tap(h, "switchScreen('wordScreen')"); await settle(); } },
   { name: 'the Daily Task screen (DailyTask.open)', leavesScreen: true, nav: 'home',
     go: async (h) => { tap(h, 'DailyTask.open()'); await settle(); } },
 ];

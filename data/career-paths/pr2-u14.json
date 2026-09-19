@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 14,
+  "title": "Appearances",
+  "words": [
+    { "en": "briefing", "vi": "buổi thông báo tóm tắt cho báo chí", "emoji": "📋🗣️" },
+    { "en": "guest", "vi": "khách mời (trên chương trình)", "emoji": "🙋🎤" },
+    { "en": "interview", "vi": "cuộc phỏng vấn", "emoji": "🎤❓" },
+    { "en": "issues placement", "vi": "lồng ghép vấn đề xã hội vào chương trình", "emoji": "🌍📺💡" },
+    { "en": "media tour", "vi": "chuyến tham quan cơ sở dành cho phóng viên", "emoji": "🏭🚶📸" },
+    { "en": "news conference", "vi": "cuộc họp báo", "emoji": "🎤🎤📰" },
+    { "en": "opening statement", "vi": "lời phát biểu mở đầu", "emoji": "🗣️▶️" },
+    { "en": "press party", "vi": "tiệc chiêu đãi phóng viên", "emoji": "🥂📰" },
+    { "en": "product placement", "vi": "quảng cáo sản phẩm lồng trong phim, chương trình", "emoji": "🛍️🎬" },
+    { "en": "spokesperson", "vi": "người phát ngôn", "emoji": "🧑‍💼🎤" },
+    { "en": "spontaneous", "vi": "ứng khẩu, không chuẩn bị trước", "emoji": "⚡🗣️" },
+    { "en": "talk show", "vi": "chương trình trò chuyện trên truyền hình", "emoji": "🛋️🎙️📺" }
+  ]
+}

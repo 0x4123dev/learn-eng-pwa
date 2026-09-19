@@ -3,7 +3,7 @@
 // exists on disk (one test per asset), checks CACHE_NAME shape, verifies every
 // <script src> in index.html resolves to a real file and that data files load
 // BEFORE their consumers (phrases-data < phrases, wordform-data < wordform,
-// exam-data < exam, auth < app), validates manifest.json PWA fields + icon
+// exam < ptnk, auth < app), validates manifest.json PWA fields + icon
 // files, and locks APP_VERSION <-> package.json consistency.
 // Complements tests/extra-coverage.test.js (aggregate js/-dir <-> ASSETS sync);
 // this file goes per-asset and adds index.html + manifest coverage.
@@ -378,17 +378,29 @@ suite('gen: index.html script tags', () => {
         assert.contains(ASSETS, '/js/wordform-data.js', 'and must stay cached for offline use');
     });
 
-    test('the exam bank is deferred, and the Exam tab waits for it', () => {
-        // exam-data.js is 1.5 MB and no longer blocks the first paint. The
-        // ordering rule it used to satisfy is replaced by a stronger one:
+    test('the word bank is deferred, and the Word tab waits for it', () => {
+        // word-data.js does not block the first paint. The ordering rule a
+        // data file used to satisfy is replaced by a stronger one:
         // switchScreen renders the tab only after the bank has loaded.
         // See tests/lazy-data.test.js.
-        assert.equal(SCRIPT_SRCS.indexOf('js/exam-data.js'), -1,
-            'the 1.5 MB exam bank must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/exam.js') !== -1, 'the tab code still ships eagerly');
+        assert.equal(SCRIPT_SRCS.indexOf('js/word-data.js'), -1,
+            'the word bank must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/units.js') !== -1, 'the tab code still ships eagerly');
         const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        assert.truthy(/examScreen:\s*\[[^\]]*js\/exam-data\.js/.test(lazy),
-            'exam-data.js must be listed under examScreen in the loader');
+        assert.truthy(/wordScreen:\s*\[[^\]]*js\/word-data\.js/.test(lazy),
+            'word-data.js must be listed under wordScreen in the loader');
+        assert.contains(ASSETS, '/js/word-data.js', 'and must stay cached for offline use');
+    });
+
+    test('the PTNK bank is deferred, and the timed-paper engine ships eagerly', () => {
+        assert.equal(SCRIPT_SRCS.indexOf('js/ptnk-data.js'), -1,
+            'the PTNK bank must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/exam.js') !== -1, 'the engine still ships eagerly');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/ptnk.js') > SCRIPT_SRCS.indexOf('js/exam.js'),
+            'ptnk.js registers EXAM_SETS.ptnk, so the engine must load first');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        assert.truthy(/ptnkScreen:\s*\[[^\]]*js\/ptnk-data\.js/.test(lazy),
+            'ptnk-data.js must be listed under ptnkScreen in the loader');
     });
 
     test('ordering: auth.js loads before app.js', () => {

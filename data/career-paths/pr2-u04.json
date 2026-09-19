@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 4,
+  "title": "Corporations",
+  "words": [
+    { "en": "cause-related marketing", "vi": "tiếp thị gắn với hoạt động từ thiện", "emoji": "🛒❤️" },
+    { "en": "consumer activism", "vi": "người tiêu dùng phản đối, đòi công ty thay đổi", "emoji": "🛒✊" },
+    { "en": "corporate social responsibility", "vi": "trách nhiệm xã hội của doanh nghiệp", "emoji": "🏢🌱🤝" },
+    { "en": "corporate sponsorship", "vi": "tài trợ của doanh nghiệp", "emoji": "🏢💰🏆" },
+    { "en": "corporation", "vi": "tập đoàn, công ty lớn", "emoji": "🏢" },
+    { "en": "customer relations", "vi": "quan hệ với khách hàng", "emoji": "🤝🛍️" },
+    { "en": "employee relations", "vi": "quan hệ với nhân viên", "emoji": "🤝👷" },
+    { "en": "environmental relations", "vi": "cách công ty ứng xử với môi trường", "emoji": "🏢🌳♻️" },
+    { "en": "negative", "vi": "tiêu cực, xấu", "emoji": "👎☁️" },
+    { "en": "philanthropy", "vi": "hoạt động từ thiện, làm phúc", "emoji": "🎁❤️" },
+    { "en": "protest", "vi": "cuộc biểu tình phản đối", "emoji": "📢✊" },
+    { "en": "publicity", "vi": "sự thu hút chú ý của công chúng", "emoji": "📣👀" }
+  ]
+}

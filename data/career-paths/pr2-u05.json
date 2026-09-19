@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 5,
+  "title": "Politics and Government",
+  "words": [
+    { "en": "big business", "vi": "giới doanh nghiệp lớn, các công ty lớn", "emoji": "🏢💰" },
+    { "en": "election", "vi": "cuộc bầu cử", "emoji": "🗳️" },
+    { "en": "government agency", "vi": "cơ quan chính phủ", "emoji": "🏛️📋" },
+    { "en": "grassroots", "vi": "từ quần chúng, từ người dân thường", "emoji": "🌱👥" },
+    { "en": "lobby", "vi": "vận động hành lang (động từ)", "emoji": "🗣️🏛️" },
+    { "en": "military", "vi": "thuộc quân đội, quân sự", "emoji": "🪖" },
+    { "en": "municipal", "vi": "thuộc chính quyền địa phương, thành phố", "emoji": "🏙️🏛️" },
+    { "en": "political", "vi": "thuộc chính trị", "emoji": "🎤🏛️" },
+    { "en": "public information", "vi": "thông tin công khai của chính phủ", "emoji": "📂🔓" },
+    { "en": "regulation", "vi": "sự quản lý bằng quy định, luật lệ", "emoji": "📜⚖️" },
+    { "en": "special interest", "vi": "nhóm lợi ích, nhóm vận động chính sách", "emoji": "👥🎯🏛️" },
+    { "en": "voter", "vi": "cử tri, người đi bầu", "emoji": "🧑🗳️" }
+  ]
+}

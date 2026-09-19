@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 1,
+  "title": "The Role of Public Relations",
+  "words": [
+    { "en": "advocate", "vi": "người bênh vực, người ủng hộ", "emoji": "🙋📣" },
+    { "en": "communication", "vi": "sự giao tiếp, truyền đạt thông tin", "emoji": "💬🗣️" },
+    { "en": "deliberate", "vi": "có chủ ý, được cân nhắc trước", "emoji": "🤔⚖️" },
+    { "en": "dissemination", "vi": "sự phổ biến, lan truyền thông tin", "emoji": "📡📨" },
+    { "en": "manage", "vi": "quản lý, điều hành", "emoji": "👔📋" },
+    { "en": "mutually beneficial", "vi": "đôi bên cùng có lợi", "emoji": "🤝💚" },
+    { "en": "positive", "vi": "tích cực, tốt đẹp", "emoji": "😊👍" },
+    { "en": "public relations", "vi": "quan hệ công chúng", "emoji": "🏢📣👥" },
+    { "en": "public", "vi": "công chúng, mọi người", "emoji": "👥🌍" },
+    { "en": "strategy", "vi": "chiến lược, kế hoạch hành động", "emoji": "♟️🗺️" }
+  ]
+}

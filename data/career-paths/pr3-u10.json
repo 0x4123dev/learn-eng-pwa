@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 10,
+  "title": "Ethics 1",
+  "words": [
+    { "en": "best interest", "vi": "lợi ích tốt nhất", "emoji": "🎯👍" },
+    { "en": "competition", "vi": "sự cạnh tranh", "emoji": "🏁🏃" },
+    { "en": "confidential", "vi": "bí mật, mật", "emoji": "🤫🔒" },
+    { "en": "conflict of interest", "vi": "xung đột lợi ích", "emoji": "⚔️💼" },
+    { "en": "disclosure", "vi": "sự tiết lộ, công bố thông tin", "emoji": "📢📂" },
+    { "en": "discretion", "vi": "sự thận trọng, kín đáo", "emoji": "🤔🤐" },
+    { "en": "ethics", "vi": "đạo đức, luân lý nghề nghiệp", "emoji": "⚖️😇" },
+    { "en": "evasive", "vi": "lảng tránh, né tránh trả lời", "emoji": "🙊↩️" },
+    { "en": "free flow of information", "vi": "dòng thông tin tự do, thông tin lưu thông tự do", "emoji": "🌊📰" },
+    { "en": "gift", "vi": "món quà", "emoji": "🎁" },
+    { "en": "obligation", "vi": "nghĩa vụ, bổn phận", "emoji": "📜🫡" },
+    { "en": "proprietary", "vi": "thuộc sở hữu riêng, độc quyền", "emoji": "🔐🏢" }
+  ]
+}

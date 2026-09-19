@@ -1,9 +1,11 @@
-// ptnk-tab.test.js — 🏫 PTNK: a second set of papers on the Exam tab's engine.
+// ptnk-tab.test.js — 🏫 PTNK: the real papers as a set on the shared exam engine.
 //
 // The engine in js/exam.js draws for whichever SET is current, and this file
-// exists to prove the two sets never touch: a PTNK paper must not appear in
-// the HCMC history, a PTNK bonus must not be paid on an HCMC paper, and a
-// PTNK id must never be looked up in the HCMC bank. Every test here runs the
+// exists to prove the sets never touch: a PTNK paper must not appear in a
+// practice menu's history, a PTNK bonus must not be paid on a practice paper,
+// and a PTNK id must never be looked up in another set's bank. The sibling
+// here is the Reading practice set (js/practice-sets.js), the way index.html
+// loads it: engine first, then each set registers itself. Every test runs the
 // real engine in a vm context with a small stub bank, so it does not depend on
 // the transcribed papers having landed yet — tests/ptnk-data.test.js covers
 // those.
@@ -15,8 +17,17 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
-// Two tiny papers — enough to score, bonus, and tell apart.
+// Two tiny papers — enough to score, bonus, and tell apart — and one reading
+// passage for the sibling set.
 const STUB_BANK = `
+const READING_PASSAGES = [
+  { id: 'rd-kc-01-1', level: 'kc', title: 'The School Garden', topic: 'school life', words: 260,
+    passage: 'Para one about a garden.',
+    questions: [
+      { kind: 'main-idea', type: 'mcq', q: 'Main idea?', options: ['a','b','c','d'], correct: 2, explanation: 'because the passage says so' },
+      { kind: 'detail', type: 'mcq', q: 'Which?', options: ['a','b','c','d'], correct: 1, explanation: 'stated in para one' },
+    ] },
+];
 const PTNK_EXAMS = [
   { id: 'ptnk-2022-chuyen', year: 2022, track: 'chuyen', title: 'PTNK 2022 · Tiếng Anh Chuyên',
     subtitle: 'stub', durationMin: 120, keySource: 'official', source: 'x.pdf',
@@ -61,12 +72,12 @@ function world(extra) {
     confirm: () => true,
     recordStudy: () => {},
   }, extra || {}));
-  for (const f of ['js/exam-data.js', 'js/exam.js', 'js/ptnk.js']) vm.runInContext(read(f), ctx, { filename: f });
+  for (const f of ['js/exam.js', 'js/ptnk.js', 'js/practice-sets.js']) vm.runInContext(read(f), ctx, { filename: f });
   // Top-level const/let in a classic script is lexically scoped to that
   // script — visible to the OTHER scripts in the context (which is how
   // js/ptnk.js registers onto EXAM_SETS) but not to us through `ctx.X`.
   // Hand over the two the tests need to read.
-  vm.runInContext(STUB_BANK + '\nglobalThis.__EXAMS = EXAMS;'
+  vm.runInContext(STUB_BANK
     + '\nglobalThis.__sets = EXAM_SETS;'
     + '\nglobalThis.__state = () => _examState;', ctx, { filename: 'stub.js' });
   return { ctx, nav, els, store };
@@ -94,19 +105,21 @@ suite('PTNK: the set is registered and separate', () => {
     const { ctx } = world();
     assert.truthy(ctx.__sets.ptnk, 'no ptnk set');
     assert.equal(ctx.__sets.ptnk.screen, 'ptnkScreen');
-    assert.equal(ctx.__sets.hcmc.screen, 'examScreen');
+    assert.equal(ctx.__sets.reading.screen, 'readingScreen');
     assert.equal(ctx.__sets.ptnk.perfectBonus, 50);
-    assert.equal(ctx.__sets.hcmc.perfectBonus, 0, 'the HCMC papers must not gain a bonus by accident');
-    assert.equal(ctx.__sets.ptnk.coinsPerCorrect, ctx.__sets.hcmc.coinsPerCorrect, 'one engine, one rate');
+    assert.equal(ctx.__sets.reading.perfectBonus, 0, 'the practice papers must not gain a bonus by accident');
+    assert.equal(ctx.__sets.ptnk.coinsPerCorrect, ctx.__sets.reading.coinsPerCorrect, 'one engine, one rate');
   });
 
-  test('a PTNK id is found in the PTNK bank and NOT in the HCMC bank', () => {
+  test('a PTNK id is found in the PTNK bank and NOT in another set\'s bank', () => {
     const { ctx } = world();
+    assert.equal(ctx.examCurrentSet(), null, 'no set is selected at load');
+    assert.equal(ctx.examLookup('ptnk-2022-chuyen'), null, 'with no set selected the engine answers for nobody');
     ctx.examSelectSet('ptnk');
     assert.truthy(ctx.examLookup('ptnk-2022-chuyen'), 'the paper must open from its own set');
-    ctx.examSelectSet('hcmc');
-    assert.equal(ctx.examLookup('ptnk-2022-chuyen'), null, 'the HCMC set must not answer for a PTNK id');
-    assert.truthy(ctx.examLookup(ctx.__EXAMS[0].id), 'and still finds its own papers');
+    ctx.examSelectSet('reading');
+    assert.equal(ctx.examLookup('ptnk-2022-chuyen'), null, 'the Reading set must not answer for a PTNK id');
+    assert.truthy(ctx.examLookup('rd-kc-01-1'), 'and still finds its own papers');
   });
 
   test('a paper from the built bank reaches the engine with its passage on every question', () => {
@@ -150,9 +163,13 @@ suite('PTNK: the set is registered and separate', () => {
   });
 
   test('startPtnkExam pins the set even when nothing chose it first', () => {
-    // The daily-task deep link lands here cold.
+    // The daily-task deep link lands here cold — or after another set.
     const { ctx } = world();
-    ctx.examSelectSet('hcmc');
+    ctx.startPtnkExam('ptnk-2024-kc');
+    assert.truthy(ctx.isExamActive(), 'the paper did not start with no set selected');
+    assert.equal(ctx.examCurrentSet(), 'ptnk');
+    ctx.abandonExam();
+    ctx.examSelectSet('reading');
     ctx.startPtnkExam('ptnk-2024-kc');
     assert.truthy(ctx.isExamActive(), 'the paper did not start');
     assert.equal(ctx.examCurrentSet(), 'ptnk');
@@ -182,33 +199,33 @@ suite('PTNK: coins', () => {
     assert.equal(ctx.appState.ptnkHistory[0].perfectBonus, 0);
   });
 
-  test('a perfect HCMC paper still earns NO bonus', () => {
+  test('a perfect practice paper still earns NO bonus', () => {
     const { ctx } = world();
-    const hcmc = ctx.__EXAMS.find(e => e.questions.length <= 45);
     ctx.appState.coins = 0;
-    ctx.startExam(hcmc.id, 'hcmc');
+    ctx.startExam('rd-kc-01-1', 'reading');
     sit(ctx, true);
-    assert.equal(ctx.appState.coins, hcmc.questions.length * 5, 'the HCMC rate is 5 a question and nothing more');
+    assert.equal(ctx.appState.coins, 2 * 5, 'the practice rate is 5 a question and nothing more');
   });
 });
 
-suite('PTNK: history never crosses into the HCMC history', () => {
-  test('a PTNK attempt lands on appState.ptnkHistory, not in the Exam tab key', () => {
+suite('PTNK: history never crosses into another set\'s history', () => {
+  test('a PTNK attempt lands on appState.ptnkHistory, not in a practice history', () => {
     const { ctx, store } = world();
     ctx.startExam('ptnk-2022-chuyen', 'ptnk');
     sit(ctx, true);
     assert.equal(ctx.appState.ptnkHistory.length, 1);
     assert.equal(ctx.appState.ptnkHistory[0].examId, 'ptnk-2022-chuyen');
     assert.equal(ctx.appState.ptnkHistory[0].set, 'ptnk');
-    assert.falsy(store.flashlingo_examHistory, 'the HCMC localStorage key must stay empty');
+    assert.equal((ctx.appState.readingHistory || []).length, 0, 'the Reading history must stay empty');
+    assert.deepEqual(Object.keys(store), [], 'nothing is written to a localStorage key of its own');
   });
 
-  test('an HCMC attempt stays in the Exam tab key and never touches ptnkHistory', () => {
-    const { ctx, store } = world();
-    const hcmc = ctx.__EXAMS[0];
-    ctx.startExam(hcmc.id, 'hcmc');
+  test('a practice attempt stays in its own history and never touches ptnkHistory', () => {
+    const { ctx } = world();
+    ctx.startExam('rd-kc-01-1', 'reading');
     sit(ctx, false);
-    assert.truthy(store.flashlingo_examHistory, 'the HCMC attempt must be written where it always was');
+    assert.equal(ctx.appState.readingHistory.length, 1, 'the Reading attempt must be written where it always was');
+    assert.equal(ctx.appState.readingHistory[0].set, 'reading');
     assert.equal((ctx.appState.ptnkHistory || []).length, 0);
   });
 
@@ -269,7 +286,7 @@ suite('PTNK: wiring', () => {
     assert.truthy(html.indexOf('js/exam.js') < html.indexOf('js/ptnk.js'), 'ptnk.js must load after the engine it registers onto');
   });
 
-  test('the bank is lazy and precached, like the Exam bank', () => {
+  test('the bank is lazy and precached, like the practice banks', () => {
     const lazy = require(path.join(ROOT, 'js', 'lazy-data.js'));
     assert.deepEqual(lazy.SCREEN_FILES.ptnkScreen, ['js/ptnk-data.js']);
     const sw = read('sw.js');
@@ -284,7 +301,7 @@ suite('PTNK: wiring', () => {
 
   test('the study checkpoint saves and restores the SET, not just the state', () => {
     // A paper saved mid-way must come back on the PTNK screen in the PTNK
-    // set, or it is drawn on the HCMC tab and scored into the HCMC history.
+    // set, or it is drawn on another set's screen and scored into its history.
     const app = read('js/app.js');
     assert.truthy(app.includes('EXAM_SETS[_examState.set].screen'), 'checkpoint must save the set\'s own screen');
     assert.truthy(app.includes('examSelectSet(s.set)'), 'restore must re-select the set before drawing');
@@ -292,8 +309,8 @@ suite('PTNK: wiring', () => {
 
   test('the exit guard covers the PTNK screen too', () => {
     const app = read('js/app.js');
-    assert.truthy(app.includes("_examSetCfg().screen : 'examScreen'"),
-      'switchScreen must compare against the live set\'s screen, not a hard-coded examScreen');
+    assert.truthy(app.includes("_examSetCfg().screen : 'ptnkScreen'"),
+      'switchScreen must compare against the live set\'s screen, not a hard-coded one');
   });
 
   test('an attempt is uploaded as an exam activity carrying examId', () => {

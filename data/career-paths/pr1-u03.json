@@ -1,0 +1,18 @@
+{
+  "book": 1,
+  "unit": 3,
+  "title": "Services",
+  "words": [
+    { "en": "adjunct", "vi": "bộ phận hỗ trợ bên ngoài, phụ trợ", "emoji": "➕🏢" },
+    { "en": "agency", "vi": "công ty dịch vụ, hãng", "emoji": "🏢💼" },
+    { "en": "branding", "vi": "xây dựng thương hiệu", "emoji": "🏷️✨" },
+    { "en": "corporate reputation", "vi": "danh tiếng của công ty", "emoji": "🏢⭐" },
+    { "en": "counseling", "vi": "sự tư vấn, cố vấn", "emoji": "🗣️💡" },
+    { "en": "events management", "vi": "tổ chức và quản lý sự kiện", "emoji": "🎉📋" },
+    { "en": "financial relations", "vi": "quan hệ tài chính với nhà đầu tư", "emoji": "💵🤝" },
+    { "en": "firm", "vi": "công ty, hãng (danh từ)", "emoji": "🏬" },
+    { "en": "in-house", "vi": "nội bộ, do người trong công ty làm", "emoji": "🏠👔" },
+    { "en": "perception", "vi": "nhận thức, cách nhìn nhận", "emoji": "👁️🧠" },
+    { "en": "speech training", "vi": "huấn luyện kỹ năng nói trước đám đông", "emoji": "🎤🎓" }
+  ]
+}

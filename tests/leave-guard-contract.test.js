@@ -146,6 +146,15 @@ async function openGrade4(h) {
   assert.equal(activeScreen(h), 'gradeFourScreen');
 }
 
+// --- the Word tab (wordScreen): the same engine as Grade 4, its own screen,
+// its own bank (js/word-data.js, lazy) and its own owed-words queue ('word').
+async function openWordTab(h) {
+  assert.equal(h.sandbox.switchScreen('wordScreen'), true);               // the bottom-bar button
+  await h.sandbox.LazyData.ensure('wordScreen'); await settle();
+  assert.equal(activeScreen(h), 'wordScreen');
+  assert.truthy(h.el('wordUnitsBar').innerHTML.includes("startUnitPractice('pr1-1')"), 'Book 1 · Unit 1 is on the bar');
+}
+
 // --- the shared retry drill (js/retrydrill.js) ---
 function drillSnap(h, screenId) {
   const d = h.peek('_retryDrill');
@@ -180,7 +189,7 @@ function grammarFinish(h, wrong) {
   assert.truthy(/grammar-result-card/.test(h.el('grammarScreen').innerHTML), 'the result card is up');
 }
 
-// --- the exam engine (js/exam.js: HCMC, PTNK and the five practice menus) ---
+// --- the exam engine (js/exam.js: PTNK and the five practice menus) ---
 function examAnswer(h) {
   const s = h.peek('_examState');
   const q = s.questions[s.idx];
@@ -207,7 +216,9 @@ function examEntry(id, screen, set, startFn, afterOpen) {
   };
 }
 examEntry.STARTS = {
-  hcmc: ['startExam'], ptnk: ['startPtnkExam'],
+  // startExam is the engine's own entry (js/exam.js): owned here once, by the
+  // PTNK set, on behalf of every set that registers on the engine.
+  ptnk: ['startPtnkExam', 'startExam'],
   reading: ['startReadingPractice', 'startReadingPassage'], cloze: ['startClozePractice', 'startClozePassage'],
   errors: ['startErrorsPractice', 'startErrorsRound'], grammarvocab: ['startGrammarVocabPractice', 'startGrammarVocabRound'],
   phonetics: ['startPhoneticsPractice', 'startPhoneticsRound'],
@@ -456,6 +467,45 @@ const ACTIVITIES = [
     },
     snap: (h) => drillSnap(h, 'gradeFourScreen') },
 
+  // --- the Word tab and its owed-words drill: js/units.js again, on wordScreen (UNIT_HOSTS.word) ---
+  { id: 'word practice', screen: 'wordScreen', busy: 'isUnitPracticeActive',
+    // startUnitPractice is shared with Grade 4 above; the key's set picks the host.
+    claims: { starts: ['startUnitPractice'] },
+    start: async (h) => {
+      login(h);
+      await openWordTab(h);
+      tap(h, 'wordUnitsBar', /^startUnitPractice\('pr1-1'\)$/);           // Book 1 · Unit 1
+      const st = h.peek('_unitQuiz');
+      assert.equal(st.unit, 'pr1-1', 'the Word practice is running');
+      assert.equal(h.sandbox.unitPracticeScreen(), 'wordScreen', 'and it belongs to the Word screen');
+      assert.truthy(h.el('wordDetail').innerHTML.includes('unitTextInput'), 'its answer box is on the Word screen');
+      h.el('unitTextInput').value = st.questions[st.idx].w.en;
+      h.sandbox.submitUnitAnswer();
+      tap(h, 'wordDetail', /^nextUnitQuestion\(/);
+      assert.equal(h.peek('_unitQuiz').idx, 1, 'question 2 is open');
+    },
+    snap: (h) => { const s = h.peek('_unitQuiz'); return JSON.stringify({ idx: s.idx, answers: s.answers, screen: h.el('wordDetail').innerHTML }); } },
+  { id: 'word drill', screen: 'wordScreen', busy: (h) => h.sandbox.retryDrillKey() === 'word',
+    claims: { drills: ['word'] },
+    start: async (h) => {
+      login(h);
+      await openWordTab(h);                                                // the bank is lazy: ids need its words
+      const bank = h.peek('UNIT_WORDS_PR1');
+      h.state().wordRetry = ['pr1|' + bank[0].en, 'pr1|' + bank[1].en];
+      h.sandbox.saveUserData(h.peek('currentUser'), h.state());
+      h.sandbox.renderWordHome();
+      assert.equal(h.sandbox.retryCount('word'), 2, 'two words are owed on the Word tab');
+      assert.equal(h.sandbox.retryCount('units'), 0, 'and none on Grade 4');
+      tap(h, 'wordUnitsBar', /^startRetryDrill\('word'\)$/);
+      assert.truthy(h.el('retryInput'), 'the first owed word is on screen');
+      const st = h.peek('_retryDrill');
+      h.el('retryInput').value = st.queue[0].en;
+      h.sandbox.submitRetryAnswer();
+      tap(h, 'wordDetail', /^nextRetryQuestion\(\)$/);
+      assert.truthy(h.sandbox.isRetryDrillActive(), 'one word fixed, one still owed');
+    },
+    snap: (h) => drillSnap(h, 'wordScreen') },
+
   // --- Irregular Verbs speed run and its owed-verbs drill (js/verbs.js) ---
   { id: 'verbs speed run', screen: 'speedChallengeScreen', busy: 'isSpeedGameActive',
     claims: { starts: ['startSpeedChallenge'] },
@@ -520,8 +570,7 @@ const ACTIVITIES = [
     },
     snap: (h) => { const s = gq(h); return JSON.stringify({ idx: s.currentIdx, answers: s.answers, screen: h.el('grammarScreen').innerHTML }); } },
 
-  // --- the exam engine: HCMC, PTNK and the five practice menus (js/exam.js) ---
-  examEntry('exam (hcmc)', 'examScreen', 'hcmc', 'confirmStartExam'),
+  // --- the exam engine: PTNK and the five practice menus (js/exam.js) ---
   examEntry('ptnk', 'ptnkScreen', 'ptnk', 'startPtnkExam'),
   examEntry('reading', 'readingScreen', 'reading', 'startReadingPractice'),
   examEntry('cloze', 'clozeScreen', 'cloze', 'startClozePractice'),
@@ -823,7 +872,6 @@ const START_NOT_EXERCISES = {
     still: () => !/id="battleCard"/.test(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8')) && !/[^\w]renderBattleCard\(\)/.test(fs.readFileSync(path.join(ROOT, 'js', 'battle.js'), 'utf8').replace(/function renderBattleCard\(\)/, '')) },
   startBattle: { why: 'js/battle.js — see openBattleSetup' },
   startPlayerRound: { why: 'js/battle.js — see openBattleSetup' },
-  openExamLesson: { why: 'a lesson page (reading), leave-guard-exam-engine' },
   openGrammarLesson: { why: 'a lesson page (reading), leave-guard-grammar "the lesson view"' },
   openPhoneticsLesson: { why: 'a lesson page (reading), leave-guard-exam-engine "Lessons sub-tab"' },
   openMathLesson: { why: 'a lesson page (reading), leave-guard-math7 "the lesson page is reading"' },
@@ -838,6 +886,7 @@ const START_NOT_EXERCISES = {
   startPetRename: { why: "the pet's name box on Home" },
   openMathSection: { why: 'Math hub navigation; while a round is live it repaints the round, and it asks before dropping one (leave-guard-math7 / math4-wars hub back buttons)' },
   openGrade4: { why: 'the Grade 4 hub (unit cards)' },
+  openWord: { why: 'the Word hub (unit cards) — js/units.js UNIT_HOSTS.word; its practice is "word practice" above' },
   openTopicDetail: { why: 'a Topics detail page (lesson cards)' },
   openReviewDetail: { why: 'the Topics "Review Mistakes" detail page (lesson cards)' },
 };
@@ -859,6 +908,18 @@ function braced(src, from) {
     else if (src[j] === '}' && --depth === 0) return src.slice(i, j + 1);
   }
   return src.slice(i);
+}
+
+// The text from `from` to the `;` that ends the statement, brackets balanced.
+function statement(src, from) {
+  let depth = 0;
+  for (let j = from; j < src.length; j++) {
+    const c = src[j];
+    if (c === '{' || c === '(' || c === '[') depth++;
+    else if (c === '}' || c === ')' || c === ']') depth--;
+    else if (c === ';' && depth === 0) return src.slice(from, j + 1);
+  }
+  return src.slice(from);
 }
 
 // (a) every top-level is*Active() → { name: file }
@@ -903,7 +964,14 @@ function scrapeDrillKeys() {
       if (m[1] === 'cfg') continue;                       // the engine's own declaration
       let body;
       if (m[1] === '{') body = braced(f.src, m.index);
-      else { const d = f.src.indexOf('const ' + m[1] + ' = {'); assert.truthy(d >= 0, f.name + ': ' + m[1] + ' is declared'); body = braced(f.src, d); }
+      else {
+        // A literal (`const X = {…}`) or one derived from another config
+        // (`const X = Object.assign({}, BASE, { key: … })`, js/units.js
+        // WORD_RETRY_CONFIG): the whole declaration, either way.
+        const d = f.src.indexOf('const ' + m[1] + ' = ');
+        assert.truthy(d >= 0, f.name + ': ' + m[1] + ' is declared');
+        body = statement(f.src, d);
+      }
       const k = /key:\s*'(\w+)'/.exec(body);
       assert.truthy(k, f.name + ': defineRetryDrill without a key');
       out[k[1]] = f.name;

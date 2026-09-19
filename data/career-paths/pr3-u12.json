@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 12,
+  "title": "Challenges in Public Relations",
+  "words": [
+    { "en": "bias", "vi": "thiên vị, thành kiến", "emoji": "⚖️↘️" },
+    { "en": "controversy", "vi": "tranh cãi, sự bất đồng công khai", "emoji": "🗣️⚡🗣️" },
+    { "en": "dilemma", "vi": "tình thế tiến thoái lưỡng nan", "emoji": "🤔⚖️" },
+    { "en": "hatred", "vi": "lòng căm ghét, sự thù ghét", "emoji": "😡💢" },
+    { "en": "in the public eye", "vi": "được công chúng chú ý, ở trước mắt mọi người", "emoji": "👁️🎤📸" },
+    { "en": "infamous", "vi": "tai tiếng, nổi tiếng vì điều xấu", "emoji": "😈📰" },
+    { "en": "loyal", "vi": "trung thành", "emoji": "🐕❤️" },
+    { "en": "predict", "vi": "dự đoán, tiên đoán", "emoji": "🔮" },
+    { "en": "risk", "vi": "rủi ro, nguy cơ", "emoji": "⚠️🎲" },
+    { "en": "unruly", "vi": "ngỗ ngược, khó kiểm soát", "emoji": "🤪🚓" },
+    { "en": "visible", "vi": "dễ thấy, lộ rõ", "emoji": "👀✨" },
+    { "en": "whistleblower", "vi": "người tố giác sai phạm", "emoji": "🙋📢🚨" }
+  ]
+}

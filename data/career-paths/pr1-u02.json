@@ -1,0 +1,16 @@
+{
+  "book": 1,
+  "unit": 2,
+  "title": "Departments",
+  "words": [
+    { "en": "community relations", "vi": "quan hệ với cộng đồng địa phương", "emoji": "🏘️🤝" },
+    { "en": "consumer affairs", "vi": "bộ phận quan hệ với người tiêu dùng", "emoji": "🛒🙋" },
+    { "en": "disperse", "vi": "phân tán, lan truyền rộng khắp", "emoji": "💨📨" },
+    { "en": "employee communications", "vi": "truyền thông nội bộ cho nhân viên", "emoji": "👩‍💼📢" },
+    { "en": "governmental relations", "vi": "quan hệ với chính phủ", "emoji": "🏛️🤝" },
+    { "en": "investor relations", "vi": "quan hệ với nhà đầu tư", "emoji": "💰📈" },
+    { "en": "marketing communications", "vi": "truyền thông tiếp thị", "emoji": "📣🛍️" },
+    { "en": "media relations", "vi": "quan hệ với báo chí, truyền thông", "emoji": "📺🎤" },
+    { "en": "network", "vi": "mạng lưới quan hệ", "emoji": "🕸️👥" }
+  ]
+}

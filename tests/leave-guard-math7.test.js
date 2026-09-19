@@ -138,7 +138,7 @@ function bottomBarExits(h) {
   return [
     ['bottom bar · Home', () => S.switchScreen('homeScreen')],
     ['bottom bar · Learn hub', () => S.switchScreen('learnHubScreen')],
-    ['bottom bar · Exam', () => S.switchScreen('examScreen')],
+    ['bottom bar · Word', () => S.switchScreen('wordScreen')],
     ['bottom bar · Arena (openPetBattle placeholder)', () => {
       // The placeholder refuses before it downloads anything; a "yes" would
       // fetch the arena group, which is another file's business.

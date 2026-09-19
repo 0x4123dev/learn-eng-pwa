@@ -1,0 +1,18 @@
+{
+  "book": 3,
+  "unit": 7,
+  "title": "Legal Matters 1",
+  "words": [
+    { "en": "criticism", "vi": "sự chỉ trích, phê bình", "emoji": "👎💬" },
+    { "en": "defamation", "vi": "sự phỉ báng, bôi nhọ danh dự", "emoji": "🗣️🕳️" },
+    { "en": "fair comment", "vi": "bình luận công bằng (được pháp luật cho phép)", "emoji": "⚖️💬" },
+    { "en": "false", "vi": "sai sự thật, giả dối", "emoji": "❌🤥" },
+    { "en": "injure", "vi": "gây tổn hại, làm hại danh tiếng", "emoji": "🤕💔" },
+    { "en": "lawsuit", "vi": "vụ kiện", "emoji": "⚖️📜" },
+    { "en": "malice", "vi": "ác ý, lòng thù hằn", "emoji": "😈🖤" },
+    { "en": "negligence", "vi": "sự cẩu thả, sơ suất, thiếu trách nhiệm", "emoji": "😴🚫" },
+    { "en": "prove", "vi": "chứng minh", "emoji": "🔍✅" },
+    { "en": "puffery", "vi": "lời quảng cáo thổi phồng, khoa trương", "emoji": "🎈📢" },
+    { "en": "trade libel", "vi": "sự bôi nhọ sản phẩm của đối thủ", "emoji": "🏭🗞️❌" }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 15,
+  "title": "Describing Change",
+  "words": [
+    { "en": "climb", "vi": "leo lên, tăng dần", "emoji": "🧗📈" },
+    { "en": "decline", "vi": "giảm sút, đi xuống", "emoji": "📉⬇️" },
+    { "en": "decrease", "vi": "giảm, bớt đi", "emoji": "➖📉" },
+    { "en": "expand", "vi": "mở rộng, phình to ra", "emoji": "🎈↔️" },
+    { "en": "fluctuate", "vi": "dao động, lên xuống thất thường", "emoji": "〰️📊" },
+    { "en": "increase", "vi": "tăng lên, nhiều thêm", "emoji": "➕📈" },
+    { "en": "plummet", "vi": "rơi mạnh, giảm đột ngột", "emoji": "🪂💥" },
+    { "en": "rise", "vi": "tăng, đi lên", "emoji": "🌅⬆️" },
+    { "en": "shrink", "vi": "co lại, thu nhỏ", "emoji": "👕🔻" },
+    { "en": "stable", "vi": "ổn định, không thay đổi", "emoji": "⚖️➡️" }
+  ]
+}

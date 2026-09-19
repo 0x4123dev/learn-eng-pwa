@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 12,
+  "title": "Traditional Media",
+  "words": [
+    { "en": "brochure", "vi": "tờ gấp, tập giới thiệu quảng cáo", "emoji": "📑🖼️" },
+    { "en": "distribute", "vi": "phân phát, phát đi (thông tin)", "emoji": "📤📬" },
+    { "en": "fax", "vi": "máy gửi văn bản qua đường điện thoại", "emoji": "📠" },
+    { "en": "hand out", "vi": "phát tận tay, trao trực tiếp", "emoji": "🤲📄" },
+    { "en": "hard copy", "vi": "bản in trên giấy", "emoji": "🖨️📄" },
+    { "en": "magazine", "vi": "tạp chí", "emoji": "📖✨" },
+    { "en": "mailer", "vi": "thư quảng cáo gửi qua bưu điện", "emoji": "✉️📬" },
+    { "en": "newspaper", "vi": "báo in, nhật báo", "emoji": "📰" },
+    { "en": "postcard", "vi": "bưu thiếp", "emoji": "🏞️📮" },
+    { "en": "telephone", "vi": "điện thoại, gọi điện", "emoji": "☎️" },
+    { "en": "traditional", "vi": "truyền thống, theo cách cũ", "emoji": "🏛️📜" },
+    { "en": "wire service", "vi": "hãng thông tấn phân phối tin cho nhiều báo", "emoji": "🌐📰📡" }
+  ]
+}

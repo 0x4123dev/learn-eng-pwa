@@ -1,0 +1,20 @@
+{
+  "book": 2,
+  "unit": 13,
+  "title": "New Media",
+  "words": [
+    { "en": "blog", "vi": "trang nhật ký trực tuyến", "emoji": "📝🌐" },
+    { "en": "brochureware", "vi": "trang web chỉ giới thiệu, không tương tác", "emoji": "🌐📑🚫" },
+    { "en": "digital", "vi": "kỹ thuật số, dạng số", "emoji": "💻🔢" },
+    { "en": "email", "vi": "thư điện tử", "emoji": "📧" },
+    { "en": "interactive", "vi": "có tính tương tác qua lại", "emoji": "👆↔️💬" },
+    { "en": "mobile", "vi": "di động, mang theo được", "emoji": "📱🚶" },
+    { "en": "multimedia", "vi": "đa phương tiện (chữ, hình, video)", "emoji": "🖼️🎵🎥" },
+    { "en": "podcast", "vi": "chương trình âm thanh tải về nghe", "emoji": "🎙️🎧" },
+    { "en": "RSS", "vi": "nguồn cấp tin tự động cập nhật trên mạng", "emoji": "📡📰🔔" },
+    { "en": "smartphone", "vi": "điện thoại thông minh", "emoji": "📱✨" },
+    { "en": "social media", "vi": "mạng xã hội", "emoji": "👥💬🌐" },
+    { "en": "vlog", "vi": "nhật ký cá nhân bằng video", "emoji": "🎥📝" },
+    { "en": "website", "vi": "trang mạng, địa chỉ trên Internet", "emoji": "🌐🖥️" }
+  ]
+}

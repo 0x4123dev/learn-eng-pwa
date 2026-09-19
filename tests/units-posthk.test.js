@@ -101,7 +101,11 @@ suite('post-hk: the glossary arrived whole', () => {
 suite('post-hk: the tab, the five units and the mix', () => {
     test('it is the second tab, right after Pre, and reads "Post"', () => {
         const ids = units.UNIT_SETS.map(s => s.id);
-        assert.deepEqual(ids, ['pre', 'posthk', 'hk1', 'hk2'], `sets are ${ids.join(', ')}`);
+        assert.deepEqual(ids, ['pre', 'posthk', 'hk1', 'hk2', 'pr1', 'pr2', 'pr3'], `sets are ${ids.join(', ')}`);
+        // The Grade 4 tab shows only its own four; the Career Paths books are the Word tab's.
+        const g4 = units.unitHostSets('grade4').map(s => s.id);
+        assert.deepEqual(g4, ['pre', 'posthk', 'hk1', 'hk2'], `Grade 4 sets are ${g4.join(', ')}`);
+        assert.deepEqual(units.unitHostSets('word').map(s => s.id), ['pr1', 'pr2', 'pr3']);
         const set = units.UNIT_SETS.find(s => s.id === 'posthk');
         assert.truthy(set.label && set.name && set.sub, 'the tab needs a label, a name and a subtitle');
         assert.equal(set.name, 'Post');
@@ -134,8 +138,11 @@ suite('post-hk: the tab, the five units and the mix', () => {
         // "posthk", 'posthk-mix' fell through to the old picture-dictionary set
         // and the child practised the wrong book entirely.
         const src = read('js/units.js');
-        assert.truthy(/\(hk1\|hk2\|posthk\)-\(mix\|/.test(src),
+        assert.truthy(/UNIT_SET_RE = \/\^\((?:[a-z0-9]+\|)*posthk(?:\|[a-z0-9]+)*\)-\(mix\|/.test(src),
             'the unit-key parser does not recognise posthk keys');
+        assert.truthy(units.UNIT_SET_RE.test('posthk-mix') && units.UNIT_SET_RE.test('posthk-3'),
+            'UNIT_SET_RE must accept posthk keys');
+        assert.deepEqual(units._unitParse('posthk-mix'), { set: 'posthk', unit: 'mix' });
         const pool = units._unitPool ? units._unitPool('posthk-mix') : null;
         if (pool) {
             assert.equal(pool.length, 197, 'the mix must reach every word');

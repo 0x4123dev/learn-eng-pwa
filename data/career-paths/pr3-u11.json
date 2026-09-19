@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 11,
+  "title": "Ethics 2",
+  "words": [
+    { "en": "advocate", "vi": "ủng hộ, bênh vực (động từ)", "emoji": "📣✊" },
+    { "en": "distort", "vi": "bóp méo, xuyên tạc sự thật", "emoji": "🪞🌀" },
+    { "en": "distract", "vi": "đánh lạc hướng sự chú ý", "emoji": "👀➡️🎈" },
+    { "en": "expert", "vi": "chuyên gia", "emoji": "👨‍🔬🎓" },
+    { "en": "irrelevant", "vi": "không liên quan, lạc đề", "emoji": "🚫🔗" },
+    { "en": "lie", "vi": "nói dối (động từ)", "emoji": "🤥" },
+    { "en": "manipulate", "vi": "thao túng, lôi kéo dư luận", "emoji": "🎭🪢" },
+    { "en": "misleading", "vi": "gây hiểu lầm, đánh lừa", "emoji": "🧭❌" },
+    { "en": "oversimplify", "vi": "đơn giản hóa quá mức", "emoji": "🧩➡️⬜" },
+    { "en": "propaganda", "vi": "tuyên truyền một chiều, tài liệu thao túng", "emoji": "📢📰" },
+    { "en": "spin", "vi": "cách lái tin tức theo hướng có lợi (danh từ)", "emoji": "🌀📰" },
+    { "en": "unethical", "vi": "phi đạo đức, trái đạo đức nghề nghiệp", "emoji": "😈⚖️" }
+  ]
+}

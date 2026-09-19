@@ -11,19 +11,19 @@
 // screen it uses — and a home screen that lists papers by year, because a
 // child looking for "đề 2024" should not have to scan a flat list.
 //
-// Why history lives on appState rather than in the Exam tab's localStorage
-// key: appState is what js/auth.js uploads, and the daily-task matcher reads
-// those uploads. An admin who assigns "làm đề PTNK 2022 Chuyên" for today
-// needs the finished paper to be visible to the server, and the Exam tab's
-// /api/attempts table is not.
+// Why history lives on appState rather than in a localStorage key of its own
+// (as the old HCMC Exam tab kept its attempts): appState is what js/auth.js
+// uploads, and the daily-task matcher reads those uploads. An admin who
+// assigns "làm đề PTNK 2022 Chuyên" for today needs the finished paper to be
+// visible to the server, and a localStorage key is not.
 
-const PTNK_COINS_PER_CORRECT = 5;    // the Exam tab's rate — one rate for one engine
+const PTNK_COINS_PER_CORRECT = 5;    // one rate for every paper on the engine
 // A real entrance paper answered perfectly is not the same achievement as a
 // practice set answered perfectly, and the number says so.
 const PTNK_PERFECT_BONUS = 50;
 // Stripped attempts are ~5 kB each and this rides inside the per-profile
 // appState blob, which saveUserData sheds when it grows. 100 is a year of
-// papers for an ambitious child and a tenth of the Exam tab's cap.
+// papers for an ambitious child and a third of the engine's EXAM_HISTORY_CAP.
 const PTNK_HISTORY_CAP = 100;
 
 function ptnkBank() {

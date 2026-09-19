@@ -92,7 +92,7 @@ suite('tapwords: dictionary integrity + coverage invariant', () => {
         }
         const root = f => { const m = require(path.join(__dirname, '..', 'js', f)); Object.values(m).forEach(v => walk(v, 'root')); };
         ['collocation-data.js', 'phrases-data.js', 'phrases-meanings.js', 'wordform-data.js',
-         'rewrite-data.js', 'grammar-units.js', 'exam-data.js', 'units-data.js', 'vocabulary.js'].forEach(root);
+         'rewrite-data.js', 'grammar-units.js', 'units-data.js', 'vocabulary.js'].forEach(root);
 
         const VN = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
         const words = new Set(['a', 'i']);

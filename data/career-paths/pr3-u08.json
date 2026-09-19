@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 8,
+  "title": "Legal Matters 2",
+  "words": [
+    { "en": "authorship", "vi": "quyền tác giả, tư cách tác giả", "emoji": "✍️📖" },
+    { "en": "common law", "vi": "thông luật, luật án lệ", "emoji": "⚖️📚" },
+    { "en": "copyright", "vi": "bản quyền", "emoji": "©️📄" },
+    { "en": "fair use", "vi": "sử dụng hợp lý (trích dẫn có giới hạn)", "emoji": "📝✅" },
+    { "en": "infringement", "vi": "sự vi phạm bản quyền, xâm phạm", "emoji": "🚫📋" },
+    { "en": "invasion of privacy", "vi": "sự xâm phạm đời tư", "emoji": "🔭🙈" },
+    { "en": "misappropriation of personality", "vi": "sự lạm dụng hình ảnh người nổi tiếng", "emoji": "🌟🚫📸" },
+    { "en": "pending", "vi": "đang chờ xét duyệt, chưa được chấp thuận", "emoji": "⏳📋" },
+    { "en": "public domain", "vi": "tài sản công cộng, ai cũng được dùng", "emoji": "🌐🆓" },
+    { "en": "registered", "vi": "đã đăng ký chính thức", "emoji": "®️📝" },
+    { "en": "right of publicity", "vi": "quyền hưởng lợi từ danh tiếng của mình", "emoji": "🌟💰" },
+    { "en": "trademark", "vi": "nhãn hiệu, thương hiệu đã đăng ký", "emoji": "™️🏷️" }
+  ]
+}

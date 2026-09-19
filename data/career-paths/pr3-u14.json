@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 14,
+  "title": "Education",
+  "words": [
+    { "en": "accreditation", "vi": "sự công nhận chính thức, chứng nhận đủ điều kiện", "emoji": "📜✅" },
+    { "en": "bachelor's degree", "vi": "bằng cử nhân", "emoji": "🎓📜" },
+    { "en": "certificate", "vi": "chứng chỉ", "emoji": "📄🏅" },
+    { "en": "continuing education", "vi": "giáo dục thường xuyên, học nâng cao nghề nghiệp", "emoji": "📚🔁👩‍💼" },
+    { "en": "internship", "vi": "kỳ thực tập", "emoji": "🧑‍💼🏢" },
+    { "en": "journalism", "vi": "ngành báo chí", "emoji": "📰🖊️" },
+    { "en": "liberal arts", "vi": "khoa học xã hội và nhân văn", "emoji": "🎨📚🏛️" },
+    { "en": "licensing", "vi": "việc cấp giấy phép hành nghề", "emoji": "🪪✅" },
+    { "en": "master's degree", "vi": "bằng thạc sĩ", "emoji": "🎓🎓" },
+    { "en": "on-the-job", "vi": "ngay trong lúc làm việc, vừa làm vừa học", "emoji": "💼🛠️" },
+    { "en": "specialty", "vi": "chuyên ngành, lĩnh vực chuyên sâu", "emoji": "🎯📘" },
+    { "en": "voluntary", "vi": "tự nguyện, không bắt buộc", "emoji": "🙋💚" }
+  ]
+}

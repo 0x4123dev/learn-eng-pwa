@@ -18,6 +18,12 @@ global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
 global.UNIT_HK2_TITLES = UNIT_HK2_TITLES;
 global.UNIT_HK2_BOOKS = UNIT_HK2_BOOKS;
 global.UNIT_WORDS_POSTHK = require(path.join(__dirname, '..', 'js', 'units-posthk-data.js')).UNIT_WORDS_POSTHK;
+// The Word tab's three books (js/word-data.js) share the engine; loaded here
+// so unitsAllWords() counts the same in this file as in the whole suite.
+const WORD_DATA = require(path.join(__dirname, '..', 'js', 'word-data.js'));
+global.UNIT_WORDS_PR1 = WORD_DATA.UNIT_WORDS_PR1;
+global.UNIT_WORDS_PR2 = WORD_DATA.UNIT_WORDS_PR2;
+global.UNIT_WORDS_PR3 = WORD_DATA.UNIT_WORDS_PR3;
 const units = require(path.join(__dirname, '..', 'js', 'units.js'));
 
 // The Wordlist, transcribed from the book. Bracketed hints in the book
@@ -181,7 +187,8 @@ suite('units HK2: it plugs into the same machinery', () => {
     test('unitsAllWords now spans every set', () => {
         const { UNIT_WORDS_POSTHK } = require(path.join(__dirname, '..', 'js', 'units-posthk-data.js'));
         assert.equal(units.unitsAllWords().length,
-            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length);
+            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length
+            + WORD_DATA.UNIT_WORDS_PR1.length + WORD_DATA.UNIT_WORDS_PR2.length + WORD_DATA.UNIT_WORDS_PR3.length);
         // A word owed from HK2 must resolve, even though the debt stores only
         // the English.
         const bank = units.unitsAllWords();

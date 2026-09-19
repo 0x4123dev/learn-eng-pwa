@@ -309,12 +309,15 @@ suite('the timed exam locks the screen for its whole hour', () => {
   // 40 to 90 minutes with a clock running, and walking out saves nothing at
   // all. The bottom bar had no business sitting under the thumb for that.
   function examWorld() {
-    // exam-data.js declares EXAMS and getExam as plain top-level consts, so it
-    // is loaded into the same context rather than required.
-    const w = vmModule(['js/exam-data.js', 'js/exam.js'], { recordStudy: () => {} },
-      'globalThis.__EXAMS = EXAMS;');
+    // js/exam.js is only the engine; a set (here PTNK, js/ptnk.js — loaded
+    // after the engine, as index.html does) brings the screen and the bank.
+    // ptnk-data.js declares PTNK_EXAMS as a plain top-level const, so it is
+    // loaded into the same context rather than required.
+    const w = vmModule(['js/ptnk-data.js', 'js/exam.js', 'js/ptnk.js'], { recordStudy: () => {} },
+      'globalThis.__EXAMS = PTNK_EXAMS;');
     const timed = w.ctx.__EXAMS.find(e => e.durationMin && e.questions && e.questions.length);
     assert.truthy(timed, 'no timed exam in the bank to test with');
+    w.ctx.examSelectSet('ptnk');
     return { w, examId: timed.id };
   }
 

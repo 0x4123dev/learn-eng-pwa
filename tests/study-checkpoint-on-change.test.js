@@ -29,7 +29,7 @@ function checkpointSource() {
 // was written and when. Timers are real (the debounce is the thing under
 // test) but short.
 function page() {
-  const doc = createDocument('<div id="phrasesScreen" class="screen active"></div><div id="examScreen" class="screen"></div>');
+  const doc = createDocument('<div id="phrasesScreen" class="screen active"></div><div id="ptnkScreen" class="screen"></div>');
   const store = {};
   const writes = [];
   const sandbox = {
@@ -153,7 +153,7 @@ suite('study checkpoint: saved on change, not every second', () => {
 
   test('a scored exam paper clears its checkpoint the moment it is finished', () => {
     const p = page();
-    p.run(`_examState = { set: 'kc', questions: [{ type: 'mcq', q: 'x', options: ['a','b'], correct: 0 }],
+    p.run(`_examState = { set: 'ptnk', questions: [{ type: 'mcq', q: 'x', options: ['a','b'], correct: 0 }],
       answers: [null], idx: 0, deadlineTs: Date.now() + 60000, finished: false, timerId: null, startedAt: Date.now() };
       saveStudyCheckpoint();`);
     assert.equal(p.saved().kind, 'exam');

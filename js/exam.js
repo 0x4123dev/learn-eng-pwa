@@ -1,19 +1,23 @@
-// exam.js — Exam tab: timed mock exams with per-question feedback + history.
-// Depends on exam-data.js (EXAMS, getExam) and reuses the grammar quiz styles
-// (.grammar-option, .grammar-explanation, .grammar-next-btn) for a consistent
-// look with the Unit-12 explanations.
-
-const EXAM_HISTORY_KEY = 'flashlingo_examHistory';
+// exam.js — the timed-paper engine: one question at a time, a clock,
+// per-question feedback, results, review and history. It draws no tab of its
+// own: PTNK (js/ptnk.js) and the practice menus (js/practice-sets.js) each
+// register a "set" and the engine draws on that set's screen. Reuses the
+// grammar quiz styles (.grammar-option, .grammar-explanation,
+// .grammar-next-btn) for a consistent look with the Unit-12 explanations.
+//
+// The HCMC mock-exam tab this file started as (33 papers in js/exam-data.js,
+// history under localStorage 'flashlingo_examHistory') was removed in
+// September 2026 when the bottom bar's Exam slot became the Word tab. Any
+// attempts still under that key are simply never read again.
 
 // Same cap the other practice tabs use (WF_HISTORY_CAP, RW_HISTORY_CAP,
 // PHRASES_HISTORY_CAP, MATH_HISTORY_CAP, GRAMMAR_HISTORY_CAP are all 300).
-// It has teeth here in a way it does not there: an exam attempt used to carry
+// It has teeth here in a way it does not there: an attempt used to carry
 // every question's text AND its explanation HTML — 17k–49k chars each — so an
 // uncapped list ate a 5 MB origin quota in ~106 attempts, setItem started
 // throwing, and the newest attempt was dropped on the floor in silence while
 // "Best:" and the History list froze at whatever was last written. Attempts
-// are now stored stripped (see finishExam) at ~4.7 kB, so a full 300 is
-// ~1.4 MB.
+// are stored stripped (see finishExam) at ~4.7 kB, so a full 300 is ~1.4 MB.
 const EXAM_HISTORY_CAP = 300;
 
 // ---- sets ------------------------------------------------------------------
@@ -23,51 +27,41 @@ const EXAM_HISTORY_CAP = 300;
 // answer pays, whether a clean sheet earns a bonus, and how the finished
 // attempt reaches the server. A "set" is that bundle.
 //
-//   hcmc — the original Exam tab: 33 HCMC grade-10 papers, history in its own
-//          localStorage key, 5 xu a question, no bonus.
 //   ptnk — registered by js/ptnk.js: the real Phổ thông Năng khiếu papers,
 //          history on appState (so js/auth.js uploads it and a daily task can
 //          see it), 5 xu a question and 50 xu for 100%.
+//   reading, cloze, errors, grammarvocab, phonetics — js/practice-sets.js.
 //
 // Keeping them apart is the point. A child's PTNK best score must not appear
-// in the HCMC list, a PTNK bonus must not leak onto the HCMC papers, and the
-// engine must never look a PTNK id up in the HCMC bank (getExam) and draw
-// nothing. Every hard-coded 'examScreen', EXAMS and history key in this file
-// went through _examSetCfg() when the second set arrived.
-const EXAM_SETS = {
-    hcmc: {
-        screen: 'examScreen',
-        bank: () => (typeof EXAMS !== 'undefined' && Array.isArray(EXAMS)) ? EXAMS : [],
-        loadHistory: () => {
-            // ALWAYS an array — see the comment on loadExamHistory.
-            try {
-                const parsed = JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY));
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (e) { return []; }
-        },
-        saveHistory: (list) => {
-            try { localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(list)); return true; }
-            catch (e) {
-                const kept = list.slice(0, Math.max(1, Math.floor(list.length / 2)));
-                try { localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(kept)); return true; }
-                catch (e2) { return false; }
-            }
-        },
-        historyCap: EXAM_HISTORY_CAP,
-        coinsPerCorrect: 5,
-        perfectBonus: 0,
-        syncActivity: false,
-        home: null,                       // null = this file's own renderExamHome body
-        homeLabel: '← Exam Home',
-    },
-};
-let _examSet = 'hcmc';
-function _examSetCfg() { return EXAM_SETS[_examSet] || EXAM_SETS.hcmc; }
+// in another list, a PTNK bonus must not leak onto other papers, and the
+// engine must never look an id up in the wrong bank and draw nothing. Every
+// screen, bank and history key in this file goes through _examSetCfg().
+//
+// A set must have: screen, bank(), loadHistory(), saveHistory(list),
+// historyCap, coinsPerCorrect, perfectBonus, syncActivity, home(), homeLabel.
+const EXAM_SETS = {};
+// Before any set is selected (boot, a profile change) the engine has nothing
+// to draw on. This stub keeps every helper total — loadExamHistory() is on
+// the home screen's boot path and must answer with a list, never a throw.
+const _EXAM_NO_SET = Object.freeze({
+    screen: null,
+    bank: () => [],
+    loadHistory: () => [],
+    saveHistory: () => false,
+    historyCap: EXAM_HISTORY_CAP,
+    coinsPerCorrect: 5,
+    perfectBonus: 0,
+    syncActivity: false,
+    home: null,
+    homeLabel: '← Back',
+});
+let _examSet = null;
+function _examSetCfg() { return (_examSet && EXAM_SETS[_examSet]) || _EXAM_NO_SET; }
 function _examScreen() {
     return (typeof document !== 'undefined') ? document.getElementById(_examSetCfg().screen) : null;
 }
-// The current set's bank, by id. getExam() in js/exam-data.js only knows the
-// HCMC papers; a PTNK id asked of it comes back null and the paper never opens.
+// The current set's bank, by id — never another set's, or a PTNK id asked of
+// a practice bank comes back null and the paper never opens.
 function examLookup(examId) {
     const cfg = _examSetCfg();
     // A set may resolve a paper on demand instead of holding a flat bank of
@@ -83,8 +77,8 @@ function examLookup(examId) {
 }
 function examCurrentSet() { return _examSet; }
 // For the study checkpoint (js/app.js): a paper saved mid-way must come back
-// in the set it was started in, or a PTNK paper is drawn on the HCMC screen
-// and scored under the HCMC history.
+// in the set it was started in, or a PTNK paper is drawn on another set's
+// screen and scored under that set's history.
 function examSelectSet(setId) { if (setId && EXAM_SETS[setId]) _examSet = setId; }
 
 // Live exam session (null when not taking an exam).
@@ -114,9 +108,6 @@ function retakeExam(examId, setId) {
     finally { _examRetake = false; }   // consumed by startExam, or dropped on Cancel
 }
 
-// Which sub-tab of the Exam home is showing: 'exams' or 'lessons'.
-let _examSubTab = 'exams';
-
 // ---- storage -----------------------------------------------------------------
 
 function loadExamHistory() {
@@ -125,8 +116,8 @@ function loadExamHistory() {
     // came straight back, and js/home.js `_homeSkillSessions` then called
     // .map() on it while drawing the home screen. That is on the boot path, so
     // one junk value under this key stopped the app opening at all, for good.
-    // The HCMC set's loader (EXAM_SETS.hcmc) is where that rule now lives;
-    // this wrapper only picks the set.
+    // Each set's loader is where that rule lives; this wrapper only picks the
+    // set (and the no-set stub answers [] before one is chosen).
     const list = _examSetCfg().loadHistory();
     return Array.isArray(list) ? list : [];
 }
@@ -143,7 +134,7 @@ function saveExamHistory(list) {
 
 // Look one stored answer row back up in the live bank. Attempts written before
 // v4.17 carried `q` and `explanation` inline; newer ones do not, because both
-// are re-derivable from EXAMS by exam id + question number and the explanation
+// are re-derivable from the set's bank by exam id + question number and the explanation
 // HTML alone was most of the ~29 kB each attempt used to cost. Both shapes
 // render: the stored copy wins when it is there, the bank fills in when it is
 // not, and an exam that has left the bank entirely degrades to a review with
@@ -215,8 +206,7 @@ function examHomeYieldsToLivePaper(screenId) {
 // name — to be offered back to B on their next open.
 function examForgetProfile() {
     abandonExam();
-    _examSubTab = 'exams';
-    _examSet = 'hcmc';
+    _examSet = null;
 }
 
 // A timed paper is forty to ninety minutes with a clock running, and walking
@@ -262,133 +252,12 @@ function escExam(s) {
 // ---- home / landing ----------------------------------------------------------
 
 function renderExamHome() {
-    // The Exam tab's body is the HCMC set's. Visiting Reading (or PTNK, or any
-    // practice menu) leaves THAT set selected, and the bottom bar's Exam
-    // button then asked this function to draw — which delegated to the
-    // Reading home, drew it on readingScreen, and left the Exam tab on its
-    // "Đang tải bài…" placeholder for good. When the Exam tab is the screen
-    // showing, the HCMC list is what is wanted; a set's own results screen
-    // ("← PTNK Exams", "← Back to list") sits on that set's screen, so it
-    // still goes home to its set.
-    if (typeof document !== 'undefined' && !isExamActive()) {
-        const examTab = document.getElementById('examScreen');
-        if (examTab && examTab.classList.contains('active')) _examSet = 'hcmc';
-    }
-    // A set that brought its own home (PTNK lists papers by year, not as one
-    // flat list with lessons) draws it here; the HCMC body follows.
+    // Every set brings its own home (PTNK lists papers by year, the practice
+    // menus list passages and rounds). The engine only makes sure a paper
+    // still running on that set's screen is redrawn instead of painted over.
     const cfg = _examSetCfg();
     if (typeof cfg.home === 'function') { cfg.home(); return; }
-    if (examHomeYieldsToLivePaper(cfg.screen)) return;
-    const screen = _examScreen();
-    if (!screen) return;
-    const bar = `
-        <div class="grammar-subtabs">
-          <button class="grammar-subtab ${_examSubTab === 'exams' ? 'active' : ''}" onclick="switchExamSubTab('exams')">📝 Exams</button>
-          <button class="grammar-subtab ${_examSubTab === 'lessons' ? 'active' : ''}" onclick="switchExamSubTab('lessons')">📖 Lessons</button>
-        </div>`;
-    const body = _examSubTab === 'lessons' ? renderExamLessonsBody() : renderExamsBody();
-    screen.innerHTML = `<div class="exam-home">${bar}${body}</div>`;
-    screen.scrollTop = 0;
-}
-
-function switchExamSubTab(tab) {
-    _examSubTab = tab;
-    renderExamHome();
-}
-
-function renderExamsBody() {
-    // js/exam-data.js is lazy-loaded (js/lazy-data.js SCREEN_FILES). It
-    // resolves even when the download failed, so this can run before EXAMS
-    // exists — and reading an undeclared const throws, leaving the tab stuck
-    // on its loading placeholder for the rest of the session.
-    if (typeof EXAMS === 'undefined' || !Array.isArray(EXAMS)) {
-        return '<div class="lazy-loading" role="status" style="text-align:center">'
-            + '<p>Chưa tải được bộ đề. Con kiểm tra mạng rồi thử lại nhé.</p>'
-            + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
-            + '</div>';
-    }
-    const history = loadExamHistory();
-
-    const examCards = EXAMS.map(ex => {
-        const attempts = history.filter(h => h.examId === ex.id);
-        const best = attempts.length ? Math.max(...attempts.map(a => a.score)) : null;
-        const bestStr = best === null ? '' :
-            `<div class="exam-card-best">Best: ${best}/${ex.questions.length}</div>`;
-        return `
-        <button class="exam-card" onclick="confirmStartExam('${ex.id}')">
-            <div class="exam-card-icon">📝</div>
-            <div class="exam-card-info">
-                <div class="exam-card-title">${escExam(ex.title)}</div>
-                <div class="exam-card-sub">${escExam(ex.subtitle)}</div>
-                <div class="exam-card-meta">⏱️ ${ex.durationMin} min · ${ex.questions.length} questions</div>
-                ${bestStr}
-            </div>
-            <div class="exam-card-go">›</div>
-        </button>`;
-    }).join('');
-
-    return `
-        <div class="exam-header">
-            <h1 class="exam-title">🎯 Exam</h1>
-            <p class="exam-subtitle">Timed practice tests with instant explanations</p>
-        </div>
-        <div class="exam-list">
-            ${examCards}
-        </div>
-        <button class="exam-history-btn" onclick="renderExamHistory()">
-            📜 History ${history.length ? `(${history.length})` : ''}
-        </button>
-    `;
-}
-
-// ---- lessons (Vietnamese grammar notes derived from Exam 1) -------------------
-
-function renderExamLessonsBody() {
-    if (typeof EXAM1_LESSONS === 'undefined' || !EXAM1_LESSONS.length) {
-        return `
-        <div class="exam-header">
-            <h1 class="exam-title">📖 Bài học</h1>
-            <p class="exam-subtitle">Đang cập nhật…</p>
-        </div>`;
-    }
-    const cards = EXAM1_LESSONS.map(l => `
-        <button class="exam-lesson-card" onclick="openExamLesson('${l.id}')">
-            <div class="exam-lesson-icon">${l.icon}</div>
-            <div class="exam-lesson-info">
-                <div class="exam-lesson-title">${escExam(l.title)}</div>
-                <div class="exam-lesson-meta">Đề 1 · câu ${l.qRefs.join(', ')}</div>
-            </div>
-            <div class="exam-card-go">›</div>
-        </button>`).join('');
-    return `
-        <div class="exam-header">
-            <h1 class="exam-title">📖 Bài học ngữ pháp</h1>
-            <p class="exam-subtitle">Tổng hợp &amp; giải thích mọi điểm ngữ pháp trong Đề 1 (bằng tiếng Việt)</p>
-        </div>
-        <div class="exam-lesson-list">${cards}</div>`;
-}
-
-function openExamLesson(id) {
-    const l = (typeof EXAM1_LESSONS !== 'undefined') ? EXAM1_LESSONS.find(x => x.id === id) : null;
-    if (!l) return;
-    const screen = _examScreen();
-    if (!screen) return;
-    screen.innerHTML = `
-        <div class="exam-lesson-detail">
-            <button class="exam-back-btn" onclick="closeExamLesson()">←</button>
-            <h1 class="exam-lesson-detail-title">${l.icon} ${escExam(l.title)}</h1>
-            <div class="exam-lesson-detail-meta">📝 Liên hệ Đề 1: câu ${l.qRefs.join(', ')}</div>
-            <div class="exam-lesson-content">${l.content}</div>
-            <button class="exam-btn-secondary exam-lesson-back-bottom" onclick="closeExamLesson()">← Danh sách bài học</button>
-        </div>`;
-    screen.scrollTop = 0;
-    window.scrollTo(0, 0);
-}
-
-function closeExamLesson() {
-    _examSubTab = 'lessons';
-    renderExamHome();
-    window.scrollTo(0, 0);
+    examHomeYieldsToLivePaper(cfg.screen);
 }
 
 // ---- start / timer -----------------------------------------------------------
@@ -673,7 +542,7 @@ function finishExam(auto) {
         ...(s.retake ? { retake: true } : {}),
         // Only what cannot be looked back up. `q` and `explanation` used to
         // live here too and were 80% of the weight; the review screen now
-        // reads them out of EXAMS by examId + n. `correctAnswer` stays even
+        // reads them out of the bank by examId + n. `correctAnswer` stays even
         // though it is derivable: it is short, and it is the one thing that
         // still has to be true if this exam ever leaves the bank.
         answers: s.questions.map((q, i) => ({
@@ -797,7 +666,7 @@ function renderExamHistory() {
     const history = loadExamHistory();
 
     const body = history.length === 0
-        ? `<div class="exam-history-empty">No attempts yet.<br>Take Exam 1 to see your results here.</div>`
+        ? `<div class="exam-history-empty">No attempts yet.<br>Sit a paper to see your results here.</div>`
         : history.map((h, idx) => {
             const d = new Date(h.ts);
             const dateStr = d.toLocaleString([], {

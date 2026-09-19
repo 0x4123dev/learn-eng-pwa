@@ -1,0 +1,18 @@
+{
+  "book": 1,
+  "unit": 8,
+  "title": "Attracting Clients",
+  "words": [
+    { "en": "account", "vi": "hợp đồng khách hàng, mối làm ăn", "emoji": "📁🤝" },
+    { "en": "bid", "vi": "đấu thầu, chào giá (động từ)", "emoji": "🙋💰" },
+    { "en": "client", "vi": "khách hàng, thân chủ", "emoji": "🧑‍💼🛍️" },
+    { "en": "competitive", "vi": "có tính cạnh tranh", "emoji": "🏁🥇" },
+    { "en": "invite", "vi": "mời (tham gia, tham dự)", "emoji": "💌🙌" },
+    { "en": "opportunity", "vi": "cơ hội", "emoji": "🚪✨" },
+    { "en": "pass", "vi": "bỏ qua, từ chối không nhận", "emoji": "🙅🗑️" },
+    { "en": "presentation", "vi": "bài thuyết trình", "emoji": "🧑‍🏫📊" },
+    { "en": "proposal", "vi": "đề xuất, bản đề nghị hợp tác", "emoji": "📄📨" },
+    { "en": "retain", "vi": "thuê (công ty) làm việc lâu dài", "emoji": "🤝📅" },
+    { "en": "RFP", "vi": "thư mời chào thầu (yêu cầu đề xuất)", "emoji": "📋❓📨" }
+  ]
+}

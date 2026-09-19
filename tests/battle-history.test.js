@@ -143,7 +143,7 @@ suite('primary navigation: the arena replaces the old home shortcut', () => {
         assert.truthy(nav.includes('data-nav-key="arena"'), 'the primary nav needs an Arena destination');
         assert.truthy(nav.includes('openPetBattle()'), 'the Arena destination must open the battle lobby');
         const keys = [...nav.matchAll(/data-nav-key="([^"]+)"/g)].map(m => m[1]);
-        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'exam']);
+        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'word']);
     });
 
     // The habitat carried a second ⚔️ button, so the home screen offered the

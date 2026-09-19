@@ -1,0 +1,18 @@
+{
+  "book": 1,
+  "unit": 7,
+  "title": "Persuasion",
+  "words": [
+    { "en": "argument", "vi": "lập luận, luận điểm", "emoji": "🗣️📊" },
+    { "en": "conserve", "vi": "giữ gìn, bảo toàn (ý kiến tốt)", "emoji": "🛡️💚" },
+    { "en": "crystallize", "vi": "làm rõ ràng, kết tinh (ý kiến)", "emoji": "💎✨" },
+    { "en": "emotional appeal", "vi": "lời kêu gọi đánh vào cảm xúc", "emoji": "❤️😢" },
+    { "en": "favorable", "vi": "thuận lợi, tích cực, có thiện cảm", "emoji": "👍😊" },
+    { "en": "hostile", "vi": "thù địch, không thân thiện", "emoji": "😠👊" },
+    { "en": "latent", "vi": "tiềm ẩn, chưa bộc lộ", "emoji": "🌱🫥" },
+    { "en": "neutralize", "vi": "vô hiệu hóa, làm trung hòa", "emoji": "⚖️🚫" },
+    { "en": "opinion", "vi": "ý kiến, quan điểm", "emoji": "💭🙋" },
+    { "en": "persuade", "vi": "thuyết phục", "emoji": "🗣️👉😌" },
+    { "en": "rhetoric", "vi": "thuật hùng biện, nghệ thuật dùng lời", "emoji": "🎤📜" }
+  ]
+}

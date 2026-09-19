@@ -53,6 +53,7 @@ const DATA_FILES = [
     'js/units-hk1-data.js',  // Topics tab unit practice (HK1 set)
     'js/units-hk2-data.js',  // Topics tab unit practice (HK2 set)
     'js/units-posthk-data.js', // Topics tab unit practice (Post-HK set)
+    'js/word-data.js',       // Word tab (Career Paths: Public Relations, generated)
     'js/topic-vocab.js',     // topic picture cards
     'js/vocabulary.js'       // lessons, home, word-of-the-day, word-hunt, topics
 ];
@@ -87,7 +88,6 @@ const ANSWER_BANKS = [
 // would generate English recordings for Vietnamese words. Opt-in: --tappable.
 const TAPPABLE_BANKS = [
     { file: 'js/grammar-units.js', global: 'GRAMMAR_UNITS' },
-    { file: 'js/exam-data.js', global: 'EXAMS' },
     { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
     { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
     { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },

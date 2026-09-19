@@ -17,7 +17,7 @@ const eagerScripts = (html.match(/src="js\/[^"]+"/g) || []).map(s => s.slice(5, 
 
 suite('startup weight: the biggest banks are not in the first paint', () => {
   test('the two giant question banks are no longer eager scripts', () => {
-    for (const f of ['js/grammar-units.js', 'js/exam-data.js', 'js/collocation-data.js',
+    for (const f of ['js/grammar-units.js', 'js/ptnk-data.js', 'js/word-data.js', 'js/collocation-data.js',
       'js/phrases-data.js', 'js/wordform-data.js', 'js/wordform-followups.js',
       'js/collocation-followups.js', 'js/math-exams.js', 'js/math-data.js',
       'js/rewrite-data.js', 'js/dictionary-data.js']) {
@@ -90,7 +90,7 @@ suite('lazy data loader: loads once, on demand, and survives failure', () => {
 
   test('a failed download resolves rather than hanging the tab forever', () => {
     const m = mount();
-    const p = m.ctx.LazyData.ensure('examScreen');
+    const p = m.ctx.LazyData.ensure('wordScreen');
     m.finish(false);
     return p.then(() => assert.truthy(true, 'the promise settles even on error'));
   });
@@ -131,7 +131,7 @@ suite('startup weight: switchScreen waits for a tab\'s data', () => {
 
 suite('startup weight: a half-finished lesson still comes back', () => {
   // restoreStudyCheckpoint reopens the exact question the child was on when
-  // the app was last closed. For a Grammar or Exam checkpoint that needs the
+  // the app was last closed. For a Grammar or PTNK exam checkpoint that needs the
   // deferred bank — restoring before it lands would reopen an empty question.
   const { loadAppCode } = require('./setup');
 
@@ -140,7 +140,7 @@ suite('startup weight: a half-finished lesson still comes back', () => {
     let resolveLoad;
     const app = loadAppCode({ extraGlobals: {
       LazyData: {
-        filesFor: s => (s === 'grammarScreen' || s === 'examScreen') ? ['x.js'] : [],
+        filesFor: s => (s === 'grammarScreen' || s === 'ptnkScreen') ? ['x.js'] : [],
         ready: () => lazyReady,
         ensure: s => { ensured.push(s); return new Promise(r => { resolveLoad = r; }); },
         warmSoon() {}, warmAll() { return Promise.resolve(); },
@@ -208,7 +208,7 @@ suite('startup weight: phase two — every tab bank is deferred', () => {
   test('switchScreen can paint every deferred tab once its bank lands', () => {
     const app = read('js/app.js');
     for (const r of ['renderPhrasesHome', 'renderWordformHome', 'renderRewriteHome',
-                     'renderMathHome', 'renderGrammarHome', 'renderExamHome']) {
+                     'renderMathHome', 'renderGrammarHome', 'renderPtnkHome', 'renderWordHome']) {
       assert.truthy(app.includes(r), 'switchScreen must be able to render ' + r);
     }
   });

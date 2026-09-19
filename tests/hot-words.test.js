@@ -89,9 +89,9 @@ suite('hot words: the generated list', () => {
 
     test('frequencies are drawn from every quiz bank, not just grammar', () => {
         const builder = requireBuilder();
-        assert.truthy(builder.BANKS.length >= 6, `only ${builder.BANKS.length} banks scanned`);
+        assert.truthy(builder.BANKS.length >= 5, `only ${builder.BANKS.length} banks scanned`);
         const names = builder.BANKS.map(b => b.file).join(' ');
-        for (const f of ['grammar-units', 'exam-data', 'wordform-data', 'rewrite-data',
+        for (const f of ['grammar-units', 'wordform-data', 'rewrite-data',
                          'phrases-data', 'collocation-data']) {
             assert.truthy(names.includes(f), `${f} is not scanned`);
         }

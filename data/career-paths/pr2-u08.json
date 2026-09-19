@@ -1,0 +1,22 @@
+{
+  "book": 2,
+  "unit": 8,
+  "title": "Nonprofit",
+  "words": [
+    { "en": "activist", "vi": "nhà hoạt động xã hội", "emoji": "✊📢" },
+    { "en": "boycott", "vi": "tẩy chay", "emoji": "🚫🛒" },
+    { "en": "cause", "vi": "mục tiêu, lý tưởng để đấu tranh", "emoji": "🎗️❤️" },
+    { "en": "chamber of commerce", "vi": "phòng thương mại", "emoji": "🏢🤝" },
+    { "en": "charity", "vi": "tổ chức từ thiện", "emoji": "🎁🤲" },
+    { "en": "demonstration", "vi": "cuộc biểu tình", "emoji": "🪧👥" },
+    { "en": "environmental group", "vi": "nhóm bảo vệ môi trường", "emoji": "🌳🌍" },
+    { "en": "fundraising", "vi": "gây quỹ", "emoji": "💵🙏" },
+    { "en": "labor union", "vi": "công đoàn", "emoji": "👷🤝" },
+    { "en": "nonprofit", "vi": "phi lợi nhuận", "emoji": "🚫💰" },
+    { "en": "professional association", "vi": "hiệp hội nghề nghiệp", "emoji": "👔🏛️" },
+    { "en": "religious", "vi": "thuộc tôn giáo", "emoji": "🙏⛪" },
+    { "en": "social issue organization", "vi": "tổ chức về vấn đề xã hội", "emoji": "👥⚖️" },
+    { "en": "trade association", "vi": "hiệp hội ngành nghề", "emoji": "🏭🤝" },
+    { "en": "volunteer", "vi": "tình nguyện viên", "emoji": "🙋💚" }
+  ]
+}

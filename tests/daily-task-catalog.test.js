@@ -161,6 +161,74 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
       { screen: 'phrasesScreen', calls: [['switchPhrSubTab', 'colloc'], ['startCollocPractice', 20]] });
   });
 
+  test('the Word tab: 48 tasks, one per Career Paths unit and one Mix per book, deep-linked onto wordScreen', () => {
+    // js/units.js serves the Word tab with the same engine as Grade 4, so the
+    // deep link is the same shape: switch the set, then start the key. The
+    // set lives on wordScreen, not gradeFourScreen — a link that landed on the
+    // Grade 4 screen would draw Book 1 into a hidden pane.
+    const keys = [];
+    for (const set of ['pr1', 'pr2', 'pr3']) {
+      for (let u = 1; u <= 15; u++) keys.push([set, set + '-' + u]);
+      keys.push([set, set + '-mix']);
+    }
+    assert.equal(keys.length, 48);
+    for (const [set, unitKey] of keys) {
+      const e = Catalog.get('word:' + unitKey);
+      assert.truthy(e, 'word:' + unitKey + ' is missing from the catalog');
+      assert.equal(e.group, 'word-' + set, unitKey + ': group');
+      assert.equal(e.activityType, 'lesson', unitKey + ': activityType');
+      assert.deepEqual(e.go, { screen: 'wordScreen', calls: [['switchUnitSet', set], ['startUnitPractice', unitKey]] }, unitKey + ': go');
+      assert.deepEqual(e.path, ['Eng', 'Word', 'Book ' + set.slice(-1)], unitKey + ': path');
+    }
+    const wordEntries = Catalog.all().filter(e => e.key.startsWith('word:'));
+    assert.equal(wordEntries.length, 48, 'no extra word: tasks');
+    assert.deepEqual(Catalog.entries('word-pr1').map(e => e.key),
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(u => 'word:pr1-' + u).concat(['word:pr1-mix']));
+    // A Word row lands in appState.unitsHistory like a Grade 4 row: the
+    // 'units' tasks must not swallow it, nor the other way round.
+    assert.equal(Catalog.get('units:pr1-3'), null, 'a Word unit is not also a Grade 4 task');
+    assert.equal(Catalog.get('word:hk1-3'), null, 'a Grade 4 unit is not also a Word task');
+  });
+
+  test('Word tasks match the exact title js/auth.js uploads for a unitsHistory row', () => {
+    // js/auth.js _localHistoryItems: title = 'Unit ' + h.unit + ' words practice'
+    // for every unit key but Pre's bare 'mix'. Both hosts write to
+    // appState.unitsHistory, so the title is the whole identity of the row.
+    const auth = fs.readFileSync(path.join(ROOT, 'js', 'auth.js'), 'utf8');
+    const line = "(h.unit === 'mix' ? 'Mix 12 units' : 'Unit ' + h.unit) + ' words practice'";
+    assert.truthy(auth.includes(line), 'js/auth.js no longer builds the units title this way: ' + line);
+    const uploadedTitle = (unit) => (unit === 'mix' ? 'Mix 12 units' : 'Unit ' + unit) + ' words practice';
+    for (const e of Catalog.all().filter(x => x.key.startsWith('word:'))) {
+      const unitKey = e.go.calls[1][1];
+      assert.deepEqual(e.match, { titleExact: uploadedTitle(unitKey) }, e.key + ': match');
+      assert.equal(e.match.titleExact, 'Unit ' + unitKey + ' words practice');
+    }
+    assert.deepEqual(Catalog.get('word:pr2-7').match, { titleExact: 'Unit pr2-7 words practice' });
+    assert.deepEqual(Catalog.get('word:pr3-mix').match, { titleExact: 'Unit pr3-mix words practice' });
+  });
+
+  test('Word unit titles in the catalog are the ones js/word-data.js carries', () => {
+    // The bank is lazy and the catalog is built at startup, so the titles are
+    // repeated in js/daily-task-catalog.js SETS. They reach the admin only
+    // through the entry label ('Word PR Book 1 · Unit 3 · Services'), so
+    // that is where the two are held together.
+    const { UNIT_PR_TITLES } = require(path.join(ROOT, 'js', 'word-data.js'));
+    assert.deepEqual(Object.keys(UNIT_PR_TITLES), ['pr1', 'pr2', 'pr3']);
+    for (const set of ['pr1', 'pr2', 'pr3']) {
+      const book = set.slice(-1);
+      assert.deepEqual(Object.keys(UNIT_PR_TITLES[set]).map(Number).sort((a, b) => a - b),
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], set + ': fifteen titles in the bank');
+      for (let u = 1; u <= 15; u++) {
+        const title = UNIT_PR_TITLES[set][u];
+        assert.truthy(title && title.trim() === title && !title.includes(' · '), set + '-' + u + ': a plain title in the bank');
+        const e = Catalog.get('word:' + set + '-' + u);
+        assert.equal(e.label, 'Word PR Book ' + book + ' · Unit ' + u + ' · ' + title,
+          e.key + ': the catalog title drifted from js/word-data.js');
+      }
+      assert.equal(Catalog.get('word:' + set + '-mix').label, 'Word PR Book ' + book + ' · 🎲 Mix');
+    }
+  });
+
   test('every go.calls function name exists in the app sources', () => {
     const src = ['js/app.js', 'js/topics.js', 'js/units.js', 'js/phrases.js', 'js/collocation.js', 'js/wordform.js',
       'js/rewrite.js', 'js/verbs.js', 'js/home.js', 'js/grammar-ui.js', 'js/math.js', 'js/mathwars.js',

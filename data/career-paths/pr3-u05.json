@@ -1,0 +1,19 @@
+{
+  "book": 3,
+  "unit": 5,
+  "title": "Conflict Management",
+  "words": [
+    { "en": "accommodation", "vi": "sự nhượng bộ, thỏa hiệp để chấm dứt tranh cãi", "emoji": "🤝🕊️" },
+    { "en": "advocacy", "vi": "sự bênh vực, bảo vệ lập trường", "emoji": "📣🛡️" },
+    { "en": "conflict management", "vi": "quản lý xung đột", "emoji": "🥊🧯" },
+    { "en": "contingency plan", "vi": "kế hoạch dự phòng", "emoji": "📋🆘" },
+    { "en": "organizational", "vi": "thuộc về tổ chức, công ty", "emoji": "🏢🗂️" },
+    { "en": "proactive", "vi": "chủ động, ra tay trước", "emoji": "🏃⏩" },
+    { "en": "reactive", "vi": "bị động, chỉ phản ứng khi có việc", "emoji": "⏪😬" },
+    { "en": "recovery", "vi": "sự phục hồi, khắc phục thiệt hại", "emoji": "🩹📈" },
+    { "en": "situational", "vi": "mang tính tình huống, tùy hoàn cảnh", "emoji": "📍🎭" },
+    { "en": "stance", "vi": "lập trường, quan điểm", "emoji": "🧍📌" },
+    { "en": "threat", "vi": "mối đe dọa", "emoji": "💣⚠️" },
+    { "en": "uncertain", "vi": "không chắc chắn", "emoji": "🤷❓" }
+  ]
+}

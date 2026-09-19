@@ -24,7 +24,7 @@ const tick = () => new Promise((r) => setImmediate(r));
 const settle = async (n) => { for (let i = 0; i < (n || 4); i++) await tick(); };
 
 const CHECKPOINT_KEY = 'flashlingo-study-checkpoint-v1';
-const NAV = ['home', 'learn', 'arena', 'math', 'exam'];
+const NAV = ['home', 'learn', 'arena', 'math', 'word'];
 
 // ---------------------------------------------------------------------------
 // helpers
@@ -166,7 +166,7 @@ function assertEveryExitAsks(h, cfg, inputId) {
       routes.push('deeplink:' + cfg.otherDeepLink);
       // The direct calls the buttons make, once more, so a future change to the
       // markup that bypasses switchScreen still fails here.
-      for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'examScreen']) {
+      for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'wordScreen']) {
         const log2 = armConfirm(h, false);
         assert.equal(h.sandbox.switchScreen(target), false, 'switchScreen(' + target + ') refuses on Cancel');
         assert.equal(log2.length, 1, 'switchScreen(' + target + ') asks');
@@ -387,7 +387,7 @@ suite('Word form — quick practice (A): every exit asks, Cancel keeps the place
     if (inputId) h.el(inputId).value = 'partial';
     await assertEveryExitAsks(h, WF, inputId);
     // 4. finally leave through each nav button (fresh round each time) and the ✕.
-    for (const route of [{ nav: 'home', label: 'Home' }, { nav: 'learn', label: 'Eng' }, { nav: 'math', label: 'Math' }, { nav: 'exam', label: 'Exam' }, { quit: true, label: '✕' }]) {
+    for (const route of [{ nav: 'home', label: 'Home' }, { nav: 'learn', label: 'Eng' }, { nav: 'math', label: 'Math' }, { nav: 'word', label: 'Word' }, { quit: true, label: '✕' }]) {
       if (!h.sandbox.isWordformQuizActive()) {
         h.sandbox.switchScreen('wordformScreen'); await settle();
         h.sandbox.startWordformQuiz(10);
@@ -604,7 +604,7 @@ suite('Word form — owed-questions drill (startWfRetry)', () => {
     assert.equal(h.sandbox.retryCount('wf'), 0, 'nothing owed');
     assertNothingBlocks(h, 'wordformScreen');
     const log = armConfirm(h, false);
-    for (const key of ['home', 'learn', 'math', 'exam']) {
+    for (const key of ['home', 'learn', 'math', 'word']) {
       h.sandbox.switchScreen('wordformScreen'); await settle();
       navButton(h, key).click();
       assert.truthy(activeScreen(h) !== 'wordformScreen', 'nav ' + key + ' left');
@@ -725,7 +725,7 @@ suite('Rewrite — quick practice (A): every exit asks, Cancel keeps the place a
     rwNext(h);
     h.el('rwTextInput').value = 'half a sentence';
     await assertEveryExitAsks(h, RW, 'rwTextInput');
-    for (const route of [{ nav: 'home', label: 'Home' }, { nav: 'learn', label: 'Eng' }, { nav: 'math', label: 'Math' }, { nav: 'exam', label: 'Exam' }, { quit: true, label: '✕' }]) {
+    for (const route of [{ nav: 'home', label: 'Home' }, { nav: 'learn', label: 'Eng' }, { nav: 'math', label: 'Math' }, { nav: 'word', label: 'Word' }, { quit: true, label: '✕' }]) {
       if (!h.sandbox.isRewriteQuizActive()) {
         h.sandbox.switchScreen('rewriteScreen'); await settle();
         h.sandbox.startRewriteQuiz(10);
@@ -883,7 +883,7 @@ suite('Rewrite — review quiz, past session, owed drill, lessons', () => {
     }
     const owed = h.sandbox.retryCount('rw');
     const log = armConfirm(h, true);
-    navButton(h, 'exam').click();
+    navButton(h, 'word').click();
     assert.equal(log.length, 1);
     assert.falsy(h.sandbox.isRetryDrillActive(), 'OK ends the drill');
     assert.equal(h.sandbox.retryCount('rw'), owed, 'the homework stays owed');
@@ -919,7 +919,7 @@ suite('Rewrite — review quiz, past session, owed drill, lessons', () => {
     lessonBtn.click();
     assert.falsy(h.sandbox.isRewriteQuizActive(), 'a lesson page is not a round');
     noCheckpoint(h, 'no checkpoint for a lesson');
-    for (const key of ['home', 'learn', 'math', 'exam']) {
+    for (const key of ['home', 'learn', 'math', 'word']) {
       h.sandbox.switchScreen('rewriteScreen'); await settle();
       lessonBtn.click();
       const log = armConfirm(h, false);

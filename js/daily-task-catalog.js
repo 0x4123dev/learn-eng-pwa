@@ -25,6 +25,9 @@ var DailyTaskCatalog = (function () {
     { id: 'units-hk1', label: 'Units HK1 (Global Success Tập 1)' },
     { id: 'units-hk2', label: 'Units HK2 (Global Success Tập 2)' },
     { id: 'units-posthk', label: 'Units Post (Maths 4 & Science 4)' },
+    { id: 'word-pr1', label: 'Word · Public Relations Book 1' },
+    { id: 'word-pr2', label: 'Word · Public Relations Book 2' },
+    { id: 'word-pr3', label: 'Word · Public Relations Book 3' },
     { id: 'math-exam', label: 'Toán 7 · Đề thi' },
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
@@ -54,6 +57,25 @@ var DailyTaskCatalog = (function () {
       1: 'Maths · Numbers, money and the four operations', 2: 'Maths · Fractions, shapes and measuring',
       3: 'Science · Matter, energy, light and sound', 4: 'Science · Living things and food chains',
       5: 'Science · Food, health and everyday science' } },
+    // The Word tab (js/units.js host 'word'): Career Paths · Public Relations.
+    // Titles mirror data/career-paths/*.json — the bank itself is lazy
+    // (js/word-data.js) and this catalog is built at startup, so they are
+    // repeated here; tests/daily-task-catalog.test.js keeps them in step.
+    { set: 'pr1', group: 'word-pr1', name: 'PR Book 1', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
+      1: 'The Role of Public Relations', 2: 'Departments', 3: 'Services', 4: 'Marketing and PR',
+      5: 'Spreading Information', 6: 'Communication', 7: 'Persuasion', 8: 'Attracting Clients',
+      9: 'Conducting Research', 10: 'Types of Research', 11: 'Conducting a Survey',
+      12: 'Evaluating Results 1', 13: 'Evaluating Results 2', 14: 'The Budget', 15: 'Describing Change' } },
+    { set: 'pr2', group: 'word-pr2', name: 'PR Book 2', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
+      1: 'Skills of a Public Relations Professional', 2: 'Strategic Planning', 3: 'Tactics', 4: 'Corporations',
+      5: 'Politics and Government', 6: 'Education', 7: 'Entertainment and Sports', 8: 'Nonprofit',
+      9: 'Global Public Relations', 10: 'Releases 1', 11: 'Releases 2', 12: 'Traditional Media',
+      13: 'New Media', 14: 'Appearances', 15: 'Speeches' } },
+    { set: 'pr3', group: 'word-pr3', name: 'PR Book 3', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
+      1: 'Influencing Public Opinion', 2: 'Reaching a Diverse Audience', 3: 'Issues Management', 4: 'Reputation Management',
+      5: 'Conflict Management', 6: 'Crisis Management', 7: 'Legal Matters 1', 8: 'Legal Matters 2',
+      9: 'Legal Matters 3', 10: 'Ethics 1', 11: 'Ethics 2', 12: 'Challenges in Public Relations',
+      13: 'PR in the Digital Age', 14: 'Education', 15: 'Careers' } },
   ];
   // Chapter numbers are unique across the two semesters (1–5 HK1, 6–10 HK2),
   // and startMathQuiz(ch) answers a named chapter from the full bank — but the
@@ -186,17 +208,19 @@ var DailyTaskCatalog = (function () {
   // Units words practice — the title IS the identity ('Unit hk1-3 words practice').
   for (const s of SETS) {
     const prefix = s.set === 'pre' ? '' : s.set + '-';
+    const screen = s.screen || 'gradeFourScreen';
+    const kind = screen === 'wordScreen' ? 'word' : 'units';
     for (const u of s.units) {
       const unitKey = s.set === 'pre' ? u : prefix + u;
       const title = s.titles[u] ? ' · ' + s.titles[u] : '';
-      ENTRIES.push(entry('units:' + unitKey, s.group, 'Units ' + s.name + ' · Unit ' + u + title, 'lesson',
-        { titleExact: 'Unit ' + unitKey + ' words practice' }, 'gradeFourScreen',
+      ENTRIES.push(entry(kind + ':' + unitKey, s.group, (kind === 'word' ? 'Word ' : 'Units ') + s.name + ' · Unit ' + u + title, 'lesson',
+        { titleExact: 'Unit ' + unitKey + ' words practice' }, screen,
         [['switchUnitSet', s.set], ['startUnitPractice', unitKey]]));
     }
     const mixKey = s.set === 'pre' ? 'mix' : prefix + 'mix';
     const mixTitle = s.set === 'pre' ? 'Mix 12 units words practice' : 'Unit ' + mixKey + ' words practice';
-    ENTRIES.push(entry('units:' + mixKey, s.group, 'Units ' + s.name + ' · 🎲 Mix', 'lesson',
-      { titleExact: mixTitle }, 'gradeFourScreen',
+    ENTRIES.push(entry(kind + ':' + mixKey, s.group, (kind === 'word' ? 'Word ' : 'Units ') + s.name + ' · 🎲 Mix', 'lesson',
+      { titleExact: mixTitle }, screen,
       [['switchUnitSet', s.set], ['startUnitPractice', mixKey]]));
   }
   // Toán 7 — detail_json carries examId (mock exams) or chapter (drills).
@@ -355,6 +379,8 @@ var DailyTaskCatalog = (function () {
       case 'grammar': return ['Eng', 'Grammar', GRAMMAR_LABEL.get(k.split(':')[1]) || k.split(':')[1]];
       case 'units-pre': case 'units-hk1': case 'units-hk2': case 'units-posthk':
         return ['Eng', 'Grade 4', SET_LABEL[e.group.slice(6)] || e.group.slice(6)];
+      case 'word-pr1': case 'word-pr2': case 'word-pr3':
+        return ['Eng', 'Word', 'Book ' + e.group.slice(-1)];
       case 'math-exam': return ['Math', 'Toán 7', /hk2/.test(k) ? 'Học kì 2' : 'Học kì 1', 'Đề thi'];
       case 'math-chapter': return ['Math', 'Toán 7', Number(k.split(':')[1]) >= 6 ? 'Học kì 2' : 'Học kì 1', 'Luyện chương'];
       case 'math-wars': return ['Math', 'Math Wars'];
@@ -398,7 +424,7 @@ var DailyTaskCatalog = (function () {
     // child's screen. Deeper levels keep push order.
     const ORDER = {
       '': ['Eng', 'Math'],
-      Eng: ['Vocabulary', 'Grade 4', 'Grammar', 'PTNK Exams', 'Reading', 'Cloze', 'Error Correction', 'Grammar & Vocabulary', 'Phonetics & Stress', 'Irregular Verbs', 'Phrases', 'Word Form', 'Rewrite'],
+      Eng: ['Vocabulary', 'Grade 4', 'Word', 'Grammar', 'PTNK Exams', 'Reading', 'Cloze', 'Error Correction', 'Grammar & Vocabulary', 'Phonetics & Stress', 'Irregular Verbs', 'Phrases', 'Word Form', 'Rewrite'],
       Math: ['Toán 7', 'Toán 4', 'Math Wars'],
     };
     const sortBy = (node) => {

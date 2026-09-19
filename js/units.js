@@ -1,49 +1,111 @@
-// units.js — picture-dictionary practice on the Topics → Grade 4 tab.
+// units.js — picture-dictionary practice: the Learn → Grade 4 screen and the
+// bottom bar's Word tab, one engine.
 // A card grid opens a typed gap-fill practice: the app shows the picture
 // (emoji) + Vietnamese meaning and a gapped word (st__ent / ch_cken /
 // _ _ _ _ _), and the student types the FULL word. The number of missing
 // letters is random per question: 4, 5 or the whole word.
 //
-// Grade 4 is split into three word sets, each with its own units and its own
+// Grade 4 is split into four word sets, each with its own units and its own
 // Mix:
 //   pre — the picture-dictionary units the app started with (12 units)
+//   posthk — Global Maths 4 & Science 4 glossaries
 //   hk1 — Tiếng Anh 4 Global Success, Tập một: the book's ten units merged
 //         two-by-two into five units carrying the whole Wordlist from
 //         pages 78-80 (js/units-hk1-data.js)
 //   hk2 — Tiếng Anh 4 Global Success, Tập hai: book units 11..20 merged the
 //         same way, carrying the whole Wordlist from pages 74-75
+// The Word tab carries three more, on its own screen:
+//   pr1, pr2, pr3 — Career Paths: Public Relations, Book 1/2/3 (Express
+//         Publishing), 15 units each, exactly the Vocabulary column of each
+//         book's Scope and Sequence page (js/word-data.js, generated from
+//         data/career-paths/ by scripts/build-word-data.js; lazy-loaded)
 //
 // A unit is addressed by a KEY. 'pre' keeps its bare keys (3, 'mix') so every
 // history row, best score and mastery count written before the split still
-// counts; the newer sets prefix theirs ('hk1-3', 'hk1-mix').
+// counts; the newer sets prefix theirs ('hk1-3', 'hk1-mix', 'pr2-7').
+//
+// A HOST is a screen that carries the tab's pieces — the set strip, the unit
+// cards, the history list and the detail pane a practice draws in. Every set
+// names its host, and every DOM id in this file goes through the host of the
+// set in play, so one practice engine serves two bottom-bar destinations.
 
 let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[] }
 
+const UNIT_HOSTS = {
+  grade4: {
+    screen: 'gradeFourScreen', tabs: 'grade4SubTabs', bar: 'unitsBar',
+    history: 'grade4History', detail: 'grade4Detail',
+    stateKey: 'unitsSet', defaultSet: 'hk1',
+    // Owed words and the silent priority list are kept per host, so a Word
+    // debt gates the Word tab and a Grade 4 debt gates Grade 4 — never both.
+    retryKey: 'units',
+    homeFn: 'renderGrade4Home', homeLabel: '📗 Bài học', skillPrefix: 'grade4',
+  },
+  word: {
+    screen: 'wordScreen', tabs: 'wordSubTabs', bar: 'wordUnitsBar',
+    history: 'wordHistory', detail: 'wordDetail',
+    stateKey: 'wordSet', defaultSet: 'pr1',
+    retryKey: 'word',
+    homeFn: 'renderWordHome', homeLabel: '🔤 Bài học', skillPrefix: 'word',
+  },
+};
+
 const UNIT_SETS = [
-  { id: 'pre', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
+  { id: 'pre', host: 'grade4', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
   // The two English-medium subject books the class moves on to. Their
   // glossaries are one word bank, split by subject. The id stays 'posthk' even
   // though the tab reads "Post": it is written into every owed word and every
   // history row, and renaming it would strand both.
-  { id: 'posthk', label: '📙 Post', name: 'Post', sub: 'Global Maths 4 & Science 4 · Glossary' },
-  { id: 'hk1', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
-  { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
+  { id: 'posthk', host: 'grade4', label: '📙 Post', name: 'Post', sub: 'Global Maths 4 & Science 4 · Glossary' },
+  { id: 'hk1', host: 'grade4', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
+  { id: 'hk2', host: 'grade4', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
+  { id: 'pr1', host: 'word', label: '📘 Book 1', name: 'Book 1', sub: 'Career Paths · Public Relations 1 · 15 Units' },
+  { id: 'pr2', host: 'word', label: '📙 Book 2', name: 'Book 2', sub: 'Career Paths · Public Relations 2 · 15 Units' },
+  { id: 'pr3', host: 'word', label: '📗 Book 3', name: 'Book 3', sub: 'Career Paths · Public Relations 3 · 15 Units' },
 ];
+const UNIT_SET_RE = /^(hk1|hk2|posthk|pr1|pr2|pr3)-(mix|\d+)$/;
 
-// Which set the cards are showing. Stored per user so the tab reopens where
-// the child left it; HK1 is the default because that is the book in use.
-let _unitSetFallback = null;
-function currentUnitSet() {
+function unitHostOfSet(set) {
+  const meta = UNIT_SETS.find(s => s.id === set);
+  return (meta && meta.host) || 'grade4';
+}
+function unitHostSets(hostId) {
+  return UNIT_SETS.filter(s => s.host === hostId);
+}
+// The host the child is standing in: the last home drawn, or the host of the
+// practice under way. Grade 4 until anything says otherwise, which is what
+// every caller written before the Word tab expects.
+let _unitHostId = 'grade4';
+function _unitHost() { return UNIT_HOSTS[_unitHostId] || UNIT_HOSTS.grade4; }
+function unitCurrentHost() { return _unitHostId; }
+// For a restored study checkpoint (js/app.js): the practice's host before its
+// question is redrawn, or it lands on the other host's screen.
+function unitSelectHost(hostId) { if (UNIT_HOSTS[hostId]) _unitHostId = hostId; }
+function _unitHostEl(piece) {
+  if (typeof document === 'undefined') return null;
+  return document.getElementById(_unitHost()[piece]);
+}
+// The screen a live practice belongs to, for the leave guard in js/app.js.
+function unitPracticeScreen() { return _unitHost().screen; }
+
+// Which set the cards are showing, per host. Stored per user so each tab
+// reopens where the child left it; HK1 is Grade 4's default because that is
+// the book in use, Book 1 is the Word tab's.
+const _unitSetFallback = {};
+function currentUnitSet(hostId) {
+  const host = UNIT_HOSTS[hostId] || _unitHost();
   let saved = null;
-  if (typeof appState !== 'undefined' && appState && appState.unitsSet) saved = appState.unitsSet;
-  else saved = _unitSetFallback;
-  return UNIT_SETS.some(s => s.id === saved) ? saved : 'hk1';
+  if (typeof appState !== 'undefined' && appState && appState[host.stateKey]) saved = appState[host.stateKey];
+  else saved = _unitSetFallback[host.stateKey] || null;
+  return unitHostSets(hostId || _unitHostId).some(s => s.id === saved) ? saved : host.defaultSet;
 }
 function switchUnitSet(set) {
   if (!UNIT_SETS.some(s => s.id === set)) return;
-  _unitSetFallback = set;
+  _unitHostId = unitHostOfSet(set);
+  const host = _unitHost();
+  _unitSetFallback[host.stateKey] = set;
   if (typeof appState !== 'undefined' && appState) {
-    appState.unitsSet = set;
+    appState[host.stateKey] = set;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}
     }
@@ -72,6 +134,11 @@ function unitsBank(set) {
   if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK1, 'hk1') : [];
   if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK2, 'hk2') : [];
   if (s === 'posthk') return (typeof UNIT_WORDS_POSTHK !== 'undefined') ? _unitsTagSet(UNIT_WORDS_POSTHK, 'posthk') : [];
+  // js/word-data.js is lazy (js/lazy-data.js SCREEN_FILES.wordScreen): until
+  // the Word tab is opened these are empty, and every caller copes with [].
+  if (s === 'pr1') return (typeof UNIT_WORDS_PR1 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR1, 'pr1') : [];
+  if (s === 'pr2') return (typeof UNIT_WORDS_PR2 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR2, 'pr2') : [];
+  if (s === 'pr3') return (typeof UNIT_WORDS_PR3 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR3, 'pr3') : [];
   return (typeof UNIT_WORDS !== 'undefined') ? _unitsTagSet(UNIT_WORDS, 'pre') : [];
 }
 // Every word the tab knows, across all sets. Used where a word arrives with no
@@ -86,6 +153,7 @@ function unitTitle(set, unit) {
   if (set === 'hk1' && typeof UNIT_HK1_TITLES !== 'undefined') return UNIT_HK1_TITLES[unit] || '';
   if (set === 'hk2' && typeof UNIT_HK2_TITLES !== 'undefined') return UNIT_HK2_TITLES[unit] || '';
   if (set === 'posthk' && typeof UNIT_POSTHK_TITLES !== 'undefined') return UNIT_POSTHK_TITLES[unit] || '';
+  if (/^pr[123]$/.test(set) && typeof UNIT_PR_TITLES !== 'undefined') return (UNIT_PR_TITLES[set] || {})[unit] || '';
   return '';
 }
 // The textbook units a practice unit merges. HK1 and HK2 both renumber theirs
@@ -117,7 +185,7 @@ function _unitKey(set, unit) {
 }
 function _unitParse(key) {
   const s = String(key);
-  const m = s.match(/^(hk1|hk2|posthk)-(mix|\d+)$/);
+  const m = s.match(UNIT_SET_RE);
   if (m) return { set: m[1], unit: m[2] === 'mix' ? 'mix' : Number(m[2]) };
   return { set: 'pre', unit: s === 'mix' ? 'mix' : Number(s) };
 }
@@ -314,6 +382,7 @@ const UNITS_RETRY_CONFIG = {
   // The drill takes over the Topics detail pane, so the home pieces step aside.
   onOpen: () => {
     _unitQuiz = null;
+    _unitHostId = 'grade4';
     ['unitsBar', 'grade4SubTabs', 'grade4History']
       .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     const d = document.getElementById('grade4Detail');
@@ -323,10 +392,34 @@ const UNITS_RETRY_CONFIG = {
 };
 if (typeof defineRetryDrill === 'function') defineRetryDrill(UNITS_RETRY_CONFIG);
 
-// Named wrappers so this tab reads in its own vocabulary.
-function unitsRetryList() { return (typeof retryList === 'function' ? retryList('units') : []); }
-function unitsRetryCount() { return (typeof retryCount === 'function' ? retryCount('units') : 0); }
-function startUnitRetry() { return (typeof startRetryDrill === 'function' ? startRetryDrill('units') : undefined); }
+// The Word tab owes its words on its own screen. Same rules, same word
+// shape; only where it draws and which queue it keeps differ.
+const WORD_RETRY_CONFIG = Object.assign({}, UNITS_RETRY_CONFIG, {
+  key: 'word',
+  screenId: 'wordDetail',
+  onOpen: () => {
+    _unitQuiz = null;
+    _unitHostId = 'word';
+    ['wordUnitsBar', 'wordSubTabs', 'wordHistory']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    const d = document.getElementById('wordDetail');
+    if (d) d.style.display = '';
+  },
+  home: () => { if (typeof renderWordHome === 'function') renderWordHome(); },
+});
+if (typeof defineRetryDrill === 'function') defineRetryDrill(WORD_RETRY_CONFIG);
+
+// Named wrappers so this tab reads in its own vocabulary. They answer for the
+// host in play; an argument names a host ('grade4', 'word') or its retry key
+// ('units', 'word') explicitly.
+function unitsRetryKey(which) {
+  if (which && UNIT_HOSTS[which]) return UNIT_HOSTS[which].retryKey;
+  const byKey = which && Object.values(UNIT_HOSTS).find(h => h.retryKey === which);
+  return (byKey || _unitHost()).retryKey;
+}
+function unitsRetryList(hostId) { return (typeof retryList === 'function' ? retryList(unitsRetryKey(hostId)) : []); }
+function unitsRetryCount(hostId) { return (typeof retryCount === 'function' ? retryCount(unitsRetryKey(hostId)) : 0); }
+function startUnitRetry(hostId) { return (typeof startRetryDrill === 'function' ? startRetryDrill(unitsRetryKey(hostId)) : undefined); }
 
 // ---- Grade 4 view: one card per unit, with word count + best score ----
 // ---- mastery ----
@@ -359,12 +452,12 @@ function isUnitMastered(unit, history) {
 // times each word has been missed across every past practice does: the list is
 // exactly what to look at again, hardest first. Same idea as the Word form tab.
 function unitsWrongAggregate() {
-  const hist = (typeof appState !== 'undefined' && appState && appState.unitsHistory) || [];
+  const hist = unitsHostHistory();
   const counts = new Map();
   hist.forEach(s => (s.wrong || []).forEach(en => {
     counts.set(en, (counts.get(en) || 0) + 1);
   }));
-  const bank = unitsAllWords();
+  const bank = unitHostSets(_unitHostId).reduce((all, s) => all.concat(unitsBank(s.id)), []);
   const out = [];
   counts.forEach((misses, en) => {
     const w = bank.find(x => x.en === en);
@@ -397,16 +490,24 @@ function renderUnitsWrongPanelHTML() {
     </div>`;
 }
 
+// The history rows that belong to the host in play (js/home.js splits the
+// same list the same way for its skill cards).
+function unitsHostHistory(hostId) {
+  const hist = (typeof appState !== 'undefined' && appState && Array.isArray(appState.unitsHistory)) ? appState.unitsHistory : [];
+  const id = hostId || _unitHostId;
+  return hist.filter(h => h && unitHostOfSet(_unitParse(h.unit).set) === id);
+}
+
 function renderUnitSetTabsHTML() {
   const active = currentUnitSet();
-  return `<div class="grammar-subtabs g4-set-tabs">` + UNIT_SETS.map(s => `
+  return `<div class="grammar-subtabs g4-set-tabs">` + unitHostSets(_unitHostId).map(s => `
     <button class="grammar-subtab ${s.id === active ? 'active' : ''}"
             onclick="switchUnitSet('${s.id}')">${s.label}</button>`).join('') + `</div>`;
 }
 
 function renderUnitsBar() {
   if (typeof document === 'undefined') return;   // headless (tests)
-  const bar = document.getElementById('unitsBar');
+  const bar = _unitHostEl('bar');
   if (!bar) return;
   bar.style.display = '';
 
@@ -421,7 +522,7 @@ function renderUnitsBar() {
       <div class="g4-soon">
         <div class="g4-soon-icon">🚧</div>
         <div class="g4-soon-title">${setMeta.name} — sắp có</div>
-        <div class="g4-soon-sub">${setMeta.sub} đang được soạn. Trong lúc chờ, học ${setMeta.id === 'hk2' ? 'HK1' : 'Pre'} nhé! 📗</div>
+        <div class="g4-soon-sub">${setMeta.sub} chưa tải được. Kiểm tra mạng rồi mở lại nhé! 📗</div>
       </div>`;
     return;
   }
@@ -439,7 +540,7 @@ function renderUnitsBar() {
     if (!(h.unit in best) || p > best[h.unit]) best[h.unit] = p;
   });
 
-  const owedBanner = (typeof retryOwedBannerHTML === 'function' ? retryOwedBannerHTML('units') : '');
+  const owedBanner = (typeof retryOwedBannerHTML === 'function' ? retryOwedBannerHTML(unitsRetryKey()) : '');
 
   const list = unitsList(set);
   const mixKey = _unitKey(set, 'mix');
@@ -511,11 +612,11 @@ function fireRewardCelebration(coinsEarned, pct) {
 // Everything here is already uploaded to the admin dashboard by
 // EngAuth.syncNow() (type 'lesson'), which runs on every finish.
 function renderUnitsHistory() {
-  const el = document.getElementById('grade4History');
+  const el = _unitHostEl('history');
   if (!el) return;
   el.style.display = '';
   const state = (typeof appState !== 'undefined' && appState) ? appState : {};
-  const hist = state.unitsHistory || [];
+  const hist = unitsHostHistory();
   const streak = state.streak || 0;
 
   if (!hist.length) {
@@ -547,27 +648,39 @@ function renderUnitsHistory() {
     <div class="uh-sync-note">☁️ Lịch sử tự động đồng bộ với admin</div>`;
 }
 
-let _grade4View = 'practice';
-function renderGrade4Home(view) {
-  if (view === 'history' || view === 'practice') _grade4View = view;
-  const detail = document.getElementById('grade4Detail');
+// Which sub-tab (Bài học / Lịch sử) each host is showing.
+const _unitView = { grade4: 'practice', word: 'practice' };
+function _renderUnitsHome(hostId, view) {
+  _unitHostId = hostId;
+  const host = _unitHost();
+  if (view === 'history' || view === 'practice') _unitView[hostId] = view;
+  const cur = _unitView[hostId] || 'practice';
+  const detail = _unitHostEl('detail');
   if (detail) { detail.innerHTML = ''; detail.style.display = ''; }
-  const tabs = document.getElementById('grade4SubTabs');
+  const tabs = _unitHostEl('tabs');
   if (tabs) {
     tabs.style.display = '';
-    tabs.innerHTML = `<button class="grammar-subtab ${_grade4View === 'practice' ? 'active' : ''}" onclick="renderGrade4Home('practice')">📗 Bài học</button>
-      <button class="grammar-subtab ${_grade4View === 'history' ? 'active' : ''}" onclick="renderGrade4Home('history')">🕐 Lịch sử</button>`;
+    tabs.innerHTML = `<button class="grammar-subtab ${cur === 'practice' ? 'active' : ''}" onclick="${host.homeFn}('practice')">${host.homeLabel}</button>
+      <button class="grammar-subtab ${cur === 'history' ? 'active' : ''}" onclick="${host.homeFn}('history')">🕐 Lịch sử</button>`;
   }
-  const bar = document.getElementById('unitsBar');
-  const history = document.getElementById('grade4History');
-  if (bar) bar.style.display = _grade4View === 'practice' ? '' : 'none';
-  if (history) history.style.display = _grade4View === 'history' ? '' : 'none';
-  if (_grade4View === 'history') renderUnitsHistory(); else renderUnitsBar();
+  const bar = _unitHostEl('bar');
+  const history = _unitHostEl('history');
+  if (bar) bar.style.display = cur === 'practice' ? '' : 'none';
+  if (history) history.style.display = cur === 'history' ? '' : 'none';
+  if (cur === 'history') renderUnitsHistory(); else renderUnitsBar();
 }
+function renderGrade4Home(view) { _renderUnitsHome('grade4', view); }
+function renderWordHome(view) { _renderUnitsHome('word', view); }
 function openGrade4(view) {
-  _grade4View = view === 'history' ? 'history' : 'practice';
+  _unitView.grade4 = view === 'history' ? 'history' : 'practice';
   if (typeof switchScreen === 'function' && switchScreen('gradeFourScreen') === false) return false;
   renderGrade4Home();
+  return true;
+}
+function openWord(view) {
+  _unitView.word = view === 'history' ? 'history' : 'practice';
+  if (typeof switchScreen === 'function' && switchScreen('wordScreen') === false) return false;
+  renderWordHome();
   return true;
 }
 
@@ -577,7 +690,10 @@ function startUnitPractice(unit) {
   // disabled while anything is owed, but the rule lives here too: a stale DOM
   // node, a queued tap or the "practise again" button on an old results screen
   // must not walk past it.
-  if (typeof retryGate === 'function' && retryGate('units')) return;
+  // The practice belongs to the host of its set, whichever screen drew the
+  // card: a daily-task deep link starts it before any home has been drawn.
+  _unitHostId = unitHostOfSet(_unitParse(unit).set);
+  if (typeof retryGate === 'function' && retryGate(unitsRetryKey())) return;
   // The card is disabled, but a stale DOM node or a queued tap must not slip
   // through — the rule lives here, not only in the markup.
   if (isUnitMastered(unit)) {
@@ -593,7 +709,7 @@ function startUnitPractice(unit) {
   // case in the test files that load this tab on its own.
   let words;
   if (typeof prioPick === 'function') {
-    words = prioPick('units', pool, 10, { idOf: UNITS_RETRY_CONFIG.idOf });
+    words = prioPick(unitsRetryKey(), pool, 10, { idOf: UNITS_RETRY_CONFIG.idOf });
   } else {
     const shuffled = pool.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -611,9 +727,9 @@ function startUnitPractice(unit) {
   });
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
-  // Hide the Grade 4 menu pieces while practising.
-  ['unitsBar', 'grade4SubTabs', 'grade4History'].forEach(id => {
-    const el = document.getElementById(id);
+  // Hide the host's menu pieces while practising.
+  ['bar', 'tabs', 'history'].forEach(piece => {
+    const el = _unitHostEl(piece);
     if (el) el.style.display = 'none';
   });
   renderUnitQuestion();
@@ -637,7 +753,7 @@ function abandonUnitPractice() { _unitQuiz = null; }
 // be speaking, not the child's data.
 function unitsForgetProfile() {
   abandonUnitPractice();
-  _unitSetFallback = null;
+  for (const k of Object.keys(_unitSetFallback)) delete _unitSetFallback[k];
 }
 
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
@@ -655,8 +771,7 @@ function quitUnitPractice() {
         + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
   }
   abandonUnitPractice();
-  // Guarded because this module is also loaded alone in unit tests.
-  if (typeof renderGrade4Home === 'function') renderGrade4Home();
+  _renderUnitsHome(_unitHostId);
 }
 function isUnitPracticeActive() { return !!_unitQuiz; }
 
@@ -709,7 +824,7 @@ function _unitGapHTML(gap, revealed) {
 
 function renderUnitQuestion() {
   const st = _unitQuiz;
-  const detail = document.getElementById('grade4Detail') || document.getElementById('topicsDetail');
+  const detail = _unitHostEl('detail') || document.getElementById('topicsDetail');
   if (!st || !detail) return;
   const q = st.questions[st.idx];
   // Warm this word's recording (and the next) so the auto-speak on answer
@@ -823,7 +938,7 @@ function finishUnitPractice() {
       const mode = String(q.mode || 'full');
       const unitKey = String(st.unit).toLowerCase().replace(/[^a-z0-9]+/g, '.')
         .replace(/^\.|\.$/g, '') || 'mix';
-      const key = 'grade4.unit.' + unitKey.toLowerCase() + '.spelling.' + mode;
+      const key = _unitHost().skillPrefix + '.unit.' + unitKey.toLowerCase() + '.spelling.' + mode;
       const row = skillMap[key] || (skillMap[key] = {
         skillKey: key,
         skillLabel: _unitLabel(st.unit) + ' · ' + (modeLabels[mode] || 'Chính tả'),
@@ -854,18 +969,19 @@ function finishUnitPractice() {
 
   // Owe every missed word back. Recorded here, after the score is banked, so a
   // child never loses coins they earned by also being told to practise.
-  if (wrong.length && typeof retryAdd === 'function') retryAdd('units', wrong);
+  if (wrong.length && typeof retryAdd === 'function') retryAdd(unitsRetryKey(), wrong);
   // The silent priority list (js/wrong-priority.js): every word answered in a
   // real practice moves its streak. Same right/wrong line as the owed drill.
   if (typeof prioRecord === 'function') {
     const idOf = UNITS_RETRY_CONFIG.idOf;
-    prioRecord('units',
+    prioRecord(unitsRetryKey(),
       st.questions.filter((q, i) => st.answers[i] && st.answers[i].isCorrect).map(q => idOf(q.w)),
       wrong.map(idOf));
   }
   const owed = unitsRetryCount();
+  const host = _unitHost();
 
-  const detail = document.getElementById('grade4Detail') || document.getElementById('topicsDetail');
+  const detail = _unitHostEl('detail') || document.getElementById('topicsDetail');
   const reviewHtml = wrong.map(w => `
       <div class="grammar-review-item wrong">
         <div class="grammar-review-q">${w.emoji} <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(w.en) : unitEsc(w.en)}</b>
@@ -876,15 +992,15 @@ function finishUnitPractice() {
   detail.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="renderGrade4Home()">‹</button>
+        <button class="grammar-back-btn" onclick="${host.homeFn}()">‹</button>
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} ${_unitLabel(st.unit)} · ${score}/${total} (${pct}%)</span>
       </div>
       ${rewardCelebrationHTML(score, total, coinsEarned)}
-      ${(typeof retryResultBannerHTML === 'function' ? retryResultBannerHTML('units', wrong.length) : '')}
+      ${(typeof retryResultBannerHTML === 'function' ? retryResultBannerHTML(host.retryKey, wrong.length) : '')}
       <div class="phrases-section-title">${wrong.length ? 'Từ cần học lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
       ${owed
-        ? (typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('units') : '')
+        ? (typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML(host.retryKey) : '')
         : `<button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${_unitKeyArg(st.unit)})">🔁 Practice ${_unitLabel(st.unit)} again</button>`}
     </div>`;
   fireRewardCelebration(coinsEarned, pct);
@@ -898,7 +1014,9 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     unitsBank, unitsAllWords, unitsList, unitTitle, unitBooks, unitBooksLabel,
     UNITS_RETRY_CONFIG, _unitPool,
-    UNIT_SETS, currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
+    UNIT_SETS, UNIT_HOSTS, UNIT_SET_RE, unitHostOfSet, unitHostSets, unitCurrentHost, unitSelectHost, unitPracticeScreen,
+    unitsHostHistory, unitsRetryKey, WORD_RETRY_CONFIG, renderWordHome, openWord,
+    currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
     _unitKey, _unitParse, _unitKeyArg,
     buildUnitGap, pickUnitGapMode, pickUnitGapModeForKey, _unitNormalize, _unitAnswerCorrect,
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,

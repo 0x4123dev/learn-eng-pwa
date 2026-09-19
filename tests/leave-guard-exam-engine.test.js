@@ -3,8 +3,8 @@
 //
 // The rule (the same one for every exercise in the app):
 //   (A) while a paper is running, every way OUT — the bottom bar (Home / Eng /
-//       Arena / Toán), the Exam tab button, the in-screen ✕, a Daily Task deep
-//       link — asks confirm() first. Cancel keeps the child on the SAME
+//       Arena / Toán / Word), the in-screen ✕, a Daily Task deep link — asks
+//       confirm() first. Cancel keeps the child on the SAME
 //       question with the clock still running; OK abandons cleanly: state
 //       nulled, clock stopped, bottom bar back, checkpoint gone.
 //   (B) once the results screen is up, leaving asks nothing and nothing blocks
@@ -13,9 +13,9 @@
 //       ghost paper, the attempt was written once and the coins paid once, and
 //       no study checkpoint offers the paper back.
 //
-// Seven activities share the engine — the HCMC Exam tab, the PTNK papers, and
-// the five practice menus (Reading, Cloze, Error Correction, Grammar &
-// Vocabulary, Phonetics & Stress) — each on its own screen, and the guard in
+// Six activities share the engine — the PTNK papers and the five practice
+// menus (Reading, Cloze, Error Correction, Grammar & Vocabulary, Phonetics &
+// Stress) — each on its own screen, and the guard in
 // js/app.js switchScreen keys off the set's OWN screen (_examOwnScreen). So a
 // switch to the tab's own screen must NOT ask, and — since the clock keeps
 // running — must not paint the home over the live question either.
@@ -58,13 +58,12 @@ const questionLabel = (h, screenId) => {
 };
 
 // ---------------------------------------------------------------------------
-// The seven activities. `open` reaches the tab the way the Learn hub / bottom
-// bar does; `start` taps the button the home renders (with confirm() answered
-// "yes" where the set asks one — the HCMC and PTNK papers do, the practice
-// menus start on the tap itself).
+// The six activities. `open` reaches the tab the way the Learn hub does;
+// `start` taps the button the home renders (with confirm() answered "yes"
+// where the set asks one — the PTNK papers do, the practice menus start on
+// the tap itself).
 // ---------------------------------------------------------------------------
 const ACTIVITIES = [
-  { name: 'Exam (HCMC)', screen: 'examScreen', set: 'hcmc', startFn: 'confirmStartExam', link: 'ptnk:any' },
   { name: 'PTNK', screen: 'ptnkScreen', set: 'ptnk', startFn: 'startPtnkExam', link: 'reading:kc' },
   { name: 'Reading', screen: 'readingScreen', set: 'reading', startFn: 'startReadingPractice', link: 'ptnk:any' },
   { name: 'Cloze', screen: 'clozeScreen', set: 'cloze', startFn: 'startClozePractice', link: 'ptnk:any' },
@@ -137,11 +136,11 @@ const EXITS = [
   { name: 'bottom bar Home', go: (h) => h.sandbox.switchScreen('homeScreen'), lands: 'homeScreen' },
   { name: 'bottom bar Eng', go: (h) => h.sandbox.switchScreen('learnHubScreen'), lands: 'learnHubScreen' },
   { name: 'bottom bar Toán', go: (h) => h.sandbox.switchScreen('mathHubScreen'), lands: 'mathHubScreen' },
-  { name: 'bottom bar Exam', go: (h, a) => h.sandbox.switchScreen('examScreen'), lands: 'examScreen', skipFor: 'examScreen' },
+  { name: 'bottom bar Word', go: (h) => h.sandbox.switchScreen('wordScreen'), lands: 'wordScreen' },
   { name: 'bottom bar Arena (openPetBattle)', go: (h) => h.sandbox.openPetBattle(), lands: 'petBattleScreen', async: true, noReturn: true },
   { name: 'in-screen ✕ (quitExam)', go: (h, a) => tapOnclick(h, a.screen, 'quitExam'), lands: null, viaQuit: true },
   { name: 'Daily Task deep link', go: (h, a) => h.sandbox.DailyTask.go(a.link), async: true, landsFromLink: true },
-  { name: 'My Skills → Exam (goToSkillTab)', go: (h) => h.sandbox.goToSkillTab('exam'), lands: 'examScreen', skipFor: 'examScreen', noReturn: true },
+  { name: 'My Skills → Word (goToSkillTab)', go: (h) => h.sandbox.goToSkillTab('word'), lands: 'wordScreen', noReturn: true },
 ];
 
 function linkScreen(h, kind) { return h.sandbox.DailyTaskCatalog.get(kind).go.screen; }
@@ -249,7 +248,7 @@ for (const a of ACTIVITIES) {
       // (B) every way out, no question asked.
       h.sandbox.__confirmAnswer = false;
       h.sandbox.__confirmLog.length = 0;
-      for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'examScreen']) {
+      for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'wordScreen']) {
         h.sandbox.switchScreen(a.screen); await settle(4);
         assert.equal(h.sandbox.switchScreen(target), true, 'leaving the results to ' + target + ' must work');
         await settle(4);
@@ -334,7 +333,7 @@ suite('leave guard · exam engine specifics', () => {
     h.sandbox.__confirmAnswer = false;
     h.sandbox.__confirmLog.length = 0;
     assert.falsy(h.sandbox.isExamActive());
-    for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'examScreen']) {
+    for (const target of ['homeScreen', 'learnHubScreen', 'mathHubScreen', 'wordScreen']) {
       h.sandbox.switchScreen('phoneticsScreen'); await settle(4);
       assert.equal(h.sandbox.switchScreen(target), true, 'leaving a lesson to ' + target);
     }
@@ -347,32 +346,25 @@ suite('leave guard · exam engine specifics', () => {
     assert.equal(h.sandbox.__confirmLog.length, 0);
   });
 
-  test('the Exam tab draws the HCMC list after a visit to a practice menu or PTNK', async () => {
-    // Before the fix, renderExamHome() delegated to whichever set was last
-    // selected — the Reading home was drawn on readingScreen and the Exam
-    // tab sat on "Đang tải bài…" for the rest of the session.
+  test('the PTNK tab draws the PTNK list after a visit to a practice menu', async () => {
+    // renderExamHome() delegates to whichever set is selected, so a tab's
+    // entry path must select its OWN set first — or the Reading home is drawn
+    // on readingScreen and the PTNK tab sits on its loading line.
     const h = boot();
-    for (const other of ['readingScreen', 'ptnkScreen', 'phoneticsScreen', 'clozeScreen']) {
+    for (const other of ['readingScreen', 'phoneticsScreen', 'clozeScreen', 'errorsScreen']) {
       assert.equal(h.sandbox.switchScreen(other), true); await settle(8);
-      assert.truthy(h.sandbox.examCurrentSet() !== 'hcmc', other + ' selects its own set');
-      assert.equal(h.sandbox.switchScreen('examScreen'), true); await settle(8);
-      assert.equal(h.sandbox.examCurrentSet(), 'hcmc', 'the Exam tab is the HCMC set');
-      const text = h.el('examScreen').textContent;
-      assert.falsy(/Đang tải bài/.test(text), 'the Exam tab must not be stuck on its loading line after ' + other);
-      assert.truthy(h.el('examScreen').innerHTML.includes('confirmStartExam('), 'the HCMC papers are listed');
-      assert.truthy(h.el('examScreen').innerHTML.includes('renderExamHistory()'), 'with the HCMC history button');
+      assert.truthy(h.sandbox.examCurrentSet() !== 'ptnk', other + ' selects its own set');
+      assert.equal(h.sandbox.switchScreen('ptnkScreen'), true); await settle(8);
+      assert.equal(h.sandbox.examCurrentSet(), 'ptnk', 'the PTNK tab is the PTNK set');
+      const text = h.el('ptnkScreen').textContent;
+      assert.falsy(/Đang tải bài/.test(text), 'the PTNK tab must not be stuck on its loading line after ' + other);
+      assert.truthy(h.el('ptnkScreen').innerHTML.includes('startPtnkExam('), 'the PTNK papers are listed');
+      assert.truthy(h.el('ptnkScreen').innerHTML.includes('renderExamHistory()'), 'with the PTNK history button');
     }
-    // …and the same through My Skills → Exam on Home.
-    h.sandbox.switchScreen('ptnkScreen'); await settle(8);
-    h.sandbox.switchScreen('homeScreen'); await settle(4);
-    h.sandbox.goToSkillTab('exam'); await settle(8);
-    assert.equal(activeScreen(h), 'examScreen');
-    assert.equal(h.sandbox.examCurrentSet(), 'hcmc');
-    assert.truthy(h.el('examScreen').innerHTML.includes('confirmStartExam('));
   });
 
   test('a PTNK results screen still goes home to PTNK, and a practice one to its list', async () => {
-    for (const a of ACTIVITIES.filter(x => x.set !== 'hcmc')) {
+    for (const a of ACTIVITIES) {
       const h = boot();
       await startPaper(h, a);
       finishPaper(h, a);
@@ -381,7 +373,9 @@ suite('leave guard · exam engine specifics', () => {
       assert.equal(activeScreen(h), a.screen);
       assert.truthy(h.el(a.screen).innerHTML.includes(a.startFn) || h.el(a.screen).innerHTML.includes('grammar-subtab'),
         a.name + ': its own home is drawn on ' + a.screen);
-      assert.falsy(h.el('examScreen').innerHTML.includes('exam-result'), 'nothing was drawn on the Exam tab');
+      for (const other of ACTIVITIES.filter(x => x.screen !== a.screen)) {
+        assert.falsy(h.el(other.screen).innerHTML.includes('exam-result'), a.name + ': nothing was drawn on ' + other.screen);
+      }
     }
   });
 
@@ -396,11 +390,11 @@ suite('leave guard · exam engine specifics', () => {
 
   test('switching profile mid-paper stops the clock and clears everything', async () => {
     const h = boot();
-    const s = await startPaper(h, ACTIVITIES[1]);
+    const s = await startPaper(h, ACTIVITIES[0]);
     h.sandbox.examForgetProfile();
     assert.falsy(h.sandbox.isExamActive());
     assert.contains(h.cleared, s.timerId, 'the clock stopped');
-    assert.equal(h.sandbox.examCurrentSet(), 'hcmc');
+    assert.equal(h.sandbox.examCurrentSet(), null, 'no set is selected for the next profile');
     assert.falsy(checkpoint(h));
     assert.truthy(h.el('bottomNav').style.display !== 'none');
   });

@@ -1,0 +1,20 @@
+{
+  "book": 2,
+  "unit": 9,
+  "title": "Global Public Relations",
+  "words": [
+    { "en": "collectivism", "vi": "chủ nghĩa tập thể", "emoji": "👥🤝" },
+    { "en": "cultural", "vi": "thuộc về văn hóa", "emoji": "🎎🌏" },
+    { "en": "explicit", "vi": "rõ ràng, nói thẳng", "emoji": "🗣️✅" },
+    { "en": "global", "vi": "toàn cầu", "emoji": "🌍" },
+    { "en": "implicit", "vi": "ngầm hiểu, không nói thẳng", "emoji": "🤫💭" },
+    { "en": "individualism", "vi": "chủ nghĩa cá nhân", "emoji": "🧍⭐" },
+    { "en": "language barrier", "vi": "rào cản ngôn ngữ", "emoji": "🗣️🧱" },
+    { "en": "lose face", "vi": "mất mặt, bẽ mặt", "emoji": "😳🙈" },
+    { "en": "nation", "vi": "quốc gia, dân tộc", "emoji": "🏳️🗺️" },
+    { "en": "nonverbal", "vi": "phi ngôn ngữ, không dùng lời", "emoji": "🤷🙅" },
+    { "en": "offend", "vi": "xúc phạm, làm mất lòng", "emoji": "😠💢" },
+    { "en": "power distance", "vi": "khoảng cách quyền lực", "emoji": "👑📏" },
+    { "en": "verbalized", "vi": "được nói ra thành lời", "emoji": "💬👄" }
+  ]
+}

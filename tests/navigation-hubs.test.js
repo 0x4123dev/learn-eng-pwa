@@ -20,13 +20,13 @@ suite('primary navigation: five clear destinations', () => {
     test('the bottom bar contains exactly five real buttons', () => {
         assert.equal((nav.match(/class="nav-item/g) || []).length, 5);
         const keys = [...nav.matchAll(/data-nav-key="([^"]+)"/g)].map(m => m[1]);
-        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'exam']);
+        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'word']);
     });
 
     test('every destination has a visible label and a consistent SVG icon', () => {
         // The English hub's tab reads "Eng"; its nav key stays 'learn', the
         // internal id every screen's NAV_GROUP_BY_SCREEN entry points at.
-        for (const label of ['Home', 'Eng', 'Arena', 'Math', 'Exam']) {
+        for (const label of ['Home', 'Eng', 'Arena', 'Math', 'Word']) {
             assert.truthy(nav.includes('<span>' + label + '</span>'), label + ' label is missing');
         }
         assert.equal((nav.match(/<svg viewBox="0 0 24 24">/g) || []).length, 5);
@@ -79,7 +79,7 @@ suite('navigation hubs: old modules remain easy to find', () => {
             ["wordformScreen: 'learn'", 'Word form'],
             ["rewriteScreen: 'learn'", 'Rewrite'],
             ["mathHubScreen: 'math'", 'Math'],
-            ["examScreen: 'exam'", 'Exam'],
+            ["wordScreen: 'word'", 'Word'],
         ]) {
             assert.truthy(app.includes(pair[0]), pair[1] + ' has no parent navigation state');
         }

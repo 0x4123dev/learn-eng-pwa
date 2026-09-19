@@ -1,0 +1,20 @@
+{
+  "book": 2,
+  "unit": 7,
+  "title": "Entertainment and Sports",
+  "words": [
+    { "en": "appearance", "vi": "sự xuất hiện trước công chúng", "emoji": "🎤📺" },
+    { "en": "athlete", "vi": "vận động viên", "emoji": "🏃‍♂️🏅" },
+    { "en": "award", "vi": "giải thưởng", "emoji": "🏆" },
+    { "en": "celebrity", "vi": "người nổi tiếng", "emoji": "🌟📸" },
+    { "en": "damage control", "vi": "kiểm soát thiệt hại, cứu vãn uy tín", "emoji": "🧯🔥" },
+    { "en": "famous", "vi": "nổi tiếng", "emoji": "⭐👀" },
+    { "en": "nickname", "vi": "biệt danh", "emoji": "🏷️😎" },
+    { "en": "personality campaign", "vi": "chiến dịch đánh bóng tên tuổi", "emoji": "📣🧑‍🎤" },
+    { "en": "photo op", "vi": "dịp chụp ảnh quảng bá", "emoji": "📷✨" },
+    { "en": "promote", "vi": "quảng bá, lăng xê", "emoji": "📢🚀" },
+    { "en": "sports", "vi": "thể thao", "emoji": "⚽🏀" },
+    { "en": "star", "vi": "ngôi sao, minh tinh", "emoji": "🌟🎬" },
+    { "en": "wealthy", "vi": "giàu có", "emoji": "💰🤑" }
+  ]
+}

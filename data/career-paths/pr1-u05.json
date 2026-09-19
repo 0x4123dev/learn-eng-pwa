@@ -1,0 +1,17 @@
+{
+  "book": 1,
+  "unit": 5,
+  "title": "Spreading Information",
+  "words": [
+    { "en": "broadcast", "vi": "phát sóng, truyền bá rộng rãi (động từ)", "emoji": "📻📡" },
+    { "en": "in print", "vi": "trên báo, sách in", "emoji": "📰🖨️" },
+    { "en": "Internet", "vi": "mạng máy tính toàn cầu", "emoji": "🌐💻" },
+    { "en": "interview", "vi": "cuộc phỏng vấn", "emoji": "🎤🗣️" },
+    { "en": "media", "vi": "phương tiện truyền thông đại chúng", "emoji": "📺📰📻" },
+    { "en": "news release", "vi": "thông cáo báo chí", "emoji": "📰📤" },
+    { "en": "online", "vi": "trực tuyến, trên mạng", "emoji": "💻🌐" },
+    { "en": "press conference", "vi": "cuộc họp báo", "emoji": "🎙️👥" },
+    { "en": "speech", "vi": "bài phát biểu, diễn văn", "emoji": "🎤🧑‍💼" },
+    { "en": "word of mouth", "vi": "truyền miệng", "emoji": "🗣️👂" }
+  ]
+}

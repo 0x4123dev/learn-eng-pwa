@@ -20,6 +20,12 @@ global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
 global.UNIT_WORDS_HK1 = UNIT_WORDS_HK1;
 global.UNIT_HK1_TITLES = UNIT_HK1_TITLES;
 global.UNIT_HK1_BOOKS = UNIT_HK1_BOOKS;
+// The Word tab's bank is lazy in the app; here it is loaded so every set has
+// words to count, the same way the page has them once the tab is opened.
+const { UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3 } = require(path.join(__dirname, '..', 'js', 'word-data.js'));
+global.UNIT_WORDS_PR1 = UNIT_WORDS_PR1;
+global.UNIT_WORDS_PR2 = UNIT_WORDS_PR2;
+global.UNIT_WORDS_PR3 = UNIT_WORDS_PR3;
 const units = require(path.join(__dirname, '..', 'js', 'units.js'));
 
 // The Wordlist, transcribed from the book. Bracketed hints in the book
@@ -168,11 +174,15 @@ suite('units HK1: bank shape', () => {
     });
 });
 
-suite('units: the three word sets', () => {
-    test('Pre, Post, HK1 and HK2 are the sets, and all four have words', () => {
-        // Post sits second, right after the picture dictionary.
-        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'posthk', 'hk1', 'hk2']);
+suite('units: the word sets', () => {
+    test('seven sets: Pre, Post, HK1, HK2 on Grade 4 and Book 1-3 on Word, all with words', () => {
+        // Post sits second, right after the picture dictionary. The three
+        // Career Paths books live on the Word tab, so each host lists only its own.
+        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'posthk', 'hk1', 'hk2', 'pr1', 'pr2', 'pr3']);
+        assert.deepEqual(units.unitHostSets('grade4').map(s => s.id), ['pre', 'posthk', 'hk1', 'hk2']);
+        assert.deepEqual(units.unitHostSets('word').map(s => s.id), ['pr1', 'pr2', 'pr3']);
         for (const set of units.UNIT_SETS) {
+            assert.equal(units.unitHostOfSet(set.id), set.host, `${set.id} resolves to its host`);
             assert.truthy(units.unitsBank(set.id).length > 0, `${set.id} has no words`);
             assert.falsy(set.soon, `${set.id} is still flagged "coming soon"`);
         }
@@ -185,7 +195,8 @@ suite('units: the three word sets', () => {
 
     test('unitsAllWords spans every set, so an owed word always resolves', () => {
         assert.equal(units.unitsAllWords().length,
-            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length);
+            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length
+            + UNIT_WORDS_PR1.length + UNIT_WORDS_PR2.length + UNIT_WORDS_PR3.length);
     });
 
     test('HK1 is the default set, and switching remembers itself', () => {
@@ -198,6 +209,14 @@ suite('units: the three word sets', () => {
         assert.equal(units.currentUnitSet(), 'pre', 'an unknown set is ignored');
         units.switchUnitSet('hk1');
         assert.equal(units.currentUnitSet(), 'hk1');
+        // The Word host keeps its own choice, under its own key, with Book 1 as default.
+        assert.equal(units.currentUnitSet('word'), 'pr1');
+        units.switchUnitSet('pr2');
+        assert.equal(global.appState.wordSet, 'pr2');
+        assert.equal(global.appState.unitsSet, 'hk1', 'switching a Word set leaves Grade 4 where it was');
+        assert.equal(units.currentUnitSet('word'), 'pr2');
+        assert.equal(units.currentUnitSet('grade4'), 'hk1');
+        units.switchUnitSet('hk1');
         global.appState = undefined;
     });
 });
@@ -217,6 +236,8 @@ suite('units: unit keys across sets', () => {
         assert.deepEqual(units._unitParse('hk1-7'), { set: 'hk1', unit: 7 });
         assert.deepEqual(units._unitParse('hk1-mix'), { set: 'hk1', unit: 'mix' });
         assert.deepEqual(units._unitParse('hk2-2'), { set: 'hk2', unit: 2 });
+        assert.deepEqual(units._unitParse('pr1-3'), { set: 'pr1', unit: 3 });
+        assert.deepEqual(units._unitParse('pr3-mix'), { set: 'pr3', unit: 'mix' });
     });
 
     test('a key picks the right pool — no bleed between Pre and HK1', () => {

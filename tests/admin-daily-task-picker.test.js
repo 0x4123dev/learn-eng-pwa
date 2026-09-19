@@ -54,7 +54,7 @@ suite('daily-task catalog: the tree', () => {
 
   test('Eng menus follow the Learn hub; Math follows the Math tab', () => {
     const eng = tree.children[0].children.map(c => c.label);
-    assert.deepEqual(eng.slice(0, 4), ['Vocabulary', 'Grade 4', 'Grammar', 'PTNK Exams']);
+    assert.deepEqual(eng.slice(0, 5), ['Vocabulary', 'Grade 4', 'Word', 'Grammar', 'PTNK Exams']);
     assert.truthy(eng.indexOf('Reading') < eng.indexOf('Cloze') && eng.indexOf('Cloze') < eng.indexOf('Error Correction'));
     assert.deepEqual(tree.children[1].children.map(c => c.label), ['Toán 7', 'Toán 4', 'Math Wars']);
   });

@@ -259,15 +259,15 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
     // life of this CACHE_NAME. `nosniff` hides that online; offline the tab
     // renders empty, and if the key is /js/app.js the app does not boot.
     //
-    // /js/exam-data.js is a manifest key, but nothing was installed, so this
+    // /js/word-data.js is a manifest key, but nothing was installed, so this
     // is the straggler path: cache miss → network. The guard here is what
     // stands between a mid-deploy request and a poisoned entry.
     const worker = bootWorker(() => body('<!doctype html>fallback', 'text/html'));
-    const event = fetchEvent(ORIGIN + '/js/exam-data.js');
+    const event = fetchEvent(ORIGIN + '/js/word-data.js');
     worker.fire('fetch', event);
     await event.responded;
     await new Promise(r => setTimeout(r, 0));
-    const hit = await worker.sandbox.caches.match(ORIGIN + '/js/exam-data.js');
+    const hit = await worker.sandbox.caches.match(ORIGIN + '/js/word-data.js');
     assert.falsy(hit, 'the SPA fallback must never be stored under a script key');
   });
 

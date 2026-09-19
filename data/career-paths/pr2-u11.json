@@ -1,0 +1,19 @@
+{
+  "book": 2,
+  "unit": 11,
+  "title": "Releases 2",
+  "words": [
+    { "en": "ANR", "vi": "thông cáo báo chí dạng âm thanh (cho đài phát thanh)", "emoji": "🎙️📻📰" },
+    { "en": "audio", "vi": "âm thanh, đoạn ghi âm", "emoji": "🎧🔊" },
+    { "en": "B-roll", "vi": "cảnh quay phụ, hình ảnh bổ sung cho bản tin", "emoji": "🎬🎞️" },
+    { "en": "broadcast", "vi": "phát sóng, truyền đi rộng rãi (động từ)", "emoji": "📡📺" },
+    { "en": "PSA", "vi": "thông báo phục vụ cộng đồng (không trả phí)", "emoji": "📢🤝🌍" },
+    { "en": "radio media tour", "vi": "chuỗi phỏng vấn liên tiếp trên nhiều đài phát thanh", "emoji": "📻🎙️🔁" },
+    { "en": "radio", "vi": "đài phát thanh, máy thu thanh", "emoji": "📻" },
+    { "en": "satellite media tour", "vi": "chuỗi phỏng vấn truyền hình qua vệ tinh", "emoji": "🛰️📺🎤" },
+    { "en": "soundbite", "vi": "câu nói ngắn ấn tượng được phát lại nhiều lần", "emoji": "🗣️✂️🔁" },
+    { "en": "television", "vi": "truyền hình, ti vi", "emoji": "📺" },
+    { "en": "video", "vi": "đoạn phim, hình ảnh động", "emoji": "🎥▶️" },
+    { "en": "VNR", "vi": "thông cáo báo chí dạng video (cho đài truyền hình)", "emoji": "🎥📰📺" }
+  ]
+}

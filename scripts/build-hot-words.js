@@ -27,7 +27,6 @@ const { wordAudioSlug } = require('./generate-word-audio.js');
 // Every bank whose text renders through tapwordsWrap().
 const BANKS = [
     { file: 'js/grammar-units.js', global: 'GRAMMAR_UNITS' },
-    { file: 'js/exam-data.js', global: 'EXAMS' },
     { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
     { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
     { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },

@@ -216,9 +216,9 @@ suite('css split: LazyData.loadFile appends a <link> for a .css entry', () => {
 
   test('scripts still load as <script> with async=false', async () => {
     const { LazyData, appended } = bootLazyData();
-    LazyData.ensure('examScreen');
+    LazyData.ensure('ptnkScreen');
     const scripts = appended.filter(el => el.tagName === 'SCRIPT');
-    assert.equal(scripts.length, LazyData.SCREEN_FILES.examScreen.length);
+    assert.equal(scripts.length, LazyData.SCREEN_FILES.ptnkScreen.length);
     for (const s of scripts) assert.equal(s.async, false);
   });
 });

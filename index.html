@@ -222,11 +222,8 @@
                 </div>
             </div>
 
-            <!-- Exam Screen -->
-            <div class="screen exam-screen" id="examScreen"></div>
-
             <!-- PTNK Screen: the real Phổ thông Năng khiếu entrance papers,
-                 drawn by the same engine as the Exam tab (js/exam.js, set "ptnk") -->
+                 drawn by the timed-paper engine (js/exam.js, set "ptnk") -->
             <div class="screen exam-screen" id="ptnkScreen"></div>
 
             <!-- PTNK-format practice: three menus on the same engine (js/practice-sets.js) -->
@@ -428,6 +425,19 @@
                 <div class="topics-detail" id="grade4Detail"></div>
             </div>
 
+            <!-- Word tab: the same picture-dictionary engine as Grade 4, on the
+                 Career Paths: Public Relations word bank (lazy-loaded). -->
+            <div class="screen topics-screen grade4-screen word-screen" id="wordScreen">
+                <div class="topics-header">
+                    <h1 class="topics-title">🔤 Word</h1>
+                    <p class="topics-subtitle">Career Paths · Public Relations · Book 1 · 2 · 3</p>
+                </div>
+                <div class="grammar-subtabs topics-subtabs" id="wordSubTabs"></div>
+                <div class="units-bar" id="wordUnitsBar"></div>
+                <div class="units-history" id="wordHistory" style="display:none"></div>
+                <div class="topics-detail" id="wordDetail"></div>
+            </div>
+
             <div class="screen nav-hub-screen math-hub-screen" id="mathHubScreen"></div>
             <div class="math-board-overlay hidden" id="mathBoardOverlay"></div>
 
@@ -469,9 +479,9 @@
                 <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h1M12 11h1M16 11h1M8 15h1M12 15h1M16 15h1M8 18h1M12 18h5"/></svg></span>
                 <span>Math</span>
             </button>
-            <button class="nav-item" data-nav-key="exam" type="button" onclick="switchScreen('examScreen')">
-                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span>
-                <span>Exam</span>
+            <button class="nav-item" data-nav-key="word" type="button" onclick="switchScreen('wordScreen')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15V9l2.5 3L12 9v6"/><path d="M15 9h3a1.5 1.5 0 0 1 0 3h-3m0 0h3.5a1.5 1.5 0 0 1 0 3H15V9"/></svg></span>
+                <span>Word</span>
             </button>
         </nav>
     </div>

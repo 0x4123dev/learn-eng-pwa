@@ -325,10 +325,12 @@ suite('drift: grammar units and lessons', () => {
 
 // ---- exam ------------------------------------------------------------------
 suite('drift: exam questions and the renderer', () => {
+    // js/exam.js is the shared timed-paper engine; the PTNK papers
+    // (js/ptnk-data.js, registered as EXAM_SETS.ptnk) are the bank it draws.
     const vm = require('vm');
     const ctx = {};
     vm.createContext(ctx);
-    vm.runInContext(read('js/exam-data.js') + '\nthis.EXAMS = EXAMS;', ctx);
+    vm.runInContext(read('js/ptnk-data.js') + '\nthis.EXAMS = PTNK_EXAMS;', ctx);
     const exams = ctx.EXAMS;
     const examUi = read('js/exam.js');
 

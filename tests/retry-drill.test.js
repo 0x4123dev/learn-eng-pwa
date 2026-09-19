@@ -1,9 +1,10 @@
 // retry-drill.test.js — you owe back everything you got wrong, in every tab.
 //
 // A child who misses a question, scores 8/10 and moves straight on collects a
-// long tail of things they never learned. So in all six quiz tabs — Grade 4
-// units, Word form, Phrases, Collocation, Rewrite and Verbs — each missed item
-// is owed back and no new practice opens until the debt is cleared.
+// long tail of things they never learned. So in all seven quiz tabs — Grade 4
+// units, Word (the same engine, its own debt), Word form, Phrases, Collocation,
+// Rewrite and Verbs — each missed item is owed back and no new practice opens
+// until the debt is cleared.
 //
 // The rule lives ONCE, in js/retrydrill.js. It was about to be written six
 // times, and six copies means six places to fix the next bug in it. This file
@@ -26,8 +27,8 @@ const engineSrc = read('js/retrydrill.js');
 const cssSrc = read('css/styles.css');
 
 const TAB_FILES = ['units.js', 'wordform.js', 'phrases.js', 'collocation.js', 'rewrite.js', 'verbs.js'];
-const DATA_FILES = ['units-data.js', 'units-hk1-data.js', 'units-hk2-data.js', 'phrases-data.js', 'collocation-data.js',
-    'rewrite-data.js', 'wordform-data.js', 'vocabulary.js', 'topic-vocab.js'];
+const DATA_FILES = ['units-data.js', 'units-hk1-data.js', 'units-hk2-data.js', 'word-data.js', 'phrases-data.js',
+    'collocation-data.js', 'rewrite-data.js', 'wordform-data.js', 'vocabulary.js', 'topic-vocab.js'];
 
 // Load the real engine, the real tab configs and the real question banks in one
 // sandbox — the same order index.html loads them.
@@ -70,6 +71,8 @@ function makeEnv() {
 function sampleFor(ctx, key) {
     switch (key) {
         case 'units': return ctx.unitsBank()[0];
+        // The Word tab shares js/units.js but owes its own words, from its own books.
+        case 'word': return ctx.unitsBank('pr1')[0];
         case 'wf': return ctx.wordformBank()[0];
         case 'phr': return ctx.phrasesBank()[0];
         case 'col': return ctx.collocBank()[0];
@@ -85,12 +88,27 @@ function rightAnswerFor(key, cfg, item) {
 }
 const WRONG = (key) => (key === 'verbs' ? { v2: 'zzz', v3: 'zzz' } : 'zzz');
 
-const KEYS = ['units', 'wf', 'phr', 'col', 'rw', 'verbs'];
+const KEYS = ['units', 'word', 'wf', 'phr', 'col', 'rw', 'verbs'];
 
 suite('retry drill: every tab is plugged in', () => {
-    test('all six tabs register a drill', () => {
+    test('all seven tabs register a drill', () => {
         const { ctx } = makeEnv();
         assert.deepEqual(Object.keys(ctx.CFG).sort(), KEYS.slice().sort());
+    });
+
+    test('js/units.js registers one drill per host, each drawing on its own screen', () => {
+        // Grade 4 and Word share the engine and the word shape, but a Word debt
+        // must gate the Word tab and a Grade 4 debt Grade 4 — never both.
+        const { ctx } = makeEnv();
+        assert.equal(ctx.unitsRetryKey('grade4'), 'units');
+        assert.equal(ctx.unitsRetryKey('word'), 'word');
+        assert.equal(ctx.CFG.units.screenId, 'grade4Detail');
+        assert.equal(ctx.CFG.word.screenId, 'wordDetail');
+        ctx.retryAdd('word', [sampleFor(ctx, 'word')]);
+        assert.equal(ctx.retryCount('word'), 1);
+        assert.equal(ctx.retryCount('units'), 0, 'a Word debt leaked into Grade 4');
+        assert.falsy(ctx.retryGate('units'), 'Grade 4 must open while only Word owes');
+        assert.truthy(ctx.retryGate('word'), 'and Word must not');
     });
 
     for (const key of KEYS) {
@@ -215,12 +233,13 @@ suite('retry drill: the gate', () => {
         test(`${file}: every way into a practice is gated`, () => {
             // Including the "practise your mistakes" buttons: an ungated side
             // door lets a child loop forever without clearing the debt.
-            const src = read(file);
+            // Comment lines are dropped first: these functions open with a
+            // comment explaining the rule, and the call sits after it.
+            const src = read(file).replace(/^[ \t]*\/\/.*$/gm, '');
             for (const fn of fns) {
                 const i = src.indexOf('function ' + fn + '(');
                 assert.truthy(i > 0, `${fn} not found in ${file}`);
-                // Generous window: these functions open with a comment
-                // explaining the rule, and the call sits after it.
+                // Generous window: the call must be among the first statements.
                 assert.truthy(/retryGate\(/.test(src.slice(i, i + 500)),
                     `${fn} does not call retryGate — it is a side door around the gate`);
             }
@@ -228,18 +247,20 @@ suite('retry drill: the gate', () => {
     }
 
     for (const [file, fn, key] of [
-        ['js/units.js', 'finishUnitPractice', 'units'],
-        ['js/wordform.js', 'finishWordformQuiz', 'wf'],
-        ['js/phrases.js', 'finishPhrasesQuiz', 'phr'],
-        ['js/collocation.js', 'finishCollocPractice', 'col'],
-        ['js/rewrite.js', 'finishRewriteQuiz', 'rw'],
+        // js/units.js serves two hosts, so it owes to whichever host's key is
+        // in play — unitsRetryKey() is 'units' on Grade 4 and 'word' on Word.
+        ['js/units.js', 'finishUnitPractice', 'unitsRetryKey()'],
+        ['js/wordform.js', 'finishWordformQuiz', "'wf'"],
+        ['js/phrases.js', 'finishPhrasesQuiz', "'phr'"],
+        ['js/collocation.js', 'finishCollocPractice', "'col'"],
+        ['js/rewrite.js', 'finishRewriteQuiz', "'rw'"],
     ]) {
         test(`${file}: mistakes are owed when the practice ends`, () => {
             const src = read(file);
             const i = src.indexOf('function ' + fn + '(');
             assert.truthy(i > 0, `${fn} not found`);
             const body = src.slice(i, i + 3000);
-            assert.truthy(new RegExp("retryAdd\\('" + key + "'").test(body),
+            assert.truthy(body.includes('retryAdd(' + key),
                 `${fn} never records what was missed`);
         });
     }
@@ -470,7 +491,7 @@ suite('retry drill: the lock explains itself', () => {
 
     test('the tabs that lock a control also render the reason', () => {
         for (const [file, needle] of [
-            ['js/units.js', "retryOwedBannerHTML('units')"],
+            ['js/units.js', "retryOwedBannerHTML(unitsRetryKey())"],
             ['js/wordform.js', "retryOwedBannerHTML('wf')"],
         ]) {
             assert.truthy(read(file).includes(needle), `${file} disables controls without explaining why`);
