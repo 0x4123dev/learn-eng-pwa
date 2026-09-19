@@ -259,6 +259,29 @@ const PRECACHE = {
 };
 const ASSETS = Object.keys(PRECACHE);
 
+// ---- where the app lives -----------------------------------------------
+// The manifest's keys are APP-relative ('/js/app.js', '/' is index.html), so
+// scripts/build-sw-manifest.js and the tests can read them without knowing
+// the host. The app itself is not always at the origin root: on Cloudflare
+// Pages it is (https://eng-pwa.pages.dev/js/app.js), on GitHub Pages it sits
+// under the repo name (https://0x4123dev.github.io/learn-eng-pwa/js/app.js).
+// This worker is always served from the app root, so its own URL says which:
+// BASE is '/' or '/learn-eng-pwa/', and every cache key, fetch and manifest
+// lookup below goes through abs()/keyOf() instead of assuming the root.
+// (Before this, register('/sw.js') 404'd under the subpath and the worker
+// never installed there at all.)
+const BASE = (() => {
+  try { return new URL('./', self.location.href).pathname; } catch (e) { return '/'; }
+})();
+// '/js/app.js' → BASE + 'js/app.js';  '/' → BASE.
+function abs(key) { return BASE + String(key).replace(/^\//, ''); }
+// The reverse, for a request's pathname: '/learn-eng-pwa/js/app.js' →
+// '/js/app.js', '/learn-eng-pwa/' → '/'; a path outside the app → null.
+function keyOf(pathname) {
+  if (pathname === BASE) return '/';
+  return pathname.startsWith(BASE) ? '/' + pathname.slice(BASE.length) : null;
+}
+
 // Install: cache all app assets, then WAIT. Updating used to call
 // skipWaiting(), which could replace the active worker during a lesson.
 // Waiting applies the update on the next natural close/open instead.
@@ -290,7 +313,7 @@ async function previousCache() {
 const MANIFEST_KEY = '/__precache-manifest__';
 async function storedManifest(cache) {
   try {
-    const res = await cache.match(MANIFEST_KEY);
+    const res = await cache.match(abs(MANIFEST_KEY));
     return res ? await res.json() : {};
   } catch (e) { return {}; }
 }
@@ -311,7 +334,7 @@ async function hashOf(buf) {
 async function fetchVerified(url, want, init) {
   const response = await fetch(url, init);
   if (!response.ok) throw new Error(response.status + ' ' + url);
-  if (!url.endsWith('.html') && url !== '/' &&
+  if (!url.endsWith('.html') && url !== BASE &&
       (response.headers.get('content-type') || '').indexOf('text/html') !== -1) {
     throw new Error('SPA fallback for ' + url);
   }
@@ -343,9 +366,10 @@ async function precache() {
   const prev = await previousCache();
   const prevManifest = prev ? await storedManifest(prev.cache) : {};
   let copied = 0;
-  const results = await Promise.allSettled(ASSETS.map(async url => {
-    const want = PRECACHE[url];
-    if (prev && prevManifest[url] === want) {
+  const results = await Promise.allSettled(ASSETS.map(async key => {
+    const want = PRECACHE[key];
+    const url = abs(key);
+    if (prev && prevManifest[key] === want) {
       const kept = await prev.cache.match(url);
       if (kept) { await cache.put(url, kept); copied++; return; }
     }
@@ -355,7 +379,7 @@ async function precache() {
   const failed = results
     .map((r, i) => (r.status === 'rejected' ? ASSETS[i] : null))
     .filter(Boolean);
-  await cache.put(MANIFEST_KEY, new Response(JSON.stringify(PRECACHE), {
+  await cache.put(abs(MANIFEST_KEY), new Response(JSON.stringify(PRECACHE), {
     headers: { 'Content-Type': 'application/json' } }));
   console.log('[sw] precache: ' + copied + ' reused, ' + (ASSETS.length - copied - failed.length) + ' downloaded, ' + failed.length + ' failed');
   if (failed.length) console.warn('[sw] precache incomplete:', failed.length, 'of', ASSETS.length, failed.slice(0, 10));
@@ -480,7 +504,7 @@ function isRecording(resp) {
 function isSpaFallback(request, response) {
   if ((response.headers.get('content-type') || '').indexOf('text/html') === -1) return false;
   const p = new URL(request.url).pathname;
-  return p !== '/' && !p.endsWith('.html');
+  return p !== BASE && !p.endsWith('.html');
 }
 
 // Fetch: network-first, fall back to cache (always get latest)
@@ -504,7 +528,7 @@ self.addEventListener('fetch', event => {
   // it had never been asked. admin.html runs in this scope as well, so
   // /api/admin/* (names, coin peaks, device flags) was landing in Cache
   // Storage on whatever machine an adult had used.
-  if (url.origin === self.location.origin && url.pathname.startsWith('/api/')) return;
+  if (url.origin === self.location.origin && url.pathname.startsWith(abs('/api/'))) return;
 
   // Word recordings are immutable → cache-first, stored in their own
   // long-lived cache so they play instantly and work offline.
@@ -521,8 +545,9 @@ self.addEventListener('fetch', event => {
   // every open, a changed manifest installs in the background, and
   // js/app.js swaps it in when the child is idle. A miss here is a straggler
   // the install could not fetch, and falls through to the network path below.
-  const manifestHash = url.origin === self.location.origin ? PRECACHE[url.pathname] : undefined;
-  if (manifestHash !== undefined && url.pathname !== MANIFEST_KEY) {
+  const key = url.origin === self.location.origin ? keyOf(url.pathname) : null;
+  const manifestHash = key !== null ? PRECACHE[key] : undefined;
+  if (manifestHash !== undefined && key !== MANIFEST_KEY) {
     // THIS generation's cache only — never caches.match() across all of
     // them. An install that came up short (a weak 4G, a 34 MB first
     // download) keeps the previous generation's cache alive on purpose
@@ -604,7 +629,7 @@ function networkThenCache(event, manifestHash) {
         // a redirected response to a navigation is a network error, which is
         // the browser's own error page again. Reaching for it first meant the
         // fallback picked the one copy that cannot be used.
-        const shell = (await caches.match('/')) || (await caches.match('/index.html'));
+        const shell = (await caches.match(abs('/'))) || (await caches.match(abs('/index.html')));
         if (shell && !shell.redirected) return shell;
         if (shell) return new Response(await shell.text(), {
           status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });

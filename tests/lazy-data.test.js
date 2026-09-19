@@ -291,7 +291,7 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
     // reject the WHOLE install, and registerServiceWorker swallowed it, so a
     // single renamed sprite left every device on the previous worker for good.
     // It is best-effort now — but it must still attempt every ASSETS entry.
-    assert.truthy(/ASSETS\.map\(async url =>/.test(sw), 'install must precache them all');
+    assert.truthy(/ASSETS\.map\(async key =>/.test(sw), 'install must precache them all');
     assert.truthy(/event\.waitUntil\(precache\(\)/.test(sw), 'and install must wait for it');
   });
 });

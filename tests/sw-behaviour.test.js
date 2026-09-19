@@ -110,7 +110,9 @@ function bootWorker(fetchImpl, opts) {
     },
     self: {
       addEventListener: (type, fn) => { (listeners[type] = listeners[type] || []).push(fn); },
-      location: { origin: ORIGIN },
+      // href is what tells the worker where the app root is (sw.js BASE):
+      // absent, it behaves as the origin root, the way it always did.
+      location: Object.assign({ origin: opts.origin || ORIGIN }, opts.href ? { href: opts.href } : {}),
       skipWaiting: () => { skipWaitingCalls++; },
       clients: { claim: () => Promise.resolve() },
     },
@@ -870,6 +872,77 @@ suite('service worker: background updates are automatic but safe', () => {
       process.off('unhandledRejection', onUnhandled);
     }
     assert.equal(unhandled.length, 0, 'no unhandled rejection reached the page');
+  });
+});
+
+suite('service worker: the app may live under a subpath (GitHub Pages)', () => {
+  // https://0x4123dev.github.io/learn-eng-pwa/ — sw.js is served from the app
+  // root, so its own URL says where that root is. Before BASE existed the
+  // worker assumed the origin root: install fetched /js/app.js (404 under the
+  // subpath), the manifest never matched a request, and the offline shell
+  // was looked up under '/'. This suite runs the same worker under the
+  // subpath and proves each of those now resolves against the app root.
+  const GH = 'https://0x4123dev.github.io';
+  const SUB = '/learn-eng-pwa/';
+  const bootSub = (fetchImpl, opts) => bootWorker(fetchImpl, Object.assign({ origin: GH, href: GH + SUB + 'sw.js' }, opts || {}));
+
+  test('install fetches every asset under the app root, not the origin root', async () => {
+    const worker = bootSub(url => body('ok', url.endsWith('.html') || url === SUB ? 'text/html' : 'application/javascript'));
+    await install(worker);
+    assert.equal(worker.requested.length, ASSET_COUNT, 'every asset is attempted');
+    assert.truthy(worker.requested.every(u => u.startsWith(SUB)), 'all under ' + SUB + ': ' + worker.requested.filter(u => !u.startsWith(SUB)).slice(0, 3));
+    assert.truthy(worker.requested.includes(SUB + 'js/app.js'), 'js/app.js is asked for at ' + SUB + 'js/app.js');
+    assert.truthy(worker.requested.includes(SUB), "the '/' entry is the app root itself");
+    assert.falsy(worker.requested.includes('/js/app.js'), 'never the origin root');
+    const store = currentStore(worker);
+    assert.truthy(store.has(SUB + 'js/app.js'), 'cached under its real path');
+    assert.truthy(store.has(SUB + MANIFEST_KEY.slice(1)), 'the manifest record sits under the app root too');
+  });
+
+  test('a manifest URL under the subpath is served cache-first, the way it is at the root', async () => {
+    const worker = bootSub(url => body('ok', 'application/javascript'));
+    await install(worker);
+    worker.requested.length = 0;
+    const ev = fetchEvent(GH + SUB + 'js/app.js');
+    worker.fire('fetch', ev);
+    const res = await ev.responded;
+    assert.equal(await res.text(), 'ok');
+    assert.equal(worker.requested.length, 0, 'answered from the cache, no network');
+  });
+
+  test('the API under the subpath is still never cached; the audio CDN is untouched', async () => {
+    const worker = bootSub(url => body('ok', 'application/javascript'));
+    await install(worker);
+    const api = fetchEvent(GH + SUB + 'api/me/daily-tasks');
+    worker.fire('fetch', api);
+    assert.equal(api.responded, null, 'the worker stays out of /api/');
+    const audio = fetchEvent('https://eng-pwa-audio.pages.dev/audio/words/roi.mp3');
+    worker.fire('fetch', audio);
+    assert.truthy(audio.responded, 'recordings still go through the audio cache');
+  });
+
+  test('offline, a deep link under the subpath falls back to the cached app shell', async () => {
+    let online = true;
+    const worker = bootSub(url => {
+      if (!online) throw new Error('offline');
+      return body(url === SUB || url.endsWith('.html') ? '<html>shell</html>' : 'ok',
+        url === SUB || url.endsWith('.html') ? 'text/html' : 'application/javascript');
+    }, { bodyFor: u => (u === '/' || u.endsWith('.html') ? '<html>shell</html>' : 'ok') });
+    await install(worker);
+    online = false;
+    const ev = fetchEvent(GH + SUB + '?ketban=Bao', { mode: 'navigate' });
+    worker.fire('fetch', ev);
+    const res = await ev.responded;
+    assert.truthy(res && res.status === 200, 'a navigation got a page, not a network error');
+    assert.equal(await res.text(), '<html>shell</html>', 'the cached shell from the app root');
+  });
+
+  test('at the origin root nothing changed: BASE is "/" and the keys are the paths', async () => {
+    const worker = bootWorker(url => body('ok', 'application/javascript'));
+    await install(worker);
+    assert.truthy(worker.requested.includes('/js/app.js'));
+    assert.truthy(worker.requested.includes('/'));
+    assert.truthy(currentStore(worker).has(MANIFEST_KEY));
   });
 });
 

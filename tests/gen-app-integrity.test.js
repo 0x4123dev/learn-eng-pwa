@@ -468,8 +468,11 @@ suite('gen: manifest.json', () => {
         assert.equal(manifest.short_name, 'FlashLingo');
     });
 
-    test('start_url is "/"', () => {
-        assert.equal(manifest.start_url, '/');
+    test('start_url and scope are relative, so the PWA opens at the app root on any host', () => {
+        // '/' pointed an installed app at the ORIGIN root — right on Cloudflare
+        // Pages, wrong under /learn-eng-pwa/ on GitHub Pages.
+        assert.equal(manifest.start_url, './');
+        assert.equal(manifest.scope, './');
     });
 
     test('display standalone, supports both orientations, lang en', () => {

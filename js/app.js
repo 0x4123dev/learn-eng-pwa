@@ -2120,7 +2120,12 @@ function swUpdateDue(now, last) {
 function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
-    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+    // Relative, not '/sw.js': the app is at the origin root on Cloudflare
+    // Pages but under /learn-eng-pwa/ on GitHub Pages, and an absolute path
+    // 404'd there — the worker never installed, so no offline, no updates.
+    // 'sw.js' resolves against the page, and the scope becomes the app root
+    // in both cases.
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
         .then(reg => {
             // Force a check on every load — gets us the freshest sw.js even
             // if the browser would otherwise cache it.
