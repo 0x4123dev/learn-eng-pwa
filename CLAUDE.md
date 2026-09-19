@@ -37,9 +37,11 @@ scripts/deploy-audio.sh         # the word MP3s → Cloudflare eng-pwa-audio (js
 **Which host?** Since 2026-09-19 the app ships to **GitHub Pages**
 (https://0x4123dev.github.io/learn-eng-pwa/, remote `github`, branch master,
 root; `.nojekyll` required) via `scripts/deploy-pages.sh`. That host is static:
-`functions/api/*` (D1) do not run there and the service worker (registered at
-`/sw.js`) never installs under the subpath — the header of the script says so.
-`scripts/deploy.sh` is the Cloudflare ritual, kept intact.
+`functions/api/*` (D1) do not run there. The service worker does: it is
+registered as `sw.js` (relative) and `sw.js` resolves every key against the
+directory it was served from (`BASE`), so the same file works at the origin
+root and under `/learn-eng-pwa/` — `tests/sw-behaviour.test.js` boots it both
+ways. `scripts/deploy.sh` is the Cloudflare ritual, kept intact.
 
 ⚠️ **Do not bump version numbers by hand.** `scripts/deploy.sh` rewrites all
 four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,

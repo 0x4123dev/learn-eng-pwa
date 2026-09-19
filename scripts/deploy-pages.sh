@@ -18,13 +18,14 @@
 # previous build live. A push is not a deploy: the build can fail, so this
 # script polls the Pages API for `built` on THIS commit before it says done.
 #
-# Known limits of the Pages host (the same code on Cloudflare has neither):
+# Known limit of the Pages host (the same code on Cloudflare does not have it):
 #   - functions/api/* (D1: login sync, daily tasks, arena, coin grants) do not
 #     run on GitHub Pages — every /api/ call 404s and the app stays local.
-#   - the service worker registers at /sw.js (absolute), which 404s under the
-#     /learn-eng-pwa/ subpath, so offline caching and the update prompt are
-#     inert there; the version bump is what a child sees on the Home screen.
-# Word audio is NOT here either: js/app.js WORD_AUDIO_PATH points at the
+# The service worker DOES run here since v4.17.112: it registers as 'sw.js'
+# (relative) and resolves every cache key against the directory it was
+# served from (sw.js BASE), so offline and the update prompt work under the
+# /learn-eng-pwa/ subpath exactly as at the Cloudflare root.
+# Word audio is NOT here: js/app.js WORD_AUDIO_PATH points at the
 # eng-pwa-audio Pages project (scripts/deploy-audio.sh).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -124,7 +125,7 @@ for i in $(seq 1 20); do
   live=$(curl -fsS "$LIVE/js/home.js?cb=$(date +%s)" 2>/dev/null | grep -o "APP_VERSION = '[^']*'" || true)
   if [ "$live" = "APP_VERSION = 'v$NEWVER'" ]; then
     echo "✓ live: $LIVE  ($live)"
-    echo "  Tell the child to hard-refresh (Cmd/Ctrl+Shift+R) — the SW does not run on Pages."
+    echo "  Devices pick it up through the service worker on their next open (or a hard refresh now)."
     exit 0
   fi
   sleep 6
