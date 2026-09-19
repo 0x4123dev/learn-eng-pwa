@@ -71,8 +71,10 @@ suite('math board: strokes', () => {
         const g = board.mathBoardGesture();
         board.mathBoardPointerDown(g, b, 1, 50, 10, 'erase');
         assert.equal(b.strokes.length, 0, 'first contact begins erasing');
-        assert.equal(board.mathBoardPointerDown(g, b, 2, 80, 10, 'erase'), 'pan-start');
-        assert.equal(b.strokes.length, 1, 'second finger restores the tentative erase');
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 80, 10, 'erase'), 'none');
+        board.mathBoardPointerMove(g, b, 1, 50, 30);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 80, 30), 'pan-start', 'both fingers moved: a scroll');
+        assert.equal(b.strokes.length, 1, 'the scroll restores the tentative erase');
     });
 
     test('maths keys create a visible formula draft on the board, not an answer value', () => {
@@ -158,25 +160,13 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         assert.equal(board.mathBoardPointerUp(g, b, 1), 'ink-end');
     });
 
-    test('a second finger cancels the half-drawn stroke and turns into a pan', () => {
-        const b = freshBoard();
-        const g = board.mathBoardGesture();
-        board.mathBoardPointerDown(g, b, 1, 10, 300);
-        board.mathBoardPointerMove(g, b, 1, 10, 305);
-        assert.equal(board.mathBoardPointerDown(g, b, 2, 60, 300), 'pan-start');
-        assert.equal(b.strokes.length, 0, 'the accidental stroke is gone');
-        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 200), 'none');
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 195), 'pan');
-        assert.equal(b.scrollY, 105, 'both fingers up 105px ⇒ sheet scrolls down 105px');
-    });
-
     test('two fingers pan the endless sheet horizontally as well as vertically', () => {
         const b = freshBoard();
         const g = board.mathBoardGesture();
         board.mathBoardPointerDown(g, b, 1, 120, 200);
         board.mathBoardPointerDown(g, b, 2, 180, 200);
-        assert.equal(board.mathBoardPointerMove(g, b, 1, 50, 170), 'none');
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 110, 170), 'pan');
+        board.mathBoardPointerMove(g, b, 1, 50, 170);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 110, 170), 'pan-start', 'the travel since landing is not lost');
         assert.equal(b.scrollX, 70, 'dragging left reveals paper to the right');
         assert.equal(b.scrollY, 30, 'the same gesture may move vertically');
     });
@@ -197,6 +187,8 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         const g = board.mathBoardGesture();
         board.mathBoardPointerDown(g, b, 1, 10, 100);
         board.mathBoardPointerDown(g, b, 2, 60, 100);
+        board.mathBoardPointerMove(g, b, 1, 10, 90);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 90), 'pan-start');
         board.mathBoardPointerUp(g, b, 2);
         assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 50), 'pan',
             'the surviving finger of a pan never turns back into ink mid-gesture');
@@ -241,10 +233,13 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         const b = freshBoard(); b.scrollY = 500;
         const g = board.mathBoardGesture();
         board.mathBoardPointerDown(g, b, 1, 10, 100);   // lead
-        board.mathBoardPointerDown(g, b, 2, 60, 300);   // survivor, resting 200px lower
+        board.mathBoardPointerDown(g, b, 2, 60, 300);   // survivor, 200px lower
+        board.mathBoardPointerMove(g, b, 1, 10, 90);    // both move: a scroll (10px)
+        board.mathBoardPointerMove(g, b, 2, 60, 290);
+        assert.equal(b.scrollY, 510);
         board.mathBoardPointerUp(g, b, 1);              // the lead lifts mid-pan
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 290), 'pan', 'survivor now steers');
-        assert.equal(b.scrollY, 510, 'delta is from the survivor\'s own y, not the old lead\'s');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 280), 'pan', 'survivor now steers');
+        assert.equal(b.scrollY, 520, 'delta is from the survivor\'s own y, not the old lead\'s');
     });
 
     test('both fingers moving still scrolls once, not twice', () => {
@@ -253,7 +248,7 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerDown(g, b, 1, 10, 300);
         board.mathBoardPointerDown(g, b, 2, 60, 300);
         board.mathBoardPointerMove(g, b, 1, 10, 250);
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 250), 'pan',
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 250), 'pan-start',
             'the paired positions produce one centroid pan, not two separate pans');
         assert.equal(b.scrollY, 50);
     });
@@ -267,6 +262,111 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerCancel(g, b, 2);
         assert.equal(board.mathBoardPointerDown(g, b, 5, 5, 5), 'ink-start',
             'after every finger is cancelled the next tap writes again');
+    });
+
+    // ── the freeze reported on an iPhone XS Max ──────────────────────────
+    // "Lâu lâu bảng bị đứng; đóng rồi mở lại thì viết được." Closing and
+    // reopening builds a fresh gesture state, so whatever wedged it lived in
+    // g.down. Two ways in, one symptom: a finger whose lift iOS never
+    // delivered, or a thumb resting on the sheet's edge while the other hand
+    // writes. Either way the machine saw "a second finger", switched to pan,
+    // and pan needed BOTH fingers to move — the still one never does.
+
+    test('a finger whose lift was lost cannot wedge the board: the next primary finger writes', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 300, 'pen', undefined, true);
+        board.mathBoardPointerMove(g, b, 1, 40, 320);
+        // …and pointer 1 is never lifted. A NEW primary pointer means, per the
+        // Pointer Events spec, that every earlier touch has ended.
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 100, 100, 'pen', undefined, true), 'ink-start');
+        assert.equal(b.strokes.length, 2, 'the stroke the lost finger drew stays; a fresh one begins');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 120, 110), 'ink');
+        assert.equal(board.mathBoardPointerUp(g, b, 2), 'ink-end');
+    });
+
+    test('a resting thumb beside the writing finger is ignored, and the writing goes on', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 100, 300);
+        board.mathBoardPointerMove(g, b, 1, 104, 304);
+        // the thumb lands on the edge of the sheet
+        const second = board.mathBoardPointerDown(g, b, 2, 5, 600);
+        assert.equal(second, 'none', 'a second finger is not yet a scroll: the stroke is kept until the fingers say which it is');
+        assert.equal(b.strokes.length, 1, 'the half-drawn stroke is NOT deleted on the spot');
+        // the writing finger keeps going; the thumb stays put
+        let act;
+        for (let i = 1; i <= 8; i++) act = board.mathBoardPointerMove(g, b, 1, 104 + i * 4, 304 + i * 3);
+        assert.equal(act, 'ink', 'ink keeps flowing while the thumb rests');
+        assert.equal(b.strokes.length, 1);
+        assert.truthy(b.strokes[0].points.length >= 9, 'every sample was recorded: ' + b.strokes[0].points.length);
+        assert.equal(g.mode, 'ink', 'the resting thumb was dropped and the machine is writing again');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 6, 601), 'none', 'the dropped thumb is ignored even if it twitches');
+        assert.equal(board.mathBoardPointerUp(g, b, 1), 'ink-end');
+        assert.equal(board.mathBoardPointerUp(g, b, 2), 'none', 'and its lift changes nothing');
+        assert.equal(board.mathBoardPointerDown(g, b, 3, 50, 50), 'ink-start', 'the next finger writes');
+    });
+
+    test('a resting thumb that touched FIRST is dropped and the writing finger takes over from its first point', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 5, 600);          // thumb, resting
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 100, 300), 'none');
+        const acts = [];
+        for (let i = 1; i <= 8; i++) acts.push(board.mathBoardPointerMove(g, b, 2, 100 + i * 4, 300 + i * 3));
+        assert.truthy(acts.indexOf('ink-resume') > 0, 'the promoted stroke needs a full repaint, not a tail: ' + acts.join(','));
+        assert.equal(acts[acts.length - 1], 'ink', 'and then it is ordinary writing');
+        assert.equal(g.mode, 'ink');
+        assert.equal(g.lead, '2');
+        assert.equal(b.strokes.length, 1, 'the thumb\'s dot is gone; the finger\'s stroke is the only ink');
+        assert.deepEqual(b.strokes[0].points[0], { x: 100, y: 300 }, 'the stroke starts where the finger landed, not where it was when the thumb was recognised');
+        assert.equal(b.strokes[0].points.length, 9);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 140, 330), 'ink');
+        assert.equal(board.mathBoardPointerUp(g, b, 2), 'ink-end');
+        assert.equal(board.mathBoardPointerUp(g, b, 1), 'none');
+    });
+
+    test('a real two-finger scroll still cancels the half-drawn stroke and pans', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 300);
+        board.mathBoardPointerMove(g, b, 1, 10, 305);
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 60, 300), 'none');
+        // both fingers move together: that is a scroll
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 290), 'ink', 'still inking until the second finger confirms');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 285), 'pan-start', 'both moved ⇒ scroll; the stroke is cancelled');
+        assert.equal(b.strokes.length, 0, 'the accidental stroke is gone');
+        board.mathBoardPointerMove(g, b, 1, 10, 200);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 195), 'pan');
+        assert.truthy(b.scrollY > 80, 'the sheet scrolled: ' + b.scrollY);
+    });
+
+    test('a second finger that only taps (down, up) leaves the stroke alone', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 300);
+        board.mathBoardPointerMove(g, b, 1, 14, 304);
+        board.mathBoardPointerDown(g, b, 2, 60, 300);
+        assert.equal(board.mathBoardPointerUp(g, b, 2), 'none');
+        assert.equal(g.mode, 'ink');
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 20, 310), 'ink');
+        assert.equal(b.strokes.length, 1);
+    });
+
+    test('the eraser survives a resting thumb the same way', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 10); board.mathBoardPointerMove(g, b, 1, 40, 40); board.mathBoardPointerUp(g, b, 1);
+        board.mathBoardPointerDown(g, b, 1, 200, 200); board.mathBoardPointerMove(g, b, 1, 230, 230); board.mathBoardPointerUp(g, b, 1);
+        assert.equal(b.strokes.length, 2);
+        board.mathBoardPointerDown(g, b, 5, 300, 300, 'erase');
+        board.mathBoardPointerDown(g, b, 6, 5, 600);          // thumb
+        const acts = [];
+        for (let i = 1; i <= 8; i++) acts.push(board.mathBoardPointerMove(g, b, 5, 300 - i * 12, 300 - i * 12));
+        assert.equal(g.mode, 'erase', 'back to erasing once the thumb is recognised as resting');
+        assert.truthy(acts.indexOf('erase') >= 0, 'the pass over the stroke at (200,200) erased it: ' + acts.join(','));
+        assert.equal(b.strokes.length, 1);
+        assert.equal(board.mathBoardPointerUp(g, b, 5), 'erase-end');
     });
 
     test('many small moves scroll exactly as far as one big move', () => {
@@ -293,7 +393,7 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerDown(g, b, 1, 100, 200);
         board.mathBoardPointerDown(g, b, 2, 200, 200);
         board.mathBoardPointerMove(g, b, 1, 50, 200);
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 250, 200), 'zoom');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 250, 200), 'pan-start', 'the first confirming move repaints in full');
         assert.equal(b.zoom, 2, 'doubling finger distance doubles the board scale');
         assert.equal(b.scrollX, 175, 'world point under the 150px midpoint stays under it');
         assert.equal(b.scrollY, 300);
@@ -402,6 +502,23 @@ suite('math board: overlay wiring', () => {
             'a second finger inside the overlay must preventDefault');
         assert.truthy(/ongesturestart\s*=/.test(src) && /ongesturechange\s*=/.test(src),
             "Safari's proprietary pinch events must be refused too");
+    });
+
+    test('a lost lift cannot survive in the browser layer either', () => {
+        // Belt and braces around the deferred second-touch rule: the machine
+        // learns about every lift the browser knows of, wherever it lands,
+        // and forgets every finger when the page itself is taken away.
+        const src = read('js/math-board.js');
+        assert.truthy(/mathBoardPointerDown\(_mathBoardGestureState, mathBoardActive\(\),\s*e\.pointerId, point\.x, point\.y, _mathBoardTool, _mathBoardPenWidth, e\.isPrimary\)/.test(src),
+            'isPrimary is the spec\'s own "every earlier touch has ended" signal and must reach the machine');
+        assert.truthy(/window\.addEventListener\('pointerup', mathBoardWindowPointerEnd, true\)/.test(src)
+            && /window\.addEventListener\('pointercancel', mathBoardWindowPointerEnd, true\)/.test(src),
+            'a lift delivered to some other element (capture refused, finger slid off) still ends the gesture');
+        assert.truthy(/document\.addEventListener\('visibilitychange'/.test(src) && /window\.addEventListener\('pagehide'/.test(src),
+            'a notification shade or app switch that steals the touch mid-stroke ends the gesture');
+        const move = src.slice(src.indexOf("canvas.addEventListener('pointermove'"), src.indexOf('function endGesture'));
+        assert.truthy(/act === 'pan-start'/.test(move) && /act === 'ink-resume'/.test(move),
+            'the pan is now confirmed on a MOVE, and a promoted stroke needs a full repaint');
     });
 
     test('the quiz screen offers the ✏️ scratch-board button', () => {

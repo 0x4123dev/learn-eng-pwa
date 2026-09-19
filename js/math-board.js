@@ -21,6 +21,17 @@ const MATH_BOARD_MAX_ZOOM = 2.5;
 // cuts the backing store and every full repaint by more than half.
 const MATH_BOARD_MAX_DPR = 2;
 const MATH_BOARD_FORMULA_GAP = 48;
+// A second finger is not a scroll until the fingers say so. Both travelling
+// PAN_CONFIRM px means "scroll"; one travelling REST_DROP px while the other
+// has not moved means the still one is a thumb holding the phone (or a touch
+// whose lift iOS never delivered) and is ignored until it lifts. The still
+// finger must have missed at least REST_MIN_EVENTS of the mover's samples
+// first: iOS delivers each finger's samples separately, so one finger can
+// report a long jump before the other's first sample arrives.
+const MATH_BOARD_PAN_CONFIRM = 6;
+const MATH_BOARD_REST_DROP = 24;
+const MATH_BOARD_REST_MIN_EVENTS = 4;
+const MATH_BOARD_TRAIL_CAP = 64;
 const _mathBoardStrokeBounds = new WeakMap();
 const MATH_BOARD_SUPERSCRIPTS = {
     '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
@@ -238,24 +249,125 @@ function mathBoardSwitch(i) {
 
 // Actions returned to the painter, and what each obliges it to do:
 //   'ink-start' / 'ink'  draw the fresh tail of g.stroke
+//   'ink-resume'         FULL repaint — a resting finger was dropped and the
+//                        stroke now belongs to the finger that actually moved
 //   'pan-start'          FULL repaint — the half-drawn stroke was just deleted
 //   'pan'                full repaint — b.scrollY moved
 //   'ink-end' / 'pan-end'  full repaint at final quality; the gesture is over
 //   'none'               nothing changed on screen; do not repaint
 //
 // ── Gesture machine ──────────────────────────────────────────────────────
-// One finger is a pen; a second finger means "I wanted to scroll" — the stroke
-// that first finger started is removed, and the whole gesture stays a pan until
-// every finger lifts. That single rule is what makes writing feel safe: a
-// scroll can never leave a stray ink mark behind.
+// One finger is a pen; two fingers moving together mean "I wanted to scroll"
+// — the stroke the first finger started is removed, and the whole gesture
+// stays a pan until every finger lifts. That rule is what makes writing feel
+// safe: a scroll can never leave a stray ink mark behind.
 //
-// Each pointer's last y is remembered so a pan continues from where the finger
-// already was. Anchoring on the newly-arrived second finger instead would make
-// the sheet jump the moment the student rests a thumb down.
+// But a second touch is not always a second finger. On an iPhone XS Max the
+// thumb holding the phone lands on the edge of the sheet, and iOS sometimes
+// never delivers the lift of a touch the system took over (an edge swipe, a
+// notification). Both used to read as "second finger ⇒ pan", and a pan needs
+// both fingers to move — the still one never did, so the board was frozen
+// until the child closed it and opened it again. So the decision is
+// DEFERRED: a second touch puts the machine in 'pending', the stroke lives on,
+// and the fingers' travel decides. Both moved ⇒ pan (stroke cancelled, as
+// before). One moved a lot while the other sat still ⇒ the still one is
+// ignored until it lifts, and the moving one writes — even if the still one
+// touched first. (tests/math-board.test.js, "the freeze reported on an iPhone
+// XS Max".)
+//
+// Each pointer's last position is remembered so a pan continues from where
+// the finger already was. Anchoring on the newly-arrived second finger
+// instead would make the sheet jump the moment the student rests a thumb down.
 function mathBoardGesture() {
-    return { down: {}, count: 0, mode: 'idle', // idle | ink | erase | pan
+    return { down: {}, count: 0, mode: 'idle', // idle | ink | erase | pending | pan
         stroke: null, lead: null, panX: 0, panY: 0, eraseRemoved: null,
-        pinchX: 0, pinchY: 0, pinchDistance: 0, pinchMoved: {} };
+        pinchX: 0, pinchY: 0, pinchDistance: 0, pinchMoved: {},
+        // pending bookkeeping: what we were doing, where each finger landed,
+        // how many samples it has sent, the path of the finger that is not
+        // the lead (replayed if it turns out to be the writing one), and the
+        // touches being ignored until they lift.
+        pendingFrom: null, origin: {}, moves: {}, trail: {}, ignored: {} };
+}
+
+function mathBoardTravel(g, key) {
+    const p = g.down[key], o = g.origin[key];
+    if (!p || !o) return 0;
+    return Math.hypot(p.x - o.x, p.y - o.y);
+}
+
+// Stop tracking a touch that is still physically down: its later moves are
+// nothing, and its lift is nothing.
+function mathBoardIgnore(g, key) {
+    if (!g.down[key]) return;
+    delete g.down[key];
+    delete g.origin[key];
+    delete g.moves[key];
+    delete g.trail[key];
+    g.count--;
+    g.ignored[key] = true;
+}
+
+// Both fingers moved: this was a scroll all along. Undo what the first finger
+// did on its own, then pan from where the fingers LANDED to where they are
+// now, so the distance already travelled is not lost.
+function mathBoardConfirmPan(g, b) {
+    if (g.pendingFrom === 'ink') {
+        if (g.stroke) {
+            const i = b.strokes.indexOf(g.stroke);
+            if (i !== -1) b.strokes.splice(i, 1);
+            const history = mathBoardHistory(b);
+            if (history.length && history[history.length - 1].stroke === g.stroke) history.pop();
+        }
+        g.stroke = null;
+    } else if (g.pendingFrom === 'erase' && g.eraseRemoved) {
+        g.eraseRemoved.slice().sort(function (a, c) { return a.index - c.index; })
+            .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
+        g.eraseRemoved = null;
+    }
+    g.pendingFrom = null;
+    g.mode = 'pan';               // lead stays the first finger — it is the anchor
+    const now = {};
+    Object.keys(g.down).forEach(function (k) { now[k] = { x: g.down[k].x, y: g.down[k].y }; g.down[k] = { x: g.origin[k].x, y: g.origin[k].y }; });
+    mathBoardBeginPinch(g, b);
+    Object.keys(now).forEach(function (k) { g.down[k] = now[k]; });
+    mathBoardPinchUpdate(g, b);
+}
+
+// The still finger was resting. If it was the lead, its dot (or its first
+// erase) was the thumb's, not the child's: take it back and hand the gesture
+// to the finger that moved, replaying the path it drew meanwhile.
+function mathBoardDropResting(g, b, stillKey, moverKey) {
+    const from = g.pendingFrom;
+    const stillWasLead = stillKey === g.lead;
+    mathBoardIgnore(g, stillKey);
+    g.pendingFrom = null;
+    g.mode = from;
+    if (!stillWasLead) return from === 'ink' ? 'ink' : 'erase';
+    const origin = g.origin[moverKey];
+    const trail = g.trail[moverKey] || [];
+    g.lead = moverKey;
+    if (from === 'ink') {
+        if (g.stroke) {
+            const i = b.strokes.indexOf(g.stroke);
+            if (i !== -1) b.strokes.splice(i, 1);
+            const history = mathBoardHistory(b);
+            if (history.length && history[history.length - 1].stroke === g.stroke) history.pop();
+        }
+        const start = mathBoardScreenToWorld(b, origin.x, origin.y);
+        g.stroke = mathBoardBegin(b, start.x, start.y, g.stroke ? g.stroke.width : undefined);
+        trail.forEach(function (t) { const w = mathBoardScreenToWorld(b, t.x, t.y); mathBoardExtend(g.stroke, w.x, w.y); });
+        delete g.trail[moverKey];
+        return 'ink-resume';
+    }
+    if (g.eraseRemoved) {
+        g.eraseRemoved.slice().sort(function (a, c) { return a.index - c.index; })
+            .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
+    }
+    g.eraseRemoved = [];
+    const radius = MATH_BOARD_ERASER_RADIUS / mathBoardZoom(b);
+    [origin].concat(trail).forEach(function (t) { const w = mathBoardScreenToWorld(b, t.x, t.y); mathBoardEraseAt(b, w.x, w.y, radius, g.eraseRemoved); });
+    delete g.trail[moverKey];
+    return 'erase';
 }
 
 function mathBoardZoom(b) {
@@ -289,10 +401,20 @@ function mathBoardBeginPinch(g, b) {
     g.panY = b.scrollY || 0;
 }
 
-function mathBoardPointerDown(g, b, id, x, y, tool, width) {
+function mathBoardPointerDown(g, b, id, x, y, tool, width, isPrimary) {
     const key = String(id);
+    // A mouse keeps one id for life; a lift that landed off-window would
+    // otherwise leave it ignored forever.
+    delete g.ignored[key];
+    // Pointer Events spec: the first pointer of a multi-touch sequence is
+    // primary, and a NEW primary pointer can only exist once every earlier
+    // touch has ended. So a primary down while fingers are still "down" means
+    // their lifts were lost — forget them, keep what they drew.
+    if (isPrimary === true && g.count > 0) mathBoardAbort(g, b);
     if (g.down[key]) return 'none';
     g.down[key] = { x: x, y: y };
+    g.origin[key] = { x: x, y: y };
+    g.moves[key] = 0;
     g.count++;
     if (g.mode === 'idle') {
         const point = mathBoardScreenToWorld(b, x, y);
@@ -309,26 +431,18 @@ function mathBoardPointerDown(g, b, id, x, y, tool, width) {
         g.stroke = mathBoardBegin(b, point.x, point.y, width);
         return 'ink-start';
     }
-    if (g.mode === 'ink') {
-        b.strokes.pop();
-        const history = mathBoardHistory(b);
-        if (history.length && history[history.length - 1].stroke === g.stroke) history.pop();
-        g.stroke = null;
-        g.mode = 'pan';        // lead stays the first finger — it is the anchor
-        mathBoardBeginPinch(g, b);
-        return 'pan-start';
+    if (g.mode === 'ink' || g.mode === 'erase') {
+        // A second touch: scroll, or a resting thumb? Nothing is undone yet;
+        // the fingers' travel decides (mathBoardPointerMove).
+        g.pendingFrom = g.mode;
+        g.mode = 'pending';
+        g.trail = {};
+        return 'none';
     }
-    if (g.mode === 'erase') {
-        // A second finger means scroll, even while the eraser is selected.
-        // Restore anything removed before that intent became unambiguous.
-        g.eraseRemoved.slice().sort(function (a, c) { return a.index - c.index; })
-            .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
-        g.eraseRemoved = null;
-        g.mode = 'pan';
-        mathBoardBeginPinch(g, b);
-        return 'pan-start';
-    }
-    return 'none';             // a third finger during a pan changes nothing
+    // A third touch while two are already down is a palm or a knuckle: not
+    // counted, not tracked, nothing until it lifts.
+    mathBoardIgnore(g, key);
+    return 'none';
 }
 
 function mathBoardPointerMove(g, b, id, x, y) {
@@ -338,6 +452,8 @@ function mathBoardPointerMove(g, b, id, x, y) {
     const prevX = p.x, prevY = p.y;
     p.x = x;
     p.y = y;
+    g.moves[key] = (g.moves[key] || 0) + 1;
+    if (g.mode === 'pending') return mathBoardPendingMove(g, b, key, x, y);
     if (g.mode === 'ink' && key === g.lead && g.stroke) {
         const point = mathBoardScreenToWorld(b, x, y);
         return mathBoardExtend(g.stroke, point.x, point.y) ? 'ink' : 'none';
@@ -355,25 +471,7 @@ function mathBoardPointerMove(g, b, id, x, y) {
         // supplied a fresh position, otherwise an ordinary two-finger swipe
         // briefly looks like a pinch every other event and visibly pulses.
         if (!pinchKeys.every(function (pinchKey) { return g.pinchMoved[pinchKey]; })) return 'none';
-        const pinch = mathBoardPinchSnapshot(g);
-        if (!pinch) return 'none';
-        const oldZoom = mathBoardZoom(b);
-        const nextZoom = Math.max(MATH_BOARD_MIN_ZOOM, Math.min(MATH_BOARD_MAX_ZOOM,
-            oldZoom * pinch.distance / Math.max(1, g.pinchDistance)));
-        // Keep the world point under the previous midpoint under the new
-        // midpoint. This combines pinch and two-axis pan without a jump.
-        const anchorX = g.panX + g.pinchX / oldZoom;
-        const anchorY = g.panY + g.pinchY / oldZoom;
-        g.panX = anchorX - pinch.x / nextZoom;
-        g.panY = anchorY - pinch.y / nextZoom;
-        b.zoom = nextZoom;
-        b.scrollX = Math.max(0, g.panX);
-        b.scrollY = Math.max(0, g.panY);
-        g.pinchX = pinch.x;
-        g.pinchY = pinch.y;
-        g.pinchDistance = pinch.distance;
-        g.pinchMoved = {};
-        return Math.abs(nextZoom - oldZoom) > 0.0001 ? 'zoom' : 'pan';
+        return mathBoardPinchUpdate(g, b);
     }
     if (g.mode === 'pan' && key === g.lead) {
         const zoom = mathBoardZoom(b);
@@ -386,12 +484,87 @@ function mathBoardPointerMove(g, b, id, x, y) {
     return 'none';
 }
 
+// Pan and pinch from the two fingers' current positions against the last
+// snapshot. Keeps the world point under the previous midpoint under the new
+// midpoint, which combines pinch and two-axis pan without a jump.
+function mathBoardPinchUpdate(g, b) {
+    const pinch = mathBoardPinchSnapshot(g);
+    if (!pinch) return 'none';
+    const oldZoom = mathBoardZoom(b);
+    const nextZoom = Math.max(MATH_BOARD_MIN_ZOOM, Math.min(MATH_BOARD_MAX_ZOOM,
+        oldZoom * pinch.distance / Math.max(1, g.pinchDistance)));
+    const anchorX = g.panX + g.pinchX / oldZoom;
+    const anchorY = g.panY + g.pinchY / oldZoom;
+    g.panX = anchorX - pinch.x / nextZoom;
+    g.panY = anchorY - pinch.y / nextZoom;
+    b.zoom = nextZoom;
+    b.scrollX = Math.max(0, g.panX);
+    b.scrollY = Math.max(0, g.panY);
+    g.pinchX = pinch.x;
+    g.pinchY = pinch.y;
+    g.pinchDistance = pinch.distance;
+    g.pinchMoved = {};
+    return Math.abs(nextZoom - oldZoom) > 0.0001 ? 'zoom' : 'pan';
+}
+
+// Two touches down, intent unknown. The lead keeps doing what it was doing
+// (so writing never stutters); the other's path is buffered. Then the travel
+// of each decides — see the gesture-machine note above.
+function mathBoardPendingMove(g, b, key, x, y) {
+    let act = 'none';
+    if (key === g.lead) {
+        const point = mathBoardScreenToWorld(b, x, y);
+        if (g.pendingFrom === 'ink' && g.stroke) act = mathBoardExtend(g.stroke, point.x, point.y) ? 'ink' : 'none';
+        else if (g.pendingFrom === 'erase') act = mathBoardEraseAt(b, point.x, point.y,
+            MATH_BOARD_ERASER_RADIUS / mathBoardZoom(b), g.eraseRemoved) ? 'erase' : 'none';
+    } else {
+        const trail = g.trail[key] || (g.trail[key] = []);
+        if (trail.length < MATH_BOARD_TRAIL_CAP) trail.push({ x: x, y: y });
+    }
+    const keys = Object.keys(g.down);
+    const other = keys.filter(function (k) { return k !== g.lead; })[0];
+    if (!other || !g.down[g.lead]) return act;
+    const leadTravel = mathBoardTravel(g, g.lead), otherTravel = mathBoardTravel(g, other);
+    if (leadTravel >= MATH_BOARD_PAN_CONFIRM && otherTravel >= MATH_BOARD_PAN_CONFIRM) {
+        mathBoardConfirmPan(g, b);
+        return 'pan-start';
+    }
+    if (leadTravel >= MATH_BOARD_REST_DROP && otherTravel < MATH_BOARD_PAN_CONFIRM
+            && g.moves[g.lead] >= MATH_BOARD_REST_MIN_EVENTS) {
+        return mathBoardDropResting(g, b, other, g.lead);
+    }
+    if (otherTravel >= MATH_BOARD_REST_DROP && leadTravel < MATH_BOARD_PAN_CONFIRM
+            && g.moves[other] >= MATH_BOARD_REST_MIN_EVENTS) {
+        return mathBoardDropResting(g, b, g.lead, other);
+    }
+    return act;
+}
+
 function mathBoardPointerUp(g, b, id) {
     const key = String(id);
+    if (g.ignored[key]) { delete g.ignored[key]; return 'none'; }
     if (!g.down[key]) return 'none';
     delete g.down[key];
+    delete g.origin[key];
+    delete g.moves[key];
+    delete g.trail[key];
     g.count--;
     const wasLead = key === g.lead;
+    if (g.mode === 'pending') {
+        if (!wasLead) {            // the second touch tapped and left: nothing happened
+            g.mode = g.pendingFrom;
+            g.pendingFrom = null;
+            return 'none';
+        }
+        // The writing finger lifted while the other touch never declared
+        // itself: it was resting. The stroke ends normally; the survivor is
+        // ignored until it lifts, so it cannot become a stray pan.
+        const from = g.pendingFrom;
+        Object.keys(g.down).forEach(function (k) { mathBoardIgnore(g, k); });
+        g.pendingFrom = null;
+        g.mode = from;
+        g.count = 0;
+    }
     if (g.mode === 'ink' && wasLead) {
         g.stroke = null;
         g.mode = 'idle';
@@ -433,6 +606,7 @@ function mathBoardAbort(g, b) {
     }
     g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; g.eraseRemoved = null;
     g.pinchMoved = {};
+    g.pendingFrom = null; g.origin = {}; g.moves = {}; g.trail = {}; g.ignored = {};
 }
 
 // ── Painter ──────────────────────────────────────────────────────────────
@@ -673,6 +847,40 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // reruns on every board switch, and window listeners would accumulate.
     window.addEventListener('resize', mathBoardQueueResize);
     window.addEventListener('orientationchange', mathBoardQueueResize);
+
+    // The freeze seen on an iPhone XS Max: a finger the machine still had
+    // "down" long after it had left the glass, so every new finger read as a
+    // second finger. The gesture machine now tolerates that (a resting or
+    // ghost touch is dropped once the other finger moves), and these two make
+    // it rarer in the first place: a lift that lands on some other element —
+    // capture refused, finger slid off the canvas — still reaches the
+    // machine; and when the page itself is taken away mid-stroke (notification
+    // shade, app switcher, a call) every finger is forgotten, because iOS may
+    // never send their lifts at all.
+    function mathBoardWindowPointerEnd(e) {
+        const g = _mathBoardGestureState;
+        if (!g || !_mathBoardCtx) return;
+        // The canvas handles its own lifts (below); this is for the ones that
+        // landed anywhere else.
+        if (e.target === document.getElementById('mathBoardCanvas')) return;
+        const key = String(e.pointerId);
+        if (!g.down[key] && !g.ignored[key]) return;
+        mathBoardPointerUp(g, mathBoardActive(), e.pointerId);
+        mathBoardCancelScheduledRepaint();
+        mathBoardRepaint();
+    }
+    window.addEventListener('pointerup', mathBoardWindowPointerEnd, true);
+    window.addEventListener('pointercancel', mathBoardWindowPointerEnd, true);
+    function mathBoardPageAway() {
+        if (!_mathBoardGestureState || !_mathBoardCtx) return;
+        if (_mathBoardGestureState.mode === 'idle' && !_mathBoardGestureState.count) return;
+        mathBoardAbortSafe();
+        mathBoardCancelScheduledRepaint();
+        mathBoardRepaint();
+    }
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') mathBoardPageAway(); });
+    window.addEventListener('pagehide', mathBoardPageAway);
+    window.addEventListener('blur', mathBoardPageAway);
 
     // A fixed element already uses visual-viewport coordinates on iOS Safari.
     // Adding visualViewport.offsetTop/Left to its CSS position therefore moves
@@ -1200,10 +1408,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
             const point = mathBoardClientPoint(canvas, e.clientX, e.clientY);
             const act = mathBoardPointerDown(_mathBoardGestureState, mathBoardActive(),
-                e.pointerId, point.x, point.y, _mathBoardTool, _mathBoardPenWidth);
-            // ← REVIEW (Task 3): 'pan-start' means the machine just deleted the
-            // half-drawn stroke. Without this repaint it stays painted on the
-            // canvas until the first pan move — ink that should be gone.
+                e.pointerId, point.x, point.y, _mathBoardTool, _mathBoardPenWidth, e.isPrimary);
+            // 'pan-start' means the machine just deleted the half-drawn
+            // stroke. Without this repaint it stays painted on the canvas
+            // until the first pan move — ink that should be gone.
             if (act === 'pan-start') mathBoardRepaint();
         });
 
@@ -1224,7 +1432,11 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                 const point = mathBoardClientPoint(canvas, ce.clientX, ce.clientY, r);
                 const act = mathBoardPointerMove(g, b, e.pointerId,
                     point.x, point.y);
-                if (act === 'pan' || act === 'zoom' || act === 'erase') repaint = true;
+                // 'pan-start' (a scroll just confirmed: the stroke is gone) and
+                // 'ink-resume' (a resting thumb was dropped and the stroke now
+                // starts where the OTHER finger landed) both change ink that is
+                // already on screen, so a tail is not enough.
+                if (act === 'pan' || act === 'zoom' || act === 'erase' || act === 'pan-start' || act === 'ink-resume') repaint = true;
                 else if (act === 'ink' && g.stroke) {
                     // Draw only the fresh tail — repainting the whole sheet on
                     // every sample is what makes cheap phones lag behind the finger.
@@ -1244,12 +1456,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             mathBoardRepaint();   // final full-quality pass over the finished stroke
         }
         canvas.addEventListener('pointerup', endGesture);
-        canvas.addEventListener('pointercancel', function (e) {
-            if (!_mathBoardGestureState) return;
-            mathBoardPointerCancel(_mathBoardGestureState, mathBoardActive(), e.pointerId);
-            mathBoardCancelScheduledRepaint();
-            mathBoardRepaint();
-        });
+        canvas.addEventListener('pointercancel', endGesture);
 
         // A laptop has no second finger: the trackpad/mouse wheel is its
         // scroll gesture, and without this the desktop sheet simply cannot
@@ -1315,6 +1522,7 @@ if (typeof module !== 'undefined' && module.exports) {
         mathBoardSession, mathBoardReset, mathBoardForgetProfile, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort, mathBoardZoom, mathBoardScreenToWorld,
+        MATH_BOARD_PAN_CONFIRM, MATH_BOARD_REST_DROP, MATH_BOARD_REST_MIN_EVENTS,
         mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas, mathBoardClientPoint,
         mathBoardGridLines, MATH_BOARD_GRID_STEP,
         MATH_BOARD_KEY_ROWS,
