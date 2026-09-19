@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v630';
+const CACHE_NAME = 'flashlingo-v631';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -209,9 +209,9 @@ const PRECACHE = {
   '/js/phonetics-lessons.js': '00ff4373748664dc',
   '/js/auth.js': 'f72eb52aeacc9913',
   '/js/lazy-data.js': '0dec44af66eac11f',
-  '/js/app.js': '2e9574879d989c79',
+  '/js/app.js': '7a130ff42fb72a23',
   '/js/srs.js': 'ff1b4abe8c071d29',
-  '/js/home.js': '0c155cb239ce1753',
+  '/js/home.js': '8265bce99e7511fc',
   '/js/lessons.js': '2ffb4f78ae051dab',
   '/js/verbs.js': '5a9030934791bfcd',
   '/js/exam.js': '092bedb31eb8383e',
@@ -255,7 +255,7 @@ const PRECACHE = {
   '/img/battle-scenes/cloudstep-meadow/zone-left.webp': 'e4ef57c2fc8475df',
   '/img/battle-scenes/cloudstep-meadow/zone-center.webp': '7e5de36357584455',
   '/img/battle-scenes/cloudstep-meadow/zone-right.webp': 'dcbd1f62cc3c8a24',
-  '/manifest.json': 'bbc6c7b399ffbf3b'
+  '/manifest.json': '2069f7d7c8ce56e4'
 };
 const ASSETS = Object.keys(PRECACHE);
 
