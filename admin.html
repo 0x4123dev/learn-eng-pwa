@@ -772,6 +772,7 @@
     </div><!-- /.main -->
   </div>
 
+<script src="js/hosting.js"></script>
 <script src="js/daily-task-catalog.js"></script>
 <script>
 const TOKEN_KEY = 'eng_admin_token';
@@ -992,7 +993,7 @@ async function api(path, opts){
   opts = opts || {};
   const headers = { 'Authorization': 'Bearer '+token };
   if (opts.body) headers['Content-Type'] = 'application/json';
-  const res = await fetch('/api/'+path, {
+  const res = await fetch(Hosting.apiUrl(path), {
     method: opts.method || 'GET',
     headers,
     body: opts.body ? JSON.stringify(opts.body) : undefined,
@@ -1016,7 +1017,7 @@ async function doLogin(){
   const errEl = document.getElementById('loginErr');
   errEl.textContent = '';
   try {
-    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, passcode:p}) });
+    const res = await fetch(Hosting.apiUrl('login'), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, passcode:p}) });
     const data = await res.json();
     if (!res.ok){ errEl.textContent = data.error || 'Đăng nhập thất bại'; return; }
     if (data.user.role !== 'admin'){ errEl.textContent = 'Tài khoản này không phải admin.'; return; }

@@ -45,6 +45,7 @@ suite('leaving a screen: nothing that can be running is left unguarded', () => {
     isCrop: 'FarmRules — classifies one layout cell',
     isFarmBuilding: 'FarmRules — classifies one layout cell',
     isWilted: 'FarmRules — reads a planting date against the task-day context',
+    isGitHubPages: 'Hosting — reads which host the page is served from',
   };
   // Running activities that switchScreen may skip, each with what is NOT lost.
   const EXEMPT = {

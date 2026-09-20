@@ -7,12 +7,14 @@
 // D1 stays the source of truth — the socket only makes the opponent SEE a
 // turn immediately; the authoritative POST to /api/battle/turn still happens.
 
-// The deployed battle Worker (battle-worker/, `npx wrangler@3 deploy`).
-// Verified end-to-end in production: two sockets in one room relayed a turn
-// in 44ms. Override with window.BATTLE_WS_URL if the host ever changes; if
-// the socket cannot connect, BattleLink falls back to polling automatically.
-const BATTLE_WS_BASE = (typeof window !== 'undefined' && window.BATTLE_WS_URL)
-  || 'wss://eng-pwa-battle.minhdoanh.workers.dev';
+// The deployed battle Worker (battle-worker/, `npx wrangler@3 deploy`) —
+// which one depends on the host the app is served from (js/hosting.js: the
+// GitHub Pages app has its own Worker on its own database). Verified
+// end-to-end in production: two sockets in one room relayed a turn in 44ms.
+// Override with window.BATTLE_WS_URL if the host ever changes; if the
+// socket cannot connect, BattleLink falls back to polling automatically.
+const BATTLE_WS_BASE = (typeof Hosting !== 'undefined') ? Hosting.battleWsBase()
+  : ((typeof window !== 'undefined' && window.BATTLE_WS_URL) || 'wss://eng-pwa-battle.minhdoanh.workers.dev');
 const BL_RECONNECT_MS = 1500;
 const BL_MAX_RETRIES = 4;
 

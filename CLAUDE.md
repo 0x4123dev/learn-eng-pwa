@@ -31,13 +31,21 @@ npm run verify -- --live       # …including on the deployed site
 node tests/foo.test.js          # one file — see the WARNING below
 scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy (Cloudflare Pages)
 scripts/deploy-pages.sh -m "msg"  # same ritual for GitHub Pages — the host the user chose on 2026-09-19
-scripts/deploy-audio.sh         # the word MP3s → Cloudflare eng-pwa-audio (js/app.js WORD_AUDIO_PATH), whichever host the app is on
+scripts/deploy-audio.sh         # the word MP3s → Cloudflare eng-pwa-audio — only the Cloudflare app needs it (on github.io the repo serves audio/words/ itself)
+scripts/deploy-api.sh           # the GitHub Pages app's API → Cloudflare Pages `learn-eng-pwa-api` + Worker `learn-eng-pwa-battle` (own DB learn_eng_pwa_db)
+scripts/api-db-init.sh          # build that DB from scratch (schema + migrations in the tested order + auth secret)
 ```
 
 **Which host?** Since 2026-09-19 the app ships to **GitHub Pages**
 (https://0x4123dev.github.io/learn-eng-pwa/, remote `github`, branch master,
 root; `.nojekyll` required) via `scripts/deploy-pages.sh`. That host is static:
-`functions/api/*` (D1) do not run there. The service worker does: it is
+`functions/api/*` (D1) do not run there — so the GitHub app calls its OWN
+API project, `learn-eng-pwa-api` (`scripts/deploy-api.sh`, database
+`learn_eng_pwa_db`, battle Worker `learn-eng-pwa-battle`), chosen by host in
+`js/hosting.js` and let in by `functions/api/_middleware.js` (CORS for the
+GitHub origin only). None of that shares a project, a database or a Worker
+with the `eng-pwa` Cloudflare app. A new `db/*.sql` migration must be applied
+to `learn_eng_pwa_db` too (`--db learn_eng_pwa_db`). The service worker is
 registered as `sw.js` (relative) and `sw.js` resolves every key against the
 directory it was served from (`BASE`), so the same file works at the origin
 root and under `/learn-eng-pwa/` — `tests/sw-behaviour.test.js` boots it both

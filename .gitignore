@@ -24,3 +24,4 @@ tmp/
 # data/ptnk/<id>.json (scripts/assemble-ptnk.js). The assembled file is the
 # source of truth and is committed; the parts are not.
 data/ptnk/parts/
+.api-dist/

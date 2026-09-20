@@ -100,6 +100,9 @@ suite('browser namespace parity: no call anywhere reaches a member that does not
   const SKIP = /phaser\.min|-data\.js$|dictionary-data|math4-data|units-|word-data|grammar-units|grammar-lessons|collocation-(data|followups)|phrases-(data|meanings)|wordform-(data|followups|lessons)|rewrite-(data|lessons)|math-(data|exams|lessons|source|fight-bank)|hot-words|topic-vocab/;
   const sourceFiles = fs.readdirSync(JS).filter(f => f.endsWith('.js') && !SKIP.test(f));
   const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"])\/\/[^\n]*/g, '$1');
+  // String literals are not code: 'learn-eng-pwa-api.pages.dev' in
+  // js/hosting.js is a hostname, not a call on an `api` namespace.
+  const stripStrings = src => src.replace(/'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"/g, "''");
 
   // Every module that hands the browser one object under a global name.
   function namespaces() {
@@ -132,7 +135,7 @@ suite('browser namespace parity: no call anywhere reaches a member that does not
     const ns = namespaces();
     const problems = [];
     for (const f of sourceFiles) {
-      const src = stripComments(fs.readFileSync(path.join(JS, f), 'utf8'));
+      const src = stripStrings(stripComments(fs.readFileSync(path.join(JS, f), 'utf8')));
       for (const [name, { obj }] of ns) {
         for (const m of src.matchAll(new RegExp('\\b' + name + '\\.([A-Za-z_][A-Za-z0-9_]*)', 'g'))) {
           if (!(m[1] in obj)) problems.push(f + ' → ' + name + '.' + m[1]);

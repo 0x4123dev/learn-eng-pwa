@@ -207,6 +207,7 @@ const PRECACHE = {
   '/js/grammar-vocab-data.js': 'edce6227a76cc592',
   '/js/phonetics-data.js': '43be2e7c25fbca4a',
   '/js/phonetics-lessons.js': '00ff4373748664dc',
+  '/js/hosting.js': '0000000000000000',
   '/js/auth.js': 'f72eb52aeacc9913',
   '/js/lazy-data.js': '0dec44af66eac11f',
   '/js/app.js': 'b6712d6518a59087',

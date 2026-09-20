@@ -1,0 +1,15 @@
+# Cloudflare Pages config for the `learn-eng-pwa-api` project — the API of the
+# app served from GitHub Pages (https://0x4123dev.github.io/learn-eng-pwa/).
+#
+# Its own project and its OWN database (learn_eng_pwa_db): nothing here is
+# shared with the `eng-pwa` app or eng_pwa_db. The Functions are the same
+# code (../functions), staged next to a one-line index by
+# scripts/deploy-api.sh; the browser is let in by functions/api/_middleware.js.
+name = "learn-eng-pwa-api"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "learn_eng_pwa_db"
+database_id = "ce4cd2ee-b75c-458d-94b1-f51e5f4a20d0"

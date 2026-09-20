@@ -2,7 +2,9 @@
 // arbitrates item locks; the Pages API remains the final authority for coins.
 (function (global) {
   'use strict';
-  const WS_BASE = global.BATTLE_WS_URL || 'wss://eng-pwa-battle.minhdoanh.workers.dev';
+  // js/hosting.js picks the Worker for the host the page is served from.
+  const WS_BASE = (typeof Hosting !== 'undefined') ? Hosting.battleWsBase()
+    : (global.BATTLE_WS_URL || 'wss://eng-pwa-battle.minhdoanh.workers.dev');
 
   function GhostOfferingLink(opts) {
     this.roomId = String(opts.roomId || 'daily');

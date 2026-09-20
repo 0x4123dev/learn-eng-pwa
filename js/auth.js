@@ -98,7 +98,10 @@ const EngAuth = (function () {
     opts = opts || {};
     const headers = { 'Content-Type': 'application/json' };
     if (opts.token) headers['Authorization'] = 'Bearer ' + opts.token;
-    const res = await fetch('/api/' + path, {
+    // js/hosting.js: same-origin on Cloudflare, the learn-eng-pwa-api
+    // project when the page is served from GitHub Pages.
+    const url = (typeof Hosting !== 'undefined') ? Hosting.apiUrl(path) : '/api/' + path;
+    const res = await fetch(url, {
       method: opts.method || 'GET',
       headers,
       body: opts.body ? JSON.stringify(opts.body) : undefined,
