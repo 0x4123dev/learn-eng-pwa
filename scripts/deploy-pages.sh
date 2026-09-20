@@ -4,7 +4,7 @@
 #   bump APP_VERSION + CACHE_NAME + package.json + functions/api/version.js
 #   → rewrite sw.js PRECACHE hashes for the RAW tree (Pages serves the source
 #     files as they are — no esbuild bundle, unlike scripts/deploy.sh)
-#   → npm test → release commit → push master to the `github` remote
+#   → npm test → release commit → push master to `origin` (learn-eng-pwa)
 #   → wait for the Pages build and prove the live index.html is this commit.
 #
 #   scripts/deploy-pages.sh -m "feat(word): ..."   bump patch, commit, push
@@ -30,7 +30,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-REMOTE="github"
+REMOTE="origin"
 REMOTE_URL="git@github.com:0x4123dev/learn-eng-pwa.git"
 REPO="0x4123dev/learn-eng-pwa"
 LIVE="https://0x4123dev.github.io/learn-eng-pwa"
