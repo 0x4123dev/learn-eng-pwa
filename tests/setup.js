@@ -157,7 +157,7 @@ const EXPORT_NAMES = [
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',
     'appEsc', 'getUsers', 'getUserData', 'renderUserList',
     // app.js — word audio (pre-generated recordings + TTS fallback)
-    'WORD_AUDIO_PATH', 'wordAudioSlug', 'speakWord', 'speakWordFallback',
+    'WORD_AUDIO_PATH', 'wordAudioBase', 'wordAudioSlug', 'speakWord', 'speakWordFallback',
     'speakSequence', 'warmWord', 'warmHotWords',
     'audioMissing', 'audioCache',
     'prefetchAudio', 'preloadLessonAudio',

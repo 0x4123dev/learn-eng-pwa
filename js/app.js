@@ -2206,13 +2206,27 @@ function formatDate(timestamp) {
 // whole app) at audio/words/<slug>.mp3 — see scripts/generate-word-audio.js,
 // which must produce the same slugs.
 //
-// The MP3s live in their own Cloudflare Pages project (eng-pwa-audio), not in
-// the app deploy: Pages caps a deployment at 20,000 files and the ~13,000
-// recordings were crowding the app out of its own limit. Same Cloudflare CDN,
-// same per-file URLs, and the service worker keys its audio cache by pathname
-// so recordings cached before the move keep playing. New recordings go live
-// with scripts/deploy-audio.sh.
-const WORD_AUDIO_PATH = 'https://eng-pwa-audio.pages.dev/audio/words/';
+// Where they are served from depends on the host the app is on:
+//   - GitHub Pages (0x4123dev.github.io/learn-eng-pwa/): the repo carries
+//     audio/words/ and Pages serves it, so the recordings are simply next to
+//     the app — a relative path, no second host, nothing else to deploy.
+//   - Cloudflare Pages: the MP3s live in their own project (eng-pwa-audio),
+//     not in the app deploy — Pages caps a deployment at 20,000 files and the
+//     ~13,000 recordings were crowding the app out of its own limit
+//     (scripts/deploy-audio.sh ships them). The service worker keys its
+//     audio cache by pathname so recordings cached before the move keep
+//     playing.
+// Both paths contain /audio/words/, which is what sw.js routes to the audio
+// cache. The hostname is a parameter so the rule can be tested.
+function wordAudioBase(hostname) {
+    let host = hostname;
+    if (host === undefined) {
+        try { host = (typeof location !== 'undefined' && location.hostname) || ''; } catch (e) { host = ''; }
+    }
+    if (/(^|\.)github\.io$/.test(String(host))) return 'audio/words/';
+    return 'https://eng-pwa-audio.pages.dev/audio/words/';
+}
+const WORD_AUDIO_PATH = wordAudioBase();
 
 // A word that is said as letters rather than read: "IT" the school subject is
 // "eye-TEE". Lower-casing folds it into "it" the pronoun — the 22nd commonest

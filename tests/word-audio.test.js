@@ -496,12 +496,12 @@ suite('word audio: deploy ships the recordings', () => {
     test('the app the audio serves from is the one it is deployed to', () => {
         // A mismatch here is silent: every recording 404s and the whole app
         // quietly falls back to the robot voice.
-        const host = /const WORD_AUDIO_PATH = '([^']+)'/.exec(read('js/app.js'));
-        assert.truthy(host, 'js/app.js must define WORD_AUDIO_PATH');
+        // The CDN base is what every non-GitHub host resolves to (wordAudioBase).
+        const host = loadAppCode().wordAudioBase('eng-pwa.pages.dev');
         const deployed = /LIVE="([^"]+)"/.exec(read('scripts/deploy-audio.sh'));
         assert.truthy(deployed, 'deploy-audio.sh must name where it publishes');
-        assert.truthy(host[1].startsWith(deployed[1] + '/'),
-            `app fetches from ${host[1]} but the audio deploys to ${deployed[1]}`);
+        assert.truthy(host.startsWith(deployed[1] + '/'),
+            `app fetches from ${host} but the audio deploys to ${deployed[1]}`);
     });
 
     test('old clients asking the app origin for a recording are redirected, not fed HTML', () => {
@@ -783,6 +783,38 @@ suite('word audio: generation script', () => {
         for (const w of [' Apple ', 'ice cream', "it's", 'T-shirt', 'fire station']) {
             assert.equal(gen.wordAudioSlug(w), app.wordAudioSlug(w));
         }
+    });
+});
+
+suite('word audio: where the recordings are served from follows the host', () => {
+    // The repo carries audio/words/ and GitHub Pages serves it next to the
+    // app; on Cloudflare the app deploy excludes it (20,000-file cap) and the
+    // MP3s come from the eng-pwa-audio project. Both paths hold /audio/words/
+    // so sw.js routes them to the audio cache either way.
+    const app = loadAppCode();
+    test('on GitHub Pages the recordings are the app\'s own, by relative path', () => {
+        assert.equal(app.wordAudioBase('0x4123dev.github.io'), 'audio/words/');
+        assert.equal(app.wordAudioBase('github.io'), 'audio/words/');
+    });
+    test('anywhere else (Cloudflare, localhost) they come from the audio CDN', () => {
+        assert.equal(app.wordAudioBase('eng-pwa.pages.dev'), 'https://eng-pwa-audio.pages.dev/audio/words/');
+        assert.equal(app.wordAudioBase('localhost'), 'https://eng-pwa-audio.pages.dev/audio/words/');
+        assert.equal(app.wordAudioBase(''), 'https://eng-pwa-audio.pages.dev/audio/words/');
+        assert.equal(app.wordAudioBase('evil-github.io.example.com'), 'https://eng-pwa-audio.pages.dev/audio/words/', 'a lookalike host is not GitHub');
+    });
+    test('both bases contain the segment the service worker routes to the audio cache', () => {
+        const sw = fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8');
+        assert.truthy(sw.includes("includes('/audio/words/')"), 'sw.js routes by /audio/words/');
+        for (const h of ['0x4123dev.github.io', 'eng-pwa.pages.dev']) {
+            assert.truthy((app.wordAudioBase(h)).includes('audio/words/'), h);
+        }
+        assert.truthy(app.WORD_AUDIO_PATH.includes('audio/words/'), 'the resolved constant too');
+    });
+    test('the app\'s own copy is complete: every Word-tab word has its MP3 in audio/words/', () => {
+        const d = require(path.join(__dirname, '..', 'js', 'word-data.js'));
+        const missing = [].concat(d.UNIT_WORDS_PR1, d.UNIT_WORDS_PR2, d.UNIT_WORDS_PR3)
+            .map(w => w.en).filter(en => !fs.existsSync(path.join(__dirname, '..', 'audio', 'words', app.wordAudioSlug(en) + '.mp3')));
+        assert.deepEqual(missing, [], 'run scripts/generate-word-audio.js for: ' + missing.slice(0, 10).join(', '));
     });
 });
 

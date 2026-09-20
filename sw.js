@@ -421,8 +421,12 @@ self.addEventListener('message', event => {
 // the words re-download on the next tap.
 async function evictReRecorded() {
   const cache = await caches.open(AUDIO_CACHE);
-  await Promise.all(RE_RECORDED.map(
-    slug => cache.delete(self.location.origin + '/audio/words/' + slug + '.mp3')));
+  // Both places a recording can be keyed: the audio CDN's path, and the
+  // app's own audio/words/ under BASE (GitHub Pages serves them itself).
+  await Promise.all(RE_RECORDED.map(slug => Promise.all([
+    cache.delete(self.location.origin + '/audio/words/' + slug + '.mp3'),
+    cache.delete(self.location.origin + abs('/audio/words/') + slug + '.mp3'),
+  ])));
 }
 
 // Activate: clean up old caches (but keep the audio cache — recordings are
