@@ -1,11 +1,17 @@
-# Cloudflare Pages config for the `eng-pwa` project.
-# Static assets are staged into ./.cf-dist (generated), Functions live in ./functions,
-# and D1 is bound as env.DB. Deploy with: npx wrangler@3 pages deploy
-name = "eng-pwa"
+# Cloudflare Pages config that scripts/build-dist.js copies into .cf-dist.
+#
+# This repo is learn-eng-pwa, the GitHub Pages app: its API is the separate
+# `learn-eng-pwa-api` project (api-project/wrangler.toml, scripts/deploy-api.sh)
+# and the static app ships with scripts/deploy-pages.sh. No Pages project
+# named `learn-eng-pwa` exists, and scripts/deploy.sh refuses to run here —
+# this file only keeps the bundle layout identical and, should anyone ever
+# deploy it, names a project and a database that are NOT the Cloudflare
+# app's (`eng-pwa` / eng_pwa_db live in the eng-math-app repo).
+name = "learn-eng-pwa"
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "./.cf-dist"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "eng_pwa_db"
-database_id = "58c86de1-6992-4bb5-9978-1df06a3036ce"
+database_name = "learn_eng_pwa_db"
+database_id = "ce4cd2ee-b75c-458d-94b1-f51e5f4a20d0"

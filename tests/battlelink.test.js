@@ -174,7 +174,7 @@ suite('battle room worker: safety and shape', () => {
     test('the worker is configured for a free-plan SQLite Durable Object', () => {
         assert.truthy(wranglerSrc.includes('new_sqlite_classes = ["BattleRoom"]'));
         assert.truthy(wranglerSrc.includes('class_name = "BattleRoom"'));
-        assert.truthy(wranglerSrc.includes('eng_pwa_db'), 'shares the app database');
+        assert.truthy(wranglerSrc.includes('learn_eng_pwa_db'), 'shares the app database');
     });
 
     test('sockets hibernate so an idle room costs nothing', () => {

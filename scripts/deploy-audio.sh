@@ -15,6 +15,17 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+# ---- WRONG REPO GUARD ------------------------------------------------------
+# This checkout is learn-eng-pwa: the GitHub Pages app with its own API
+# (scripts/deploy-pages.sh, scripts/deploy-api.sh). The Cloudflare app
+# `eng-pwa` / `eng-pwa-audio` / `eng-pwa-battle` is a DIFFERENT product,
+# maintained in the eng-math-app repo. Nothing in this checkout may deploy
+# there, whatever the flags — decided 2026-09-21 ("tất cả phải tách riêng").
+if git remote get-url origin 2>/dev/null | grep -q 'learn-eng-pwa'; then
+  echo "✗ this checkout is learn-eng-pwa (GitHub Pages). It never deploys to the Cloudflare app." >&2
+  echo "  app  → scripts/deploy-pages.sh   api → scripts/deploy-api.sh" >&2
+  exit 1
+fi
 PROJECT="eng-pwa-audio"
 LIVE="https://eng-pwa-audio.pages.dev"
 TOKEN_FILE="$HOME/.config/eng-pwa/cloudflare.env"

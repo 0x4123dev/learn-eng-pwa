@@ -45,8 +45,17 @@ suite('hosting: where the API and the battle rooms are, per host', () => {
         const cfg = read('api-project/wrangler.toml');
         assert.truthy(/database_name = "learn_eng_pwa_db"/.test(cfg), 'api-project binds learn_eng_pwa_db');
         assert.falsy(/eng_pwa_db"/.test(cfg.replace(/learn_eng_pwa_db/g, '')), 'and never eng_pwa_db');
+        // The whole repo: no config names the Cloudflare app's project, database or Worker.
+        for (const f of ['wrangler.toml', 'battle-worker/wrangler.toml', 'api-project/wrangler.toml']) {
+            // Comments may explain what is NOT here; the settings themselves may not.
+            const t = read(f).split('\n').filter(l => !/^\s*#/.test(l)).join('\n').replace(/learn[-_]eng[-_]pwa[-_a-z]*/g, '');
+            assert.falsy(/eng-pwa|eng_pwa_db/.test(t), f + ' must not name eng-pwa / eng_pwa_db / eng-pwa-battle in a setting');
+        }
+        for (const f of ['scripts/deploy.sh', 'scripts/deploy-audio.sh']) {
+            assert.truthy(read(f).includes("grep -q 'learn-eng-pwa'"), f + ' refuses to run in this checkout');
+        }
         assert.truthy(/name = "learn-eng-pwa-api"/.test(cfg), 'and is the learn-eng-pwa-api project');
-        const bw = read('battle-worker/wrangler.learn-eng-pwa.toml');
+        const bw = read('battle-worker/wrangler.toml');
         assert.truthy(/name = "learn-eng-pwa-battle"/.test(bw) && /database_name = "learn_eng_pwa_db"/.test(bw), 'the battle Worker likewise');
     });
     test('every caller goes through Hosting: no bare /api/ fetch is left in the client', () => {

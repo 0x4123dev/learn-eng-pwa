@@ -10,9 +10,9 @@
 #   scripts/deploy-api.sh              both
 #   scripts/deploy-api.sh --no-worker  the Pages Functions only
 #
-# NEVER the `eng-pwa` app, eng_pwa_db or the eng-pwa-battle Worker: the
-# project names are fixed below and guarded, and nothing here reads the
-# repo-root wrangler.toml (that one names eng-pwa). Run after any change to
+# NEVER the `eng-pwa` app, eng_pwa_db or the eng-pwa-battle Worker (those
+# belong to the eng-math-app repo): the project names are fixed below and
+# guarded, and nothing here reads the repo-root wrangler.toml. Run after any change to
 # functions/ or battle-worker/ that the GitHub Pages app should see; the
 # static app itself ships with scripts/deploy-pages.sh.
 #
@@ -22,7 +22,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PROJECT="learn-eng-pwa-api"
-WORKER_CFG="wrangler.learn-eng-pwa.toml"
+WORKER_CFG="wrangler.toml"
 LIVE="https://learn-eng-pwa-api.pages.dev"
 STAGE=".api-dist"
 WORKER=1

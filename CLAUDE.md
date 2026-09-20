@@ -25,55 +25,55 @@ There is exactly ONE npm script. This is a vanilla-JS PWA — no build step, no
 bundler, no TypeScript, no linter.
 
 ```bash
-npm test          # the whole suite (11,000+ tests, tests/run-all.js)
+npm test          # the whole suite (12,700+ tests, tests/run-all.js)
 npm run verify    # "is any feature broken?" — see below
 npm run verify -- --live       # …including on the deployed site
 node tests/foo.test.js          # one file — see the WARNING below
-scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy (Cloudflare Pages)
-scripts/deploy-pages.sh -m "msg"  # same ritual for GitHub Pages — the host the user chose on 2026-09-19
-scripts/deploy-audio.sh         # the word MP3s → Cloudflare eng-pwa-audio — only the Cloudflare app needs it (on github.io the repo serves audio/words/ itself)
-scripts/deploy-api.sh           # the GitHub Pages app's API → Cloudflare Pages `learn-eng-pwa-api` + Worker `learn-eng-pwa-battle` (own DB learn_eng_pwa_db)
-scripts/api-db-init.sh          # build that DB from scratch (schema + migrations in the tested order + auth secret)
+scripts/deploy-pages.sh -m "msg"  # bump the 4 version markers, test, commit, push → GitHub Pages (THE deploy)
+scripts/deploy-api.sh           # the API: Cloudflare Pages `learn-eng-pwa-api` + Worker `learn-eng-pwa-battle`
+scripts/api-db-init.sh          # build the D1 `learn_eng_pwa_db` from scratch (schema + migrations + auth secret)
 ```
 
-**Which host?** Since 2026-09-19 the app ships to **GitHub Pages**
-(https://0x4123dev.github.io/learn-eng-pwa/, remote `github`, branch master,
-root; `.nojekyll` required) via `scripts/deploy-pages.sh`. That host is static:
-`functions/api/*` (D1) do not run there — so the GitHub app calls its OWN
-API project, `learn-eng-pwa-api` (`scripts/deploy-api.sh`, database
-`learn_eng_pwa_db`, battle Worker `learn-eng-pwa-battle` reached ONLY through
-`wss://learn-eng-pwa-api.pages.dev/ws/…` — `functions/ws/[[path]].js` forwards
-over a service binding, so the account's workers.dev subdomain, which is the
-owner's name, never appears in the app), chosen by host in
-`js/hosting.js` and let in by `functions/api/_middleware.js` (CORS for the
-GitHub origin only). None of that shares a project, a database or a Worker
-with the `eng-pwa` Cloudflare app. A new `db/*.sql` migration must be applied
-to `learn_eng_pwa_db` too (`--db learn_eng_pwa_db`). The service worker is
-registered as `sw.js` (relative) and `sw.js` resolves every key against the
-directory it was served from (`BASE`), so the same file works at the origin
-root and under `/learn-eng-pwa/` — `tests/sw-behaviour.test.js` boots it both
-ways. `scripts/deploy.sh` is the Cloudflare ritual, kept intact.
+**This repo is ONE of two products that share an ancestor — and they are
+kept apart on purpose (decided 2026-09-21).**
 
-⚠️ **Do not bump version numbers by hand.** `scripts/deploy.sh` rewrites all
-four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,
+| | this repo: `learn-eng-pwa` | the other: `eng-math-app` (the kids' app) |
+|---|---|---|
+| app | https://0x4123dev.github.io/learn-eng-pwa/ (GitHub Pages) | https://eng-pwa.pages.dev/ (Cloudflare Pages `eng-pwa`) |
+| API / DB | `learn-eng-pwa-api.pages.dev` / D1 `learn_eng_pwa_db` | same origin / D1 `eng_pwa_db` |
+| battle rooms | Worker `learn-eng-pwa-battle`, only via `wss://learn-eng-pwa-api.pages.dev/ws/…` | Worker `eng-pwa-battle` |
+| word audio | `audio/words/` in this repo, served by Pages | Cloudflare `eng-pwa-audio` |
+| 5th tab | Word (Career Paths: Public Relations) | Exam |
+| versions | 5.x | 4.17.x |
+
+Never merge, pull or "sync" one into the other. `scripts/deploy.sh` and
+`scripts/deploy-audio.sh` are the OTHER product's rituals and refuse to run
+in this checkout; `wrangler.toml` files here name only this product's
+resources. `js/hosting.js` still carries the Cloudflare app's URLs for the
+same code running on that host — that is deliberate and unchanged.
+
+⚠️ **Do not bump version numbers by hand.** `scripts/deploy-pages.sh` rewrites
+all four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,
 package.json, functions/api/version.js) and `tests/version-sync.test.js` fails
-if any of them drifts. Commit your own code FIRST; deploy.sh now refuses to
-run with an uncommitted working tree, because it builds the bundle from that
-tree and would otherwise ship code that exists in no commit.
+if any of them drifts. Commit your own code FIRST; the script refuses to run
+with an uncommitted working tree.
 
-**What a deploy ships (since 4.17.90):** `scripts/build-dist.js` builds
-`.cf-dist` with every `js/**/*.js` and `css/**/*.css` esbuild-minified (no
-bundling, top-level names kept — the app calls functions by global name);
-`sw.js`, `functions/` and `phaser.min.js` are copied verbatim. Then
-`scripts/build-sw-manifest.js --root .cf-dist` rewrites the hash values in
-sw.js's `PRECACHE` block (first 16 hex of SHA-256 of the SHIPPED bytes) and
-that sw.js goes into the release commit. The service worker serves every
-manifest URL cache-first (zero network on a warm open), verifies each
-download against the manifest, and on an update copies unchanged entries
-from the previous cache — a release downloads only what changed.
-**Adding a file the app needs offline = adding its URL to the PRECACHE
-block** (hash placeholder `'0000000000000000'`; deploy fills it in).
-`npm run verify -- --live` proves the live manifest matches the live bytes.
+**What a deploy ships:** GitHub Pages serves the source tree as it is (no
+esbuild bundle). `scripts/build-sw-manifest.js` rewrites the hash values in
+sw.js's `PRECACHE` block over the raw files and that sw.js goes into the
+release commit. The service worker serves every manifest URL cache-first,
+verifies each download against the manifest, and on an update copies
+unchanged entries from the previous cache — a release downloads only what
+changed. It resolves every key against the directory it was served from
+(`BASE`), so the same file works at an origin root and under
+`/learn-eng-pwa/`. **Adding a file the app needs offline = adding its URL to
+the PRECACHE block** (hash placeholder `'0000000000000000'`; the deploy fills
+it in). A push is not a deploy: deploy-pages.sh waits for the Pages build and
+proves `js/home.js` is live. `functions/` changes ship separately with
+`scripts/deploy-api.sh`; a new `db/*.sql` migration must be applied to
+`learn_eng_pwa_db` by hand first. (Historical: `scripts/build-dist.js` and
+`.cf-dist` are the other product's bundle; `tests/build-dist.test.js` still
+proves the builder.)
 
 ### `npm run verify` — the independent check
 
@@ -691,15 +691,17 @@ npm test                              # the whole suite
 node tests/foo.test.js                # one file
 FLASHLINGO_TEST_TIMEOUT_MS=60000 npm test   # loosen the per-test timeout
 
-# Deploy (Cloudflare Pages; never pushes to GitHub)
-scripts/deploy.sh -m "fix(x): …"      # bump + test + commit + deploy
-scripts/deploy.sh --no-bump           # already bumped and committed
-scripts/deploy.sh -m "…" --allow-dirty  # ship uncommitted work (HEAD ≠ live)
-scripts/deploy-audio.sh               # the word MP3s (separate Pages project)
+# Deploy — GitHub Pages (the app) + the API's own Cloudflare projects
+scripts/deploy-pages.sh -m "fix(x): …"   # bump + test + commit + push origin + wait for the Pages build
+scripts/deploy-pages.sh --no-bump        # already bumped and committed
+scripts/deploy-pages.sh --version 5.1.0 -m "…"
+scripts/deploy-api.sh                    # functions/ → learn-eng-pwa-api, battle-worker/ → learn-eng-pwa-battle
+# (scripts/deploy.sh / deploy-audio.sh belong to the other product and refuse to run here)
 
-# Database (hand-applied, newest file last)
-npx wrangler@3 d1 execute eng_pwa_db --remote --file db/0NN-name.sql
-npx wrangler@3 d1 execute eng_pwa_db --remote --command "PRAGMA table_info(x)"
+# Database (hand-applied, newest file last) — THIS product's database
+npx wrangler@3 d1 execute learn_eng_pwa_db --remote --file db/0NN-name.sql
+npx wrangler@3 d1 execute learn_eng_pwa_db --remote --command "PRAGMA table_info(x)"
+scripts/api-db-init.sh                   # a fresh database from schema + migrations
 
 # Generated files — regenerate, never hand-edit the output
 node scripts/build-math-data.js data/math     # js/math-data.js, js/math-lessons.js
