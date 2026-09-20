@@ -2,7 +2,10 @@
 # deploy-api.sh — ship the API for the GitHub Pages app to ITS OWN Cloudflare
 # projects: Pages `learn-eng-pwa-api` (functions/, on the learn_eng_pwa_db
 # database) and the Worker `learn-eng-pwa-battle` (battle-worker/, the
-# realtime rooms, on the same database).
+# realtime rooms, on the same database). The Worker is not addressed by its
+# workers.dev name anywhere in the app: the API project binds it as a
+# service (api-project/wrangler.toml) and functions/ws/[[path]].js forwards
+# the WebSocket upgrade, so the account subdomain stays private.
 #
 #   scripts/deploy-api.sh              both
 #   scripts/deploy-api.sh --no-worker  the Pages Functions only

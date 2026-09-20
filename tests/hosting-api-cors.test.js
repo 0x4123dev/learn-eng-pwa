@@ -22,7 +22,12 @@ suite('hosting: where the API and the battle rooms are, per host', () => {
         assert.equal(R.apiBase('0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev');
         assert.equal(R.apiUrl('me/wins', '0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev/api/me/wins');
         assert.equal(R.apiUrl('/api/login', '0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev/api/login', 'a path that already says /api/ is not doubled');
-        assert.equal(R.battleWsBase('0x4123dev.github.io'), 'wss://learn-eng-pwa-battle.minhdoanh.workers.dev');
+        assert.equal(R.battleWsBase('0x4123dev.github.io'), 'wss://learn-eng-pwa-api.pages.dev/ws');
+        // The account's workers.dev subdomain is the owner's name: the GitHub
+        // app must never carry it.
+        assert.falsy(/workers\.dev/.test(R.GITHUB_BATTLE_WS), 'no workers.dev address in the GitHub app');
+        assert.truthy(/\[\[services\]\][\s\S]*binding = "BATTLE"[\s\S]*service = "learn-eng-pwa-battle"/.test(read('api-project/wrangler.toml')), 'the API project binds the Worker');
+        assert.truthy(read('functions/ws/[[path]].js').includes('env.BATTLE.fetch('), 'and /ws/ forwards to it');
     });
     test('Cloudflare Pages (and anywhere else) → same origin and the eng-pwa-battle Worker, untouched', () => {
         for (const h of ['eng-pwa.pages.dev', 'localhost', '']) {
@@ -103,6 +108,33 @@ suite('API CORS middleware: the GitHub origin is let in, nothing else is', () =>
         assert.deepEqual(mw.ALLOWED_ORIGINS.slice(), [GH, 'http://localhost:8000', 'http://127.0.0.1:8000']);
         assert.equal(mw.corsHeadersFor(undefined), null);
         assert.equal(mw.corsHeadersFor('*'), null);
+    });
+});
+
+suite('the battle rooms behind the API domain: /ws/* forwards over the service binding', () => {
+    const route = loadModule('functions/ws/[[path]].js');
+    test('an upgrade to /ws/room/<id>?token=… reaches the Worker as /room/<id>?token=…, headers intact', async () => {
+        const seen = [];
+        const env = { BATTLE: { fetch: async (req) => { seen.push(req); return new Response(null, { status: 200 }); } } };
+        const request = new Request('https://learn-eng-pwa-api.pages.dev/ws/room/42?token=abc', { headers: { Upgrade: 'websocket', Origin: 'https://0x4123dev.github.io' } });
+        const res = await route.onRequest({ request, env, params: { path: ['room', '42'] } });
+        assert.equal(res.status, 200, 'the Worker\'s answer is returned as-is (a real 101 in production)');
+        assert.equal(seen.length, 1, 'forwarded exactly once');
+        const u = new URL(seen[0].url);
+        assert.equal(u.pathname, '/room/42', 'the /ws prefix is stripped — the Worker routes on /room/');
+        assert.equal(u.search, '?token=abc', 'the token reaches the Worker, which verifies and strips it');
+        assert.equal(seen[0].headers.get('Upgrade'), 'websocket', 'the upgrade header travels');
+        assert.falsy(/workers\.dev/.test(seen[0].url), 'no public workers.dev address is involved');
+    });
+    test('the offering room forwards the same way', async () => {
+        const seen = [];
+        const env = { BATTLE: { fetch: async (req) => { seen.push(req); return new Response(null, { status: 200 }); } } };
+        await route.onRequest({ request: new Request('https://learn-eng-pwa-api.pages.dev/ws/offering/daily?token=t&bot=1', { headers: { Upgrade: 'websocket' } }), env, params: { path: ['offering', 'daily'] } });
+        assert.equal(new URL(seen[0].url).pathname + new URL(seen[0].url).search, '/offering/daily?token=t&bot=1');
+    });
+    test('without the binding (a deployment that is not the API project) the route is a plain 404', async () => {
+        const res = await route.onRequest({ request: new Request('https://eng-pwa.pages.dev/ws/room/1'), env: {}, params: { path: ['room', '1'] } });
+        assert.equal(res.status, 404);
     });
 });
 

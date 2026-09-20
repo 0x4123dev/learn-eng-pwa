@@ -41,7 +41,10 @@ scripts/api-db-init.sh          # build that DB from scratch (schema + migration
 root; `.nojekyll` required) via `scripts/deploy-pages.sh`. That host is static:
 `functions/api/*` (D1) do not run there — so the GitHub app calls its OWN
 API project, `learn-eng-pwa-api` (`scripts/deploy-api.sh`, database
-`learn_eng_pwa_db`, battle Worker `learn-eng-pwa-battle`), chosen by host in
+`learn_eng_pwa_db`, battle Worker `learn-eng-pwa-battle` reached ONLY through
+`wss://learn-eng-pwa-api.pages.dev/ws/…` — `functions/ws/[[path]].js` forwards
+over a service binding, so the account's workers.dev subdomain, which is the
+owner's name, never appears in the app), chosen by host in
 `js/hosting.js` and let in by `functions/api/_middleware.js` (CORS for the
 GitHub origin only). None of that shares a project, a database or a Worker
 with the `eng-pwa` Cloudflare app. A new `db/*.sql` migration must be applied

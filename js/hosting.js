@@ -9,11 +9,12 @@
 //   - GitHub Pages (https://0x4123dev.github.io/learn-eng-pwa/): static only,
 //     so /api/ would 404. Its API is the separate Cloudflare Pages project
 //     learn-eng-pwa-api (scripts/deploy-api.sh) on its OWN database,
-//     learn_eng_pwa_db, and its battle rooms the learn-eng-pwa-battle Worker.
+//     learn_eng_pwa_db, and its battle rooms the learn-eng-pwa-battle Worker
+//     behind that same API domain (/ws/…), so no workers.dev name shows.
 //     Nothing here touches the Cloudflare app or its data: different
 //     project, different database, different Worker.
 //
-// Cross-origin calls need CORS, which functions/_middleware.js grants to the
+// Cross-origin calls need CORS, which functions/api/_middleware.js grants to the
 // GitHub origin. Tokens travel in the Authorization header (never cookies),
 // so no credentialed CORS is involved.
 //
@@ -22,7 +23,10 @@
 (function (global) {
   'use strict';
   const GITHUB_API = 'https://learn-eng-pwa-api.pages.dev';
-  const GITHUB_BATTLE_WS = 'wss://learn-eng-pwa-battle.minhdoanh.workers.dev';
+  // The rooms sit behind the API's own domain (functions/ws/[[path]].js
+  // forwards the upgrade over a service binding), so no workers.dev name —
+  // which carries the account owner's subdomain — is ever in the app.
+  const GITHUB_BATTLE_WS = 'wss://learn-eng-pwa-api.pages.dev/ws';
   const CLOUDFLARE_BATTLE_WS = 'wss://eng-pwa-battle.minhdoanh.workers.dev';
 
   function isGitHubPages(hostname) {

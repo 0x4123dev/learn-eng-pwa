@@ -9,6 +9,12 @@ name = "learn-eng-pwa-api"
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "./dist"
 
+# The battle rooms Worker, reached only through this binding — its
+# workers.dev name never appears in the app (functions/ws/[[path]].js).
+[[services]]
+binding = "BATTLE"
+service = "learn-eng-pwa-battle"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "learn_eng_pwa_db"
