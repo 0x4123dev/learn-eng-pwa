@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v632';
+const CACHE_NAME = 'flashlingo-v633';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -34,8 +34,8 @@ const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e', 'birthday', 'jam'];
 // list is maintained by hand, as ASSETS always was: a new lazy bank or sprite
 // is added here. See docs/superpowers/specs/2026-09-11-sw-precache-manifest-design.md.
 const PRECACHE = {
-  '/': 'c6eb6affa178593b',
-  '/index.html': 'c6eb6affa178593b',
+  '/': '03c9fa7f782cfbe4',
+  '/index.html': '03c9fa7f782cfbe4',
   '/css/styles.css': '0b3b68ffb30063ec',
   '/css/night-raid.css': 'a078c5bdf46a336c',
   '/css/arena.css': 'a2ad5f216f9edf6e',
@@ -104,7 +104,7 @@ const PRECACHE = {
   '/js/phaser.min.js': 'e92ddef111ba42e9',
   '/js/night-raid.js': '6c7be66cb8017f89',
   '/js/ghost-offering-schedule.js': '1110c96d97e33506',
-  '/js/ghost-offering-link.js': 'd22867445b37fa5e',
+  '/js/ghost-offering-link.js': '5d0eaf40de1a8e0d',
   '/js/ghost-offering-event.js': '531a8507c0776b69',
   '/js/daily-task-catalog.js': '084367fa98e87eda',
   '/js/daily-task.js': '9060043592e40bb6',
@@ -189,7 +189,7 @@ const PRECACHE = {
   '/img/night-raid/tomato-field.webp': '679b01e070514188',
   '/img/night-raid/fish-pond.webp': '02364343c7073079',
   '/js/friends.js': '7cb2d92d5f82af9e',
-  '/js/battlelink.js': '9c98c1c39ed01907',
+  '/js/battlelink.js': '2d0c06b2549c2126',
   '/js/petbattle.js': 'd490cd2ac34d3094',
   '/js/petbattlegame.js': '0af85e6571da5851',
   '/js/cups.js': 'd4c1f4dd7b6c51da',
@@ -207,12 +207,12 @@ const PRECACHE = {
   '/js/grammar-vocab-data.js': 'edce6227a76cc592',
   '/js/phonetics-data.js': '43be2e7c25fbca4a',
   '/js/phonetics-lessons.js': '00ff4373748664dc',
-  '/js/hosting.js': '0000000000000000',
-  '/js/auth.js': 'f72eb52aeacc9913',
+  '/js/hosting.js': 'b17b8fc2a1002fa7',
+  '/js/auth.js': '3412d604ad875077',
   '/js/lazy-data.js': '0dec44af66eac11f',
   '/js/app.js': 'b6712d6518a59087',
   '/js/srs.js': 'ff1b4abe8c071d29',
-  '/js/home.js': '8f3300cbf13de7b7',
+  '/js/home.js': '7b101e49fcbdbde3',
   '/js/lessons.js': '2ffb4f78ae051dab',
   '/js/verbs.js': '5a9030934791bfcd',
   '/js/exam.js': '092bedb31eb8383e',
