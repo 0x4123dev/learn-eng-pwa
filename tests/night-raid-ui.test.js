@@ -57,10 +57,13 @@ suite('farm: app integration',()=>{
     // A RELATIVE url() inside a CSS custom property is resolved against the
     // stylesheet that CONSUMES it, not the page — so `img/night-raid/x.png`
     // became `/css/img/night-raid/x.png`, 404'd, and the patrolling dog was
-    // invisible while every other check looked healthy. Root-absolute only.
-    const m = ui.match(/walk=`([^`]*pet-walk[^`]*)`/);
-    assert.truthy(m, 'the yard pet atlas url must be built in one place');
-    assert.truthy(m[1].startsWith('/img/'), 'the atlas url must be root-absolute, got: ' + m[1]);
+    // invisible while every other check looked healthy. The root-absolute
+    // `/img/…` that fixed it broke under /learn-eng-pwa/ on GitHub Pages the
+    // same way (origin root, 404, paw prints and no dog — v5.1.2). Absolute
+    // from the PAGE, via petAtlasUrl, is the only form right on both hosts.
+    const m = ui.match(/walk=petAtlasUrl\(`(pet-walk[^`]*)`\)/);
+    assert.truthy(m, 'the yard pet atlas url must go through petAtlasUrl');
+    assert.falsy(/[`'"]\/?img\/night-raid\/pet-(walk|actions)/.test(ui), 'a pet atlas must never be spelled as a page- or root-relative path');
     assert.truthy(css.includes('var(--nr-pet-walk)'), 'the sprite still reads the walk variable');
     assert.truthy(css.includes('var(--nr-pet-actions)'), 'the sprite still reads the action variable');
     for (const atlas of ['pet-walk-small-v1.webp', 'pet-walk-large-v1.webp','pet-actions-small-v2.webp','pet-actions-large-v2.webp']) {

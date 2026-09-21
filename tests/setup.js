@@ -54,6 +54,7 @@ function buildSandbox(opts) {
         return el;
     }
     const documentMock = {
+        baseURI: 'http://localhost/learn-eng-pwa/',
         getElementById: (id) => {
             if (!elementsById[id]) elementsById[id] = makeStubElement(id);
             return elementsById[id];
@@ -100,6 +101,10 @@ function buildSandbox(opts) {
         Map: Map,
         Promise: Promise,
         encodeURIComponent: encodeURIComponent,
+        // The app resolves asset URLs from the page (js/night-raid.js
+        // petAtlasUrl); the mock document sits at an origin sub-path so a
+        // test can tell a page-relative URL from an origin-root one.
+        URL: URL,
         // App-level globals that are referenced but not core to the test
         showToast: () => {},
         unlockAchievement: () => {},

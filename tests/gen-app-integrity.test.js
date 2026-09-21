@@ -389,6 +389,44 @@ suite('gen: manifest.json', () => {
         assert.equal(manifest.scope, './');
     });
 
+    test('no app code or stylesheet loads an asset by an origin-root path', () => {
+        // Under /learn-eng-pwa/ on GitHub Pages, '/img/x.webp' asks the ORIGIN
+        // root and 404s — out of the service worker's scope, so the cache
+        // cannot rescue it either. v5.1.2 shipped the farm dog's two sprite
+        // atlases that way: the yard showed paw prints and no dog.
+        const offenders = [];
+        const scan = (dir, re) => fs.readdirSync(path.join(ROOT, dir)).filter(f => re.test(f)).forEach(f => {
+            const src = fs.readFileSync(path.join(ROOT, dir, f), 'utf8');
+            src.split('\n').forEach((line, i) => {
+                if (/^\s*(\/\/|\*)/.test(line)) return; // a comment may quote the bad form
+                if (/(['"`(])\/(img|audio|css|js|fonts)\//.test(line)) offenders.push(`${dir}/${f}:${i + 1}`);
+            });
+        });
+        scan('js', /\.js$/);
+        scan('css', /\.css$/);
+        // sw.js is the one file that MAY hold root-relative keys: it resolves
+        // them against its own BASE (tests/sw-manifest.test.js).
+        assert.deepEqual(offenders, [], `origin-root asset paths: ${offenders.join(', ')}`);
+    });
+
+    test('the farm dog resolves its sprite atlases from the page, not the stylesheet', () => {
+        // The atlas URL travels through a CSS custom property; a relative one
+        // resolves against css/night-raid.css (→ css/img/…), a root-absolute
+        // one against the origin (→ /img/… on github.io). Only a URL resolved
+        // from document.baseURI is right on both hosts.
+        const src = fs.readFileSync(path.join(ROOT, 'js', 'night-raid.js'), 'utf8');
+        assert.truthy(/function petAtlasUrl\(file\)\{[^}]*document\.baseURI[^}]*\}/.test(src), 'petAtlasUrl must build on document.baseURI');
+        // Executed, not just read: the page's directory, query and file name stripped.
+        const fn = src.match(/function petAtlasUrl\(file\)\{[^}]*\}/)[0];
+        const at = (baseURI, file) => new Function('document', 'file', fn + ' return petAtlasUrl(file);')({ baseURI }, file);
+        assert.equal(at('https://0x4123dev.github.io/learn-eng-pwa/', 'pet-walk-small-v1.webp'), 'https://0x4123dev.github.io/learn-eng-pwa/img/night-raid/pet-walk-small-v1.webp');
+        assert.equal(at('https://0x4123dev.github.io/learn-eng-pwa/index.html?nosw=1#farm', 'x.webp'), 'https://0x4123dev.github.io/learn-eng-pwa/img/night-raid/x.webp');
+        assert.equal(at('http://localhost:8000/', 'x.webp'), 'http://localhost:8000/img/night-raid/x.webp');
+        assert.falsy(/`img\/night-raid\/pet-|'img\/night-raid\/pet-/.test(src), 'a pet atlas is referenced by a bare relative path');
+        const usages = (src.match(/petAtlasUrl\(`pet-(walk|actions)-/g) || []).length;
+        assert.equal(usages, 4, `the yard markup and the preloader each name both atlases through petAtlasUrl (got ${usages})`);
+    });
+
     test('display standalone, supports both orientations, lang en', () => {
         assert.equal(manifest.display, 'standalone');
         assert.equal(manifest.orientation, 'any');

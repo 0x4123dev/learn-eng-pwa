@@ -203,11 +203,16 @@ var NightRaid = (() => {
   // the dog's no-walk rectangle.
   function castleFootprint(layout){const clean=NightRaidRules.normalizeLayout(layout),p=clean.castleCell||CASTLE_HOME,G=NightRaidRules.BUILD_GRID,cw=PET_YARD.width/G,ch=PET_YARD.height/G;return{left:PET_YARD.left+p.gx*cw,top:PET_YARD.top+p.gy*ch,width:CASTLE_SIZE*cw,height:CASTLE_SIZE*ch,gx:p.gx,gy:p.gy};}
   function castleMapStyle(layout){const p=castlePosition(layout);return`--nr-castle-x:${p.x};--nr-castle-y:${p.y};`;}
-  // Root-absolute on purpose. This URL is handed to CSS as a custom property,
-  // and a RELATIVE url() inside one is resolved against the stylesheet that
-  // consumes it — css/styles.css — so `img/...` became `/css/img/...` and 404'd,
-  // leaving the yard pet invisible while every other check looked healthy.
-  function yardPetHtml(opts={}){const pet=yardPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.webp`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.webp`,name=opts.showName===false?'':`<span>${esc(pet.name)}</span>`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk" data-atlas="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div><b class="nr-pet-say" data-nr-pet-say hidden></b>${name}</div></div>`;}
+  // Absolute on purpose, but resolved from the PAGE, never written as `/img/…`.
+  // This URL is handed to CSS as a custom property, and a RELATIVE url()
+  // inside one is resolved against the stylesheet that consumes it —
+  // css/night-raid.css — so `img/...` became `/css/img/...` and 404'd. The
+  // root-absolute form that replaced it broke the other way: under
+  // /learn-eng-pwa/ on GitHub Pages it asked the ORIGIN root, outside the
+  // service worker's scope, and the yard showed paw prints and no dog (v5.1.2).
+  // (String work rather than new URL(): the test sandboxes have no URL class.)
+  function petAtlasUrl(file){const base=String(document.baseURI||'').replace(/[?#].*$/,'').replace(/[^/]*$/,'');return base+'img/night-raid/'+file;}
+  function yardPetHtml(opts={}){const pet=yardPetDescriptor(),walk=petAtlasUrl(`pet-walk-${pet.atlas}-v1.webp`),actions=petAtlasUrl(`pet-actions-${pet.atlas}-v2.webp`),name=opts.showName===false?'':`<span>${esc(pet.name)}</span>`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk" data-atlas="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div><b class="nr-pet-say" data-nr-pet-say hidden></b>${name}</div></div>`;}
   // Đội hình duyệt binh nằm trong NightRaidRules.armySlots: khoảng cách phải
   // lớn hơn bề ngang con lính, nếu không 4 lính chồng lên nhau thành 2.
   const armySlots=count=>NightRaidRules.armySlots(count);
@@ -216,7 +221,7 @@ var NightRaid = (() => {
   const petAtlasPreloads=new Map();
   function preloadPetAtlases(sprite){
     if(!sprite||typeof Image==='undefined')return;
-    const pet=yardPetDescriptor(),urls={walk:`/img/night-raid/pet-walk-${pet.atlas}-v1.webp`,actions:`/img/night-raid/pet-actions-${pet.atlas}-v2.webp`};
+    const pet=yardPetDescriptor(),urls={walk:petAtlasUrl(`pet-walk-${pet.atlas}-v1.webp`),actions:petAtlasUrl(`pet-actions-${pet.atlas}-v2.webp`)};
     for(const [kind,url] of Object.entries(urls)){
       let image=petAtlasPreloads.get(url);
       if(!image){image=new Image();image.decoding='async';image.src=url;petAtlasPreloads.set(url,image);}
