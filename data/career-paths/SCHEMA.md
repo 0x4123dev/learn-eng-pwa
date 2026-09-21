@@ -1,6 +1,8 @@
 # data/career-paths — Career Paths: Public Relations (Express Publishing) word bank
 
-One file per book unit: `pr<book>-u<NN>.json`, book 1..3, NN 01..15.
+One file per book unit: `pr<book>-u<NN>.json`, book 1..3, NN 01..15. The app
+merges them into SEVEN practice units per book (1-2, 3-4, …, 11-12, 13-15) at
+build time; the files stay one per book unit.
 
 ```json
 {

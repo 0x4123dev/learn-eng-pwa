@@ -74,17 +74,24 @@ suite('word tab: the bank is the book', () => {
 
     test('each book carries every unit and only the words its files list', () => {
         const banks = { 1: UNIT_WORDS_PR1, 2: UNIT_WORDS_PR2, 3: UNIT_WORDS_PR3 };
+        const { practiceUnitOf, PRACTICE_UNITS } = require(path.join(ROOT, 'scripts', 'build-word-data.js'));
+        const { UNIT_PR_BOOKS } = wordData;
+        assert.equal(PRACTICE_UNITS, 7);
+        assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(practiceUnitOf), [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7], 'book units merge 1-2 … 11-12, 13-15');
         for (const b of [1, 2, 3]) {
             const units = new Set(banks[b].map(w => w.unit));
-            assert.equal(units.size, 15, 'book ' + b + ' has 15 units in the bank');
-            assert.equal(Object.keys(UNIT_PR_TITLES['pr' + b]).length, 15, 'book ' + b + ' has 15 titles');
+            assert.equal(units.size, 7, 'book ' + b + ' has 7 practice units in the bank');
+            assert.equal(Object.keys(UNIT_PR_TITLES['pr' + b]).length, 7, 'book ' + b + ' has 7 titles');
+            assert.deepEqual(UNIT_PR_BOOKS['pr' + b], { 1: [1, 2], 2: [3, 4], 3: [5, 6], 4: [7, 8], 5: [9, 10], 6: [11, 12], 7: [13, 14, 15] }, 'book ' + b + ' unit map');
             let expected = 0;
             for (let u = 1; u <= 15; u++) {
                 const doc = JSON.parse(fs.readFileSync(path.join(DATA_DIR, `pr${b}-u${String(u).padStart(2, '0')}.json`), 'utf8'));
                 expected += doc.words.length;
-                assert.equal(UNIT_PR_TITLES['pr' + b][u], doc.title, `book ${b} unit ${u} title`);
-                const inBank = banks[b].filter(w => w.unit === u).map(w => w.en);
-                assert.deepEqual(inBank, doc.words.map(w => w.en), `book ${b} unit ${u} words, in order`);
+                const pu = practiceUnitOf(u);
+                assert.truthy(UNIT_PR_TITLES['pr' + b][pu].split(' · ').includes(doc.title), `book ${b} unit ${u} title is part of practice unit ${pu}'s`);
+                const inBank = banks[b].filter(w => w.bookUnit === u);
+                assert.deepEqual(inBank.map(w => w.en), doc.words.map(w => w.en), `book ${b} unit ${u} words, in order`);
+                assert.truthy(inBank.every(w => w.unit === pu), `book ${b} unit ${u} words are keyed to practice unit ${pu}`);
             }
             assert.equal(banks[b].length, expected, 'book ' + b + ' word count');
             assert.truthy(banks[b].every(w => w.book === b), 'every word of book ' + b + ' says so');
@@ -130,7 +137,7 @@ suite('word tab: one host, one engine', () => {
         assert.equal(x.UNIT_HOSTS.word.screen, 'wordScreen');
         assert.equal(x.UNIT_HOSTS.word.retryKey, 'word');
         for (const s of ['pr1', 'pr2', 'pr3']) {
-            assert.equal(x.unitsList(s).length, 15, s + ' lists 15 units');
+            assert.equal(x.unitsList(s).length, 7, s + ' lists 7 practice units');
             assert.truthy(x.unitsBank(s).length > 100, s + ' bank loaded');
             assert.truthy(x.unitsBank(s).every(w => w.set === s), s + ' words are tagged with their set');
         }
@@ -167,7 +174,8 @@ suite('word tab: one host, one engine', () => {
         assert.equal(x.unitCurrentHost(), 'word');
         const bar = html('wordUnitsBar');
         assert.truthy(bar.includes('g4-grid'), 'unit cards drawn on #wordUnitsBar');
-        assert.equal((bar.match(/startUnitPractice\('pr1-\d+'\)/g) || []).length, 15, 'fifteen unit cards for Book 1');
+        assert.equal((bar.match(/startUnitPractice\('pr1-\d+'\)/g) || []).length, 7, 'seven unit cards for Book 1');
+        assert.truthy(bar.includes('Bài 1-2') && bar.includes('Bài 13-15'), 'each card says which book units it merges');
         assert.truthy(bar.includes("startUnitPractice('pr1-mix')"), 'and a Mix card');
         assert.equal(x.renderUnitSetTabsHTML(), '', 'the bottom bar chooses the book: no set strip');
         assert.truthy(!bar.includes('switchUnitSet('), 'no set tab on the Word screen');
@@ -176,7 +184,7 @@ suite('word tab: one host, one engine', () => {
         // The header names the open book.
         x.switchUnitSet('pr2');
         x.renderWordHome();
-        assert.equal((html('wordUnitsBar').match(/startUnitPractice\('pr2-\d+'\)/g) || []).length, 15, 'fifteen unit cards for Book 2');
+        assert.equal((html('wordUnitsBar').match(/startUnitPractice\('pr2-\d+'\)/g) || []).length, 7, 'seven unit cards for Book 2');
     });
 
     test('a Book practice belongs to the Word screen and lands in the Word history', () => {

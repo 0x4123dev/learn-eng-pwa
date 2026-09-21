@@ -416,15 +416,15 @@ suite('admin: the Daily task tab', () => {
 
     test('daily-task assignment copy is clear and offers every Book unit plus Mix', () => {
         const catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
-        // Three Books, 15 units and a Mix each: 48 assignable tasks, all of
+        // Three Books, 7 practice units and a Mix each: 24 assignable tasks, all of
         // them 'lesson' activities matched on the exact title js/auth.js
         // uploads for a finished unit practice.
         assert.deepEqual(catalog.groups().map(g => g.id), ['word-pr1', 'word-pr2', 'word-pr3']);
         for (const set of ['pr1', 'pr2', 'pr3']) {
             const book = catalog.entries('word-' + set);
-            assert.equal(book.length, 16, set + ' should offer 15 units + Mix');
+            assert.equal(book.length, 8, set + ' should offer 7 units + Mix');
             assert.deepEqual(book.map(e => e.key),
-                [...Array(15).keys()].map(i => `word:${set}-${i + 1}`).concat([`word:${set}-mix`]),
+                [...Array(7).keys()].map(i => `word:${set}-${i + 1}`).concat([`word:${set}-mix`]),
                 set + ': units in order, Mix last');
             for (const e of book) {
                 assert.equal(e.activityType, 'lesson', e.key);
@@ -432,7 +432,7 @@ suite('admin: the Daily task tab', () => {
                 assert.equal(e.go.screen, 'wordScreen', e.key);
             }
         }
-        assert.truthy(catalog.get('word:pr2-7').label.includes('Entertainment and Sports'),
+        assert.truthy(catalog.get('word:pr2-7').label.includes('New Media · Appearances · Speeches'),
             'unit titles come from the Book, so a parent can tell Unit 7 of Book 2 from Unit 7 of Book 1');
         assert.deepEqual(catalog.get('word:pr3-mix').go, {
             screen: 'wordScreen', calls: [['switchUnitSet', 'pr3'], ['startUnitPractice', 'pr3-mix']],

@@ -26,24 +26,34 @@ var DailyTaskCatalog = (function () {
 
   // The three Books: id → { group, name, unit numbers, per-unit titles }.
   const SETS = [
-    // Titles mirror data/career-paths/*.json — the bank itself is lazy
-    // (js/word-data.js) and this catalog is built at startup, so they are
-    // repeated here; tests/daily-task-catalog.test.js keeps them in step.
-    { set: 'pr1', group: 'word-pr1', name: 'Book 1', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
-      1: 'The Role of Public Relations', 2: 'Departments', 3: 'Services', 4: 'Marketing and PR',
-      5: 'Spreading Information', 6: 'Communication', 7: 'Persuasion', 8: 'Attracting Clients',
-      9: 'Conducting Research', 10: 'Types of Research', 11: 'Conducting a Survey',
-      12: 'Evaluating Results 1', 13: 'Evaluating Results 2', 14: 'The Budget', 15: 'Describing Change' } },
-    { set: 'pr2', group: 'word-pr2', name: 'Book 2', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
-      1: 'Skills of a Public Relations Professional', 2: 'Strategic Planning', 3: 'Tactics', 4: 'Corporations',
-      5: 'Politics and Government', 6: 'Education', 7: 'Entertainment and Sports', 8: 'Nonprofit',
-      9: 'Global Public Relations', 10: 'Releases 1', 11: 'Releases 2', 12: 'Traditional Media',
-      13: 'New Media', 14: 'Appearances', 15: 'Speeches' } },
-    { set: 'pr3', group: 'word-pr3', name: 'Book 3', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], titles: {
-      1: 'Influencing Public Opinion', 2: 'Reaching a Diverse Audience', 3: 'Issues Management', 4: 'Reputation Management',
-      5: 'Conflict Management', 6: 'Crisis Management', 7: 'Legal Matters 1', 8: 'Legal Matters 2',
-      9: 'Legal Matters 3', 10: 'Ethics 1', 11: 'Ethics 2', 12: 'Challenges in Public Relations',
-      13: 'PR in the Digital Age', 14: 'Education', 15: 'Careers' } },
+    // Titles mirror js/word-data.js UNIT_PR_TITLES (the bank itself is lazy
+    // and this catalog is built at startup, so they are repeated here);
+    // tests/daily-task-catalog.test.js keeps them in step. Seven practice
+    // units per book: the book's 15 merged 1-2, 3-4, …, 13-15.
+    { set: 'pr1', group: 'word-pr1', name: 'Book 1', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7], titles: {
+      1: 'The Role of Public Relations · Departments',
+      2: 'Services · Marketing and PR',
+      3: 'Spreading Information · Communication',
+      4: 'Persuasion · Attracting Clients',
+      5: 'Conducting Research · Types of Research',
+      6: 'Conducting a Survey · Evaluating Results 1',
+      7: 'Evaluating Results 2 · The Budget · Describing Change' } },
+    { set: 'pr2', group: 'word-pr2', name: 'Book 2', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7], titles: {
+      1: 'Skills of a Public Relations Professional · Strategic Planning',
+      2: 'Tactics · Corporations',
+      3: 'Politics and Government · Education',
+      4: 'Entertainment and Sports · Nonprofit',
+      5: 'Global Public Relations · Releases 1',
+      6: 'Releases 2 · Traditional Media',
+      7: 'New Media · Appearances · Speeches' } },
+    { set: 'pr3', group: 'word-pr3', name: 'Book 3', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7], titles: {
+      1: 'Influencing Public Opinion · Reaching a Diverse Audience',
+      2: 'Issues Management · Reputation Management',
+      3: 'Conflict Management · Crisis Management',
+      4: 'Legal Matters 1 · Legal Matters 2',
+      5: 'Legal Matters 3 · Ethics 1',
+      6: 'Ethics 2 · Challenges in Public Relations',
+      7: 'PR in the Digital Age · Education · Careers' } },
   ];
 
   function entry(key, group, label, activityType, match, screen, calls, size, baseKey, lazyGroup) {

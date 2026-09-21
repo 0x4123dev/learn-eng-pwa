@@ -101,7 +101,7 @@ suite('daily task core: day window and task spec', () => {
     assert.equal(s.activityType, 'lesson');
     assert.equal(s.label, 'Book 1 · 🎲 Mix');
     assert.deepEqual(JSON.parse(s.matchJson), { titleExact: 'Unit pr1-mix words practice' });
-    assert.equal(core().taskSpec('word:pr2-7').label, 'Book 2 · Unit 7 · Entertainment and Sports');
+    assert.equal(core().taskSpec('word:pr2-7').label, 'Book 2 · Unit 7 · New Media · Appearances · Speeches');
     assert.equal(core().taskSpec('bogus'), null);
     for (const gone of ['phrases', 'collocation', 'units:hk1-mix', 'grammar:unit12', 'math-exam:any-hk1', 'ptnk:any', 'reading:any']) {
       assert.equal(core().taskSpec(gone), null, gone + ' was cut with its menu');
@@ -523,12 +523,12 @@ suite('daily task: admin API', () => {
     assert.equal(dup.status, 409, 'same active kind twice');
   });
 
-  test('every one of the 48 catalog keys is assignable', async () => {
+  test('every one of the 24 catalog keys is assignable', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
     const keys = Catalog.all().map(e => e.key);
-    assert.equal(keys.length, 48);
+    assert.equal(keys.length, 24);
     // MAX_ACTIVE_TASKS caps one learner at 10, so spread them over learners.
     let kid = null, n = 0;
     for (const kind of keys) {
@@ -625,18 +625,18 @@ suite('daily task: admin API', () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
-    const kinds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(u => 'word:pr1-' + u);
+    const kinds = [1, 2, 3, 4, 5, 6, 7].map(u => 'word:pr1-' + u).concat([1, 2, 3].map(u => 'word:pr2-' + u));
     let lastId;
     for (const kind of kinds) {
       const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind, target: 5 } });
       assert.equal(r.status, 200, kind);
       lastId = r.data.task.id;
     }
-    const eleventh = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-11', target: 5 } });
+    const eleventh = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr2-4', target: 5 } });
     assert.equal(eleventh.status, 400);
     assert.equal(eleventh.data.code, 'too_many');
     await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + lastId, method: 'DELETE', token: admin.token });
-    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-11', target: 5 } });
+    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr2-4', target: 5 } });
     assert.equal(again.status, 200, 'freeing a slot lets the next create through');
   });
 

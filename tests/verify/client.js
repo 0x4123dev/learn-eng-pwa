@@ -473,7 +473,7 @@ function screenPlaybook() {
       },
     },
     wordScreen: {
-      title: 'Book 1: 15 thẻ Unit + Mix, bộ từ Career Paths đã tải, tiêu đề đúng cuốn',
+      title: 'Book 1: 7 thẻ Unit (gộp 15 bài) + Mix, bộ từ Career Paths đã tải, tiêu đề đúng cuốn',
       open: async (h) => { h.sandbox.openBook('pr1'); await settle(); },
       prove: (h, el) => {
         const bank = h.peek('UNIT_WORDS_PR1');
@@ -481,7 +481,8 @@ function screenPlaybook() {
         const bar = h.el('wordUnitsBar');
         must(bar && bar.innerHTML.trim().length > 0, 'the Word cards are drawn on the Word screen');
         const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
-        mustEqual(cards.length, 15, 'one card per unit of Book 1');
+        mustEqual(cards.length, 7, 'one card per practice unit of Book 1 (the book\'s 15 merged)');
+        must(squash(bar.textContent).includes('Bài 13-15'), 'the last card says it merges book units 13-15');
         must(bar.querySelectorAll('.g4-mix-card').length === 1, 'and a Mix card');
         mustEqual(bar.querySelectorAll('.g4-set-tabs .grammar-subtab').length, 0, 'no set strip: the bottom bar picks the book');
         must(squash(h.el('wordTitle').textContent).includes('Book 1'), 'the header names the open book');
@@ -491,11 +492,11 @@ function screenPlaybook() {
         // The other two buttons swap the book on the same screen.
         h.sandbox.openBook('pr3');
         must(squash(h.el('wordTitle').textContent).includes('Book 3'), 'Book 3 button re-titles the screen');
-        mustEqual(h.el('wordUnitsBar').querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card')).length, 15, 'and draws Book 3\'s 15 units');
+        mustEqual(h.el('wordUnitsBar').querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card')).length, 7, 'and draws Book 3\'s 7 units');
         const active = h.el('bottomNav').querySelectorAll('.nav-item.active').map((b) => b.dataset.navKey);
         mustEqual(active.join(','), 'book3', 'the bottom bar highlights Book 3');
         h.sandbox.openBook('pr1');
-        return '15 unit cards + Mix per book, header and nav follow the button';
+        return '7 unit cards + Mix per book, header and nav follow the button';
       },
     },
     profileScreen: {

@@ -4,7 +4,14 @@
 //   node scripts/build-word-data.js
 //   node scripts/build-word-data.js --out /tmp/word-data.js   (write elsewhere: the test's stale check)
 //
-//   data/career-paths/pr<book>-u<NN>.json   one file per book unit, 3 × 15
+//   data/career-paths/pr<book>-u<NN>.json   one file per BOOK unit, 3 × 15
+//
+// The app shows each book as SEVEN practice units: the book's fifteen are
+// merged two-by-two (1-2, 3-4, … 11-12) and the last three together
+// (13-15), the way the Grade 4 sets once merged their textbook units. Each
+// word keeps its book unit (`bookUnit`) so the card can say which pages it
+// covers ("Bài 3-4"); `unit` is the practice unit the app keys everything
+// on (history, mastery, owed words, daily tasks: 'pr2-4').
 //
 // The Word tab's bank. Each unit file is validated (scripts/validate-word-data.js)
 // before anything is written; a failing file fails the build, and so does a
@@ -22,24 +29,31 @@ const DIR = path.join(ROOT, 'data', 'career-paths');
 const DEFAULT_OUT = path.join(ROOT, 'js', 'word-data.js');
 const BOOKS = [1, 2, 3];
 const UNITS_PER_BOOK = 15;
+const PRACTICE_UNITS = 7;
+// Book unit → practice unit: 1-2 → 1, 3-4 → 2, …, 11-12 → 6, 13-15 → 7.
+function practiceUnitOf(bookUnit) { return Math.min(PRACTICE_UNITS, Math.ceil(bookUnit / 2)); }
 
 function build(outFile) {
   const OUT = outFile || DEFAULT_OUT;
   const problems = [];
   const sets = {};
-  const titles = {};
+  const titles = {};   // practice unit → 'Title A · Title B'
+  const books = {};    // practice unit → [book units]
   for (const book of BOOKS) {
     const set = 'pr' + book;
     sets[set] = [];
     titles[set] = {};
-    for (let unit = 1; unit <= UNITS_PER_BOOK; unit++) {
-      const file = path.join(DIR, `pr${book}-u${String(unit).padStart(2, '0')}.json`);
+    books[set] = {};
+    for (let bookUnit = 1; bookUnit <= UNITS_PER_BOOK; bookUnit++) {
+      const file = path.join(DIR, `pr${book}-u${String(bookUnit).padStart(2, '0')}.json`);
       if (!fs.existsSync(file)) { problems.push(`${path.relative(ROOT, file)}: missing`); continue; }
       const bad = validateFile(file);
       if (bad.length) { problems.push(...bad.map(m => `${path.relative(ROOT, file)}: ${m}`)); continue; }
       const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
-      titles[set][unit] = doc.title;
-      for (const w of doc.words) sets[set].push({ unit, book, en: w.en, vi: w.vi, emoji: w.emoji, ex: w.ex, exVi: w.exVi });
+      const unit = practiceUnitOf(bookUnit);
+      titles[set][unit] = titles[set][unit] ? titles[set][unit] + ' · ' + doc.title : doc.title;
+      (books[set][unit] = books[set][unit] || []).push(bookUnit);
+      for (const w of doc.words) sets[set].push({ unit, book, bookUnit, en: w.en, vi: w.vi, emoji: w.emoji, ex: w.ex, exVi: w.exVi });
     }
   }
   if (problems.length) {
@@ -56,8 +70,9 @@ function build(outFile) {
 // edit by hand; edit a pr<book>-u<NN>.json file and rebuild.
 //
 // Each book's fifteen units, each carrying EXACTLY the Vocabulary column of
-// the book's Scope and Sequence page (${total} words in all). Same shape as
-// the Post-HK bank (js/units-posthk-data.js): { unit, book, en, vi, emoji,
+// the book's Scope and Sequence page (${total} words in all), merged into
+// SEVEN practice units per book (1-2, 3-4, …, 13-15). Shape: { unit, book,
+// bookUnit, en, vi, emoji,
 // ex, exVi } — emoji is the "picture", vi the Vietnamese meaning in the PR
 // sense the book's Glossary gives, ex a sentence that uses the word (shown
 // with the word blanked while answering) and exVi its translation (shown
@@ -69,7 +84,15 @@ function build(outFile) {
   for (const book of BOOKS) {
     const set = 'pr' + book;
     out += `  ${set}: {\n`;
-    for (let unit = 1; unit <= UNITS_PER_BOOK; unit++) out += `    ${unit}: ${lit(titles[set][unit])},\n`;
+    for (let unit = 1; unit <= PRACTICE_UNITS; unit++) out += `    ${unit}: ${lit(titles[set][unit])},\n`;
+    out += `  },\n`;
+  }
+  out += `};\n\n`;
+  out += `// Which of the book's own units each practice unit covers.\nconst UNIT_PR_BOOKS = {\n`;
+  for (const book of BOOKS) {
+    const set = 'pr' + book;
+    out += `  ${set}: {\n`;
+    for (let unit = 1; unit <= PRACTICE_UNITS; unit++) out += `    ${unit}: ${lit(books[set][unit])},\n`;
     out += `  },\n`;
   }
   out += `};\n\n`;
@@ -78,13 +101,13 @@ function build(outFile) {
     out += `// ══ Book ${book} — ${sets[set].length} words ══\nconst UNIT_WORDS_PR${book} = [\n`;
     let last = 0;
     for (const w of sets[set]) {
-      if (w.unit !== last) { out += `  // Unit ${w.unit}: ${titles[set][w.unit]}\n`; last = w.unit; }
-      out += `  { unit: ${w.unit}, book: ${book}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, emoji: ${lit(w.emoji)},\n    ex: ${lit(w.ex)}, exVi: ${lit(w.exVi)} },\n`;
+      if (w.bookUnit !== last) { out += `  // Book unit ${w.bookUnit} → practice unit ${w.unit}\n`; last = w.bookUnit; }
+      out += `  { unit: ${w.unit}, book: ${book}, bookUnit: ${w.bookUnit}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, emoji: ${lit(w.emoji)},\n    ex: ${lit(w.ex)}, exVi: ${lit(w.exVi)} },\n`;
     }
     out += `];\n\n`;
   }
   out += `if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { UNIT_PR_TITLES, UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3 };
+  module.exports = { UNIT_PR_TITLES, UNIT_PR_BOOKS, UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3 };
 }
 `;
   fs.writeFileSync(OUT, out);
@@ -96,4 +119,4 @@ if (require.main === module) {
   const i = process.argv.indexOf('--out');
   process.exit(build(i > 0 ? path.resolve(process.argv[i + 1]) : undefined));
 }
-module.exports = { build };
+module.exports = { build, practiceUnitOf, PRACTICE_UNITS, UNITS_PER_BOOK };

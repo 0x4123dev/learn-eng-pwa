@@ -44,11 +44,11 @@ suite('createDefaultUserData: shape', () => {
 });
 
 suite('Books: integration with the word bank', () => {
-    test('every Book has 15 units and every unit has words', () => {
+    test('every Book has 7 practice units and every unit has words', () => {
         const env = loadWithBank();
         for (const s of env.UNIT_SETS) {
             const units = env.unitsList(s.id);
-            assert.deepEqual(units, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], s.id);
+            assert.deepEqual(units, [1, 2, 3, 4, 5, 6, 7], s.id);
             for (const u of units) {
                 const n = env.unitsBank(s.id).filter(w => w.unit === u).length;
                 assert.truthy(n >= 5, `${s.id} unit ${u} has only ${n} words`);

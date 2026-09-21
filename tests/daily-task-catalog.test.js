@@ -1,6 +1,6 @@
 // The catalog is the single source of truth shared by admin.html (dropdowns),
 // js/daily-task.js (Vào học deep links) and functions/api (match rules).
-// Since the 2026-09 cut it holds exactly the 48 Book tasks: one per Career
+// Since the 2026-09 cut it holds exactly the 24 Book tasks: one per Career
 // Paths unit and one Mix per Book.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
@@ -12,7 +12,7 @@ const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
 suite('daily task catalog: shape', () => {
   test('every entry has key, group, label, activityType, match, go and path', () => {
     const all = Catalog.all();
-    assert.equal(all.length, 48, 'the catalog is the 48 Book tasks and nothing else');
+    assert.equal(all.length, 24, 'the catalog is the 24 Book tasks and nothing else');
     for (const e of all) {
       assert.truthy(/^[a-z0-9:-]+$/.test(e.key), 'bad key ' + e.key);
       assert.truthy(Catalog.groups().some(g => g.id === e.group), e.key + ': unknown group ' + e.group);
@@ -40,7 +40,7 @@ suite('daily task catalog: shape', () => {
     assert.deepEqual(Catalog.groups().map(g => g.id), ['word-pr1', 'word-pr2', 'word-pr3']);
     for (const g of Catalog.groups()) {
       const list = Catalog.entries(g.id);
-      assert.equal(list.length, 16, g.id);
+      assert.equal(list.length, 8, g.id);
       assert.truthy(list.every(e => e.group === g.id));
       assert.truthy(/^Book [123] · /.test(g.label), g.label);
     }
@@ -83,16 +83,16 @@ suite('daily task catalog: shape', () => {
   });
 });
 
-suite('daily task catalog: the 48 Book tasks', () => {
+suite('daily task catalog: the 24 Book tasks', () => {
   test('one per unit and one Mix per Book, deep-linked onto wordScreen', () => {
     // js/units.js serves the Word tab: the deep link switches the Book, then
     // starts the unit key. The set lives on wordScreen.
     const keys = [];
     for (const set of ['pr1', 'pr2', 'pr3']) {
-      for (let u = 1; u <= 15; u++) keys.push([set, set + '-' + u]);
+      for (let u = 1; u <= 7; u++) keys.push([set, set + '-' + u]);
       keys.push([set, set + '-mix']);
     }
-    assert.equal(keys.length, 48);
+    assert.equal(keys.length, 24);
     for (const [set, unitKey] of keys) {
       const e = Catalog.get('word:' + unitKey);
       assert.truthy(e, 'word:' + unitKey + ' is missing from the catalog');
@@ -102,7 +102,7 @@ suite('daily task catalog: the 48 Book tasks', () => {
       assert.deepEqual(e.path, ['Book ' + set.slice(-1)], unitKey + ': path');
     }
     assert.deepEqual(Catalog.entries('word-pr1').map(e => e.key),
-      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(u => 'word:pr1-' + u).concat(['word:pr1-mix']));
+      [1, 2, 3, 4, 5, 6, 7].map(u => 'word:pr1-' + u).concat(['word:pr1-mix']));
   });
 
   test('match rules are the exact title js/auth.js uploads for a unitsHistory row', () => {
@@ -129,10 +129,10 @@ suite('daily task catalog: the 48 Book tasks', () => {
     for (const set of ['pr1', 'pr2', 'pr3']) {
       const book = set.slice(-1);
       assert.deepEqual(Object.keys(UNIT_PR_TITLES[set]).map(Number).sort((a, b) => a - b),
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], set + ': fifteen titles in the bank');
-      for (let u = 1; u <= 15; u++) {
+        [1, 2, 3, 4, 5, 6, 7], set + ': seven practice-unit titles in the bank');
+      for (let u = 1; u <= 7; u++) {
         const title = UNIT_PR_TITLES[set][u];
-        assert.truthy(title && title.trim() === title && !title.includes(' · '), set + '-' + u + ': a plain title in the bank');
+        assert.truthy(title && title.trim() === title && title.split(' · ').length === (u === 7 ? 3 : 2), set + '-' + u + ': the merged book units\' titles, joined by · ');
         const e = Catalog.get('word:' + set + '-' + u);
         assert.equal(e.label, 'Book ' + book + ' · Unit ' + u + ' · ' + title,
           e.key + ': the catalog title drifted from js/word-data.js');

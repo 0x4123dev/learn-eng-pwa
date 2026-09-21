@@ -10,14 +10,15 @@ global.UNIT_WORDS_PR1 = bank.UNIT_WORDS_PR1;
 global.UNIT_WORDS_PR2 = bank.UNIT_WORDS_PR2;
 global.UNIT_WORDS_PR3 = bank.UNIT_WORDS_PR3;
 global.UNIT_PR_TITLES = bank.UNIT_PR_TITLES;
+global.UNIT_PR_BOOKS = bank.UNIT_PR_BOOKS;
 const units = require(path.join(__dirname, '..', 'js', 'units.js'));
 const SETS = ['pr1', 'pr2', 'pr3'];
 const UNIT_WORDS = units.unitsAllWords();
 
 suite('units: word bank', () => {
-    test('every book covers units 1..15 with a non-trivial word list', () => {
+    test('every book covers practice units 1..7 with a non-trivial word list', () => {
         for (const set of SETS) {
-            assert.deepEqual(units.unitsList(set), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], set);
+            assert.deepEqual(units.unitsList(set), [1, 2, 3, 4, 5, 6, 7], set);
             assert.truthy(units.unitsBank(set).length >= 140, `${set}: only ${units.unitsBank(set).length} words`);
         }
         assert.equal(UNIT_WORDS.length, 527, 'the Vocabulary columns of the three Scope and Sequence pages');
@@ -52,7 +53,9 @@ suite('units: word bank', () => {
                 assert.truthy(units.unitTitle(set, u), `${set} unit ${u} has no title`);
             }
         }
-        assert.equal(units.unitTitle('pr1', 1), 'The Role of Public Relations');
+        assert.equal(units.unitTitle('pr1', 1), 'The Role of Public Relations · Departments', 'a practice unit names both merged book units');
+        assert.equal(units.unitBooksLabel('pr1', 1), 'Bài 1-2');
+        assert.equal(units.unitBooksLabel('pr3', 7), 'Bài 13-15');
     });
 });
 

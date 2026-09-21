@@ -103,7 +103,7 @@ suite('drift: Book units', () => {
         global.UNIT_WORDS_PR3 = UNIT_WORDS_PR3;
         const units = require(path.join(ROOT, 'js', 'units.js'));
 
-        const sizes = { pr1: 15, pr2: 15, pr3: 15 };
+        const sizes = { pr1: 7, pr2: 7, pr3: 7 };
         for (const [set, want] of Object.entries(sizes)) {
             const list = units.unitsList(set);
             assert.truthy(list.length >= want, `${set}: only ${list.length} units`);

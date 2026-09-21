@@ -7,9 +7,10 @@
 //
 // Three word sets, one per book, each with its own units and its own Mix:
 //   pr1, pr2, pr3 — Career Paths: Public Relations, Book 1/2/3 (Express
-//         Publishing), 15 units each, exactly the Vocabulary column of each
-//         book's Scope and Sequence page (js/word-data.js, generated from
-//         data/career-paths/ by scripts/build-word-data.js; lazy-loaded)
+//         Publishing). Each book's 15 units, exactly the Vocabulary column
+//         of its Scope and Sequence page, merged two-by-two into SEVEN
+//         practice units (1-2 … 11-12, 13-15) — js/word-data.js, generated
+//         from data/career-paths/ by scripts/build-word-data.js; lazy-loaded
 //
 // A unit is addressed by a KEY: 'pr2-7', 'pr1-mix'. Every history row, best
 // score, mastery count and owed word is keyed that way.
@@ -124,9 +125,18 @@ function unitTitle(set, unit) {
   if (/^pr[123]$/.test(set) && typeof UNIT_PR_TITLES !== 'undefined') return (UNIT_PR_TITLES[set] || {})[unit] || '';
   return '';
 }
-// A Book unit IS a book unit — the card needs no "Bài n" pointer.
-function unitBooks() { return null; }
-function unitBooksLabel() { return ''; }
+// The textbook units a practice unit merges (js/word-data.js UNIT_PR_BOOKS),
+// so the card can say "Bài 3-4" — the number alone would not point anywhere
+// in the book.
+function unitBooks(set, unit) {
+  const map = (typeof UNIT_PR_BOOKS !== 'undefined') ? UNIT_PR_BOOKS[set] : null;
+  return (map && map[unit]) || null;
+}
+function unitBooksLabel(set, unit) {
+  const b = unitBooks(set, unit);
+  if (!b || !b.length) return '';
+  return 'Bài ' + (b.length > 1 ? b[0] + '-' + b[b.length - 1] : b[0]);
+}
 
 // ---- unit keys ----
 // 'pr1-4' → { set:'pr1', unit:4 }; 'pr3-mix' → { set:'pr3', unit:'mix' }.

@@ -40,14 +40,14 @@ suite('daily-task catalog: the tree', () => {
     for (const e of Catalog.all()) assert.truthy(seen.has(e.key), e.key + ' is unreachable in the tree');
   });
 
-  test('each Book holds its 15 units and Mix directly — no sub-menus', () => {
+  test('each Book holds its 7 units and Mix directly — no sub-menus', () => {
     // The admin page draws one <details> per Book with the tasks inside it.
     // A deeper level would render, but it would be a menu with one entry.
     for (const book of tree.children) {
       assert.deepEqual(book.children, [], book.label + ' has sub-menus');
-      assert.equal(book.entries.length, 16, book.label + ' should list 15 units + Mix');
-      assert.truthy(/🎲 Mix$/.test(book.entries[15].label), book.label + ': Mix comes last');
-      for (let i = 0; i < 15; i++) {
+      assert.equal(book.entries.length, 8, book.label + ' should list 7 units + Mix');
+      assert.truthy(/🎲 Mix$/.test(book.entries[7].label), book.label + ': Mix comes last');
+      for (let i = 0; i < 7; i++) {
         assert.truthy(book.entries[i].label.includes('Unit ' + (i + 1) + ' ·'),
           book.label + ': entry ' + i + ' is ' + book.entries[i].label);
       }
@@ -91,7 +91,7 @@ suite('admin page: the task search, executed', () => {
     const r = search('book 2');
     const g = r.groups.find(x => x.path === 'Book 2');
     assert.truthy(g, 'the Book 2 group is missing: ' + r.groups.map(x => x.path).join(' | '));
-    assert.equal(g.items.length, 16, 'all 15 units and Mix, not a handful');
+    assert.equal(g.items.length, 8, 'all 7 units and Mix, not a handful');
     assert.truthy(keys(r).includes('word:pr2-mix'), 'the Mix must be in the group');
     // Each word is a substring match, so "2" also reaches Unit 2 and Unit 12
     // of the other Books. That is the search's contract (a parent who types
@@ -103,8 +103,8 @@ suite('admin page: the task search, executed', () => {
   });
 
   test('accents are ignored on both sides: "markéting" still finds Marketing and PR', () => {
-    assert.deepEqual(keys(search('markéting')), ['word:pr1-4']);
-    assert.deepEqual(keys(search('MARKETING')), ['word:pr1-4'], 'and case does not matter');
+    assert.deepEqual(keys(search('markéting')), ['word:pr1-2']);
+    assert.deepEqual(keys(search('MARKETING')), ['word:pr1-2'], 'and case does not matter');
   });
 
   test('every word must match somewhere in path or label — "unit 7" is Unit 7 of each Book', () => {
@@ -120,7 +120,7 @@ suite('admin page: the task search, executed', () => {
     const r = search('book');
     assert.equal(r.matched, Catalog.all().length);
     const r3 = search('book 3');
-    assert.equal(keys(r3).filter(k => /^word:pr3-/.test(k)).length, 16, 'all of Book 3');
+    assert.equal(keys(r3).filter(k => /^word:pr3-/.test(k)).length, 8, 'all of Book 3');
     assert.truthy(keys(r3).includes('word:pr3-mix'));
   });
 
