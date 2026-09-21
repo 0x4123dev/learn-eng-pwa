@@ -512,7 +512,9 @@ var NightRaid = (() => {
     const line="I'm hungry… 🍖";
     if(say.textContent!==line)say.textContent=line;
   }
-  function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.38?'bark':roll<.76?'rest':roll<.90?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1700:state.mode==='bark'?3400:state.mode==='rest'?6200:2600);state.frame=0;}
+  // The dog spends most of its time WALKING: a yard where it lies down for six
+  // seconds between two short strolls read as "the dog does not move".
+  function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.35?'bark':roll<.60?'rest':roll<.80?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1200:state.mode==='bark'?2200:state.mode==='rest'?3000:2000);state.frame=0;}
   function petActionFrame(state,now){if(state.mode==='walk'||state.mode==='seek')return state.frame;if(state.mode==='bark')return Math.floor(now/240)%2;if(state.mode==='rest')return 2;if(state.mode==='scratch')return Math.floor(now/260)%2?3:2;return 0;}
   function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek',actionsReady=sprite.dataset.actionsReady==='1';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.dataset.atlas=walking||!actionsReady?'walk':'actions';pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.setProperty('--nr-walk-position',`${state.frame*(100/3)}% ${row*25}%`);sprite.style.setProperty('--nr-action-position',`${frame*(100/3)}% ${row*25}%`);sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
   function startPetPatrol(map){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}map=map||document.querySelector('.screen.active .nr-builder-map');const pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;preloadPetAtlases(sprite);const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
@@ -536,7 +538,7 @@ var NightRaid = (() => {
         placePatrolPet(pet,sprite,state,now);
         return;
       }
-      if(state.casualUntil>now+1e8){state.casualUntil=0;state.mode='walk';state.nextCasual=now+900;}
+      if(state.casualUntil>now+1e8){state.casualUntil=0;state.mode='walk';state.nextCasual=now+4000;}
       // The yard changes while the child builds, so the solid boxes are re-read
       // about once a second rather than frozen when the walk started.
       if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}
@@ -549,14 +551,14 @@ var NightRaid = (() => {
         state.squatUntil=0;
         if(state.errand?.kind==='poop')dropYardPoop(state.errand);
         state.errand=null;state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;
-        state.mode='walk';state.nextCasual=now+1800+Math.random()*1400;
+        state.mode='walk';state.nextCasual=now+4000+Math.random()*3000;
         const a=Math.random()*Math.PI*2;state.vx=Math.cos(a)*3.4;state.vy=Math.sin(a)*1.15;
       }
       // Calm behaviours are intentionally separated by several seconds so
       // the home feels alive without becoming a distracting screensaver.
       if(state.casualUntil){
         if(now<state.casualUntil){placePatrolPet(pet,sprite,state,now);return;}
-        state.casualUntil=0;state.mode='walk';state.nextCasual=now+1800+Math.random()*1400;
+        state.casualUntil=0;state.mode='walk';state.nextCasual=now+4000+Math.random()*3000;
       }
       if(!state.errand&&!state.squatUntil&&now>=state.nextCasual){choosePetIdle(state,now);placePatrolPet(pet,sprite,state,now);return;}
       if(!state.nextErrand)state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;

@@ -411,7 +411,9 @@
    tall — so it reads as the home the rest of the base is arranged around. The
    art is taller than its ground on purpose: it stands on the footprint's bottom
    edge and rises above it. */
-.nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:19%;height:27%;object-fit:contain;object-position:center bottom}
+/* The Crystal Citadel art is portrait (324×450), so the box is taller than
+   the old square keep's; its width IS the footprint, bottom-anchored. */
+.nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:19%;height:34%;object-fit:contain;object-position:center bottom}
 .nr-castle-move-hint{top:calc(var(--nr-castle-y,23.3)*1% + 6px);font-size:10px;padding:4px 8px}
 .nr-builder-map.castle-invalid>.nr-equipped-castle{outline-color:#ff5a52!important;opacity:.66}
 /* One camera, one world surface. The meadow texture is anchored and scaled by

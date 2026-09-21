@@ -163,22 +163,29 @@ suite('farm: app integration',()=>{
   });
   test('the yard pet pauses, barks, rests and scratches with real action sprites',()=>{
     for(const token of ['choosePetIdle','mode===\'bark\'','mode===\'rest\'','mode===\'scratch\'','data-mode="walk"','--nr-pet-actions'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    // Balance, not literals: pacing was the whole personality and it read as a
-    // screensaver. Barking and resting must together outweigh walking, so the
-    // weights are checked as weights and stay free to be re-tuned.
+    // Balance, not literals. Pacing alone read as a screensaver, so the dog
+    // barks, rests and scratches between strolls — but the strolls have to
+    // dominate: with six-second rests between two-second walks the user saw
+    // "a dog that does not move" (2026-09-21). Walk stretches are longer than
+    // any pause, and a rest is short.
     const roll=ui.match(/roll<\.(\d+)\?'bark':roll<\.(\d+)\?'rest'/);
     assert.truthy(roll,'bark and rest must be the first two draws');
     const bark=+roll[1]/100, rest=+roll[2]/100 - +roll[1]/100;
-    assert.truthy(bark+rest>=.7,'barking and resting should be most of what it does, got '+((bark+rest)*100)+'%');
+    assert.truthy(bark+rest>=.5&&bark+rest<=.7,'barking and resting are common but not the whole personality, got '+((bark+rest)*100)+'%');
     const dur=ui.match(/mode==='idle'\?(\d+):state\.mode==='bark'\?(\d+):state\.mode==='rest'\?(\d+):(\d+)/);
     assert.truthy(dur,'each mood needs its own dwell time');
-    assert.truthy(+dur[3]>=5000,'a rest must actually look like a rest, got '+dur[3]+'ms');
+    const longestPause=Math.max(+dur[1],+dur[2],+dur[3],+dur[4]);
+    const walk=ui.match(/state\.nextCasual=now\+(\d+)\+Math\.random\(\)\*(\d+);/);
+    assert.truthy(walk,'a walk stretch has a minimum length');
+    assert.truthy(+walk[1]>=longestPause,'the shortest walk ('+walk[1]+'ms) must outlast the longest pause ('+longestPause+'ms) — the dog is seen moving');
+    assert.truthy(+dur[3]<=3000,'a rest is a pause, not a nap, got '+dur[3]+'ms');
     assert.falsy(ui.includes('nr-pet-bark')||css.includes('nr-pet-bark'),'bark sprite must not get a stray white sound mark');
     for(const asset of ['pet-actions-small-v2.webp','pet-actions-large-v2.webp'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
-    // Short strolls between moods, and a walking pace a puppy could keep.
+    // Real strolls between moods (long enough to be seen, short enough not
+    // to be a screensaver), and a walking pace a puppy could keep.
     const gap=ui.match(/nextCasual=now\+(\d+)\+Math\.random\(\)\*(\d+)/);
     assert.truthy(gap,'the gap between moods must be a random range');
-    assert.truthy(+gap[1]+ +gap[2] <= 4000,'a walk bout longer than four seconds is pacing again, got '+(+gap[1]+ +gap[2])+'ms');
+    assert.truthy(+gap[1]+ +gap[2] <= 8000,'a walk bout longer than eight seconds is pacing again, got '+(+gap[1]+ +gap[2])+'ms');
     const speed=ui.match(/vx:([\d.]+),vy:([\d.]+)/);
     assert.truthy(speed && +speed[1]<=4,'the dog was sprinting; walking pace is about half that, got '+(speed&&speed[1]));
     // Slowing the walk doubled every errand, so it must aim at the closest
