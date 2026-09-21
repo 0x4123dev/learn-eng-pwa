@@ -30,7 +30,7 @@ export async function onRequestPost({request,env}) {
     // xu. It also held db/009's one-row-per-pair-per-day unique index, so the
     // child could not simply try that house again.
     await env.DB.prepare("DELETE FROM night_raids WHERE id=? AND status='active'").bind(raidId).run();
-    return err('Hết giờ trận này rồi — con vào lại nhà đó được ngay',409,{expired:true});
+    return err('Hết giờ trận này rồi — bạn vào lại nhà đó được ngay',409,{expired:true});
   }
   const snapshot=safeJson(raid.snapshot_json,null);if(!snapshot)return err('Broken raid snapshot',500);
   const cfg=await readRaidConfig(env);
@@ -148,8 +148,8 @@ export async function onRequestPost({request,env}) {
   // admin gifts and the ghost offering use — so the adjustment survives until
   // their device is next online, and can only ever be applied once.
   const grants=[];
-  if(victimLoss>0)grants.push([raid.defender_id,-victimLoss,'Cướp Đêm: nhà con bị cướp']);
-  if(defenderGain>0)grants.push([raid.defender_id,defenderGain,'Cướp Đêm: con giữ được nhà']);
+  if(victimLoss>0)grants.push([raid.defender_id,-victimLoss,'Cướp Đêm: nhà bạn bị cướp']);
+  if(defenderGain>0)grants.push([raid.defender_id,defenderGain,'Cướp Đêm: bạn giữ được nhà']);
   if(victimLoss>0)statements.push(env.DB.prepare(`UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=? AND ${ownsSettlement}`).bind(victimLoss,raid.defender_id,raidId,resultJson));
   // The marching fee leaves the attacker's mirror and goes nowhere: burned.
   if(attackerLoss>0)statements.push(env.DB.prepare(`UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=? AND ${ownsSettlement}`).bind(attackerLoss,raid.attacker_id,raidId,resultJson));

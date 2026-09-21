@@ -158,7 +158,7 @@ var NightRaidRuins = (() => {
       this.resize();
       canvas.setAttribute('role','img');
       canvas.setAttribute('aria-label',
-        (this.name?'Nhà của '+this.name:'Ngôi nhà này')+' đã bị người khác cướp trước rồi, chỉ còn lại một đống đổ nát. Đội quân của bé quay về tay không.');
+        (this.name?'Nhà của '+this.name:'Ngôi nhà này')+' đã bị người khác cướp trước rồi, chỉ còn lại một đống đổ nát. Đội quân của bạn quay về tay không.');
       if(Art&&Art.preloadRuins)Art.preloadRuins(this.skin,()=>this.paint(this.elapsed));
       this.load('soldiers',SOLDIER_SHEET);
       this.load('pet',petSheet(this.petAtlas));

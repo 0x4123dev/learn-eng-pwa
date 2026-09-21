@@ -252,7 +252,7 @@ function promptSellCup(tier) {
       <section class="cup-sell-dialog" role="dialog" aria-modal="true" aria-labelledby="cupSellTitle">
         <div class="cup-sell-icon">🏆→🪙</div>
         <h3 id="cupSellTitle">Bán 1 ${CUP_NAME[tier].toLowerCase()}?</h3>
-        <p>Con sẽ nhận <b>+${price} xu</b>, nhưng chiếc cúp sẽ rời khỏi tủ mãi mãi. Chắc chưa?</p>
+        <p>Bạn sẽ nhận <b>+${price} xu</b>, nhưng chiếc cúp sẽ rời khỏi tủ mãi mãi. Chắc chưa?</p>
         <div class="cup-sell-actions">
           <button type="button" class="cup-sell-cancel" onclick="cancelSellCup()">Thôi, giữ cúp</button>
           <button type="button" class="cup-sell-confirm" onclick="confirmSellCup('${tier}')">Bán lấy ${price} xu</button>
@@ -270,7 +270,7 @@ function confirmSellCup(tier) {
   cancelSellCup();
   const price = cupSellPrice(tier);
   if (!sellCup(tier)) return;
-  if (typeof showToast === 'function') showToast('🪙 +' + price + ' xu — con đang có ' + Math.floor(appState.coins) + ' xu');
+  if (typeof showToast === 'function') showToast('🪙 +' + price + ' xu — bạn đang có ' + Math.floor(appState.coins) + ' xu');
   renderCupCabinet();
 }
 

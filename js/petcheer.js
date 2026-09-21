@@ -118,7 +118,7 @@ function petQuestLineHTML(perCorrect) {
   const coins = st.coins || 0;
   const name = _pcEsc(petDisplayName());
   if (done) {
-    return `<div class="pet-quest-line done">✅ ${name} đã được ăn ${food.emoji} hôm nay — cảm ơn bé!</div>`;
+    return `<div class="pet-quest-line done">✅ ${name} đã được ăn ${food.emoji} hôm nay — cảm ơn bạn!</div>`;
   }
   const pct = Math.min(100, Math.round(coins / food.price * 100));
   const left = Math.max(0, food.price - coins);
@@ -308,7 +308,7 @@ function petQuickFeed(foodId) {
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
   }
   if (questJustDone && typeof showPetSpeechBubble === 'function') {
-    try { showPetSpeechBubble('Cảm ơn bé! Hôm nay mình no rồi! 🎉'); } catch (e) {}
+    try { showPetSpeechBubble('Cảm ơn bạn! Hôm nay mình no rồi! 🎉'); } catch (e) {}
   }
 }
 

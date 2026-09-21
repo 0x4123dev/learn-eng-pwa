@@ -225,7 +225,7 @@ function renderHomeStreakPanel() {
 
     const milestoneHTML = nextMs
         ? `Thêm <strong>${nextMs - streak} ngày</strong><br>để đạt mốc <strong>${nextMs}</strong>`
-        : 'Con đã đạt mọi cột mốc!';
+        : 'Bạn đã đạt mọi cột mốc!';
 
     // ── Last-7-days calendar ──
     const vnDay = { Sun: 'CN', Mon: 'T2', Tue: 'T3', Wed: 'T4', Thu: 'T5', Fri: 'T6', Sat: 'T7' };
@@ -480,7 +480,7 @@ function renderHomeSkillsPanel() {
     panel.innerHTML = `
         <button type="button" class="home-skills-compact" onclick="toggleHomeSkillsDetails()" aria-expanded="${homeSkillsExpanded}" aria-controls="homeSkillsDetails">
             <span class="home-skills-compact-icon" aria-hidden="true">📊</span>
-            <strong>Kỹ năng của con</strong>
+            <strong>Kỹ năng của bạn</strong>
             <span class="home-skills-compact-link">${homeSkillsExpanded ? 'Thu gọn' : 'Xem chi tiết'} <i aria-hidden="true">›</i></span>
         </button>
         <div id="homeSkillsDetails">${detailsHTML}</div>`;
@@ -1425,7 +1425,7 @@ function renderWordPet() {
         if (xpbar_el) xpbar_el.innerHTML = '';
         stage_el.innerHTML += `
             <div class="pet-name-form" style="margin-top:12px">
-                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">${_petRenaming ? 'Đổi tên cún của con' : 'Name your dog!'}</div>
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">${_petRenaming ? 'Đổi tên cún của bạn' : 'Name your dog!'}</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
                        maxlength="12" placeholder="Enter a name…" value="${currentName}"
                        onkeydown="if(event.key==='Enter')savePetName()">

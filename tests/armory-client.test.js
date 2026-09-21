@@ -274,7 +274,7 @@ suite('armory client: opening a gift', () => {
   });
 
   test('every refusal is explained in the child\'s words, and the armory in the refusal still repaints the screen', async () => {
-    const cases = [['claimed', 'con mở rồi'], ['no_reward', 'chưa có quà'], ['not_ready', 'nâng cấp']];
+    const cases = [['claimed', 'bạn mở rồi'], ['no_reward', 'chưa có quà'], ['not_ready', 'nâng cấp']];
     for (const [code, words] of cases) {
       const { Armory, calls, ctx } = mount({
         appState: stateWith({ pending: [YESTERDAY] }),
@@ -325,7 +325,7 @@ suite('daily task client: what the gift changed on the home card and the task sc
     DailyTask.renderHomeCard();
     const out = html('dailyTaskCard');
     assert.truthy(out.includes('class="dt-card-badge">2<'), out);
-    assert.truthy(out.includes('2 phần thưởng chờ con chọn'), 'the count is read out in the card label');
+    assert.truthy(out.includes('2 phần thưởng chờ bạn chọn'), 'the count is read out in the card label');
     assert.truthy(out.includes('1 khiên · 3 kiếm'));
     assert.truthy(out.includes('Armory.open()'));
     assert.truthy(out.includes('DailyTask.open()'), 'the card itself still opens the task list');
@@ -337,7 +337,7 @@ suite('daily task client: what the gift changed on the home card and the task sc
   test('a child whose tasks were switched off but who still has a gift still sees the card', () => {
     const { DailyTask, html } = mount({ appState: stateWith({ tasks: [], pending: [YESTERDAY] }) });
     DailyTask.renderHomeCard();
-    assert.truthy(html('dailyTaskCard').includes('1 phần thưởng chờ con chọn'));
+    assert.truthy(html('dailyTaskCard').includes('1 phần thưởng chờ bạn chọn'));
     const empty = mount({ appState: stateWith({ tasks: [], pending: [] }) });
     empty.DailyTask.renderHomeCard();
     assert.equal(empty.html('dailyTaskCard'), '', 'nothing assigned, nothing waiting → no card');
@@ -350,7 +350,7 @@ suite('daily task client: what the gift changed on the home card and the task sc
     const toast = calls.find(c => c[0] === 'toast');
     assert.truthy(toast, 'celebrated');
     assert.truthy(toast[1].includes('+200 xu'), toast[1]);
-    assert.truthy(toast[1].includes('có 2 phần thưởng chờ con chọn'), toast[1]);
+    assert.truthy(toast[1].includes('có 2 phần thưởng chờ bạn chọn'), toast[1]);
     assert.falsy(toast[1].includes('khiên'), 'no shield is promised — the child chooses');
     assert.deepEqual(ctx.appState.dailyTask.pending, [YESTERDAY, TODAY], 'stored');
     assert.deepEqual(ctx.appState.dailyTask.swords, { count: 0 });

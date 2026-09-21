@@ -110,7 +110,7 @@ suite('home skills chart', () => {
         const panel = env.document.getElementById('homeSkillsPanel');
 
         env.renderHomeSkillsPanel();
-        assert.truthy(panel.innerHTML.includes('Kỹ năng của con'));
+        assert.truthy(panel.innerHTML.includes('Kỹ năng của bạn'));
         assert.truthy(panel.innerHTML.includes('Xem chi tiết'));
         assert.falsy(panel.innerHTML.includes('home-skills-details'));
 

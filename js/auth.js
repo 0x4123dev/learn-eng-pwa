@@ -240,11 +240,13 @@ const EngAuth = (function () {
     if (/^Daily task \d{4}-\d{2}-\d{2}$/.test(note)) {
       return '🎉 Hoàn thành Daily Task được tặng ' + amount + ' xu!';
     }
-    if (note === 'Cướp Đêm: con giữ được nhà') {
-      return '🏰 Giữ thành ' + signed + ' · nhà con đã đẩy lui kẻ cướp';
+    // Both spellings: grants written before the copy moved from "con" to
+    // "bạn" are still claimable.
+    if (/^Cướp Đêm: (con|bạn) giữ được nhà$/.test(note)) {
+      return '🏰 Giữ thành ' + signed + ' · nhà bạn đã đẩy lui kẻ cướp';
     }
-    if (note === 'Cướp Đêm: nhà con bị cướp') {
-      return '🌙 Nhà con đã bị cướp · ' + signed;
+    if (/^Cướp Đêm: nhà (con|bạn) bị cướp$/.test(note)) {
+      return '🌙 Nhà bạn đã bị cướp · ' + signed;
     }
     if (/^Ghost offering:/.test(note)) {
       return '👻 Thưởng sự kiện Cúng Cô Hồn · ' + signed;
@@ -255,7 +257,7 @@ const EngAuth = (function () {
     const reason = note
       .replace(/^admin\s*(?:tặng|tang|grant(?:ed)?)?\s*(?:bạn|ban|con)?\s*[:\-–—]?\s*/i, '')
       .trim();
-    if (amount > 0) return '🎁 ' + (reason || 'Con nhận được phần thưởng') + ' · ' + signed;
+    if (amount > 0) return '🎁 ' + (reason || 'Bạn nhận được phần thưởng') + ' · ' + signed;
     return '🧾 ' + (reason || 'Điều chỉnh số dư') + ' · ' + signed;
   }
   async function claimCoinGrants(username) {
@@ -341,7 +343,7 @@ const EngAuth = (function () {
             + (other > 0 ? ' · Nhận thêm ' + other + ' xu' : ''));
         } else {
           showToast(granted > 0
-            ? '🎁 Con nhận được phần thưởng · +' + granted + ' xu'
+            ? '🎁 Bạn nhận được phần thưởng · +' + granted + ' xu'
             : '🧾 Đã điều chỉnh số dư ' + granted + ' xu');
         }
       }

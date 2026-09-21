@@ -52,7 +52,7 @@ suite('Mid-Autumn gift picking: the final 25 Sep 2026 event', () => {
     const openBody = ui.slice(ui.indexOf('async function enter(mode)'), ui.indexOf('function close()'));
     assert.falsy(openBody.includes('return close()'), 'a failed preview request can never throw the child back to Arena');
     assert.falsy(openBody.includes("visualAlert('Không tải được event')"), 'view-only mode does not show a false fatal error');
-    assert.truthy(ui.includes('Bé cần học đủ bài hôm nay được giao mới tham gia được.'), 'the locked scene explains the daily-learning requirement');
+    assert.truthy(ui.includes('Bạn cần học đủ bài hôm nay được giao mới tham gia được.'), 'the locked scene explains the daily-learning requirement');
     assert.truthy(css.includes('.go-lock .go-study-rule'), 'the second rule sits below the opening-time line');
   });
   test('the exact Mid-Autumn inventory and rewards are fixed on both sides', () => {

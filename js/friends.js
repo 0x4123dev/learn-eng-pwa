@@ -278,7 +278,7 @@ function renderFriendsSection() {
       <div class="friend-face">${_frPetFace(1)}</div>
       <div class="friend-info">
         <div class="friend-name">${frEsc(i.username)}</div>
-        <div class="friend-meta">muốn kết bạn với bé</div>
+        <div class="friend-meta">gửi lời mời kết bạn</div>
       </div>
       <div class="friend-actions">
         <button class="friend-btn accept" onclick="respondFriend(${i.friendshipId}, true)">✓</button>
@@ -308,7 +308,7 @@ function renderFriendsSection() {
   const linkInvite = _frPendingInvite();
   const quick = linkInvite ? `
     <div class="friend-quick-card">
-      <div class="friend-quick-title">🔗 <b>${frEsc(linkInvite)}</b> muốn kết bạn với bé!</div>
+      <div class="friend-quick-title">🔗 <b>${frEsc(linkInvite)}</b> gửi lời mời kết bạn!</div>
       <div class="friend-quick-actions">
         <button class="friend-invite-btn" onclick="acceptQuickInvite()">Kết bạn ⚔️</button>
         <button class="friend-quick-skip" onclick="dismissQuickInvite()">Để sau</button>

@@ -358,8 +358,8 @@ function collocFollowRecapHTML(st, q) {
   if (ans) {
     const given = String(ans.value || '');
     line = ans.isCorrect
-      ? `<div class="wf-recap-you ok">✅&nbsp;Bé trả lời đúng: <b>${colEsc(q.answer)}</b></div>`
-      : `<div class="wf-recap-you bad">❌&nbsp;Bé trả lời: <s>${given ? colEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${colEsc(q.answer)}</b></div>`;
+      ? `<div class="wf-recap-you ok">✅&nbsp;Bạn trả lời đúng: <b>${colEsc(q.answer)}</b></div>`
+      : `<div class="wf-recap-you bad">❌&nbsp;Bạn trả lời: <s>${given ? colEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${colEsc(q.answer)}</b></div>`;
   }
   return `
       <div class="wf-follow-recap">

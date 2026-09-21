@@ -29,7 +29,7 @@ suite('primary navigation UX', () => {
     test('a live Ghost Offering round cannot be discarded by a navigation mis-tap', () => {
         const nav = app.slice(app.indexOf('function switchScreen'), app.indexOf('function navigateToProfile'));
         assert.truthy(nav.includes('GhostOfferingEvent.isActive()'));
-        assert.truthy(nav.includes("confirm('Con đang chơi Cướp Cô Hồn."));
+        assert.truthy(nav.includes("confirm('Bạn đang chơi Cướp Cô Hồn."));
         assert.truthy(nav.includes('GhostOfferingEvent.close()'), 'confirmed exit must clean up the Arena scroll lock');
         assert.truthy(nav.includes('return false;'), 'cancel keeps the active game on screen');
         assert.truthy(battle.includes('GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return'),

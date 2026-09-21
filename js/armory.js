@@ -105,7 +105,7 @@ var Armory = (function () {
     const shield = kind === 'shield';
     const has = count > 0;
     const blurb = shield
-      ? (has ? 'Bật 1 khiên → 24 giờ không ai cướp được nhà con' : 'Chưa có — mở quà để lấy khiên')
+      ? (has ? 'Bật 1 khiên → 24 giờ không ai cướp được nhà bạn' : 'Chưa có — mở quà để lấy khiên')
       : (has ? `+${bonusFor(count)} DAM mỗi lần đi cướp đêm` : 'Chưa có — mở quà để lấy kiếm');
     // `celebrate` is the consumed flash record for this card (or false).
     const from = celebrate && Number.isFinite(+celebrate.from) ? Math.max(0, Math.trunc(+celebrate.from)) : count;
@@ -157,7 +157,7 @@ var Armory = (function () {
     const giftHtml = n
       ? `<div class="am-gift-top">
           <span class="am-gift-icon" aria-hidden="true">🎁</span>
-          <div><strong>${n === 1 ? '1 món quà' : n + ' món quà'} chờ con mở!</strong><small>Quà ${fmtDay(first)}${n > 1 ? ' · còn ' + (n - 1) + ' quà nữa' : ''} · không hết hạn, mở lúc nào cũng được</small></div>
+          <div><strong>${n === 1 ? '1 món quà' : n + ' món quà'} chờ bạn mở!</strong><small>Quà ${fmtDay(first)}${n > 1 ? ' · còn ' + (n - 1) + ' quà nữa' : ''} · không hết hạn, mở lúc nào cũng được</small></div>
         </div>
         <div class="am-choices">
           <button type="button" class="am-choice shield" onclick="Armory.claim('${esc(first)}','shield')"${dis}><span class="am-choice-icon" aria-hidden="true">🛡️</span><strong>Lấy khiên</strong><small>24 giờ không ai cướp được nhà</small></button>
@@ -170,7 +170,7 @@ var Armory = (function () {
       : `<div class="am-gift-top">
           <span class="am-gift-icon" aria-hidden="true">🎁</span>
           <div><strong>Chưa có quà chờ mở</strong><small>${(s && s.allDone && s.rewardedToday)
-            ? 'Hôm nay con mở rồi. Mai xong nhiệm vụ lại có quà mới!'
+            ? 'Hôm nay bạn mở rồi. Mai xong nhiệm vụ lại có quà mới!'
             : 'Xong hết nhiệm vụ hôm nay là có 1 món quà để mở.'}</small></div>
         </div>`;
 
@@ -178,12 +178,12 @@ var Armory = (function () {
       ? `<span class="dt-pill on am-pill">🛡️ Đang bảo vệ · đến ${fmtUntil(activeUntil)} · còn ${fmtLeft(activeUntil - now)}</span>`
       : shields > 0
         ? `<button type="button" class="dt-shield-btn am-activate" onclick="Armory.activateShield()"${dis}>🛡️ Bật khiên 24h</button>`
-        : '<span class="dt-pill am-pill">Khiên: bật là 24 giờ không ai cướp được nhà con</span>';
+        : '<span class="dt-pill am-pill">Khiên: bật là 24 giờ không ai cướp được nhà bạn</span>';
 
     const lit = Math.min(swords, pips), extra = Math.max(0, swords - pips);
     const swordNote = swords > 0
       ? `Mỗi kiếm +${each} DAM, không có giới hạn và không mất sau trận. ${swords} kiếm đang cho +${bonus} DAM.`
-      : `Mỗi kiếm +${each} DAM khi con đi cướp đêm. Không mất sau trận, gom bao nhiêu cũng được.`;
+      : `Mỗi kiếm +${each} DAM khi bạn đi cướp đêm. Không mất sau trận, gom bao nhiêu cũng được.`;
     const meter = Array.from({ length: pips }, (_, i) => `<i class="${i < lit ? 'on' : ''}"></i>`).join('')
       + (extra ? `<b class="am-meter-more">+${extra}</b>` : '');
 
@@ -198,7 +198,7 @@ var Armory = (function () {
         <h2>🛡️⚔️ Kho Khiên &amp; Kiếm</h2><p>Bộ sưu tập từ nhiệm vụ mỗi ngày</p>
       </div>
       <section class="am-gift ${n ? 'has' : ''}" aria-live="polite">${giftHtml}</section>
-      <h3 class="am-h3">Bộ sưu tập của con</h3>
+      <h3 class="am-h3">Bộ sưu tập của bạn</h3>
       <div class="am-collection">
         ${cardHtml('shield', shields, f && f.kind === 'shield' ? f : false)}
         ${cardHtml('sword', swords, f && f.kind === 'sword' ? f : false)}
@@ -257,15 +257,15 @@ var Armory = (function () {
         const now = st();
         flash = { kind, from: kind === 'sword' ? before.swords : before.shields, to: kind === 'sword' ? swordsOf(now) : shieldsOf(now) };
         toast(kind === 'sword'
-          ? `⚔️ +${got} kiếm! Đi cướp đêm con đánh mạnh hơn: +${bonusFor(swordsOf(now))} DAM`
-          : `🛡️ +${got} khiên! Bật khiên là 24 giờ không ai cướp được nhà con`);
+          ? `⚔️ +${got} kiếm! Đi cướp đêm bạn đánh mạnh hơn: +${bonusFor(swordsOf(now))} DAM`
+          : `🛡️ +${got} khiên! Bật khiên là 24 giờ không ai cướp được nhà bạn`);
         if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
       } else {
         toast('Không còn quà nào để mở');
       }
     } else {
       const code = r && r.data && r.data.code;
-      toast(code === 'claimed' ? 'Quà ngày này con mở rồi'
+      toast(code === 'claimed' ? 'Quà ngày này bạn mở rồi'
         : code === 'no_reward' ? 'Ngày này chưa có quà'
         : code === 'not_ready' ? 'Kho đang được nâng cấp, thử lại sau ít phút'
         : 'Chưa mở được, thử lại sau');

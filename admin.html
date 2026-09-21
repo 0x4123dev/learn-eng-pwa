@@ -586,7 +586,7 @@
         <a class="nav-item" href="#/" data-route="overview"><span class="nav-ico">🏠</span><span class="nav-name">Tổng quan</span></a>
       </nav>
   
-      <nav class="sider-nav" id="siderKids" aria-label="Các bé"></nav>
+      <nav class="sider-nav" id="siderKids" aria-label="Học viên"></nav>
       <div class="sider-sep"></div>
       <nav class="sider-nav" aria-label="Quản trị">
         <a class="nav-item" href="#/cai-dat" data-route="settings"><span class="nav-ico">⚙️</span><span class="nav-name">Cài đặt app</span></a>
@@ -632,7 +632,7 @@
     <!-- ═══ One child ═══ -->
     <section class="page" id="childPage" hidden>
       <div class="child-head" id="childHead"></div>
-      <nav class="tabs" role="tablist" aria-label="Mục của bé">
+      <nav class="tabs" role="tablist" aria-label="Mục của học viên">
         <button class="admin-tab" id="tabTasks" role="tab" aria-controls="tasksPanel" aria-selected="true" data-tab="tasks">📋 Nhiệm vụ</button>
         <button class="admin-tab" id="tabHistory" role="tab" aria-controls="historyPanel" aria-selected="false" data-tab="history">📖 Lịch sử học</button>
         <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
@@ -655,7 +655,7 @@
           <div class="card-head"><h2>Giao nhiệm vụ mới</h2></div>
           <div class="picker-top">
             <div class="field">
-              <label for="taskSearch">Bài bé sẽ làm</label>
+              <label for="taskSearch">Bài học viên sẽ làm</label>
               <input id="taskSearch" type="search" autocomplete="off" spellcheck="false" placeholder="ví dụ: đề thi hk2, grammar unit 12, bảng nhân…">
             </div>
             <div class="field field-num">
@@ -756,7 +756,7 @@
         </div>
         <div class="scroll"><table id="usersTable">
           <thead><tr>
-            <th class="sortable" data-sort="username">Bé <span class="arrow">▼</span></th>
+            <th class="sortable" data-sort="username">Học viên <span class="arrow">▼</span></th>
             <th class="sortable" data-sort="total_count"><span class="th-full">Lượt học</span><span class="th-short">Lượt</span> <span class="arrow">▼</span></th>
             <th class="sortable" data-sort="last_activity"><span class="th-full">Học gần nhất</span><span class="th-short">Gần nhất</span> <span class="arrow">▼</span></th>
             <th class="sortable hide-sm" data-sort="created_at">Tạo <span class="arrow">▼</span></th>
@@ -1096,7 +1096,7 @@ function render(){
   if (view === 'overview') { title.textContent = 'Tổng quan'; renderOverview(); }
   else if (view === 'child') {
     const u = userById(uid);
-    title.innerHTML = '<span class="crumb">Bé › </span>' + esc(u ? u.username : '#' + uid);
+    title.innerHTML = '<span class="crumb">Học viên › </span>' + esc(u ? u.username : '#' + uid);
     renderChild(uid, tab);
   }
   else if (view === 'settings') { title.textContent = 'Cài đặt app'; switchAdminTab(tab); }
@@ -1184,8 +1184,8 @@ function renderGrid(){
   const host = document.getElementById('gridHost');
   const today = todayKey();
   const list = kids();
-  document.getElementById('gridSub').textContent = list.length + ' bé · ' + _range + ' ngày qua';
-  if (!list.length) { host.innerHTML = '<div class="empty">Chưa có bé nào.</div>'; return; }
+  document.getElementById('gridSub').textContent = list.length + ' học viên · ' + _range + ' ngày qua';
+  if (!list.length) { host.innerHTML = '<div class="empty">Chưa có học viên nào.</div>'; return; }
   const g = buildGrid(_activityAll, list, _range, today);
   const head = g.keys.map(k => { const s = shortDayLabel(k); return `<th class="${k === today ? 'today' : ''}">${s.wd}<small>${s.dm}</small></th>`; }).join('');
   const body = g.rows.map((r, idx) => {
@@ -1209,9 +1209,9 @@ function renderGrid(){
     return `<tr${!_gridAll && idx >= GRID_ROWS_SHOWN ? ' class="more" hidden' : ''}><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total" title="${daysDone} ngày xong hết nhiệm vụ / ${daysWithTasks} ngày có nhiệm vụ">${total}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
   }).join('');
   const hiddenKids = _gridAll ? 0 : Math.max(0, g.rows.length - GRID_ROWS_SHOWN);
-  const more = hiddenKids ? `<div class="hist-more"><button type="button" class="btn btn-sm" id="gridMore">Xem thêm ${hiddenKids} bé</button></div>`
+  const more = hiddenKids ? `<div class="hist-more"><button type="button" class="btn btn-sm" id="gridMore">Xem thêm ${hiddenKids} học viên</button></div>`
     : (_gridAll && g.rows.length > GRID_ROWS_SHOWN ? `<div class="hist-more"><button type="button" class="btn btn-sm" id="gridLess">Thu gọn</button></div>` : '');
-  host.innerHTML = `<table class="grid-table"><thead><tr><th>Bé</th>${head}<th class="col-total" title="ngày xong hết / ngày có nhiệm vụ">Xong</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>${more}`;
+  host.innerHTML = `<table class="grid-table"><thead><tr><th>Học viên</th>${head}<th class="col-total" title="ngày xong hết / ngày có nhiệm vụ">Xong</th><th class="col-tasks" style="text-align:left">Nhiệm vụ hôm nay</th></tr></thead><tbody>${body}</tbody></table>${more}`;
   host.querySelectorAll('.kid').forEach(b => b.onclick = () => openChild(b.dataset.uid, 'tasks'));
   const moreBtn = document.getElementById('gridMore'), lessBtn = document.getElementById('gridLess');
   if (moreBtn) moreBtn.onclick = () => { _gridAll = true; renderGrid(); };
@@ -1225,7 +1225,7 @@ function renderHistory(o){
   const kindsPresent = [...new Set(o.rows.map(r => r.kind))].filter(k => KIND_LABEL[k]);
   // filters
   const uf = o.withUserFilter
-    ? `<select id="histUser_${o.host.id}" aria-label="Bé"><option value="">Tất cả các bé</option>${kids().map(u => `<option value="${u.id}"${String(st.uid) === String(u.id) ? ' selected' : ''}>${esc(u.username)}</option>`).join('')}</select>`
+    ? `<select id="histUser_${o.host.id}" aria-label="Học viên"><option value="">Tất cả học viên</option>${kids().map(u => `<option value="${u.id}"${String(st.uid) === String(u.id) ? ' selected' : ''}>${esc(u.username)}</option>`).join('')}</select>`
     : (o.rangeSeg ? `<div class="seg" role="group" aria-label="Khoảng thời gian">${[7,14,30,90].map(d => `<button type="button" data-days="${d}" aria-pressed="${st.range === d}">${d} ngày</button>`).join('')}</div>` : '');
   o.filtersHost.innerHTML = `${uf}
     <div class="chips" role="group" aria-label="Loại bài"><button type="button" class="chip" data-kind="" aria-pressed="${!st.kind}">Tất cả</button>${kindsPresent.map(k => `<button type="button" class="chip" data-kind="${k}" aria-pressed="${st.kind === k}">${KIND_LABEL[k]}</button>`).join('')}</div>
@@ -1253,7 +1253,7 @@ function renderHistoryBody(o, today){
   o.host.innerHTML = days.map((d, i) => {
     const s = d.sum;
     const sum = d.rows.length
-      ? `<span class="day-sum">${o.showUser ? `<span><b>${s.users}</b> bé</span>` : ''}<span><b>${s.n}</b> lượt</span>${s.pct != null ? `<span><b class="${pctClass(s.pct)}">${s.pct}%</b> đúng</span>` : ''}${s.minutes ? `<span><b>${s.minutes}</b> phút thi</span>` : ''}</span>`
+      ? `<span class="day-sum">${o.showUser ? `<span><b>${s.users}</b> học viên</span>` : ''}<span><b>${s.n}</b> lượt</span>${s.pct != null ? `<span><b class="${pctClass(s.pct)}">${s.pct}%</b> đúng</span>` : ''}${s.minutes ? `<span><b>${s.minutes}</b> phút thi</span>` : ''}</span>`
       : `<span class="day-sum"><span class="skipped">${o.showUser ? 'Không ai học' : 'Không học'} ✗</span></span>`;
     if (!d.rows.length) return `<div class="day"><div style="display:flex;gap:12px;padding:10px 24px;flex-wrap:wrap" class="day-empty"><span class="day-caret" style="visibility:hidden">▶</span><span class="day-title dim">${d.label}</span>${sum}</div></div>`;
     const open = i < 2 ? ' open' : '';
@@ -1276,7 +1276,7 @@ function renderHistoryBody(o, today){
     const hidden = Math.max(0, d.rows.length - HIST_ROWS_SHOWN);
     const more = hidden ? `<div class="hist-more"><button type="button" class="btn btn-sm show-more">Xem thêm ${hidden} lượt</button></div>` : '';
     return `<details class="day"${open}><summary><span class="day-caret">▶</span><span class="day-title ${d.key === today ? 'today' : ''}">${d.label}</span>${sum}${taskNote}</summary>
-      <div class="scroll"><table><thead><tr><th>Giờ</th>${o.showUser ? '<th>Bé</th>' : ''}<th>Loại</th><th>Bài</th><th class="num">Điểm</th><th class="num">%</th><th>Bắt đầu → xong</th><th class="num">Xu</th></tr></thead><tbody>${body}</tbody></table>${more}</div></details>`;
+      <div class="scroll"><table><thead><tr><th>Giờ</th>${o.showUser ? '<th>Học viên</th>' : ''}<th>Loại</th><th>Bài</th><th class="num">Điểm</th><th class="num">%</th><th>Bắt đầu → xong</th><th class="num">Xu</th></tr></thead><tbody>${body}</tbody></table>${more}</div></details>`;
   }).join('');
   // "Xem thêm" reveals the rest of that day only; the table stays short by
   // default so a phone can scroll past a busy day to the next one.
@@ -1290,7 +1290,7 @@ function renderHistoryBody(o, today){
 // ── the child page ───────────────────────────────────────────────────────
 function renderChild(uid, tab){
   const u = userById(uid);
-  if (!u) { document.getElementById('childHead').innerHTML = '<div class="empty">Không tìm thấy bé này.</div>'; return; }
+  if (!u) { document.getElementById('childHead').innerHTML = '<div class="empty">Không tìm thấy học viên này.</div>'; return; }
   _skillUser = String(u.id); _skillName = u.username;
   renderChildHead(uid);
   switchAdminTab(tab || 'tasks');
@@ -1363,7 +1363,7 @@ function renderTaskList(r){
   [...body.querySelectorAll('.act-daily-del')].forEach((b, i)=>{
     const t = r.tasks[i];
     b.onclick = async ()=>{
-      if (!confirm('Xoá nhiệm vụ “'+t.label+'”?\n\nBé sẽ không còn phải làm nhiệm vụ này từ hôm nay.')) return;
+      if (!confirm('Xoá nhiệm vụ “'+t.label+'”?\n\nHọc viên sẽ không còn phải làm nhiệm vụ này từ hôm nay.')) return;
       try { await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' }); }
       catch(e){
         if (e.message !== 'unauth') alert('Không xoá được: '+e.message);
@@ -1445,7 +1445,7 @@ async function assignTask(kind, btn){
   } catch(e){
     if (e.message === 'unauth') return;
     note.className = 'note bad';
-    note.textContent = e.code === 'duplicate' ? 'Bé đã có nhiệm vụ này — đổi số lần ngay trên dòng của nó ở bảng trên.'
+    note.textContent = e.code === 'duplicate' ? 'Học viên đã có nhiệm vụ này — đổi số lần ngay trên dòng của nó ở bảng trên.'
       : e.code === 'too_many' ? e.message + '. Xoá bớt nhiệm vụ cũ trước khi thêm.'
       : 'Không lưu được: ' + e.message;
     if (btn) btn.disabled = false;
@@ -1621,13 +1621,13 @@ function renderUsers(){
         <div class="row-actions">
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
                   aria-label="Chơi trước cho ${esc(u.username)}: đang ${u.allow_bot?'bật':'tắt'}"
-                  title="Chơi trước cho bé này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'Bật':'Tắt'}</span></button>
+                  title="Chơi trước cho học viên này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'Bật':'Tắt'}</span></button>
           <button class="mini chuyen-toggle ${u.allow_chuyen?'on':''}" data-uid="${u.id}"
                   aria-label="Bài Chuyên cho ${esc(u.username)}: đang ${u.allow_chuyen?'bật':'tắt'}"
-                  title="Bài Chuyên cho bé này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
+                  title="Bài Chuyên cho học viên này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
           <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
                   aria-label="Tặng xu cho ${esc(u.username)}"
-                  title="${coinDrop?`Bù xu — điền sẵn ${coinDrop} xu ví này đã mất so với đỉnh tuần`:'Tặng xu — app của bé nhận khi đồng bộ lần tới'}">💰<span class="lbl"> ${coinDrop?'Bù xu':'Xu'}</span></button>
+                  title="${coinDrop?`Bù xu — điền sẵn ${coinDrop} xu ví này đã mất so với đỉnh tuần`:'Tặng xu — app của học viên nhận khi đồng bộ lần tới'}">💰<span class="lbl"> ${coinDrop?'Bù xu':'Xu'}</span></button>
           ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
                   aria-label="Trả chỗ trên thiết bị của ${esc(u.username)}"
                   title="Trả chỗ tài khoản này đang giữ trên thiết bị (mỗi máy tối đa 2 tài khoản)">📱<span class="lbl"> Trả chỗ</span></button>` : ''}
@@ -1667,13 +1667,13 @@ function renderUsers(){
       return Promise.reject(new Error('số xu phải từ 1 đến 100000'));
     }
     return api('admin/grant-coins', { method:'POST', body:{ userId: Number(b.dataset.uid), amount } })
-      .then(() => alert('✅ Đã tặng ' + amount + ' xu cho ' + b.dataset.name + '. Bé sẽ nhận khi mở app.'));
+      .then(() => alert('✅ Đã tặng ' + amount + ' xu cho ' + b.dataset.name + '. Học viên sẽ nhận khi mở app.'));
   });
   act('.act-enable', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), disabled: false } }));
   act('.act-disable', b => {
     // Disabling signs a child out of every device at once. Worth one question.
-    if (!confirm('Khoá “' + b.dataset.name + '”?\n\nBé sẽ bị đăng xuất khỏi mọi thiết bị và không đăng nhập được. Không xoá gì cả — mở khoá lại lúc nào cũng được.')) {
+    if (!confirm('Khoá “' + b.dataset.name + '”?\n\nHọc viên sẽ bị đăng xuất khỏi mọi thiết bị và không đăng nhập được. Không xoá gì cả — mở khoá lại lúc nào cũng được.')) {
       return Promise.reject(new Error('đã huỷ'));
     }
     return api('admin/user-flags', { method:'POST', body:{ userId: Number(b.dataset.uid), disabled: true } });
@@ -1708,23 +1708,23 @@ const RAID_FIELDS = [
   { key:'win_cap', group:'money', unit:'xu', label:'Trần xu mỗi trận thắng',
     help:'Trần tổng xu nhận được trong MỘT trận thắng, gồm xu lấy từ kho và thưởng chiến thắng.' },
   { key:'win_floor', group:'money', unit:'xu', label:'Thưởng tối thiểu khi thắng',
-    help:'Bé thắng được ít nhất bấy nhiêu xu cho phí hành quân và chiến thắng, kể cả khi kho nhà địch trống.' },
+    help:'Người chơi thắng được ít nhất bấy nhiêu xu cho phí hành quân và chiến thắng, kể cả khi kho nhà địch trống.' },
   { key:'win_pct', group:'money', unit:'%', label:'Cướp bao nhiêu phần trăm kho xu',
-    help:'Bé lấy bấy nhiêu phần trăm kho xu của nhà bị cướp; hệ thống bù thưởng nếu số này thấp hơn mức tối thiểu.' },
+    help:'Người chơi lấy bấy nhiêu phần trăm kho xu của nhà bị cướp; hệ thống bù thưởng nếu số này thấp hơn mức tối thiểu.' },
   { key:'loss', group:'money', unit:'xu', label:'Thua trận mất bao nhiêu xu',
     help:'Thua trận thì bên tấn công mất bấy nhiêu xu (chỉ mất tối đa số xu đang có). Số xu này bị mất hẳn, KHÔNG chuyển sang bên thủ — bên thủ nhận thưởng giữ thành riêng bên dưới.' },
   { key:'shield_loss', group:'money', unit:'xu', label:'Đâm vào Khiên Đêm mất bao nhiêu xu',
     help:'Đâm vào nhà đang bật Khiên Đêm thì bên tấn công mất bấy nhiêu xu (cũng chỉ mất tối đa số đang có, và cũng mất hẳn).' },
   { key:'defense_reward', group:'money', unit:'xu', label:'Thưởng giữ thành khi đẩy lui kẻ cướp',
-    help:'Mỗi lần nhà bé đẩy lui được một đội cướp (kể cả nhờ Khiên Đêm), hệ thống thưởng bé bấy nhiêu xu — không phụ thuộc kẻ cướp có bao nhiêu xu.' },
+    help:'Mỗi lần nhà người chơi đẩy lui được một đội cướp (kể cả nhờ Khiên Đêm), hệ thống thưởng chủ nhà bấy nhiêu xu — không phụ thuộc kẻ cướp có bao nhiêu xu.' },
   { key:'defense_daily_cap', group:'money', unit:'xu', label:'Trần thưởng giữ thành cả ngày',
-    help:'Trần tổng xu thưởng giữ thành một bé nhận được trong một ngày, để nhà bị cướp suốt đêm không thành máy in xu.' },
+    help:'Trần tổng xu thưởng giữ thành một người nhận được trong một ngày, để nhà bị cướp suốt đêm không thành máy in xu.' },
   { key:'daily_reward_cap', group:'money', unit:'xu', label:'Trần xu cướp được cả ngày',
     help:'Trần tổng xu cướp được trong một ngày.' },
   { key:'seal_hours', group:'time', unit:'giờ', label:'Nhà bị cướp tan hoang bao lâu',
     help:'Nhà bị cướp THÀNH CÔNG thì tan hoang bấy nhiêu giờ, không ai cướp được nữa.' },
   { key:'retry_hours', group:'time', unit:'giờ', label:'Chờ bao lâu mới đánh lại đúng nhà đó',
-    help:'Cùng một bé phải chờ bấy nhiêu giờ mới được đánh lại đúng nhà đó (thắng, thua hay tới nơi thấy nhà tan hoang cũng vậy).' },
+    help:'Cùng một người phải chờ bấy nhiêu giờ mới được đánh lại đúng nhà đó (thắng, thua hay tới nơi thấy nhà tan hoang cũng vậy).' },
 ];
 // A pile round enough to do the percentage in your head while you read it.
 const RAID_EXAMPLE_PILE = 3000;
@@ -1764,14 +1764,14 @@ function paintRaidExample(){
   const won = Math.min(cap, Math.max(floor, loot));
   const raids = won > 0 ? Math.floor(dayCap / won) : 0;
   el.innerHTML = '<span class="raid-example-title">Thử một trận</span>'
-    + 'Nhà địch đang giữ <b>' + fmtXu(RAID_EXAMPLE_PILE) + ' xu</b>. Bé đánh thắng: '
+    + 'Nhà địch đang giữ <b>' + fmtXu(RAID_EXAMPLE_PILE) + ' xu</b>. Người chơi đánh thắng: '
     + '<b>' + fmtXu(pct) + '%</b> × ' + fmtXu(RAID_EXAMPLE_PILE) + ' = <b>' + fmtXu(share) + ' xu</b>, '
     + 'thưởng tối thiểu <b>' + fmtXu(floor) + ' xu</b>, trần một trận <b>' + fmtXu(cap) + ' xu</b> '
-    + '⇒ bé mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
-    + 'Nếu kho địch trống, bé vẫn nhận <b>' + fmtXu(Math.min(cap, floor)) + ' xu</b> cho phí hành quân và chiến thắng.<br>'
+    + '⇒ người chơi mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
+    + 'Nếu kho địch trống, người chơi vẫn nhận <b>' + fmtXu(Math.min(cap, floor)) + ' xu</b> cho phí hành quân và chiến thắng.<br>'
     + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.<br>'
-    + 'Bé đánh thua: mất <b>' + fmtXu(loss) + ' xu</b> (mất hẳn, tối đa số đang có). '
-    + 'Nhà bé đẩy lui kẻ cướp: hệ thống thưởng <b>' + fmtXu(defReward) + ' xu</b>, cả ngày tối đa <b>' + fmtXu(defCap) + ' xu</b>'
+    + 'Người chơi đánh thua: mất <b>' + fmtXu(loss) + ' xu</b> (mất hẳn, tối đa số đang có). '
+    + 'Nhà người chơi đẩy lui kẻ cướp: hệ thống thưởng <b>' + fmtXu(defReward) + ' xu</b>, cả ngày tối đa <b>' + fmtXu(defCap) + ' xu</b>'
     + ' — khoảng <b>' + fmtXu(defRaids) + '</b> lần giữ thành.';
 }
 
@@ -1910,7 +1910,7 @@ async function saveCcSeconds(){
   const now = _appSettings.cuuchuong_seconds || 60;
   // Nothing typed, or nothing changed: put the real value back and say nothing.
   if (!Number.isFinite(next) || next === now) { paintAppSettings(); return; }
-  if (!confirm('Đổi thời gian mỗi lượt Bảng cửu chương thành ' + next + ' giây cho TẤT CẢ các bé?')) {
+  if (!confirm('Đổi thời gian mỗi lượt Bảng cửu chương thành ' + next + ' giây cho TẤT CẢ học viên?')) {
     paintAppSettings(); return;
   }
   el.disabled = true;

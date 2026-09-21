@@ -427,7 +427,7 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     w.ctx.NightRaid.quit(); await settle();
     assert.equal(w.asked.length, 0, 'a scored raid has nothing left to ask about');
     assert.truthy(w.doc.getElementById('nightRaidScreen').innerHTML.includes('nr-friend-list')
-      || w.doc.getElementById('nightRaidScreen').innerHTML.includes('Con chưa có bạn để đi cướp'),
+      || w.doc.getElementById('nightRaidScreen').innerHTML.includes('Bạn chưa có bạn bè để đi cướp'),
       'it must return to the list of real houses');
   });
 

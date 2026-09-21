@@ -379,7 +379,7 @@ function mathTablesQuit() {
   if (!isMathTablesActive()) { mathTablesBackToMenu(); return; }
   const left = mathTablesClockText(mathTablesLeftMs());
   const ask = (typeof confirm === 'function')
-    ? confirm('Con đang làm bảng cửu chương, còn ' + left + '.\n'
+    ? confirm('Bạn đang làm bảng cửu chương, còn ' + left + '.\n'
             + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')
     : true;
   if (!ask) return;

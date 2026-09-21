@@ -544,7 +544,7 @@ function renderPhrQuestion() {
 
   const typedBox = !q.typed ? '' : (answered
     ? `<div class="wf-text-answer ${phrIsCorrect(userAns, q) ? 'correct' : 'wrong'}">
-         <span class="wf-text-answer-label">Bé gõ:</span>
+         <span class="wf-text-answer-label">Bạn gõ:</span>
          <span class="wf-text-answer-value">${userAns ? phrEsc(userAns) : '<em>(chưa gõ)</em>'}</span>
        </div>`
     : `<div class="wf-text-wrap">

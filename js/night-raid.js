@@ -89,8 +89,8 @@ var NightRaid = (() => {
   function confirmLeaveRaid(){
     if(!isRaiding()||typeof confirm!=='function')return true;
     const until=Math.max(0,Math.trunc(+(raidStage&&raidStage.expiresAt)||0));
-    const retry=until>Date.now()?`Con có thể vào lại sau khi trận hết hạn lúc ${clockPhrase(until)}.`:'Con có thể vào lại ngay sau khi máy chủ đóng trận này.';
-    return confirm('Bỏ dở trận này?\n\nMáy chủ đã ghi nhận trận đang diễn ra. Con không nhận được xu nếu chưa xác nhận kết quả.\n'
+    const retry=until>Date.now()?`Bạn có thể vào lại sau khi trận hết hạn lúc ${clockPhrase(until)}.`:'Bạn có thể vào lại ngay sau khi máy chủ đóng trận này.';
+    return confirm('Bỏ dở trận này?\n\nMáy chủ đã ghi nhận trận đang diễn ra. Bạn không nhận được xu nếu chưa xác nhận kết quả.\n'
       +retry+'\n\nVẫn bỏ?');
   }
 
@@ -144,7 +144,7 @@ var NightRaid = (() => {
     setNav(true);
     builderScroll=null;centerBuilderWorld();setupBuilderGestures();startProductionTicker();
     if(locked)return showLiveTargets();
-    startRaid(target,true,true).catch(error=>{console.warn('Night Raid start',error);if(typeof showToast==='function')showToast('Chưa thể vào trận — con thử lại nhé');showLiveTargets();});
+    startRaid(target,true,true).catch(error=>{console.warn('Night Raid start',error);if(typeof showToast==='function')showToast('Chưa thể vào trận — bạn thử lại nhé');showLiveTargets();});
   }
   // Scout and battle are immersive full-screen stages. Cover the viewport
   // with the square 800-board and let one-finger panning reveal the remainder;
@@ -179,7 +179,7 @@ var NightRaid = (() => {
         // the old code looked for a `locked` key no handler has ever sent, so
         // this branch was dead and every refusal fell through to one toast.
         const retryAt=retryAtOf(data)||data.lockedUntil;
-        if(retryAt&&lockLeft(retryAt)){if(typeof showToast==='function')showToast('Con phải chờ thêm '+productionTime(lockLeft(retryAt))+' nữa mới vào lại nhà này');return showLiveTargets();}
+        if(retryAt&&lockLeft(retryAt)){if(typeof showToast==='function')showToast('Bạn phải chờ thêm '+productionTime(lockLeft(retryAt))+' nữa mới vào lại nhà này');return showLiveTargets();}
         if(typeof showToast==='function')showToast(data.error||'Không thể bắt đầu raid');
         if(direct)return showLiveTargets();
         return;
@@ -288,7 +288,7 @@ var NightRaid = (() => {
 
   function renderConfirmingResult(target,state,commands){cleanup();settleRaid();view='confirming';pendingResultContext={target,state,commands};
     const wrap=document.querySelector('[data-nr-pop-host]')||document.querySelector('#nrBattleRoot .nr-canvas-wrap');
-    const body=`<div class="nr-result-crest"><i class="nr-confirm-spinner" aria-hidden="true"></i></div><p>Đang chờ máy chủ xác nhận thắng, thua và số xu. Con chưa bị cộng hoặc trừ xu.</p><div class="nr-result-actions"><button class="nr-primary" type="button" onclick="nrRetryRaidResult()">Thử xác nhận lại</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button></div>`;
+    const body=`<div class="nr-result-crest"><i class="nr-confirm-spinner" aria-hidden="true"></i></div><p>Đang chờ máy chủ xác nhận thắng, thua và số xu. Bạn chưa bị cộng hoặc trừ xu.</p><div class="nr-result-actions"><button class="nr-primary" type="button" onclick="nrRetryRaidResult()">Thử xác nhận lại</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button></div>`;
     if(!wrap){setNav(true);const r=root();if(r)r.innerHTML=shell(`<main class="nr-result confirming"><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>ĐANG XÁC NHẬN KẾT QUẢ</h2>${body}</main>`);return;}
     const old=document.getElementById('nrResultPop');if(old)old.remove();const pop=document.createElement('div');pop.id='nrResultPop';pop.className='nr-result-pop confirming';pop.setAttribute('role','dialog');pop.setAttribute('aria-modal','true');pop.setAttribute('aria-label','Đang xác nhận kết quả Cướp Đêm');pop.innerHTML=`<div class="nr-pop-scrim"></div><div class="nr-pop-card"><div class="nr-pop-banner">ĐANG XÁC NHẬN</div><div class="nr-pop-body">${body}</div></div>`;wrap.appendChild(pop);announce('Đang xác nhận kết quả với máy chủ');}
   function retryRaidResult(){const p=pendingResultContext;if(!p)return retryPendingFinish();return finishOnline(p.target,p.state,p.commands);}
@@ -323,9 +323,9 @@ var NightRaid = (() => {
   // their army walk home needs to be told, plainly, that it cost them nothing.
   function ruinedBodyHTML(target,data){
     const retryAt=retryAtOf(data),name=data.name||target.name||'Nhà này';
-    return `<p>Có đội khác tới trước con. ${esc(name)} đã bị phá tan hoang và đang xây lại, nên quân ta quay về tay không — <b>không mất lượt nào, không mất xu nào</b>.</p>`
+    return `<p>Có đội khác tới trước bạn. ${esc(name)} đã bị phá tan hoang và đang xây lại, nên quân ta quay về tay không — <b>không mất lượt nào, không mất xu nào</b>.</p>`
       +`<div class="nr-result-score nr-ruined-score"><div><span>CƯỚP ĐƯỢC</span><strong>0 xu</strong></div><b>·</b><div><span>BỊ MẤT</span><strong>0 xu</strong></div></div>`
-      +(retryAt?`<p class="nr-ruined-when">Con quay lại nhà này được lúc <b>${esc(clockPhrase(retryAt))}</b>.</p>${lockChip(retryAt,'QUAY LẠI SAU','ruined')}`:'')
+      +(retryAt?`<p class="nr-ruined-when">Bạn quay lại nhà này được lúc <b>${esc(clockPhrase(retryAt))}</b>.</p>${lockChip(retryAt,'QUAY LẠI SAU','ruined')}`:'')
       +`<div class="nr-result-actions">${resultActionsHTML()}</div>`;
   }
   function renderRuinedResult(target,data){
@@ -340,7 +340,7 @@ var NightRaid = (() => {
     const pop=document.createElement('div');pop.id='nrResultPop';pop.className='nr-result-pop ruined';
     pop.setAttribute('role','dialog');pop.setAttribute('aria-modal','true');pop.setAttribute('aria-label','Nhà đã tan hoang');
     pop.innerHTML=`<div class="nr-pop-scrim"></div><div class="nr-pop-card"><div class="nr-pop-banner">NHÀ ĐÃ TAN HOANG</div><div class="nr-pop-body"><div class="nr-result-crest">${svg('castle')}</div>${ruinedBodyHTML(target,data)}</div></div>`;
-    wrap.appendChild(pop);announce('Nhà đã tan hoang — con không mất xu nào');
+    wrap.appendChild(pop);announce('Nhà đã tan hoang — bạn không mất xu nào');
     productionTicker=setInterval(updateLockTimers,1000);
   }
   function renderRuinedResultPage(target,data){
@@ -424,7 +424,7 @@ var NightRaid = (() => {
   // should receive a keyboard/tap action next.
   function selectZone(zone){builderZone=Math.max(0,Math.trunc(+zone||0));}
   function buyFarmPlot(styleId,confirmed){if(typeof styleId==='boolean'){confirmed=styleId;styleId='stone';}const F=NightRaidRules.farmRules,P=F.FARM_PLOT,style=F.plotStyle(styleId),def=Object.assign({},P,style,{kind:'plot'}),layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),have=layout.farms.length,balance=Math.max(0,Math.floor(+appState.coins||0));
-    if(have>=P.max){if(typeof showToast==='function')showToast('Con đã có đủ '+P.max+' nông trại riêng');return;}
+    if(have>=P.max){if(typeof showToast==='function')showToast('Bạn đã có đủ '+P.max+' nông trại riêng');return;}
     if(balance<P.price){if(typeof showToast==='function')showToast('Chưa đủ '+P.price+' xu để mua '+style.name.vi);return;}
     const plan={id:P.id,style:style.id,def,cost:P.price,refund:0,remove:false,balance,balanceAfter:balance-P.price,title:'Mua '+style.name.vi+'?',detail:`Một khu đất xanh ${P.size}×${P.size} riêng, chỉ trồng cây và dựng công trình nông trại. Không bị cướp.`};
     if(!confirmed){showBuildPurchase(plan);return;}
@@ -932,12 +932,12 @@ var NightRaid = (() => {
   function buildPurchasePlan(id,gx,gy,zone){const def=NightRaidRules.itemById(id);if(!def)return null;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),z=zoneOf(layout,zone===undefined?0:zone),G=z.grid,size=NightRaidRules.footprintFor(def);gx=Math.max(0,Math.min(G-size,Math.trunc(gx)));gy=Math.max(0,Math.min(G-size,Math.trunc(gy)));
     const isDefense=!!NightRaidRules.defenseById(def.id),layer=def.trap?'floor':'stand',cell=footprintOwner(layout,gx,gy,layer,z.zone),at=cell?z.cells.indexOf(cell):-1,old=cell?NightRaidRules.itemById(cell.type):null,owned=ownedCount(layout,def.id);
     let cost=def.kind==='crop'?0:def.price,refund=0,remove=false,title=(def.kind==='crop'?'Gieo ':'Mua ')+def.name.vi+'?',detail=def.kind==='crop'?`Dùng 1 hạt · chín sau ${def.days} ngày làm xong nhiệm vụ · hái được ${def.yield} xu`:def.kind==='farm'?`Chiếm ${size===2?'4 ô':'1 ô'} · trang trí, không sản xuất`:def.producer==='soldier'?'Chiếm 4 ô · mọi nhà lính chung một tiến độ; mốc 1, 2, 3, 4 rồi 5 Daily Task · mỗi nhà cho 1 lính mỗi đợt':def.producer==='coins'?`Chiếm 4 ô · thu hoạch ${def.yield} xu sau mỗi 24 giờ`:'Đặt tại hàng '+(gy+1)+', cột '+(gx+1);
-    if(def.kind==='crop'&&seedQuantity(def.id)<1)return{error:'Con chưa có hạt '+def.name.vi+' — hoàn thành Daily Task 2 ngày liên tiếp để nhận'};
+    if(def.kind==='crop'&&seedQuantity(def.id)<1)return{error:'Bạn chưa có hạt '+def.name.vi+' — hoàn thành Daily Task 2 ngày liên tiếp để nhận'};
     if(isDefense&&z.zone>0)return{error:'Nông trại riêng chỉ trồng cây và dựng công trình nông trại'};
     if(!cell&&!buildSpaceFree(layout,gx,gy,size,layer,null,true,z.zone))return{error:size===2?'Cần một vùng trống 2 × 2 ô để đặt công trình':'Ô này đã có công trình'};
     if(cell&&(cell.gx!==gx||cell.gy!==gy||NightRaidRules.footprintFor(old)!==size))return{error:'Vùng đặt đang chồng lên công trình khác'};
     if(cell&&old&&old.kind==='crop')return{error:old.name.vi+' đang lớn, chờ hái rồi hãy trồng cây khác'};
-    if(def.buyMax&&!cell&&owned>=def.buyMax)return{error:'Mỗi loại 1 cái — con đã có '+def.name.vi};
+    if(def.buyMax&&!cell&&owned>=def.buyMax)return{error:'Mỗi loại 1 cái — bạn đã có '+def.name.vi};
     if(def.maxOwned&&owned>=def.maxOwned&&(!cell||cell.type!==def.id))return{error:'Chỉ được đặt tối đa '+def.maxOwned+' '+def.name.vi};
     if(cell&&cell.type===def.id){
       if(def.kind==='farm'){remove=true;cost=0;refund=Math.floor(def.price*.5);title='Dỡ '+def.name.vi+'?';detail='Hoàn lại '+refund+' xu, ô này trống ra';}
@@ -1129,7 +1129,7 @@ var NightRaid = (() => {
       const secret=document.getElementById('nrScoutSecret');if(secret)secret.hidden=false;
     });
   }
-  function decorateBuilderMenus(){const nav=document.querySelector('.nr-builder-nav');if(!nav||nav.querySelector('.seeds'))return;nav.insertAdjacentHTML('beforeend',`<button class="nr-builder-nav-btn seeds" type="button" onclick="nrOpenSeeds()" aria-label="Kho Hạt giống, ${totalSeeds()} hạt" title="Kho Hạt giống">${svg('seed')}${totalSeeds()?`<i class="nr-fab-badge" aria-hidden="true">${totalSeeds()}</i>`:''}<span>HẠT GIỐNG</span></button>`);if(builderShopTab==='seeds'){const shop=document.getElementById('nrBuildShop');shop?.setAttribute('aria-label','Kho Hạt giống');const label=shop?.querySelector('.nr-label'),heading=shop?.querySelector('.nr-shop-heading strong'),hint=shop?.querySelector('.nr-shop-heading>span'),tray=shop?.querySelector('.nr-build-tray');if(label)label.textContent='KHO HẠT GIỐNG';if(heading)heading.textContent='Chọn hạt rồi chạm ô đất để gieo';if(hint)hint.textContent='Hạt nhận từ chuỗi 2 ngày Daily Task';if(tray)tray.setAttribute('aria-label','Hạt giống con đang có');}}
+  function decorateBuilderMenus(){const nav=document.querySelector('.nr-builder-nav');if(!nav||nav.querySelector('.seeds'))return;nav.insertAdjacentHTML('beforeend',`<button class="nr-builder-nav-btn seeds" type="button" onclick="nrOpenSeeds()" aria-label="Kho Hạt giống, ${totalSeeds()} hạt" title="Kho Hạt giống">${svg('seed')}${totalSeeds()?`<i class="nr-fab-badge" aria-hidden="true">${totalSeeds()}</i>`:''}<span>HẠT GIỐNG</span></button>`);if(builderShopTab==='seeds'){const shop=document.getElementById('nrBuildShop');shop?.setAttribute('aria-label','Kho Hạt giống');const label=shop?.querySelector('.nr-label'),heading=shop?.querySelector('.nr-shop-heading strong'),hint=shop?.querySelector('.nr-shop-heading>span'),tray=shop?.querySelector('.nr-build-tray');if(label)label.textContent='KHO HẠT GIỐNG';if(heading)heading.textContent='Chọn hạt rồi chạm ô đất để gieo';if(hint)hint.textContent='Hạt nhận từ chuỗi 2 ngày Daily Task';if(tray)tray.setAttribute('aria-label','Hạt giống bạn đang có');}}
   function startProductionTicker(){decorateBuilderMenus();updateProductionTimers();productionTicker=setInterval(updateProductionTimers,1000);}
   function localCollect(uid){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),now=Date.now();let coins=0,soldiers=0;const room=()=>Math.max(0,100000-(+appState.coins||0));
     const sweep=cells=>cells.filter(cell=>{const def=NightRaidRules.itemById(cell.type);if(!def||(uid&&cell.uid!==uid))return true;
@@ -1235,7 +1235,7 @@ var NightRaid = (() => {
       if(homeDirty())syncHome();
       else appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);
       save();
-      if(gained&&typeof showToast==='function')showToast('Nhà con nhận thêm '+gained+' xu khi con offline');
+      if(gained&&typeof showToast==='function')showToast('Nhà bạn nhận thêm '+gained+' xu khi bạn offline');
       if(view==='builder')renderBuilder();
       else if(view==='home')renderHome();
     })();
@@ -1280,15 +1280,15 @@ var NightRaid = (() => {
   // server answered 429 — which is exactly the refusal that used to kill the
   // TIẾN QUÂN button on the next screen.
   function friendRow(f,index,hasTickets){const retryAt=retryAtOf(f),left=lockLeft(retryAt),ready=left<=0&&hasTickets!==false;
-    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(left>0?'còn '+waitPhrase(left)+' nữa con mới vào lại được':ready?'tấn công ngay được':'hôm nay con hết lượt rồi');
+    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(left>0?'còn '+waitPhrase(left)+' nữa bạn mới vào lại được':ready?'tấn công ngay được':'hôm nay bạn hết lượt rồi');
     return `<li><button type="button" class="nr-friend-row ${ready?'ready':'wait'}" ${ready?'':'disabled'} ${left>0?`data-nr-friend-until="${retryAt}"`:''} onclick="nrAttackLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}</small></span><span class="nr-friend-state" data-nr-friend-state>${left>0?`<small>CHỜ THÊM</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>vào lại lúc ${esc(clockPhrase(retryAt))}</em>`:readyStateHtml(hasTickets)}</span></button></li>`;}
   // Ticks beside updateLockTimers: the text only changes when the minute does,
   // and a row whose clock ran out is handed back as a live TẤN CÔNG button.
   function updateFriendTimers(hasTickets){document.querySelectorAll('.nr-friend-row[data-nr-friend-until]').forEach(row=>{const left=lockLeft(row.dataset.nrFriendUntil),time=row.querySelector('[data-nr-friend-time]');if(left>0){const text='còn '+waitPhrase(left);if(time&&time.textContent!==text)time.textContent=text;return;}row.removeAttribute('data-nr-friend-until');const state=row.querySelector('[data-nr-friend-state]');if(state)state.innerHTML=readyStateHtml(hasTickets);if(hasTickets===false)return;row.disabled=false;row.classList.remove('wait');row.classList.add('ready');});}
   function ownStatusHtml(me){const now=Date.now(),shield=Math.max(0,+(me?me.shieldUntil:homeShieldUntil)||0),lock=Math.max(0,+(me?me.lockedUntil:homeLockedUntil)||0);
-    if(shield>now)return `<div class="nr-own-status safe" role="status"><i>🛡️</i><span>Nhà con: <b>đang có khiên</b> đến ${esc(clockPhrase(shield))} — ai cướp cũng thua.</span></div>`;
-    if(lock>now)return `<div class="nr-own-status safe" role="status"><i>🏰</i><span>Nhà con: <b>đang được bảo vệ</b> đến ${esc(clockPhrase(lock))} (còn ${waitPhrase(lock-now)}).</span></div>`;
-    return '<div class="nr-own-status open" role="status"><i>🏰</i><span>Nhà con: <b>có thể bị cướp</b> — xây thêm phòng thủ hoặc bật khiên.</span></div>';}
+    if(shield>now)return `<div class="nr-own-status safe" role="status"><i>🛡️</i><span>Nhà bạn: <b>đang có khiên</b> đến ${esc(clockPhrase(shield))} — ai cướp cũng thua.</span></div>`;
+    if(lock>now)return `<div class="nr-own-status safe" role="status"><i>🏰</i><span>Nhà bạn: <b>đang được bảo vệ</b> đến ${esc(clockPhrase(lock))} (còn ${waitPhrase(lock-now)}).</span></div>`;
+    return '<div class="nr-own-status open" role="status"><i>🏰</i><span>Nhà bạn: <b>có thể bị cướp</b> — xây thêm phòng thủ hoặc bật khiên.</span></div>';}
   async function showLiveTargets(){cleanup();setNav(true);view='live';const r=root();if(!r)return;
     // The topbar already owns the close action and identifies the mode. A
     // second oversized "Quay lại / Chọn nhà để cướp" header repeated both,
@@ -1305,7 +1305,7 @@ var NightRaid = (() => {
     liveTargets=friends.map(friendTarget);
     const hasTickets=tickets>0;
     const friendList=friends.length?`<ul class="nr-friend-list">${friends.map((f,i)=>friendRow(f,i,hasTickets)).join('')}</ul>`
-      :'<div class="nr-live-empty"><strong>Con chưa có bạn để đi cướp</strong>Kết bạn trong <b>Hồ sơ → 👥 Bạn bè</b> (gửi link kết bạn cho bạn cùng lớp). Bạn bè hợp lệ sẽ hiện ở đây ngay cả khi bạn ấy chưa từng mở Nhà Cướp Đêm.<button class="nr-secondary nr-wide" type="button" onclick="closeNightRaid();if(typeof switchScreen===\'function\')switchScreen(\'profileScreen\')">Mở 👥 Bạn bè</button></div>';
+      :'<div class="nr-live-empty"><strong>Bạn chưa có bạn bè để đi cướp</strong>Kết bạn trong <b>Hồ sơ → 👥 Bạn bè</b> (gửi link kết bạn cho bạn cùng lớp). Bạn bè hợp lệ sẽ hiện ở đây ngay cả khi bạn ấy chưa từng mở Nhà Cướp Đêm.<button class="nr-secondary nr-wide" type="button" onclick="closeNightRaid();if(typeof switchScreen===\'function\')switchScreen(\'profileScreen\')">Mở 👥 Bạn bè</button></div>';
     r.innerHTML=shell(`<main class="nr-live-targets">${overview(tickets,'Bấm Tấn công để vào trận ngay')}${ownStatusHtml(me)}<div class="nr-live-head"><h3>👥 Bạn bè</h3><span>${friends.length} nhà</span></div>${friendList}</main>`);
     updateFriendTimers(hasTickets);productionTicker=setInterval(()=>{updateLockTimers();updateFriendTimers(hasTickets);},1000);}
   function attackLive(index){const t=liveTargets[index];if(!t)return;scout(t);}
@@ -1337,8 +1337,8 @@ var NightRaid = (() => {
   // actually pay, so the defender is never credited money that never left
   // anybody. See the note beside attackerCan.
   async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId,coins:Math.max(0,Math.trunc(+appState.coins||0))}});const verified=res.ok&&res.data&&res.data.result;
-    if(!verified&&isExpired(res)){clearPendingRaid(target.raidId);announce('Trận này đã hết giờ');if(typeof showToast==='function')showToast('Hết giờ trận này rồi — con vào lại nhà đó được ngay');return showLiveTargets();}
-    if(!verified){if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — con có thể thử xác nhận lại');return renderConfirmingResult(target,state,commands);}pendingResultContext=null;clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,rewardReason:verified.rewardReason,loot:Math.max(0,+verified.loot||0),victoryBonus:Math.max(0,+verified.victoryBonus||0),defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,verified.loss||0);}
+    if(!verified&&isExpired(res)){clearPendingRaid(target.raidId);announce('Trận này đã hết giờ');if(typeof showToast==='function')showToast('Hết giờ trận này rồi — bạn vào lại nhà đó được ngay');return showLiveTargets();}
+    if(!verified){if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — bạn có thể thử xác nhận lại');return renderConfirmingResult(target,state,commands);}pendingResultContext=null;clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,rewardReason:verified.rewardReason,loot:Math.max(0,+verified.loot||0),victoryBonus:Math.max(0,+verified.victoryBonus||0),defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,verified.loss||0);}
 
   // ---- NHẬT KÝ = cả hai chiều ---------------------------------------------
   // The log answered one question — "who came to MY house?" — and never the
@@ -1382,8 +1382,8 @@ var NightRaid = (() => {
     raidReports=res.data.reports||[];
     const attacks=Array.isArray(res.data.attacks)?res.data.attacks:null;
     const unseen=raidReports.filter(x=>!x.seen).map(x=>x.id);
-    const attackSection=attacks?`<section class="nr-log-section"><div class="nr-live-head"><h3>⚔️ Con đi cướp</h3><span>${attacks.length} trận</span></div><div class="nr-report-list">${attacks.map(attackCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Con chưa đi cướp nhà nào</h3><p>Bấm ĐI CƯỚP ở màn hình nhà rồi chọn một nhà để bắt đầu.</p></div>'}</div></section>`:'';
-    const defenceSection=`<section class="nr-log-section"><div class="nr-live-head"><h3>🏰 Nhà con bị cướp</h3><span>${raidReports.length} trận</span></div><div class="nr-report-list">${raidReports.map(reportCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Đêm nay vẫn yên bình</h3><p>Khi có người ghé lâu đài, replay sẽ xuất hiện ở đây.</p></div>'}</div></section>`;
+    const attackSection=attacks?`<section class="nr-log-section"><div class="nr-live-head"><h3>⚔️ Bạn đi cướp</h3><span>${attacks.length} trận</span></div><div class="nr-report-list">${attacks.map(attackCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Bạn chưa đi cướp nhà nào</h3><p>Bấm ĐI CƯỚP ở màn hình nhà rồi chọn một nhà để bắt đầu.</p></div>'}</div></section>`:'';
+    const defenceSection=`<section class="nr-log-section"><div class="nr-live-head"><h3>🏰 Nhà bạn bị cướp</h3><span>${raidReports.length} trận</span></div><div class="nr-report-list">${raidReports.map(reportCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Đêm nay vẫn yên bình</h3><p>Khi có người ghé lâu đài, replay sẽ xuất hiện ở đây.</p></div>'}</div></section>`;
     r.innerHTML=shell(`<main class="nr-reports">${attackSection}${defenceSection}</main>`);
     if(unseen.length)api('reports',{method:'POST',body:{ids:unseen}});}
 

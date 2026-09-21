@@ -99,7 +99,7 @@ suite('daily task client: task screen', () => {
     let r = load({ appState: stateWith({ tasks: [TASKS[1]], allDone: true, rewardedToday: true, pending: [TODAY] }) });
     r.DailyTask.renderScreen();
     assert.truthy(r.html.dailyTaskScreen.includes('Đã nhận 200 xu'), r.html.dailyTaskScreen);
-    assert.truthy(r.html.dailyTaskScreen.includes('quà đang chờ con mở'), 'today\'s pick is still pending');
+    assert.truthy(r.html.dailyTaskScreen.includes('quà đang chờ bạn mở'), 'today\'s pick is still pending');
     assert.truthy(r.html.dailyTaskScreen.includes('Hôm nay xong rồi'), 'the hero celebrates');
     assert.truthy(r.html.dailyTaskScreen.includes('dt-gift-cta') && r.html.dailyTaskScreen.includes('Armory.open()'), 'the gift button points at the armory');
     r = load({ appState: stateWith({ tasks: [TASKS[1]], allDone: true, rewardedToday: true, pending: [], recent: [{ date: TODAY, kind: 'sword' }] }) });
@@ -249,7 +249,7 @@ suite('daily task client: open', () => {
 
 suite('daily task client: shield button', () => {
   test('every server refusal gets its own child-sized reason', async () => {
-    const cases = [['empty', 'Con chưa có khiên nào'], ['active', 'Khiên đang bật rồi'], ['no_home', 'Hãy mở Cướp Đêm và xây nhà trước']];
+    const cases = [['empty', 'Bạn chưa có khiên nào'], ['active', 'Khiên đang bật rồi'], ['no_home', 'Hãy mở Cướp Đêm và xây nhà trước']];
     for (const [code, msg] of cases) {
       const { DailyTask, calls } = load({
         appState: stateWith(),

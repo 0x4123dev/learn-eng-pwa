@@ -262,7 +262,7 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
       targets: targetsReply,
     });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Nhà con'));
+    assert.truthy(html.includes('Nhà bạn'));
     assert.truthy(html.includes('đang được bảo vệ'));
     assert.truthy(html.includes('còn 23 giờ'));
   });
@@ -274,7 +274,7 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
       targets: targetsReply,
     });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Nhà con'));
+    assert.truthy(html.includes('Nhà bạn'));
     assert.truthy(html.includes('đang có khiên'));
     assert.truthy(w.screen().querySelector('.nr-own-status'), 'and it lives in its own banner, not on a row');
   });
@@ -282,14 +282,14 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
   test('…or open', async () => {
     const w = await openLive({ friends: friendsReply([]), targets: targetsReply });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Nhà con'));
+    assert.truthy(html.includes('Nhà bạn'));
     assert.truthy(html.includes('có thể bị cướp'));
   });
 
   test('no friends yet: a friendly empty state points at 👥 Bạn bè with no random-house block', async () => {
     const w = await openLive({ friends: friendsReply([]), targets: targetsReply });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Con chưa có bạn để đi cướp'));
+    assert.truthy(html.includes('Bạn chưa có bạn bè để đi cướp'));
     assert.truthy(html.includes('Bạn bè'), 'it names the Friends tab');
     assert.truthy(html.includes('profileScreen'), 'and offers to take the child there');
     assert.falsy(html.includes('nrScoutBot()'), 'a friendless child is not handed a bot instead');

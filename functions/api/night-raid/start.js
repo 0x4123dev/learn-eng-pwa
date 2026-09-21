@@ -34,7 +34,7 @@ export async function onRequestPost({request,env}) {
   // unique index is the race-proof half of the same rule.
   const live=await env.DB.prepare("SELECT COUNT(*) AS n FROM night_raids WHERE attacker_id=? AND status='active' AND expires_at>=?").bind(auth.uid,now0).first();
   const inFlight=Math.max(0,Number(live&&live.n||0));
-  if(inFlight>0)return err('Con đang có một trận Cướp Đêm dở dang — vào lại trận đó trước đã',409,{inFlight:true});
+  if(inFlight>0)return err('Bạn đang có một trận Cướp Đêm dở dang — vào lại trận đó trước đã',409,{inFlight:true});
   if(stats.used+inFlight>=stats.allowance)return err('Hết lượt Cướp Đêm hôm nay',429);
   // Accounts created before Night Raid do not have a home row until they open
   // the builder. Materialise both harmless defaults here so an accepted friend
@@ -58,7 +58,7 @@ export async function onRequestPost({request,env}) {
   // as 'active' forever and lock the door for 12 h for nothing.
   const last=await env.DB.prepare(`SELECT MAX(created_at) AS last_at FROM night_raids WHERE attacker_id=? AND defender_id=? AND status IN ${COOLDOWN_RAID_STATUS_SQL}`).bind(auth.uid,targetId).first();
   const retryAt=retryAvailableAt(last&&last.last_at,cfg.retry_hours,now);
-  if(retryAt)return err('Con vừa đánh nhà này rồi',409,{retryAt});
+  if(retryAt)return err('Bạn vừa đánh nhà này rồi',409,{retryAt});
   // Nhà tan hoang. The house was robbed by somebody and is sealed — but the
   // child could not know that, so they do NOT get bounced for free the way
   // they used to. The attempt is recorded (status='ruined'), the client marches

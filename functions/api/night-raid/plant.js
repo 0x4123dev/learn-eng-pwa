@@ -36,7 +36,7 @@ export async function onRequestPost({request,env}) {
     env.DB.prepare(`UPDATE night_raid_homes SET layout_json=?,home_level=?,updated_at=? WHERE user_id=? AND changes()>0`)
       .bind(JSON.stringify(withBarracksTraining(clean,training)),homeLevel,now,auth.uid),
   ]);
-  if(!(results&&results[0]&&results[0].meta&&results[0].meta.changes>0))return err('Con chưa có hạt '+crop.name.vi,409);
+  if(!(results&&results[0]&&results[0].meta&&results[0].meta.changes>0))return err('Bạn chưa có hạt '+crop.name.vi,409);
   const seeds=await seedStatus(env,auth.uid,clock.ctx.today,clock.ctx.doneToday);
   return json({ok:true,layout:clean,dayCount:clock.dayCount,ctx:clock.ctx,seeds,planted:{id:crop.id,name:crop.name.vi}});
 }

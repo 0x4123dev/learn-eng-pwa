@@ -117,7 +117,7 @@ function retryOwedBannerHTML(key) {
   const noun = (cfg && cfg.noun) || 'câu';
   return `
     <div class="unit-owed-banner locked">
-      <div class="unit-owed-text">✍️ Bé có <b>${n} ${noun} sai</b> cần gõ lại trước khi luyện bài mới.</div>
+      <div class="unit-owed-text">✍️ Bạn có <b>${n} ${noun} sai</b> cần gõ lại trước khi luyện bài mới.</div>
       <button class="unit-owed-btn" onclick="startRetryDrill('${key}')">Luyện ngay →</button>
     </div>`;
 }
@@ -130,7 +130,7 @@ function retryResultBannerHTML(key, wrongNow) {
   return `
     <div class="unit-owed-banner">
       <b>❌ ${wrongNow} ${noun} sai</b> trong bài này.
-      Bé cần gõ lại <b>${n} ${noun}</b> trước khi luyện bài mới.
+      Bạn cần gõ lại <b>${n} ${noun}</b> trước khi luyện bài mới.
     </div>`;
 }
 function retryResultCtaHTML(key) {
@@ -170,7 +170,7 @@ function quitRetryDrill(key) {
   const cfg = retryCfg(st.key);
   const noun = (cfg && cfg.noun) || 'câu';
   if ((st.fixed + st.missed) > 0 && typeof confirm === 'function'
-    && !confirm('Con đang luyện lại ' + noun + ' sai — còn ' + st.queue.length + ' ' + noun + '.\n'
+    && !confirm('Bạn đang luyện lại ' + noun + ' sai — còn ' + st.queue.length + ' ' + noun + '.\n'
       + 'Ra bây giờ thì lần sau vẫn phải luyện tiếp.\n\nVẫn ra chứ?')) return false;
   const k = st.key;
   abandonRetryDrill();
@@ -244,13 +244,13 @@ function renderRetryDrill() {
     // answer, then Next. The verdict belongs to the question that earned it and
     // is shown HERE — never carried onto the next item's screen.
     ? `<div class="wf-text-answer ${done.ok ? 'correct' : 'wrong'}">
-         <span class="wf-text-answer-label">Bé gõ:</span>
+         <span class="wf-text-answer-label">Bạn gõ:</span>
          <span class="wf-text-answer-value">${done.shown ? retryEsc(done.shown) : '<em>(chưa gõ)</em>'}</span>
        </div>
        <div class="grammar-explanation ${done.ok ? 'correct' : 'wrong'}">
          <div>${done.ok
             ? '✅ Chính xác!'
-            : '❌ Đáp án đúng: <b>' + retryEsc(answer) + '</b> · bé sẽ gặp lại ' + noun + ' này'}</div>
+            : '❌ Đáp án đúng: <b>' + retryEsc(answer) + '</b> · bạn sẽ gặp lại ' + noun + ' này'}</div>
          ${typeof cfg.explainHTML === 'function' ? (cfg.explainHTML(item) || '') : ''}
        </div>
        <button class="grammar-next-btn" onclick="nextRetryQuestion()">${left > 0 ? 'Next →' : 'Xong!'}</button>`
@@ -352,7 +352,7 @@ function finishRetryDrill() {
       <div class="unit-retry-done">
         <div class="unit-retry-done-emoji">🎉</div>
         <div class="unit-retry-done-title">Hết ${noun} sai rồi!</div>
-        <div class="unit-retry-done-sub">Bé có thể luyện bài mới ngay bây giờ.</div>
+        <div class="unit-retry-done-sub">Bạn có thể luyện bài mới ngay bây giờ.</div>
       </div>
       <button class="phrases-cta-secondary phrases-review-btn" onclick="retryGoHome('${cfg.key}')">🏠 Về trang chính</button>
     </div>`;

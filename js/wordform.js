@@ -579,8 +579,8 @@ function wfFollowRecapHTML(st, q) {
       ? String(prevAns.value || '')
       : ((prev.options && prev.options[prevAns.value]) || '');
     line = prevAns.isCorrect
-      ? `<div class="wf-recap-you ok">✅&nbsp;Bé trả lời đúng: <b>${wfEsc(q.answer)}</b></div>`
-      : `<div class="wf-recap-you bad">❌&nbsp;Bé trả lời: <s>${given ? wfEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${wfEsc(q.answer)}</b></div>`;
+      ? `<div class="wf-recap-you ok">✅&nbsp;Bạn trả lời đúng: <b>${wfEsc(q.answer)}</b></div>`
+      : `<div class="wf-recap-you bad">❌&nbsp;Bạn trả lời: <s>${given ? wfEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${wfEsc(q.answer)}</b></div>`;
   }
   return `
       <div class="wf-follow-recap">

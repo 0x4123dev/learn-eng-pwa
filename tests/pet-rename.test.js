@@ -17,7 +17,7 @@ suite('pet rename: the child can change the dog\'s name from home', () => {
     assert.truthy(home.includes('if (!appState.petName || _petRenaming)'));
     assert.truthy(home.includes('value="${currentName}"'), 'the current name must be prefilled');
     assert.truthy(home.includes('cancelPetRename'), 'the child can back out and keep the old name');
-    assert.truthy(home.includes('Đổi tên cún của con'));
+    assert.truthy(home.includes('Đổi tên cún của bạn'));
   });
 
   test('saving trims, caps at 12 chars, clears the rename state and celebrates', () => {

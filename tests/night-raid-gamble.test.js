@@ -124,7 +124,7 @@ suite('night raid: marching into ruins', () => {
 
     const again = await start(world, later, defender);
     assert.equal(again.status, 409, 'a second march inside 12 h is refused');
-    assert.equal(again.data.error, 'Con vừa đánh nhà này rồi');
+    assert.equal(again.data.error, 'Bạn vừa đánh nhà này rồi');
     assert.inRange(again.data.retryAt - Date.now(), 12 * HOUR - 5000, 12 * HOUR + 5000);
 
     const list = await world.call(friendsHandler().onRequestGet, { method: 'GET', token: later.token });

@@ -31,7 +31,7 @@ export async function onRequestPost({ request, env }) {
   const now = Date.now();
   if (pair.nextReadyAt > now) return err('Cặp này vừa đấu rồi — chờ hết giờ nhé!', 429, { readyAt: pair.nextReadyAt });
 
-  if (await currentFight(env, auth.uid)) return err('Con đang ở trong một trận rồi', 409);
+  if (await currentFight(env, auth.uid)) return err('Bạn đang ở trong một trận rồi', 409);
   if (await currentFight(env, friendId)) return err('Bạn ấy đang bận một trận khác', 409);
 
   const base = MF.baseLevel(+body.level || 0, +body.foeLevel || 0);

@@ -194,7 +194,7 @@ var MathFight = (() => {
         <span class="win">Thắng <b>+${prize}</b> xu</span>
         <span class="lose">Thua <b>−${prize}</b> xu</span>
       </div>
-      <small class="mf-note">Ví của con đang có ${coins()} xu. Hết xu vẫn chơi được — thua thì không bị trừ thêm.</small>
+      <small class="mf-note">Ví của bạn đang có ${coins()} xu. Hết xu vẫn chơi được — thua thì không bị trừ thêm.</small>
       <div class="mf-actions">
         <button class="mf-secondary" type="button" onclick="mfBackToList()">Thôi</button>
         <button class="mf-primary" type="button" onclick="mfSend(${userId})">Gửi lời thách</button>
@@ -449,10 +449,10 @@ var MathFight = (() => {
         <div><span>CON</span><strong>${st.fight.myCorrect || 0}</strong></div><b>—</b>
         <div><span>BẠN ẤY</span><strong>${st.fight.foeCorrect || 0}</strong></div>
       </div>
-      <p>${quit ? (won ? 'Bạn ấy rời trận giữa chừng.' : 'Con rời trận nên xử thua.')
+      <p>${quit ? (won ? 'Đối thủ rời trận giữa chừng.' : 'Bạn rời trận nên xử thua.')
         : drew ? 'Hai bên bằng điểm và bằng cả thời gian — xu được trả lại.'
-        : won ? 'Con làm đúng nhiều hơn và mang trọn tiền cược về!'
-        : 'Lần sau cố lên — con sẽ có cửa thắng.'}</p>
+        : won ? 'Bạn làm đúng nhiều hơn và mang trọn tiền cược về!'
+        : 'Lần sau cố lên — bạn sẽ có cửa thắng.'}</p>
       <div class="mf-result-coins ${drew || !moved ? 'flat' : won ? 'up' : 'down'}">${
         drew ? 'Hòa — không ai mất xu'
         : moved > 0 ? '+' + moved + ' xu vào ví'
@@ -470,7 +470,7 @@ var MathFight = (() => {
   function isFighting() { return st.view === 'fight' && !!st.fight && st.fight.status === 'active'; }
   function forfeitNow() { if (isFighting()) submit(true); }
   function quit() {
-    if (typeof confirm === 'function' && !confirm('Bỏ cuộc là thua và mất tiền cược. Con chắc chưa?')) return;
+    if (typeof confirm === 'function' && !confirm('Bỏ cuộc là thua và mất tiền cược. Bạn chắc chưa?')) return;
     submit(true);
   }
   function backToList() { lockScreen(false); st.fight = null; st.view = 'list'; paintLoading(); refresh(); }

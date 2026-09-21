@@ -91,7 +91,7 @@ suite('giữ thành: the defender is paid by the system, whatever the raider had
     assert.equal(result.defenseReason, 'defense_reward');
     assert.equal(coinsOf(world, me.uid), 0);
     assert.equal(coinsOf(world, wall.uid), 900, 'the mirror is credited so the owner\'s next open shows it');
-    assert.deepEqual(grantsFor(world, wall.uid), [{ amount: 100, note: 'Cướp Đêm: con giữ được nhà' }],
+    assert.deepEqual(grantsFor(world, wall.uid), [{ amount: 100, note: 'Cướp Đêm: bạn giữ được nhà' }],
       'and the IOU that reaches the defender\'s device is the same 100, on the same note the client already knows');
     assert.equal(owedTo(world, me.uid), 0, 'the attacker settles on their own device');
     assert.equal(defenseEarned(world, wall.uid), 100, 'the day\'s ledger counts it');

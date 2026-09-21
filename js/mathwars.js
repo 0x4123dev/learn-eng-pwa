@@ -344,7 +344,7 @@ function warsQuit() {
   if (!isWarsActive()) { _warsBackToMenu(); return; }
   const left = warsClockText(warsLeftMs());
   const ask = (typeof confirm === 'function')
-    ? confirm('Con đang trong trận Math Wars, còn ' + left + '.\n'
+    ? confirm('Bạn đang trong trận Math Wars, còn ' + left + '.\n'
             + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')
     : true;
   if (!ask) return;

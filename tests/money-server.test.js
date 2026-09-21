@@ -74,10 +74,10 @@ suite('money server: coin grants pay exactly once', () => {
     const user = await world.createUser({});
     world.db.prepare(
       'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,?)'
-    ).run(user.uid, 100, 'Cướp Đêm: con giữ được nhà', 0);
+    ).run(user.uid, 100, 'Cướp Đêm: bạn giữ được nhà', 0);
     const result = await world.call(coinsHandler().onRequestPost, { token: user.token });
     assert.deepEqual(result.data.adjustments, [
-      { amount: 100, note: 'Cướp Đêm: con giữ được nhà', manual: false },
+      { amount: 100, note: 'Cướp Đêm: bạn giữ được nhà', manual: false },
     ]);
   });
 

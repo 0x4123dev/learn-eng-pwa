@@ -168,7 +168,7 @@ var DailyTask = (function () {
     const f = farmOf(s);
     const seed = seedsOf(s).justRewarded || seedsOf(s).recent.find(r => r.date === s.date);
     const garden = !f ? '' : (f.ctx && !f.ctx.doneYesterday ? ' · Cây tươi lại rồi 🌱' : ' · Cây lớn thêm 1 ngày 🌱') + (f.ripe ? ` · ${f.ripe} cây chín, đi hái nào` : '');
-    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!' + (seed ? ' · Nhận 1 hạt ' + seed.name + '!' : '') + garden);
+    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ bạn chọn!' + (seed ? ' · Nhận 1 hạt ' + seed.name + '!' : '') + garden);
     // #confettiContainer sits outside every screen, so this lands wherever
     // the child happens to be when the last task ticks over.
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
@@ -190,12 +190,12 @@ var DailyTask = (function () {
     const headline = stale
       ? 'Đang cập nhật nhiệm vụ hôm nay…'
       : complete
-        ? 'Con đã hoàn thành hôm nay!'
+        ? 'Bạn đã hoàn thành hôm nay!'
         : tasks.length
-          ? `Con còn ${tasks.length - done} nhiệm vụ hôm nay`
-          : 'Con đã hoàn thành hôm nay!';
+          ? `Bạn còn ${tasks.length - done} nhiệm vụ hôm nay`
+          : 'Bạn đã hoàn thành hôm nay!';
     const subtitle = pending.length
-      ? `Có ${pending.length} phần quà đang chờ con chọn`
+      ? `Có ${pending.length} phần quà đang chờ bạn chọn`
       : complete
         ? 'Phần thưởng hôm nay đã được nhận'
         : farm && farm.wilted
@@ -205,7 +205,7 @@ var DailyTask = (function () {
       ? (pending.length === 1 ? 'Chọn quà hôm nay' : `Chọn ${pending.length} phần quà`)
       : complete ? 'Xem nhiệm vụ đã hoàn thành' : 'Xem nhiệm vụ hôm nay';
     const primaryAction = pending.length ? 'Armory.open()' : 'DailyTask.open()';
-    const giftLabel = pending.length ? ` — ${pending.length} phần thưởng chờ con chọn` : '';
+    const giftLabel = pending.length ? ` — ${pending.length} phần thưởng chờ bạn chọn` : '';
     host.innerHTML = `<section class="dt-card ${complete ? 'done' : ''}" aria-label="Nhiệm vụ hôm nay${giftLabel}">
       <div class="dt-card-head">
         <button type="button" class="dt-card-open" onclick="DailyTask.open()" aria-label="Mở nhiệm vụ hôm nay">
@@ -254,7 +254,7 @@ var DailyTask = (function () {
       : 'Bắt đầu thôi!';
     const heroSub = !tasks.length ? 'Đợi thầy cô giao bài nhé.'
       : stale ? 'Đang lấy kết quả hôm nay…'
-      : allDone ? (f ? '+200 xu đã vào túi. Cây đã lớn hôm nay 🌼' : (pending.length ? 'Có quà đang chờ con mở 🎁' : '+200 xu đã vào túi. Mai lại có tiếp!'))
+      : allDone ? (f ? '+200 xu đã vào túi. Cây đã lớn hôm nay 🌼' : (pending.length ? 'Có quà đang chờ bạn mở 🎁' : '+200 xu đã vào túi. Mai lại có tiếp!'))
       : wilted ? 'Cây đang héo 🥀. Xong hết nhiệm vụ là cây tươi lại'
       : f ? 'Xong hết là +200 xu, 1 món quà, và cây lớn thêm 1 ngày 🌱'
       : 'Xong hết là được +200 xu và 1 món quà 🎁';
@@ -267,7 +267,7 @@ var DailyTask = (function () {
     // The unopened gift. Shown whenever something is waiting — not only on the
     // day it was earned, because a child may open the app days later.
     const giftCta = pending.length
-      ? `<button type="button" class="dt-gift-cta" onclick="Armory.open()"><span class="dt-gift-emoji" aria-hidden="true">🎁</span><span><strong>${pending.length === 1 ? 'Mở quà nào!' : `Có ${pending.length} món quà chờ con!`}</strong><small>Chọn khiên 🛡️ hoặc kiếm ⚔️</small></span><span aria-hidden="true">→</span></button>`
+      ? `<button type="button" class="dt-gift-cta" onclick="Armory.open()"><span class="dt-gift-emoji" aria-hidden="true">🎁</span><span><strong>${pending.length === 1 ? 'Mở quà nào!' : `Có ${pending.length} món quà chờ bạn!`}</strong><small>Chọn khiên 🛡️ hoặc kiếm ⚔️</small></span><span aria-hidden="true">→</span></button>`
       : '';
 
     const list = tasks.length ? tasks.map(t => {
@@ -309,9 +309,9 @@ var DailyTask = (function () {
     const reward = !tasks.length ? ''
       : (s && s.allDone && s.rewardedToday)
         ? (pending.includes(s.date)
-          ? '<div class="dt-reward">🎉 Đã nhận 200 xu hôm nay — quà đang chờ con mở ở trên!</div>'
+          ? '<div class="dt-reward">🎉 Đã nhận 200 xu hôm nay — quà đang chờ bạn mở ở trên!</div>'
           : `<div class="dt-reward">🎉 Đã nhận 200 xu + ${pickWord(todayPick && todayPick.kind)} hôm nay</div>`)
-        : '<div class="dt-reward muted">Xong hết nhiệm vụ: +200 xu và 1 món quà — con chọn khiên 🛡️ hoặc kiếm ⚔️</div>';
+        : '<div class="dt-reward muted">Xong hết nhiệm vụ: +200 xu và 1 món quà — bạn chọn khiên 🛡️ hoặc kiếm ⚔️</div>';
     host.innerHTML = `<div class="dt-head">
         <button type="button" class="close-btn" onclick="DailyTask.close()" aria-label="Đóng">×</button>
         <h2>📋 Nhiệm vụ hôm nay</h2><p>${esc((s && s.date) || '')}</p>
@@ -332,9 +332,9 @@ var DailyTask = (function () {
     const line = !f.crops ? 'Vườn đang trống. Mở Kho Hạt giống để gieo cây nhé'
       : f.wilted ? `${f.wiltedCount} cây đang héo`
       : `${f.growing} cây đang lớn, ${f.ripe} cây chín`;
-    return `<section class="dt-farm ${f.wilted ? 'wilted' : ''}" aria-label="Vườn của con">
+    return `<section class="dt-farm ${f.wilted ? 'wilted' : ''}" aria-label="Vườn của bạn">
         ${farmSprite(f) || '<span class="dt-farm-art dt-farm-empty" aria-hidden="true">🌱</span>'}
-        <div class="dt-farm-text"><strong>Vườn của con</strong><small>${line}</small></div>
+        <div class="dt-farm-text"><strong>Vườn của bạn</strong><small>${line}</small></div>
         <button type="button" class="dt-farm-go" onclick="DailyTask.viewFarm()">Xem vườn</button>
       </section>`;
   }
@@ -346,7 +346,7 @@ var DailyTask = (function () {
     const shownProgress = todayReward ? 2 : progress;
     const art = (typeof FarmRules !== 'undefined' && next && next.id) ? FarmRules.art(next.id + '-day' + next.days) : '';
     const message = todayReward
-      ? `Con vừa nhận 1 hạt ${todayReward.name}! Chuỗi mới bắt đầu từ ngày tiếp theo.`
+      ? `Bạn vừa nhận 1 hạt ${todayReward.name}! Chuỗi mới bắt đầu từ ngày tiếp theo.`
       : progress === 1
         ? `Thêm 1 ngày hoàn thành liên tiếp để nhận hạt ${next.name}.`
         : `Hoàn thành Daily Task 2 ngày liên tiếp để nhận hạt ${next.name}.`;
@@ -424,12 +424,12 @@ var DailyTask = (function () {
         toast('⚠️ Không có mạng — thử lại sau');
         return;
       }
-      if (r && r.ok) toast('🛡️ Khiên đã bật! Nhà con được bảo vệ 24 giờ');
+      if (r && r.ok) toast('🛡️ Khiên đã bật! Nhà bạn được bảo vệ 24 giờ');
       else {
         const code = r && r.data && r.data.code;
         toast(code === 'no_home' ? 'Hãy mở Cướp Đêm và xây nhà trước'
           : code === 'active' ? 'Khiên đang bật rồi'
-          : code === 'empty' ? 'Con chưa có khiên nào'
+          : code === 'empty' ? 'Bạn chưa có khiên nào'
           : 'Chưa bật được khiên, thử lại sau');
       }
       await refresh('shield');

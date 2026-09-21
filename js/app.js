@@ -12,7 +12,7 @@ const achievements = [
     { id: 'lessons-10', name: 'Super Student', icon: '💪' },
     { id: 'lessons-25', name: 'Bookworm', icon: '📚' },
     { id: 'lessons-50', name: 'Word Wizard', icon: '🧙' },
-    { id: 'lessons-100', name: 'Genius Kid', icon: '🦸' },
+    { id: 'lessons-100', name: 'Genius Mind', icon: '🦸' },
     { id: 'all-lessons', name: 'Legend', icon: '👑' },
 
     // Streaks
@@ -24,7 +24,7 @@ const achievements = [
     // Points
     { id: 'points-100', name: 'Coin Collector', icon: '🪙' },
     { id: 'points-500', name: 'Treasure Hunter', icon: '💰' },
-    { id: 'points-1000', name: 'Rich Kid', icon: '💎' },
+    { id: 'points-1000', name: 'High Roller', icon: '💎' },
     { id: 'points-5000', name: 'Billionaire', icon: '🏦' },
 
     // Accuracy & perfection
@@ -1572,7 +1572,7 @@ function switchScreen(screenId) {
         // child to tap OK without reading. close() still runs either way, so
         // the go-event-active lock never outlives the scene.
         const playing = typeof GhostOfferingEvent.isPlaying !== 'function' || GhostOfferingEvent.isPlaying();
-        if (playing && !confirm('Con đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nCon có chắc muốn thoát không?')) {
+        if (playing && !confirm('Bạn đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nBạn có chắc muốn thoát không?')) {
             return false;
         }
         GhostOfferingEvent.close();
@@ -1585,7 +1585,7 @@ function switchScreen(screenId) {
     // child who comes back while it is still live is put straight back in.
     if (screenId !== 'petBattleScreen' &&
         typeof isPetBattleActive === 'function' && isPetBattleActive()) {
-        if (!confirm('Con đang đấu pháo với bạn.\nThoát bây giờ thì bạn ấy phải chờ, và nếu con không quay lại thì trận sẽ được tính theo máu còn lại.\n\nVẫn thoát?')) {
+        if (!confirm('Bạn đang đấu pháo với đối thủ.\nThoát bây giờ thì đối thủ phải chờ, và nếu bạn không quay lại thì trận sẽ được tính theo máu còn lại.\n\nVẫn thoát?')) {
             return false;
         }
         if (typeof abandonPetBattle === 'function') abandonPetBattle();
@@ -1635,7 +1635,7 @@ function switchScreen(screenId) {
     if (screenId !== 'mathHubScreen' &&
         ((typeof isMathQuizActive === 'function' && isMathQuizActive()) ||
          (typeof retryDrillKey === 'function' && retryDrillKey() === 'math'))) {
-        if (!confirm('Con đang làm dở bài Toán.\nRa khỏi bây giờ thì phần đã làm sẽ mất.\n\nVẫn ra chứ?')) {
+        if (!confirm('Bạn đang làm dở bài Toán.\nRa khỏi bây giờ thì phần đã làm sẽ mất.\n\nVẫn ra chứ?')) {
             return false;
         }
         if (typeof abandonMathQuiz === 'function') abandonMathQuiz();
@@ -1651,7 +1651,7 @@ function switchScreen(screenId) {
     // letting the server's walk-away timer decide 20 seconds later.
     if (screenId !== 'mathHubScreen' &&
         typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
-        if (!confirm('Con đang đấu toán với bạn.\n\nThoát bây giờ sẽ ĐÓNG trận và chấm điểm luôn — con bị XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
+        if (!confirm('Bạn đang đấu toán với đối thủ.\n\nThoát bây giờ sẽ ĐÓNG trận và chấm điểm luôn — bạn bị XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
             return false; // stay in the fight
         }
         if (MathFight.forfeitNow) MathFight.forfeitNow();
@@ -1665,7 +1665,7 @@ function switchScreen(screenId) {
         typeof isWarsActive === 'function' && isWarsActive()) {
         const left = (typeof warsClockText === 'function' && typeof warsLeftMs === 'function')
             ? warsClockText(warsLeftMs()) : '';
-        if (!confirm('Con đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
+        if (!confirm('Bạn đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
                    + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) {
             return false;
         }
@@ -1679,7 +1679,7 @@ function switchScreen(screenId) {
         typeof isMathTablesActive === 'function' && isMathTablesActive()) {
         const left = (typeof mathTablesClockText === 'function' && typeof mathTablesLeftMs === 'function')
             ? mathTablesClockText(mathTablesLeftMs()) : '';
-        if (!confirm('Con đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
+        if (!confirm('Bạn đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
                    + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')) {
             return false;
         }
@@ -1694,7 +1694,7 @@ function switchScreen(screenId) {
     // who has already answered is never asked twice.
     if (screenId !== 'nightRaidScreen' &&
         typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) {
-        if (!confirm('Con đang cướp nhà bạn.\nBỏ ngang thì hôm nay không vào lại nhà này được nữa, và không nhận được xu nào.\n\nVẫn thoát?')) {
+        if (!confirm('Bạn đang cướp nhà người khác.\nBỏ ngang thì hôm nay không vào lại nhà này được nữa, và không nhận được xu nào.\n\nVẫn thoát?')) {
             return false;
         }
         if (NightRaid.abandonRaid) NightRaid.abandonRaid();

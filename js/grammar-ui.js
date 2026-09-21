@@ -136,7 +136,7 @@ function switchGrammarSubTab(tab) {
 // return to the tab re-threw. The retry button is the way out.
 function _bankUnavailableHTML(label) {
     return '<div class="lazy-loading" role="status" style="text-align:center">'
-        + '<p>Chưa tải được ' + label + '. Con kiểm tra mạng rồi thử lại nhé.</p>'
+        + '<p>Chưa tải được ' + label + '. Bạn kiểm tra mạng rồi thử lại nhé.</p>'
         + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
         + '</div>';
 }

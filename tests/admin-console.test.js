@@ -435,7 +435,7 @@ suite('admin: the Daily task tab', () => {
           screen: 'mathHubScreen',
           calls: [['openMathSection', 'cuuchuong'], ['startMathTables', 'd', '89']],
         });
-        for (const copy of ['Nhiệm vụ hằng ngày', 'Bài bé sẽ làm',
+        for (const copy of ['Nhiệm vụ hằng ngày', 'Bài học viên sẽ làm',
             'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ']) {
             assert.truthy(adminHtml.includes(copy), 'admin assignment copy is missing: ' + copy);
         }
@@ -479,7 +479,7 @@ suite('admin: Ant Design Pro layout, organised around the children', () => {
     });
 
     test('the child page has the three tabs, tasks first', () => {
-        const strip = adminHtml.match(/<nav class="tabs" role="tablist" aria-label="Mục của bé">[\s\S]*?<\/nav>/);
+        const strip = adminHtml.match(/<nav class="tabs" role="tablist" aria-label="Mục của học viên">[\s\S]*?<\/nav>/);
         assert.truthy(strip, 'no child tab strip');
         const tabs = [...strip[0].matchAll(/data-tab="(\w+)"/g)].map(m => m[1]);
         assert.deepEqual(tabs, ['tasks', 'history', 'skills']);

@@ -599,7 +599,7 @@ function mathTypedBoxHTML(value, state) {
   const raw = value == null ? _mathTyped.raw : value;
   return `<div class="math-answer-box ${state || ''}">` +
     (raw ? `<span class="math-formula">${mathFormula(raw)}</span>`
-         : `<span class="math-answer-placeholder">Đáp án của con…</span>`) +
+         : `<span class="math-answer-placeholder">Đáp án của bạn…</span>`) +
     (state ? '' : `<span class="math-caret"></span>`) + `</div>`;
 }
 
@@ -612,7 +612,7 @@ function math4InputHTML(q, i) {
   return `<input class="math-answer-input" id="mathPart${i}" type="text" ` +
     `inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off" ` +
     `autocapitalize="off" spellcheck="false" maxlength="${MATH4_ANSWER_MAX}" ` +
-    `placeholder="Đáp án của con…" aria-label="Đáp án phép tính ${i + 1}" ` +
+    `placeholder="Đáp án của bạn…" aria-label="Đáp án phép tính ${i + 1}" ` +
     `data-q="${mathEsc(q && q.id || '')}" value="${mathEsc(v == null ? '' : v)}" ` +
     `oninput="mathPartInput(${i}, this.value)" onchange="mathPartInput(${i}, this.value)" ` +
     `onfocus="mathPartSync()">`;
@@ -1300,7 +1300,7 @@ function openMathSection(v) {
     // Same rule inside the Math tab itself: tapping "back" mid-fight is still
     // walking out on the other child.
     if (v !== 'fight' && typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
-        if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
+        if (!confirm('Bạn đang đấu toán với đối thủ.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
     // And the two clocks: a Math Wars or bảng cửu chương round is scored only
@@ -1312,14 +1312,14 @@ function openMathSection(v) {
         const left = (typeof warsClockText === 'function' && typeof warsLeftMs === 'function')
             ? warsClockText(warsLeftMs()) : '';
         if (typeof confirm === 'function'
-            && !confirm('Con đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
+            && !confirm('Bạn đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
                       + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) return;
     }
     if (v !== 'cuuchuong' && typeof isMathTablesActive === 'function' && isMathTablesActive()) {
         const left = (typeof mathTablesClockText === 'function' && typeof mathTablesLeftMs === 'function')
             ? mathTablesClockText(mathTablesLeftMs()) : '';
         if (typeof confirm === 'function'
-            && !confirm('Con đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
+            && !confirm('Bạn đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
                       + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')) return;
     }
   const known = ['home', 'toan7', 'toan4', 'cuuchuong', 'hk1', 'hk2', 'history', 'wars', 'fight'];
@@ -1874,9 +1874,9 @@ function renderMathQuestion() {
          <button class="grammar-next-btn" onclick="revealMathWritten()">Xem đáp án và lời giải</button>`
       : `<div class="grammar-explanation math-written-solution">${mathExplanationHTML(q.explanation, q)}</div>`
         + (ans === 'revealed'
-          ? `<div class="math-written-grade"><p>Con tự đối chiếu bài làm:</p>
-               <button class="grammar-next-btn math-self-good" onclick="gradeMathWritten(true)">✓ Con làm đúng</button>
-               <button class="grammar-next-btn math-self-review" onclick="gradeMathWritten(false)">↻ Con cần xem lại</button>
+          ? `<div class="math-written-grade"><p>Bạn tự đối chiếu bài làm:</p>
+               <button class="grammar-next-btn math-self-good" onclick="gradeMathWritten(true)">✓ Mình làm đúng</button>
+               <button class="grammar-next-btn math-self-review" onclick="gradeMathWritten(false)">↻ Mình cần xem lại</button>
              </div>`
           : `<button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>`);
   } else if (mathIsTyped(q)) {
@@ -2184,7 +2184,7 @@ function mathQuizQuit() {
     const done = mathQuizAnswered();
     if (done && typeof confirm === 'function') {
       const what = st.examId ? 'bài thi' : 'bài luyện tập';
-      if (!confirm(`Con đang làm dở ${what} — đã làm ${done}/${st.questions.length} câu.\n`
+      if (!confirm(`Bạn đang làm dở ${what} — đã làm ${done}/${st.questions.length} câu.\n`
         + 'Ra bây giờ thì phần đã làm sẽ mất và KHÔNG được tính điểm.\n\nVẫn ra chứ?')) return;
     }
   }

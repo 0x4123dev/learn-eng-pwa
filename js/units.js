@@ -697,7 +697,7 @@ function startUnitPractice(unit) {
   // The card is disabled, but a stale DOM node or a queued tap must not slip
   // through — the rule lives here, not only in the markup.
   if (isUnitMastered(unit)) {
-    if (typeof showToast === 'function') showToast('👑 Unit này bé đã thành thạo rồi!');
+    if (typeof showToast === 'function') showToast('👑 Unit này bạn đã thành thạo rồi!');
     return;
   }
   const pool = _unitPool(unit);

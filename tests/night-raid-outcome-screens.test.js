@@ -176,7 +176,7 @@ suite('NHÀ ĐÃ TAN HOANG: the house somebody else got to first', () => {
     assert.truthy(html.includes('BỊ MẤT'), '…and 0 xu lost, both spelled out');
     assert.equal((html.match(/0 xu/g) || []).length, 2, 'exactly two zeroes: nothing in, nothing out');
     assert.truthy(html.includes('12:00:00'), 'the 12 h timer is on the card');
-    assert.truthy(html.includes('Con quay lại nhà này được lúc'), 'with the clock time it opens');
+    assert.truthy(html.includes('Bạn quay lại nhà này được lúc'), 'with the clock time it opens');
     assert.truthy(html.includes('nrShowLiveTargets()'), 'try another house');
     assert.truthy(html.includes('nrHome()'), 'or go home');
     assert.truthy(pop.classList.contains('ruined'), 'it wears its own palette, not the defeat one');
@@ -292,9 +292,9 @@ suite('NHẬT KÝ: both sides of the night', () => {
       ],
     } });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Con đi cướp'), 'the child\'s own raids');
-    assert.truthy(html.includes('Nhà con bị cướp'), 'and the defence log');
-    assert.truthy(html.indexOf('Con đi cướp') < html.indexOf('Nhà con bị cướp'),
+    assert.truthy(html.includes('Bạn đi cướp'), 'the child\'s own raids');
+    assert.truthy(html.includes('Nhà bạn bị cướp'), 'and the defence log');
+    assert.truthy(html.indexOf('Bạn đi cướp') < html.indexOf('Nhà bạn bị cướp'),
       'the child asks "how did MY raids go?" first');
     // The three endings, each with its money said out loud.
     assert.truthy(html.includes('CƯỚP ĐƯỢC'), 'a win is labelled');
@@ -313,8 +313,8 @@ suite('NHẬT KÝ: both sides of the night', () => {
   test('an older server with no `attacks` key simply omits that section', async () => {
     const w = await openLog({ ok: true, data: { reports: [REPORT()] } });
     const html = w.screen().innerHTML;
-    assert.falsy(html.includes('Con đi cướp'), 'an empty heading over nothing reads as a broken screen');
-    assert.truthy(html.includes('Nhà con bị cướp'), 'the defence log is unchanged');
+    assert.falsy(html.includes('Bạn đi cướp'), 'an empty heading over nothing reads as a broken screen');
+    assert.truthy(html.includes('Nhà bạn bị cướp'), 'the defence log is unchanged');
     assert.truthy(html.includes('nrReplayReport(0)'));
     assert.truthy(html.includes('closeNightRaid()'), 'the shared X is still the way out');
     assert.falsy(html.includes('nrHome()'), 'the journal must not add a duplicate back button');
@@ -323,8 +323,8 @@ suite('NHẬT KÝ: both sides of the night', () => {
   test('an empty attacks list says so instead of showing a bare heading', async () => {
     const w = await openLog({ ok: true, data: { reports: [], attacks: [] } });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Con đi cướp'));
-    assert.truthy(html.includes('Con chưa đi cướp nhà nào'));
+    assert.truthy(html.includes('Bạn đi cướp'));
+    assert.truthy(html.includes('Bạn chưa đi cướp nhà nào'));
     assert.truthy(html.includes('Đêm nay vẫn yên bình'), 'and the defence side has its own empty state');
   });
 

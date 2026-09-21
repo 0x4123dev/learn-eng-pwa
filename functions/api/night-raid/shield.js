@@ -19,7 +19,7 @@ export async function onRequestPost({ request, env }) {
   if (activeUntil > now) return err('Khiên đang bật rồi', 409, { code: 'active', activeUntil });
 
   const me = await env.DB.prepare('SELECT night_shields FROM users WHERE id = ?').bind(auth.uid).first();
-  if (!me || (+me.night_shields || 0) <= 0) return err('Con chưa có khiên nào', 409, { code: 'empty' });
+  if (!me || (+me.night_shields || 0) <= 0) return err('Bạn chưa có khiên nào', 409, { code: 'empty' });
 
   // The decrement carries both guards — inventory > 0, and nobody shielded
   // the home since the pre-check above — so it and the timer set below run
@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
     const s = await shieldStatus(env, auth.uid, now);
     return s.activeUntil
       ? err('Khiên đang bật rồi', 409, { code: 'active', activeUntil: s.activeUntil })
-      : err('Con chưa có khiên nào', 409, { code: 'empty' });
+      : err('Bạn chưa có khiên nào', 409, { code: 'empty' });
   }
   return json({ ok: true, shields: await shieldStatus(env, auth.uid, now) });
 }
