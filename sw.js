@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v638';
+const CACHE_NAME = 'flashlingo-v639';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -53,7 +53,7 @@ const PRECACHE = {
   '/js/farm-rules.js': '12d959cfcef24e22',
   '/js/farm-art-manifest.js': '5734f86762871b2d',
   '/js/night-raid-rules.js': 'bb7abe3e1c162d0b',
-  '/js/night-raid.js': 'e8503f6fd6e5d0a8',
+  '/js/night-raid.js': '21146cd6d113b6a9',
   '/js/daily-task-catalog.js': 'beb575f818334f5f',
   '/js/daily-task.js': 'cc14da7e1a83d472',
   '/img/night-raid/isometric-home-board-skin-pad.webp': '946939c99edbd5b1',
@@ -133,7 +133,7 @@ const PRECACHE = {
   '/js/auth.js': '98c5d7278d12cc80',
   '/js/lazy-data.js': '829bad02417cb37c',
   '/js/app.js': '1b56c9ee2123f5a5',
-  '/js/home.js': '2800f00837fb49c2',
+  '/js/home.js': '13589922df3b8488',
   '/js/profile.js': '99be091f5b78847d',
   '/img/sun.svg': 'bfdf1afdf99058a9',
   '/img/icon-192.svg': 'bceaad28d43b2b7e',
