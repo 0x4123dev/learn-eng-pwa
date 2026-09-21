@@ -8,7 +8,7 @@ import { json } from './_lib.js';
 // scripts/deploy.sh polls this endpoint until it matches the version it just
 // shipped, so "live" means the API too — not just the HTML.
 // Kept in sync automatically by the bump step in scripts/deploy.sh.
-const VERSION = '5.1.0';
+const VERSION = '5.1.1';
 
 export async function onRequestGet() {
   return json({ version: VERSION });
