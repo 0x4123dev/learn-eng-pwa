@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v637';
+const CACHE_NAME = 'flashlingo-v638';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -37,7 +37,7 @@ const PRECACHE = {
   '/': '5b544190b0402f3d',
   '/index.html': '5b544190b0402f3d',
   '/css/styles.css': '0b3b68ffb30063ec',
-  '/css/night-raid.css': '177b91e9144c5565',
+  '/css/night-raid.css': 'c896c1744da22e9b',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
   '/fonts/nunito-var-latin.woff2': '20fc9b6fc618e7c3',
   '/js/word-data.js': 'c763481c7f37a0e0',
@@ -53,7 +53,7 @@ const PRECACHE = {
   '/js/farm-rules.js': '12d959cfcef24e22',
   '/js/farm-art-manifest.js': '5734f86762871b2d',
   '/js/night-raid-rules.js': 'bb7abe3e1c162d0b',
-  '/js/night-raid.js': 'ed6ed2a0c7a9102e',
+  '/js/night-raid.js': 'e8503f6fd6e5d0a8',
   '/js/daily-task-catalog.js': 'beb575f818334f5f',
   '/js/daily-task.js': 'cc14da7e1a83d472',
   '/img/night-raid/isometric-home-board-skin-pad.webp': '946939c99edbd5b1',
@@ -68,7 +68,7 @@ const PRECACHE = {
   '/img/night-raid/animation/raider-actions-v3.webp': '984b135d848cf971',
   '/img/night-raid/animation/raider-walk-v4.webp': '890e718550de4c96',
   '/img/night-raid/pet-actions-large-v2.webp': '7693f121c42c647b',
-  '/img/night-raid/home-castle.webp': 'c73a27558ae9da69',
+  '/img/night-raid/home-castle.webp': '2eda4c9b658debbf',
   '/img/farm/sprout.webp': '6408d0fa1a1fa5ed',
   '/img/farm/sprout-wilted.webp': '83447cd21685ffbb',
   '/img/farm/lettuce-day1.webp': 'a53896dac97b18dd',
@@ -133,7 +133,7 @@ const PRECACHE = {
   '/js/auth.js': '98c5d7278d12cc80',
   '/js/lazy-data.js': '829bad02417cb37c',
   '/js/app.js': '1b56c9ee2123f5a5',
-  '/js/home.js': '35951cfa58295d85',
+  '/js/home.js': '2800f00837fb49c2',
   '/js/profile.js': '99be091f5b78847d',
   '/img/sun.svg': 'bfdf1afdf99058a9',
   '/img/icon-192.svg': 'bceaad28d43b2b7e',
