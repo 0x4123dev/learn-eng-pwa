@@ -1555,6 +1555,9 @@ function renderUsers(){
             : `<button class="mini danger act-disable" data-uid="${u.id}" data-name="${esc(u.username)}"
                   aria-label="Khoá ${esc(u.username)}"
                   title="Đăng xuất tài khoản này khỏi mọi thiết bị và chặn đăng nhập. Không xoá gì cả.">🚫<span class="lbl"> Khoá</span></button>`)}
+          ${u.role === 'admin' ? '' : `<button class="mini danger act-delete" data-uid="${u.id}" data-name="${esc(u.username)}"
+                  aria-label="Xoá vĩnh viễn ${esc(u.username)}"
+                  title="Xoá vĩnh viễn tài khoản này cùng toàn bộ lịch sử học, xu, nhiệm vụ và nông trại. Không khôi phục được.">🗑<span class="lbl"> Xoá</span></button>`}
         </div>
       </td>
     </tr>`;
@@ -1591,6 +1594,14 @@ function renderUsers(){
       return Promise.reject(new Error('đã huỷ'));
     }
     return api('admin/user-flags', { method:'POST', body:{ userId: Number(b.dataset.uid), disabled: true } });
+  });
+  act('.act-delete', b => {
+    // Irreversible, and it takes the wallet, the farm and every task with
+    // it — so the admin types the username back rather than tapping OK.
+    const typed = prompt('XOÁ VĨNH VIỄN “' + b.dataset.name + '”?\n\nToàn bộ lịch sử học, xu, nhiệm vụ và nông trại của tài khoản này sẽ mất và KHÔNG khôi phục được.\n\nGõ lại đúng tên tài khoản để xác nhận:');
+    if (typed === null) return Promise.reject(new Error('đã huỷ'));
+    if (typed.trim() !== b.dataset.name) return Promise.reject(new Error('tên gõ không khớp — chưa xoá gì cả'));
+    return api('admin/users', { method:'DELETE', body:{ userId: Number(b.dataset.uid) } });
   });
 
   // A row opens the child's page; a disabled child has no page to open.

@@ -652,6 +652,40 @@ async function moneyChecks(add, seenSql, drainLogs) {
          : `activity=${a1.status} activity?userId=${a2.status}`);
   } catch (e) { add('admin.console-reads', 'Trang quản trị: bảng hoạt động', false, 'threw: ' + ((e && e.stack) || e)); }
 
+  // ---- Admin: xoá vĩnh viễn một tài khoản ----
+  // The purge assembles one DELETE per (table, column) at run time, so this
+  // is where every one of them runs against the real schema. A learner with
+  // a wallet, a task and a farm goes; a second learner keeps everything.
+  try {
+    const w = newWorld(seenSql);
+    const boss = await w.createUser({ role: 'admin' });
+    const kid = await w.createUser({});
+    const other = await w.createUser({});
+    const grant = loadModule('functions/api/admin/grant-coins.js');
+    for (const u of [kid, other]) {
+      await hit(w, grant.onRequestPost, { url: '/api/admin/grant-coins', token: boss.token, body: { userId: u.uid, amount: 40 } });
+      w.db.prepare('INSERT INTO activities (user_id, type, title, score, total, created_at) VALUES (?,?,?,?,?,?)')
+        .run(u.uid, 'lesson', 'Unit 1 words practice', 5, 5, sqlTime(Date.now()));
+    }
+    const home = loadModule('functions/api/night-raid/home.js');
+    await hit(w, home.onRequestPut, { method: 'PUT', url: '/api/night-raid/home', token: kid.token, body: { layout: { cells: [], dogLane: 2 }, lootableCoins: 40 } });
+    const usersApi = loadModule('functions/api/admin/users.js');
+    const gone = await hit(w, usersApi.onRequestDelete, { method: 'DELETE', url: '/api/admin/users', token: boss.token, body: { userId: kid.uid } });
+    const self = await hit(w, usersApi.onRequestDelete, { method: 'DELETE', url: '/api/admin/users', token: boss.token, body: { userId: boss.uid } });
+    const left = w.db.prepare('SELECT COUNT(*) AS n FROM users WHERE id=?').get(kid.uid).n;
+    const orphans = usersApi.USER_TABLES.flatMap(([t, cols]) => cols.map(c => [t + '.' + c, w.db.prepare(`SELECT COUNT(*) AS n FROM ${t} WHERE ${c}=?`).get(kid.uid).n]))
+      .filter(([, n]) => Number(n) > 0).map(([k]) => k);
+    const otherKept = grantsOf(w, other.uid) === 40
+      && w.db.prepare('SELECT COUNT(*) AS n FROM activities WHERE user_id=?').get(other.uid).n === 1;
+    const list = await hit(w, usersApi.onRequestGet, { method: 'GET', url: '/api/admin/users', token: boss.token });
+    const listed = list.status === 200 && list.data.users.map(u => u.id);
+    const ok = gone.status === 200 && Number(left) === 0 && orphans.length === 0 && otherKept
+      && self.status === 400 && listed && !listed.includes(kid.uid) && listed.includes(other.uid);
+    add('admin.delete-user', 'Trang quản trị: xoá vĩnh viễn tài khoản', ok,
+      ok ? `DELETE /api/admin/users took the learner and every row in ${usersApi.USER_TABLES.length} tables; the other learner kept 40 xu and their history; the admin cannot delete themself; the list no longer shows the account`
+         : `delete=${gone.status} left=${left} orphans=${orphans.join(',')} otherKept=${otherKept} self=${self.status} listed=${JSON.stringify(listed)} :: ${JSON.stringify(gone.data)}`);
+  } catch (e) { add('admin.delete-user', 'Trang quản trị: xoá vĩnh viễn tài khoản', false, 'threw: ' + ((e && e.stack) || e)); }
+
   drainLogs();
 }
 

@@ -106,6 +106,19 @@ suite('admin: disabling an account', () => {
             'signing a child out of every device deserves one confirmation');
     });
 
+    test('delete for good: typed-name confirmation, DELETE admin/users, hidden for admins', () => {
+        // Irreversible and it takes the wallet and the farm with it — a
+        // confirm() OK is too cheap; the admin types the username back.
+        const block = adminHtml.match(/act\('\.act-delete', b => \{[\s\S]*?\n  \}\);/);
+        assert.truthy(block, 'the delete row action must be wired');
+        assert.truthy(/prompt\(/.test(block[0]) && /typed\.trim\(\) !== b\.dataset\.name/.test(block[0]),
+            'the typed name must match the username exactly, or nothing is deleted');
+        assert.truthy(/api\('admin\/users', \{ method:'DELETE'/.test(block[0]), 'must call DELETE admin/users');
+        assert.truthy(/u\.role === 'admin' \? '' : `<button class="mini danger act-delete"/.test(adminHtml),
+            'no delete button on an admin row');
+        assert.truthy(/act-delete[^>]*title="Xoá vĩnh viễn/.test(adminHtml), 'the title says it is permanent');
+    });
+
     test('the disable button is hidden for admins in the UI too', () => {
         // The server refuses it anyway; offering a button that always errors is
         // a worse experience than not offering it.
@@ -258,13 +271,13 @@ suite('admin on a phone: still a table at 393px', () => {
     test('an icon-only button still announces what it does', () => {
         // display:none removes the label from the accessibility tree, so each
         // button would otherwise announce nothing but an emoji. Every .mini row
-        // action counts: the four in the users table (coins, clear device,
-        // enable, disable), plus the Daily task tab's delete, which is the
+        // action counts: the five in the users table (coins, clear device,
+        // enable, disable, delete for good), plus the Daily task tab's delete, which is the
         // same icon-only button in a different table. (🌱 Chơi trước and
         // 🎓 Chuyên went with the features they switched on, 2026-09.)
         const tags = adminHtml.match(/<button class="mini[\s\S]*?>/g) || [];
-        assert.equal(tags.length, 5, `expected 5 row-action buttons, found ${tags.length}`);
-        for (const cls of ['act-coins', 'act-clear', 'act-enable', 'act-disable', 'act-daily-del']) {
+        assert.equal(tags.length, 6, `expected 6 row-action buttons, found ${tags.length}`);
+        for (const cls of ['act-coins', 'act-clear', 'act-enable', 'act-disable', 'act-delete', 'act-daily-del']) {
             const tag = tags.find(t => t.includes(cls));
             assert.truthy(tag, cls + ' button not found');
             assert.truthy(tag.includes('aria-label='),
