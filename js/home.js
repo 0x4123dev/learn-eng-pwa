@@ -1,4 +1,4 @@
-// home.js - Home screen rendering, history, mistakes, and difficulty filtering
+// home.js - Home screen: the pet, the streak, the three Books' progress
 
 const APP_VERSION = 'v5.0.0';
 
@@ -40,9 +40,9 @@ function markStreakShownToday(user) {
 function _hasStudiedToday() {
     if (!appState) return false;
     const today = _todayKey();
-    // Most reliable: check lessonHistory entries' dates
-    if (Array.isArray(appState.lessonHistory)) {
-        for (const h of appState.lessonHistory) {
+    // Most reliable: the Book practices' own dates (js/units.js)
+    if (Array.isArray(appState.unitsHistory)) {
+        for (const h of appState.unitsHistory) {
             if (!h || !h.date) continue;
             const hd = new Date(h.date);
             const k = hd.getFullYear() + '-' + String(hd.getMonth() + 1).padStart(2, '0') + '-' + String(hd.getDate()).padStart(2, '0');
@@ -63,8 +63,8 @@ function _last7DaysCalendar() {
     const out = [];
     if (!appState) return out;
     const studiedKeys = new Set();
-    if (Array.isArray(appState.lessonHistory)) {
-        for (const h of appState.lessonHistory) {
+    if (Array.isArray(appState.unitsHistory)) {
+        for (const h of appState.unitsHistory) {
             if (!h || !h.date) continue;
             const d = new Date(h.date);
             studiedKeys.add(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
@@ -192,19 +192,7 @@ function dismissStreakModal() {
 
 function dismissStreakModalAndStart() {
     dismissStreakModal();
-    // Jump to the next-lesson workflow if available
-    if (typeof getNextPracticeLesson === 'function' && typeof startLesson === 'function') {
-        try {
-            const next = getNextPracticeLesson();
-            if (next && typeof next.lessonNum === 'number') {
-                startLesson(next.lessonNum);
-                return;
-            }
-        } catch (e) { /* fall through */ }
-    }
-    // Fallback: scroll the user to the home screen's next-lesson card
-    const homeScreen = document.getElementById('homeScreen');
-    if (homeScreen && homeScreen.scrollTo) homeScreen.scrollTo({ top: 0, behavior: 'smooth' });
+    goLearnToday();
 }
 
 // ============================================================================
@@ -254,26 +242,12 @@ function renderHomeStreakPanel() {
     `;
 }
 
-// CTA → jump to a learning activity. We pick the highest-value action:
-// next vocabulary lesson if one exists, else the Topics tab.
+// CTA → today's practice: the Book the learner was last in (Book 1 for a
+// fresh profile), where the unit cards are.
 function goLearnToday() {
-    if (typeof getNextPracticeLesson === 'function' && typeof startLesson === 'function') {
-        try {
-            const next = getNextPracticeLesson();
-            if (next && typeof next.lessonNum === 'number') {
-                startLesson(next.lessonNum);
-                return;
-            }
-        } catch (e) { /* fall through */ }
-    }
-    if (typeof startNextLesson === 'function') {
-        try { startNextLesson(); return; } catch (e) { /* fall through */ }
-    }
-    // Last resort: open the Topics tab
-    if (typeof switchScreen === 'function') {
-        switchScreen('topicsScreen');
-        if (typeof renderTopicsHome === 'function') renderTopicsHome();
-    }
+    const set = (typeof currentUnitSet === 'function') ? currentUnitSet('word') : 'pr1';
+    if (typeof openBook === 'function') { openBook(set); return; }
+    if (typeof switchScreen === 'function') switchScreen('wordScreen');
 }
 
 // ==================== SKILLS CHART (home bottom) ====================
@@ -286,78 +260,42 @@ function getHomeSkillStats() {
         (hist || []).forEach(s => { c += s.score || 0; t += s.total || 0; });
         return { c, t };
     };
-    const skills = [];
-
-    // Vocabulary — lessonHistory stores accuracy per 5-word lesson
-    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
-    let vc = 0, vt = 0;
-    (appState.lessonHistory || []).forEach(h => {
-        if (typeof h.accuracy === 'number') { vt += wpl; vc += Math.round(h.accuracy / 100 * wpl); }
+    // One row per Book. The three sets share one history (js/units.js
+    // appState.unitsHistory), told apart by the set prefix on the unit key
+    // ('pr2-7' is Book 2, Unit 7).
+    const rows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
+    return HOME_BOOKS.map(b => {
+        const { c, t } = sum(rows.filter(h => h && b.re.test(String(h.unit))));
+        return { key: b.key, label: b.label, icon: b.icon, color: b.color, correct: c, total: t,
+                 pct: t ? Math.round(c / t * 100) : 0 };
     });
-    skills.push({ key: 'vocab', label: 'Vocabulary', icon: '📚', color: '#22c55e', correct: vc, total: vt });
-
-    // Picture-dictionary practice: the Grade 4 sets and the Word tab's
-    // Career Paths sets share one history (js/units.js), told apart by the
-    // set prefix on the unit key ('pr1-3' is the Word tab).
-    const isWordRow = h => h && /^pr[123]-/.test(String(h.unit));
-    const unitsRows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
-    const u = sum(unitsRows.filter(h => !isWordRow(h)));
-    skills.push({ key: 'units', label: 'Grade 4', icon: '📗', color: '#16a34a', correct: u.c, total: u.t });
-    const wd = sum(unitsRows.filter(isWordRow));
-    skills.push({ key: 'word', label: 'Word', icon: '🔤', color: '#0d9488', correct: wd.c, total: wd.t });
-
-    const g = sum(appState.grammarHistory);
-    skills.push({ key: 'grammar', label: 'Grammar', icon: '🎓', color: '#7c3aed', correct: g.c, total: g.t });
-    const p = sum(appState.phrasesHistory);
-    skills.push({ key: 'phrases', label: 'Phrases', icon: '🔗', color: '#1cb0f6', correct: p.c, total: p.t });
-    const co = sum(appState.collocHistory);
-    skills.push({ key: 'colloc', label: 'Collocation', icon: '🧩', color: '#0ea5e9', correct: co.c, total: co.t });
-    const w = sum(appState.wordformHistory);
-    skills.push({ key: 'wordform', label: 'Word form', icon: '🔤', color: '#c2560a', correct: w.c, total: w.t });
-    const r = sum(appState.rewriteHistory);
-    skills.push({ key: 'rewrite', label: 'Rewrite', icon: '✍️', color: '#d6407a', correct: r.c, total: r.t });
-
-    // Verbs speed challenge
-    let vbc = 0, vbt = 0;
-    ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => {
-        vbc += h.correct || 0; vbt += h.total || 0;
-    });
-    skills.push({ key: 'verbs', label: 'Verbs', icon: '📝', color: '#f59e0b', correct: vbc, total: vbt });
-
-    return skills.map(s => Object.assign({}, s, { pct: s.total ? Math.round(s.correct / s.total * 100) : 0 }));
 }
+const HOME_BOOKS = Object.freeze([
+    { key: 'book1', set: 'pr1', re: /^pr1-/, label: 'Book 1', icon: '📘', color: '#2563eb' },
+    { key: 'book2', set: 'pr2', re: /^pr2-/, label: 'Book 2', icon: '📙', color: '#d97706' },
+    { key: 'book3', set: 'pr3', re: /^pr3-/, label: 'Book 3', icon: '📗', color: '#16a34a' },
+]);
 
 // Per-skill session lists (normalized {score,total,date}), newest first —
 // used for recent-trend arrows and the 7-day activity chart.
 function _homeSkillSessions() {
     if (!appState) return {};
-    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
-    // Array.isArray, not `arr || []`: every one of these lists comes out of
-    // localStorage, and this runs while the home screen is being drawn. A
-    // single key holding an object instead of a list used to throw here and
-    // take the whole boot with it.
-    const norm = (arr, map) => (Array.isArray(arr) ? arr : []).map(map).filter(s => s.total > 0)
-        .sort((a, b) => (b.date || 0) - (a.date || 0));
-    const isWordRow = h => h && /^pr[123]-/.test(String(h.unit));
-    const unitsRows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
-    return {
-        vocab: norm(appState.lessonHistory, h => ({
-            score: Math.round((h.accuracy || 0) / 100 * wpl), total: (typeof h.accuracy === 'number') ? wpl : 0, date: h.date || 0 })),
-        units: norm(unitsRows.filter(h => !isWordRow(h)), h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        word: norm(unitsRows.filter(isWordRow), h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        grammar: norm(appState.grammarHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        phrases: norm(appState.phrasesHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        colloc: norm(appState.collocHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        wordform: norm(appState.wordformHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        rewrite: norm(appState.rewriteHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
-        verbs: norm((appState.speedChallenge && appState.speedChallenge.history), h => ({ score: h.correct || 0, total: h.total || 0, date: h.date || 0 })),
-    };
+    // Array.isArray, not `arr || []`: the list comes out of localStorage, and
+    // this runs while the home screen is being drawn. A key holding an object
+    // instead of a list used to throw here and take the whole boot with it.
+    const rows = Array.isArray(appState.unitsHistory) ? appState.unitsHistory : [];
+    const out = {};
+    for (const b of HOME_BOOKS) {
+        out[b.key] = rows.filter(h => h && b.re.test(String(h.unit)))
+            .map(h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 }))
+            .filter(s => s.total > 0)
+            .sort((a, b2) => (b2.date || 0) - (a.date || 0));
+    }
+    return out;
 }
 
-// Total completed sessions across EVERY practice type. The Profile tab's
-// "Lessons" stat uses this so it counts everything the student has done
-// (topic lessons, Grade 4 and Word units, grammar, phrases, word form,
-// rewrite and verbs), not just topic lessons.
+// Total completed practices across the three Books. The Profile tab's
+// "Lessons" stat uses this.
 function _homeAllSessionsCount() {
     if (!appState) return 0;
     const sessions = _homeSkillSessions();
@@ -488,31 +426,10 @@ function renderHomeSkillsPanel() {
 
 // Tap a skill row → jump straight to that practice tab.
 function goToSkillTab(key) {
-    const map = {
-        vocab: ['topicsScreen', 'renderTopicsHome'],
-        units: ['gradeFourScreen', 'renderGrade4Home'],
-        grammar: ['grammarScreen', 'renderGrammarHome'],
-        phrases: ['phrasesScreen', 'renderPhrasesHome'],
-        colloc: ['phrasesScreen', 'renderPhrasesHome'],
-        wordform: ['wordformScreen', 'renderWordformHome'],
-        rewrite: ['rewriteScreen', 'renderRewriteHome'],
-        verbs: ['speedChallengeScreen', null],
-        word: ['wordScreen', 'renderWordHome'],
-    };
-    const target = map[key];
-    if (!target || typeof switchScreen !== 'function') return;
-    switchScreen(target[0]);
-    if (key === 'vocab' && typeof switchTopicsSubTab === 'function') {
-        try { switchTopicsSubTab('topics'); } catch (e) {}
-    }
-    // Phrases-screen skills land on their own sub-tab too.
-    if ((key === 'phrases' || key === 'colloc') && typeof switchPhrSubTab === 'function') {
-        try { switchPhrSubTab(key === 'colloc' ? 'colloc' : 'practice'); } catch (e) {}
-    }
-    const fn = target[1];
-    if (fn && typeof globalThis[fn] === 'function') { try { globalThis[fn](); } catch (e) {} }
-    // Direct links from My Skills still belong to one of the five parent tabs.
-    if (typeof setBottomNavActive === 'function') setBottomNavActive(target[0]);
+    const book = HOME_BOOKS.find(b => b.key === key);
+    if (!book) return;
+    if (typeof openBook === 'function') openBook(book.set);
+    else if (typeof switchScreen === 'function') switchScreen('wordScreen');
 }
 
 function renderHome() {
@@ -565,462 +482,8 @@ function renderHome() {
         try { DailyTask.renderHomeCard(); DailyTask.refresh('home'); } catch (e) { /* non-fatal */ }
     }
 
-    // The lesson-start card / difficulty chips / history are GONE from the
-    // home page in v3.38 — exit before the legacy code touches them.
-    const lessonStartCard = document.getElementById('lessonStartCard');
-    if (!lessonStartCard) return;
-
-    // ----- LEGACY (no longer rendered — kept for safety only) -----
-    // Calculate lessons completed today
-    const today = new Date().toDateString();
-    const todayLessons = (appState.lessonHistory || []).filter(h => {
-        return new Date(h.date).toDateString() === today;
-    }).length;
-    const todayEl = document.getElementById('homeToday');
-    if (todayEl) todayEl.textContent = todayLessons;
-
-    // Update difficulty tab counts
-    if (typeof updateDifficultyCounts === 'function') updateDifficultyCounts();
-
-    // Get lesson based on filter
-    const displayLesson = getNextLessonForDifficulty(selectedDifficultyFilter);
-
-    // Check if all lessons in selected difficulty are complete
-    const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
-    const uniqueCompletedInRange = new Set(
-        (appState.lessonHistory || [])
-            .filter(h => h.lessonNum >= range.start && h.lessonNum < range.end)
-            .map(h => h.lessonNum)
-    ).size;
-    const totalInRange = range.end - range.start;
-    const allCompleteInRange = uniqueCompletedInRange >= totalInRange;
-
-    if (allCompleteInRange) {
-        // All lessons in this difficulty completed — show sequential practice
-        const diff = getDifficultyLevel(range.start);
-        const difficultyColors = {
-            'Beginning': 'linear-gradient(135deg, #27ae60, #1e8449)',
-            'Basic': 'linear-gradient(135deg, #2ecc71, #27ae60)',
-            'Intermediate': 'linear-gradient(135deg, #1abc9c, #16a085)',
-            'Upper-Intermediate': 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-            'Advanced': 'linear-gradient(135deg, #8e44ad, #6c3483)'
-        };
-        lessonStartCard.style.background = difficultyColors[diff.name];
-
-        // Find the next lesson to practice: the one practiced longest ago
-        const nextPractice = getNextPracticeLesson(range);
-        const practiceInRange = nextPractice - range.start + 1;
-
-        // Preview words for this lesson
-        const practiceStartIdx = nextPractice * WORDS_PER_LESSON;
-        const practiceWords = ieltsVocabulary.slice(practiceStartIdx, practiceStartIdx + WORDS_PER_LESSON);
-        const practicePreview = practiceWords.map(w => w.en).slice(0, 3).join(', ');
-
-        lessonStartCard.innerHTML = `
-            <div class="lesson-difficulty">
-                <span class="difficulty-badge">✅ ${diff.name} Complete!</span>
-                <span class="difficulty-band">Review mode</span>
-            </div>
-            <div class="lesson-info">
-                <div class="lesson-number">Lesson ${practiceInRange} of ${totalInRange}</div>
-                <div class="lesson-words-preview">${practicePreview}...</div>
-            </div>
-            <button class="primary-btn start-lesson-btn" onclick="startLesson(${nextPractice})">
-                🔄 PRACTICE AGAIN
-            </button>
-        `;
-    } else {
-        // Get difficulty level
-        const difficulty = getDifficultyLevel(displayLesson);
-        const difficultyColors = {
-            'Beginning': 'linear-gradient(135deg, #27ae60, #1e8449)',
-            'Basic': 'linear-gradient(135deg, #2ecc71, #27ae60)',
-            'Intermediate': 'linear-gradient(135deg, #1abc9c, #16a085)',
-            'Upper-Intermediate': 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-            'Advanced': 'linear-gradient(135deg, #8e44ad, #6c3483)'
-        };
-
-        lessonStartCard.style.background = difficultyColors[difficulty.name];
-
-        // Show preview of words in this lesson
-        const startIdx = displayLesson * WORDS_PER_LESSON;
-        const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
-        const previewWords = lessonWords.map(w => w.en).slice(0, 3).join(', ');
-
-        // Show progress within this difficulty level
-        const rangeTotal = range.end - range.start;
-        const lessonInRange = displayLesson - range.start + 1;
-
-        lessonStartCard.innerHTML = `
-            <div class="lesson-difficulty">
-                <span class="difficulty-badge">${difficulty.icon} ${difficulty.name}</span>
-                <span class="difficulty-band">${difficulty.band === 'House' ? 'Household' : 'IELTS Band ' + difficulty.band}</span>
-            </div>
-            <div class="lesson-info">
-                <div class="lesson-number">Lesson ${lessonInRange} of ${rangeTotal}</div>
-                <div class="lesson-words-preview">${previewWords}...</div>
-            </div>
-            <button class="primary-btn start-lesson-btn" onclick="startLesson(${displayLesson})">
-                🚀 START LESSON
-            </button>
-        `;
-    }
-
-    // Render fun features
-    renderWordPet();
-
-    // Render lesson history
-    renderLessonHistory();
 }
 
-function updateReviewCard() {
-    const reviewCard = document.getElementById('reviewCard');
-    if (!appState || !appState.srs || Object.keys(appState.srs).length === 0) {
-        reviewCard.style.display = 'none';
-        return;
-    }
-    reviewCard.style.display = 'block';
-
-    const dueCount = getReviewCount();
-    const mastery = getSRSMasteryPercent();
-
-    document.getElementById('reviewProgressFill').style.width = `${mastery}%`;
-    document.getElementById('reviewProgressLabel').textContent = `${mastery}% mastered`;
-
-    if (dueCount === 0) {
-        reviewCard.classList.add('all-caught-up');
-        document.getElementById('reviewTitle').textContent = 'All caught up!';
-        document.getElementById('reviewSubtitle').textContent = 'No words due for review right now';
-        document.getElementById('reviewStartBtn').style.display = 'none';
-    } else {
-        reviewCard.classList.remove('all-caught-up');
-        document.getElementById('reviewTitle').textContent = `${dueCount} word${dueCount !== 1 ? 's' : ''} due today`;
-        document.getElementById('reviewSubtitle').textContent = 'Keep your memory strong!';
-        const btn = document.getElementById('reviewStartBtn');
-        btn.style.display = 'block';
-        btn.textContent = 'REVIEW';
-    }
-}
-
-// currentHistoryTab declared in app.js
-
-function switchHistoryTab(tab) {
-    currentHistoryTab = tab;
-    document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
-    event.target.closest('.history-tab').classList.add('active');
-
-    const historyContainer = document.getElementById('lessonHistory');
-    const mistakesContainer = document.getElementById('mistakesContainer');
-
-    if (tab === 'history') {
-        historyContainer.style.display = 'flex';
-        mistakesContainer.classList.remove('show');
-    } else {
-        historyContainer.style.display = 'none';
-        mistakesContainer.classList.add('show');
-        renderMistakes();
-    }
-}
-
-const HISTORY_PAGE_SIZE = 10;
-
-function renderLessonHistory() {
-    const historyContainer = document.getElementById('lessonHistory');
-    let history = appState.lessonHistory || [];
-
-    // Show ALL history regardless of selected difficulty tab
-    document.getElementById('historyCount').textContent = history.length;
-    const mistakes = appState.mistakes || [];
-    document.getElementById('mistakesCount').textContent = mistakes.length;
-
-    if (history.length === 0) {
-        historyPage = 0;
-        historyContainer.innerHTML = `<div class="empty-history">No lessons completed yet</div>`;
-        return;
-    }
-
-    // Most recent first
-    const sorted = history.slice().reverse();
-    const totalPages = Math.ceil(sorted.length / HISTORY_PAGE_SIZE);
-
-    // Clamp page
-    if (historyPage >= totalPages) historyPage = totalPages - 1;
-    if (historyPage < 0) historyPage = 0;
-
-    const start = historyPage * HISTORY_PAGE_SIZE;
-    const pageItems = sorted.slice(start, start + HISTORY_PAGE_SIZE);
-
-    let html = '<div class="history-table">';
-    pageItems.forEach((item, index) => {
-        const startIdx = item.lessonNum * WORDS_PER_LESSON;
-        const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
-        const wordTags = lessonWords.map(w => `<span class="history-word-tag" onclick="event.stopPropagation(); speakWord('${w.en.replace(/'/g, "\\'")}')">${w.en} 🔊</span>`).join('');
-        const isPerfect = item.accuracy === 100;
-
-        html += `
-        <div class="history-row" onclick="toggleHistoryDetail(${index})">
-            <div class="history-lesson-num">${item.lessonNum + 1}</div>
-            <div class="history-info">
-                <div class="history-title">Lesson ${item.lessonNum + 1}</div>
-                <div class="history-date">${formatDate(item.date)}</div>
-            </div>
-            <div class="history-stats">
-                <div class="history-points">+${item.points}</div>
-                <div class="history-accuracy${isPerfect ? ' perfect' : ''}">${item.accuracy}%</div>
-            </div>
-            <div class="history-expand-icon">▼</div>
-        </div>
-        <div class="history-detail" id="historyDetail${index}">
-            <div class="history-words-label">Words in this lesson:</div>
-            <div class="history-words-list">${wordTags}</div>
-            <button class="relearn-btn" onclick="event.stopPropagation(); relearnLesson(${item.lessonNum})">
-                📖 Learn Again
-            </button>
-        </div>
-        `;
-    });
-    html += '</div>';
-
-    // Pagination controls
-    if (totalPages > 1) {
-        html += `
-        <div class="history-pagination">
-            <button class="history-page-btn" onclick="changeHistoryPage(-1)" ${historyPage === 0 ? 'disabled' : ''}>← Prev</button>
-            <span class="history-page-info">${historyPage + 1} / ${totalPages}</span>
-            <button class="history-page-btn" onclick="changeHistoryPage(1)" ${historyPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
-        </div>`;
-    }
-
-    historyContainer.innerHTML = html;
-}
-
-function changeHistoryPage(delta) {
-    historyPage += delta;
-    renderLessonHistory();
-}
-
-function toggleHistoryDetail(index) {
-    const detail = document.getElementById(`historyDetail${index}`);
-    const row = detail.previousElementSibling;
-
-    if (detail.classList.contains('show')) {
-        detail.classList.remove('show');
-        row.classList.remove('expanded');
-    } else {
-        // Close all other details
-        document.querySelectorAll('.history-detail.show').forEach(d => {
-            d.classList.remove('show');
-            d.previousElementSibling.classList.remove('expanded');
-        });
-        detail.classList.add('show');
-        row.classList.add('expanded');
-    }
-}
-
-function getReviewLessonGroups() {
-    const mistakes = appState.mistakes || [];
-    if (mistakes.length === 0) return [];
-    const sorted = [...mistakes].sort((a, b) => b.count - a.count);
-    const groups = [];
-    for (let i = 0; i < sorted.length; i += WORDS_PER_LESSON) {
-        groups.push(sorted.slice(i, i + WORDS_PER_LESSON));
-    }
-    return groups;
-}
-
-function renderMistakes() {
-    const container = document.getElementById('mistakesContainer');
-    const mistakes = appState.mistakes || [];
-
-    if (mistakes.length === 0) {
-        container.innerHTML = '<div class="empty-history">Great job! No mistakes to review 🎉</div>';
-        return;
-    }
-
-    const groups = getReviewLessonGroups();
-    const totalLessons = groups.length;
-
-    let html = `<div class="review-summary">📝 ${mistakes.length} word${mistakes.length > 1 ? 's' : ''} to review (${totalLessons} lesson${totalLessons > 1 ? 's' : ''})</div>`;
-
-    for (let i = groups.length - 1; i >= 0; i--) {
-        const group = groups[i];
-        const words = group.map(m => ieltsVocabulary.find(w => w.en === m.word)).filter(Boolean);
-        const totalWrong = group.reduce((sum, m) => sum + m.count, 0);
-        const wordPreview = words.map(w => w.en).join(', ');
-
-        html += `
-        <div class="review-lesson-card">
-            <div class="review-lesson-header">
-                <span class="review-lesson-title">📖 Review Lesson ${i + 1}</span>
-                <span class="review-lesson-count">${group.length} word${group.length > 1 ? 's' : ''}</span>
-            </div>
-            <div class="review-lesson-words">${wordPreview}</div>
-            <div class="review-lesson-stats">${totalWrong}x wrong total</div>
-            <button class="review-lesson-btn" onclick="startReviewLesson(${i})">🔄 START REVIEW</button>
-        </div>`;
-    }
-
-    html += `<button class="clear-mistakes-btn" onclick="clearMistakes()">Clear All Mistakes</button>`;
-    container.innerHTML = html;
-}
-
-function startReviewLesson(groupIndex) {
-    const groups = getReviewLessonGroups();
-    if (groupIndex >= groups.length) { showToast('No review lesson found'); return; }
-
-    const group = groups[groupIndex];
-    let reviewWords = group.map(m => ieltsVocabulary.find(w => w.en === m.word)).filter(Boolean);
-
-    // Pad to WORDS_PER_LESSON if group is smaller (matching game needs 5 pairs)
-    if (reviewWords.length < WORDS_PER_LESSON) {
-        const existingEn = new Set(reviewWords.map(w => w.en));
-        const pool = ieltsVocabulary.filter(w => !existingEn.has(w.en));
-        while (reviewWords.length < WORDS_PER_LESSON && pool.length > 0) {
-            const rand = Math.floor(Math.random() * pool.length);
-            reviewWords.push(pool.splice(rand, 1)[0]);
-        }
-    }
-
-    lessonState = {
-        lessonNumber: -1,
-        words: reviewWords,
-        currentRound: 0,
-        totalRounds: 1,
-        roundWords: reviewWords,
-        selectedLeft: null,
-        selectedRight: null,
-        matchedPairs: 0,
-        correctInLesson: 0,
-        wrongInLesson: 0,
-        lessonPoints: 0,
-        isPracticeSession: true,
-        comboChain: 0,
-        maxCombo: 0
-    };
-
-    document.getElementById('bottomNav').style.display = 'none';
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('lessonScreen').classList.add('active');
-
-    preloadLessonAudio(reviewWords);
-    renderMatchingRound();
-}
-
-function clearMistakes() {
-    if (confirm('Clear all mistakes from review list?')) {
-        appState.mistakes = [];
-        saveUserData(currentUser, appState);
-        renderMistakes();
-        document.getElementById('mistakesCount').textContent = '0';
-        showToast('Mistakes cleared!');
-    }
-}
-
-function relearnLesson(lessonNum) {
-    startLesson(lessonNum);
-}
-
-// Beginning level has a fixed number of lessons (112 house words)
-const BEGINNING_LESSONS = Math.ceil(112 / WORDS_PER_LESSON); // 23 lessons
-const IELTS_LESSONS = TOTAL_LESSONS - BEGINNING_LESSONS; // remaining IELTS lessons
-const IELTS_PER_LEVEL = Math.ceil(IELTS_LESSONS / 4); // split IELTS into 4 levels
-
-function getDifficultyLevel(lessonNum) {
-    if (lessonNum < BEGINNING_LESSONS) {
-        return { name: 'Beginning', key: 'beginning', icon: '🏠', band: 'House', color: '#FF7043' };
-    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL) {
-        return { name: 'Basic', key: 'basic', icon: '🌱', band: '5-6', color: '#58cc02' };
-    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL * 2) {
-        return { name: 'Intermediate', key: 'intermediate', icon: '🌿', band: '6-7', color: '#1cb0f6' };
-    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL * 3) {
-        return { name: 'Upper-Intermediate', key: 'upper', icon: '🌳', band: '7-8', color: '#ff9600' };
-    } else {
-        return { name: 'Advanced', key: 'advanced', icon: '⭐', band: '8-9', color: '#ce82ff' };
-    }
-}
-
-function getLessonRangeForDifficulty(difficultyKey) {
-    switch (difficultyKey) {
-        case 'beginning': return { start: 0, end: BEGINNING_LESSONS };
-        case 'basic': return { start: BEGINNING_LESSONS, end: BEGINNING_LESSONS + IELTS_PER_LEVEL };
-        case 'intermediate': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL, end: BEGINNING_LESSONS + IELTS_PER_LEVEL * 2 };
-        case 'upper': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL * 2, end: BEGINNING_LESSONS + IELTS_PER_LEVEL * 3 };
-        case 'advanced': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL * 3, end: TOTAL_LESSONS };
-        default: return { start: 0, end: TOTAL_LESSONS };
-    }
-}
-
-function getNextLessonForDifficulty(difficultyKey) {
-    const range = getLessonRangeForDifficulty(difficultyKey);
-
-    // Find the first incomplete lesson in this range
-    for (let i = range.start; i < range.end; i++) {
-        const completed = appState.lessonHistory?.some(h => h.lessonNum === i);
-        if (!completed) {
-            return i;
-        }
-    }
-
-    // All lessons in this range completed, return first lesson of range
-    return range.start;
-}
-
-function getNextPracticeLesson(range) {
-    // Find the lesson practiced longest ago (least recently) in this range
-    // This cycles through lessons sequentially: after completing lesson 1,
-    // lesson 1 becomes the most recent → next time lesson 2 is offered, etc.
-    const history = appState.lessonHistory || [];
-    let oldestTime = Infinity;
-    let oldestLesson = range.start;
-
-    for (let i = range.start; i < range.end; i++) {
-        // Find the most recent time this lesson was practiced
-        let lastPracticed = 0;
-        for (let j = history.length - 1; j >= 0; j--) {
-            if (history[j].lessonNum === i) {
-                lastPracticed = history[j].date || 0;
-                break;
-            }
-        }
-        if (lastPracticed < oldestTime) {
-            oldestTime = lastPracticed;
-            oldestLesson = i;
-        }
-    }
-
-    return oldestLesson;
-}
-
-function filterByDifficulty(level) {
-    selectedDifficultyFilter = level;
-    historyPage = 0;
-
-    // Update chip/tab active states
-    document.querySelectorAll('.difficulty-chip, .difficulty-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    const activeEl = document.querySelector(`.difficulty-chip[data-level="${level}"]`) || document.querySelector(`.difficulty-tab[data-level="${level}"]`);
-    if (activeEl) activeEl.classList.add('active');
-
-    // Re-render home with filtered content
-    renderHome();
-}
-
-function updateDifficultyCounts() {
-    const beginEl = document.getElementById('countBeginning');
-    if (beginEl) beginEl.textContent = BEGINNING_LESSONS;
-    document.getElementById('countBasic').textContent = IELTS_PER_LEVEL;
-    document.getElementById('countIntermediate').textContent = IELTS_PER_LEVEL;
-    document.getElementById('countUpper').textContent = IELTS_PER_LEVEL;
-    document.getElementById('countAdvanced').textContent = TOTAL_LESSONS - BEGINNING_LESSONS - (IELTS_PER_LEVEL * 3);
-}
-
-function startNextLesson() {
-    const lessonToStart = getNextLessonForDifficulty(selectedDifficultyFilter);
-    startLesson(lessonToStart);
-}
-
-// ==================== STREAK SHIELDS ====================
 function renderShields() {
     const container = document.getElementById('homeShields');
     if (!container) return;
@@ -1234,14 +697,13 @@ const PET_PHRASES = {
     ]
 };
 
+// The dog's little daily asks. 'lesson' fires at the end of every Book
+// practice (js/units.js finishUnitPractice → checkQuestCompletion('lesson',
+// { accuracy })), which is the one exercise the app has.
 const PET_QUESTS = [
-    { id: 'lesson',    text: 'Complete 1 lesson today',          coins: 5, hunger: 30,
+    { id: 'lesson',    text: 'Complete 1 practice today',        coins: 5, hunger: 30,
       eligible: () => true },
-    { id: 'perfect',   text: 'Get 100% accuracy in a lesson',   coins: 10, hunger: 40,
-      eligible: () => true },
-    { id: 'srs',       text: 'Complete an SRS review session',   coins: 5, hunger: 30,
-      eligible: s => s.srs && Object.keys(s.srs).length >= 3 },
-    { id: 'wotd',      text: 'Open the Word of the Day',        coins: 3, hunger: 20,
+    { id: 'perfect',   text: 'Get 10/10 in a practice',         coins: 10, hunger: 40,
       eligible: () => true },
     { id: 'streak3',   text: 'Study 3 days in a row',           coins: 15, hunger: 50,
       eligible: () => true }
@@ -1561,11 +1023,8 @@ function renderWordPet() {
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     // Home is the pet's close-up again: no Night Raid castle or garden here.
     // Keeping the live SVG at full size makes every breed, collar, shine and
-    // level-up accessory immediately visible. The castle garden now belongs
-    // to the Arena header, where its combat meaning is clear.
-    if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
-        try { NightRaid.unmountYardScene(); } catch (e) {}
-    }
+    // level-up accessory immediately visible. The castle yard lives on the
+    // Nông trại screen.
     stage_el.classList.remove('yard-mode');
     stage_el.innerHTML = `
         <div class="pet-wrapper">
@@ -2964,7 +2423,6 @@ function onPetTap() {
     fireHeartBurst();
 
     const mood = getPetMood();
-    const srsWords = appState.srs ? Object.keys(appState.srs) : [];
 
     // Poop cleanup nudge (40% chance when poops exist)
     const poopCount = (appState.petPoops || []).length;
@@ -3005,15 +2463,13 @@ function onPetTap() {
         return;
     }
 
-    // Word recall — 20% of taps
-    if (srsWords.length > 0 && Math.random() < 0.2) {
-        const word = srsWords[Math.floor(Math.random() * srsWords.length)];
-        const wordData = ieltsVocabulary.find(w => w.en === word);
-        if (wordData) {
-            showPetSpeechBubble(`${wordData.emoji} Remember "${wordData.en}"?`);
-            speakWord(wordData.en);
-            return;
-        }
+    // Word recall — 20% of taps: a word from a recent Book practice.
+    const recent = (appState.unitsHistory || []).slice(0, 5).flatMap(h => (h && h.wrong) || []);
+    if (recent.length > 0 && Math.random() < 0.2) {
+        const word = recent[Math.floor(Math.random() * recent.length)];
+        showPetSpeechBubble(`📘 Remember "${word}"?`);
+        if (typeof speakWord === 'function') speakWord(word);
+        return;
     }
 
     // Mood-based phrase
@@ -3043,74 +2499,6 @@ function seededRandom(seed) {
         h = Math.imul(h ^ (h >>> 13), 3266489909);
         return ((h ^= h >>> 16) >>> 0) / 4294967296;
     };
-}
-
-function getDailyWord() {
-    const dateStr = new Date().toDateString();
-    const rng = seededRandom(dateStr);
-    const index = Math.floor(rng() * ieltsVocabulary.length);
-    return ieltsVocabulary[index];
-}
-
-function renderWordOfDay() {
-    const card = document.getElementById('wotdCard');
-    if (!card) return;
-    const word = getDailyWord();
-    // Warm the recording now so the story panel's 🔊 Listen is instant.
-    if (typeof prefetchAudio === 'function') prefetchAudio(word.en);
-    const today = new Date().toDateString();
-    const viewed = appState.wordOfDayViewed === today;
-    card.innerHTML = `
-        <div class="wotd-label">Word of the Day ${viewed ? '✅' : ''}</div>
-        <div class="wotd-emoji">${word.emoji}</div>
-        <div class="wotd-word">${word.en}</div>
-    `;
-    card.onclick = () => openWordOfDayStory(word);
-}
-
-function openWordOfDayStory(word) {
-    const overlay = document.getElementById('wotdOverlay');
-    if (!overlay) return;
-    let panelIndex = 0;
-    const panels = [
-        `<div class="wotd-panel-emoji">${word.emoji}</div>
-         <div class="wotd-panel-word">${word.en}</div>
-         <div class="wotd-panel-ipa">${word.ipa}</div>
-         <button class="wotd-speak-btn" onclick="event.stopPropagation(); speakWord('${word.en.replace(/'/g, "\\'")}')">🔊 Listen</button>`,
-        `<div class="wotd-panel-vi">${word.vi}</div>
-         <div class="wotd-panel-example">"${word.ex || ''}"</div>`,
-        `<div class="wotd-panel-prompt">Use it today!</div>
-         <div class="wotd-panel-challenge">Try saying:<br><strong>"${word.ex || word.en}"</strong></div>`
-    ];
-
-    function renderPanel() {
-        overlay.innerHTML = `
-            <div class="wotd-panel">${panels[panelIndex]}</div>
-            <div class="wotd-dots">${panels.map((_, i) =>
-                `<span class="wotd-dot${i === panelIndex ? ' active' : ''}"></span>`
-            ).join('')}</div>
-            <div class="wotd-tap-hint">Tap to continue</div>
-        `;
-    }
-
-    overlay.onclick = (e) => {
-        // Don't advance panel when tapping the Listen button
-        if (e.target.closest('.wotd-speak-btn')) return;
-        panelIndex++;
-        if (panelIndex >= panels.length) {
-            overlay.classList.remove('active');
-            appState.wordOfDayViewed = new Date().toDateString();
-            saveUserData(currentUser, appState);
-            if (typeof checkQuestCompletion === 'function') checkQuestCompletion('wotd');
-            renderWordOfDay();
-        } else {
-            renderPanel();
-        }
-    };
-
-    renderPanel();
-    overlay.classList.add('active');
-    speakWord(word.en);
 }
 
 // ==================== WEEKLY RECAP ====================
@@ -3148,7 +2536,8 @@ function formatWeekRange(weekStartIso) {
 function generateWeeklyRecap(weekStartIso) {
     const start = _parseLocalISODate(weekStartIso).getTime();
     const end = start + 7 * 86400000;
-    const history = (appState.lessonHistory || []).filter(h => h.date >= start && h.date < end);
+    // A "lesson" is a Book practice (js/units.js unitsHistory rows).
+    const history = (appState.unitsHistory || []).filter(h => h && h.date >= start && h.date < end);
 
     // Days active (1 per unique day)
     const dayMap = [false, false, false, false, false, false, false]; // Sun..Sat (local)
@@ -3157,13 +2546,11 @@ function generateWeeklyRecap(weekStartIso) {
         dayMap[dow] = true;
     });
 
-    const xpEarned = history.reduce((sum, h) => sum + (h.points || 0), 0);
+    const xpEarned = history.reduce((sum, h) => sum + (h.score || 0) * 5, 0);
     const lessonsCompleted = history.length;
-    const perfectLessons = history.filter(h => h.accuracy === 100).length;
-
-    // Words learned: unique lesson numbers × WORDS_PER_LESSON (approximation — capped to lesson count)
-    const uniqueLessons = new Set(history.map(h => h.lessonNum)).size;
-    const wordsLearned = uniqueLessons * WORDS_PER_LESSON;
+    const perfectLessons = history.filter(h => h.total && h.score === h.total).length;
+    // Words learned: the words answered right this week, counted once each.
+    const wordsLearned = history.reduce((n, h) => n + Math.max(0, (h.total || 0) - ((h.wrong || []).length)), 0);
 
     const daysActive = dayMap.filter(Boolean).length;
 

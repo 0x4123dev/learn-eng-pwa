@@ -1,6 +1,6 @@
 // Renaming the dog from the home hero. The new name replaces the old one
-// everywhere appState.petName is read — including the Night Raid battle badge
-// that used to say "Dog".
+// everywhere appState.petName is read — including the farm (Night Raid)
+// badge that used to say "Dog".
 const { suite, test, assert } = require('./harness');
 const fs = require('fs'), path = require('path');
 const read = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
@@ -34,9 +34,8 @@ suite('pet rename: the child can change the dog\'s name from home', () => {
     assert.truthy(read('css/styles.css').includes('.pet-hearts-name'));
   });
 
-  test('the name flows into every battle surface that shows the pet', () => {
-    assert.truthy(read('js/night-raid.js').includes('appState.petName||stage.name'), 'Night Raid badge');
-    assert.truthy(read('js/petbattle.js').includes('st.petName'), 'Arena');
+  test('the name flows into every other surface that shows the pet', () => {
+    assert.truthy(read('js/night-raid.js').includes('appState.petName||stage.name'), 'farm badge');
     assert.truthy(read('js/petcheer.js').includes('st.petName'), 'cheers');
   });
 });

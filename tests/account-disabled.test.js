@@ -1,8 +1,9 @@
 // A disabled account must vanish everywhere except the admin site: it cannot
-// log in, its token dies on the next request, and no child-facing endpoint may
-// list it, find it by name, fight it, or show its raids. These tests pin every
-// one of those doors by reading the server source the way the sync harness
-// pins other Functions contracts.
+// log in, and its token dies on the next request. Since the 2026-09 cut no
+// child-facing endpoint lists, searches or targets OTHER accounts (friends,
+// battles and raiding are gone), so requireAuth's check is the whole story.
+// These tests pin those doors by reading the server source the way the sync
+// harness pins other Functions contracts.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs'), path = require('path');
 const read = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
@@ -20,36 +21,18 @@ suite('disabled accounts: gone everywhere but the admin site', () => {
     assert.truthy(/row\.disabled/.test(src), 'a still-valid token must not outlive the switch');
   });
 
-  test('the friends list hides a disabled account on both sides of a friendship', () => {
-    const src = read('functions/api/friends/index.js');
-    assert.truthy(src.includes('ru.disabled = 0'), 'requester side must be filtered');
-    assert.truthy(src.includes('au.disabled = 0'), 'addressee side must be filtered');
-  });
-
-  test('a disabled account cannot be found by name to befriend', () => {
-    // Same 404 as a name that never existed — login is already careful not to
-    // reveal which usernames exist, and search must not become that oracle.
-    const src = read('functions/api/friends/index.js');
-    assert.truthy(/username = \? AND disabled = 0/.test(src));
-  });
-
-  test('peeking at a disabled account\'s study activity 404s', () => {
-    assert.truthy(read('functions/api/friends/activity.js').includes('AND disabled = 0'));
-  });
-
-  test('a pending invite from a freshly disabled account cannot be accepted', () => {
-    const src = read('functions/api/friends/respond.js');
-    assert.truthy(/disabled/.test(src), 'respond must re-check the requester');
-  });
-
-  test('a disabled friend cannot be challenged to battle by a stale client', () => {
-    assert.truthy(/disabled/.test(read('functions/api/battle/challenge.js')));
-  });
-
-  test('night raid never offers, raids, or reports a disabled account', () => {
-    assert.truthy(read('functions/api/night-raid/targets.js').includes('u.disabled=0'));
-    assert.truthy(read('functions/api/night-raid/start.js').includes('u.disabled=0'));
-    assert.truthy(read('functions/api/night-raid/reports.js').includes('u.disabled=0'));
+  test('no child-facing route reads another account any more, so nothing else can leak one', () => {
+    // friends/*, battle/* and the raiding half of night-raid/* each had their
+    // own `disabled = 0` filter because each listed other children. With them
+    // gone, the only routes left act on the caller (requireAuth) or are
+    // admin-only — a new route that lists users would need its own filter,
+    // and this is where that would be pinned.
+    for (const dir of ['friends', 'battle', 'math-fight']) {
+      assert.falsy(fs.existsSync(path.join(__dirname, '..', 'functions', 'api', dir)), dir + '/ must be gone');
+    }
+    for (const f of ['night-raid/targets.js', 'night-raid/start.js', 'night-raid/reports.js', 'night-raid/friends.js']) {
+      assert.falsy(fs.existsSync(path.join(__dirname, '..', 'functions', 'api', f)), f + ' must be gone');
+    }
   });
 
   test('the admin site is the one place a disabled account still appears', () => {
@@ -57,6 +40,9 @@ suite('disabled accounts: gone everywhere but the admin site', () => {
     assert.truthy(read('admin.html').includes('act-disable'));
     assert.truthy(read('functions/api/admin/user-flags.js').includes('self_disable'),
       'an admin cannot lock themselves out');
+    // The list no longer reports the cut per-user switches, and the console
+    // no longer draws a status from them.
+    assert.falsy(/allow_bot|allow_chuyen|exam_count/.test(read('functions/api/admin/users.js')));
   });
 });
 

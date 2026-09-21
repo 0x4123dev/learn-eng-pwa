@@ -19,14 +19,14 @@ function setup(state) {
 
 suite('home: streak panel renders', () => {
     test('renderHomeStreakPanel writes HTML into #streakPanel', () => {
-        const env = setup({ streak: 7, bestStreak: 7, lessonHistory: [] });
+        const env = setup({ streak: 7, bestStreak: 7, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         assert.truthy(html && html.length > 0, 'no HTML written to #streakPanel');
     });
 
     test('streak panel shows the streak number prominently', () => {
-        const env = setup({ streak: 42, bestStreak: 64, lessonHistory: [] });
+        const env = setup({ streak: 42, bestStreak: 64, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         // 42 should appear inside the streak number wrapper
@@ -35,14 +35,14 @@ suite('home: streak panel renders', () => {
     });
 
     test('streak panel stays focused and omits the old best-ever line', () => {
-        const env = setup({ streak: 7, bestStreak: 30, lessonHistory: [] });
+        const env = setup({ streak: 7, bestStreak: 30, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         assert.falsy(/Best ever/.test(html), 'the compact reference has no best-ever line');
     });
 
     test('streak panel names the next milestone without an extra progress bar', () => {
-        const env = setup({ streak: 5, bestStreak: 5, lessonHistory: [] });
+        const env = setup({ streak: 5, bestStreak: 5, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         // 5 days → next milestone is 7 → "2 days to 7"
@@ -52,17 +52,17 @@ suite('home: streak panel renders', () => {
     });
 
     test('streak panel shows the Vietnamese learning CTA when NOT studied today', () => {
-        const env = setup({ streak: 3, bestStreak: 3, lessonHistory: [] });
+        const env = setup({ streak: 3, bestStreak: 3, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         assert.truthy(/Học ngay hôm nay/.test(html), 'should show the learning CTA when not studied today');
         assert.falsy(/Đã học hôm nay/.test(html), 'should NOT show completion copy when nothing logged');
     });
 
-    test('streak panel shows "Đã học hôm nay" when lessonHistory has a today entry', () => {
+    test('streak panel shows "Đã học hôm nay" when unitsHistory has a today entry', () => {
         const env = setup({
             streak: 5, bestStreak: 5,
-            lessonHistory: [{ lessonNum: 0, date: Date.now(), score: 5, mistakes: 0 }]
+            unitsHistory: [{ unit: 'pr1-1', date: Date.now(), score: 5, total: 5, wrong: [] }]
         });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
@@ -70,7 +70,7 @@ suite('home: streak panel renders', () => {
     });
 
     test('streak panel shows 7-day calendar with one "today" tile', () => {
-        const env = setup({ streak: 2, bestStreak: 2, lessonHistory: [] });
+        const env = setup({ streak: 2, bestStreak: 2, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         const dayTiles = (html.match(/home-streak-day\b/g) || []).length;
@@ -82,14 +82,14 @@ suite('home: streak panel renders', () => {
     });
 
     test('streak panel uses Vietnamese day labels', () => {
-        const env = setup({ streak: 15, bestStreak: 15, lessonHistory: [] });
+        const env = setup({ streak: 15, bestStreak: 15, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         assert.truthy(/>CN<|>T2<|>T3<|>T4<|>T5<|>T6<|>T7</.test(html), 'Vietnamese day labels missing');
     });
 
     test('streak panel handles zero-streak (new user)', () => {
-        const env = setup({ streak: 0, bestStreak: 0, lessonHistory: [] });
+        const env = setup({ streak: 0, bestStreak: 0, unitsHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         assert.truthy(/<strong>0<\/strong>/.test(html), 'should show 0 streak');
@@ -102,7 +102,7 @@ suite('home: streak panel renders', () => {
         // Don\'t call setup() — no DOM element pre-touched. The function
         // should gracefully no-op without throwing.
         const env = loadAppCode();
-        env.__setAppState({ streak: 5, bestStreak: 5, lessonHistory: [] });
+        env.__setAppState({ streak: 5, bestStreak: 5, unitsHistory: [] });
         // The DOM stub auto-creates elements, so #streakPanel will exist as
         // a stub regardless. Just verify no throw.
         let threw = false;
@@ -115,8 +115,8 @@ suite('home: streak coverage — recordStudy is exported and idempotent', () => 
     test('recordStudy increments streak on first call today', () => {
         const env = loadAppCode();
         env.__setAppState({
-            streak: 5, bestStreak: 5, points: 0,
-            lessonHistory: [],
+            streak: 5, bestStreak: 5, points: 0, achievements: [],
+            unitsHistory: [],
             lastStudyDate: new Date(Date.now() - 86400000).toDateString()
         });
         env.recordStudy();
@@ -127,8 +127,8 @@ suite('home: streak coverage — recordStudy is exported and idempotent', () => 
     test('recordStudy does NOT double-bump within the same day', () => {
         const env = loadAppCode();
         env.__setAppState({
-            streak: 5, bestStreak: 5, points: 0,
-            lessonHistory: [],
+            streak: 5, bestStreak: 5, points: 0, achievements: [],
+            unitsHistory: [],
             lastStudyDate: new Date(Date.now() - 86400000).toDateString()
         });
         env.recordStudy();
@@ -162,7 +162,7 @@ suite('home: renderHome() draws the pet hero zone', () => {
             avatar: '🐶', username: 'Tester',
             streak: 0, bestStreak: 0, points: 0, coins: 0,
             dogLevel: 1, dogGrowthXP: 0,
-            lessonHistory: [], srs: {}, mistakes: [],
+            unitsHistory: [], srs: {}, mistakes: [],
             currentLesson: 0
         }, state || {}));
         env.__setCurrentUser('Tester');

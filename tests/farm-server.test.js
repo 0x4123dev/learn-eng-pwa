@@ -3,6 +3,8 @@
 // home GET/PUT stamps, harvesting, and the Daily Task page summary.
 const { suite, test, assert } = require('./harness');
 const { createWorld, loadModule } = require('./pages-harness');
+const fs = require('fs'), path = require('path');
+const ROOT = path.join(__dirname, '..');
 const FarmRules = require('../js/farm-rules.js');
 
 const DAY = 86400000;
@@ -371,7 +373,7 @@ suite('farm server: collect', () => {
     const kid = await world.createUser({ allowBot: false });
     const r = await collect(world, kid);
     assert.equal(r.status, 409, 'no home is a game-state refusal, not a feature gate');
-    assert.truthy(/mở Nhà Cướp Đêm/.test(r.data.error));
+    assert.truthy(/mở nông trại/.test(r.data.error));
   });
 });
 
@@ -557,16 +559,11 @@ suite('farm server: a legacy barracks must finish converting', () => {
   });
 });
 
-const startHandler = () => loadModule('functions/api/night-raid/start.js');
-const targetsHandler = () => loadModule('functions/api/night-raid/targets.js');
-
-suite('farm server: a raid target shows its walls, never its garden', () => {
-  // Found by review, 2026-09-04. homeSnapshot builds the payload for the
-  // OWNER's own home AND for a house a child is about to raid. Since the farm
-  // shipped it handed an attacker the defender's crops — with their uid, the
-  // task-day they were planted on and the date — and their private extra farm
-  // boards. That is the child's study history and their own boards, and a uid
-  // is an identity another child must never hold. Master sent defences only.
+suite('farm server: the owner sees the whole garden, and nobody else is served it', () => {
+  // The raid routes that used to hand an attacker a snapshot of this house
+  // (start.js, targets.js, friends.js) were cut in September 2026, and with
+  // them the only readers of another child's home row. GET /home is the one
+  // route left that returns a layout, and it returns the caller's own.
   async function twoHouses() {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
@@ -587,34 +584,22 @@ suite('farm server: a raid target shows its walls, never its garden', () => {
   }
   const WALLS = ['stone-wall', 'wood-fence'];
 
-  test('a real raid hands the attacker no crop, no farm building and no farms', async () => {
+  test('the raid routes are gone, and no route serves another child\'s home', async () => {
+    for (const route of ['start', 'finish', 'targets', 'friends', 'reports', 'shield']) {
+      assert.falsy(fs.existsSync(path.join(ROOT, 'functions/api/night-raid', route + '.js')), route + '.js was cut');
+    }
     const { world, attacker, defender } = await twoHouses();
-    const r = await world.call(startHandler().onRequestPost, { url: '/api/night-raid/start', method: 'POST',
-      token: attacker.token, body: { targetId: defender.uid } });
-    assert.truthy(r.ok && r.data && r.data.raid, JSON.stringify(r.data));
-    const raid = r.data.raid, wire = JSON.stringify(raid);
-    assert.deepEqual(raid.layout.cells.map(c => c.type).sort(), WALLS, 'defences only');
-    assert.equal(raid.layout.farms, undefined, 'the private extra farm boards are not sent at all');
-    assert.falsy(wire.includes('pumpkin'), 'no crop reaches the attacker');
-    assert.falsy(wire.includes('rose'), 'not even from a private farm board');
-    assert.falsy(wire.includes('windmill'), 'and no farm building');
-    // The fight is untouched: every wall, the dog, the castle and the garrison.
-    assert.equal(raid.soldiers, 4, 'the garrison is still part of the gamble');
-    assert.equal(raid.layout.soldiers, 4);
-    assert.truthy(raid.dogLevel >= 1 && raid.castleHp > 0 && raid.defense > 0);
-    // …and the board /finish will score is the same one the child played.
-    const snap = JSON.parse(world.db.prepare('SELECT snapshot_json FROM night_raids WHERE id=?').get(raid.raidId).snapshot_json);
-    assert.deepEqual(snap.layout.cells.map(c => c.type).sort(), WALLS);
-    assert.equal(snap.layout.farms, undefined);
-  });
-  test('the target list card carries no farm item either', async () => {
-    const { world, attacker, defender } = await twoHouses();
-    const r = await world.call(targetsHandler().onRequestGet, { url: '/api/night-raid/targets', method: 'GET', token: attacker.token });
-    assert.truthy(r.ok, JSON.stringify(r.data));
-    const card = (r.data.targets || []).find(t => Number(t.targetId) === defender.uid);
-    assert.truthy(card, 'the defender is offered as a target');
-    assert.deepEqual(card.layout.cells.map(c => c.type).sort(), WALLS);
-    assert.equal(card.layout.farms, undefined);
+    // The attacker's own GET returns the attacker's own (empty) home, never Bống's.
+    const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: attacker.token });
+    assert.truthy(g.ok, JSON.stringify(g.data));
+    assert.equal(g.data.home.targetId, attacker.uid);
+    assert.deepEqual(g.data.home.layout.cells, []);
+    assert.falsy(JSON.stringify(g.data.home).includes('pumpkin') || JSON.stringify(g.data).includes('Bống'), 'nothing of the other house leaks');
+    // And the shared helper no longer carries the fields a raid scored with.
+    const own = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: defender.token });
+    for (const gone of ['shieldUntil', 'lockedUntil', 'swords', 'damage', 'defense', 'castleHp', 'sceneId'])
+      assert.equal(own.data.home[gone], undefined, gone + ' is not in the home payload any more');
+    assert.equal(own.data.home.soldiers, 4, 'the garrison count is still the parade\'s');
   });
   test('the owner\'s own GET still returns every crop, farm building and board', async () => {
     const { world, defender } = await twoHouses();

@@ -32,46 +32,25 @@ suite('skill analytics: storage and access', () => {
     assert.truthy(report.includes("return err('Forbidden', 403)"));
   });
 
-  test('ingest is bounded and validates the supported menu taxonomy', () => {
+  test('ingest is bounded and validates the one menu left', () => {
+    // The Book units are the only practice since the 2026-09 cut. js/auth.js
+    // has always filed them under 'grade4' and the stored rows carry that
+    // name, so the whitelist keeps it and nothing else — a row for a cut
+    // menu is dropped, not stored under a taxonomy nobody reads.
     assert.truthy(ingest.includes('const MAX_BATCH = 400'));
-    for (const menu of ['math7', 'math4', 'mathwars', 'grade4', 'wordform', 'grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {
-      assert.truthy(ingest.includes("'" + menu + "'"), 'missing menu ' + menu);
-    }
+    const menus = (src) => [...(/const MENUS = \[([^\]]*)\]/.exec(src) || ['', ''])[1].matchAll(/'([a-z0-9]+)'/g)].map(m => m[1]);
+    assert.deepEqual(menus(ingest), ['grade4']);
+    assert.deepEqual(menus(report), ['grade4'], 'the admin report filters on the same list');
     assert.truthy(ingest.includes('slice(0, 20)'), 'wrong references must stay bounded');
     assert.truthy(ingest.includes('INSERT OR IGNORE'), 'replays must be idempotent');
   });
 });
 
 suite('skill analytics: background producers', () => {
-  test('all four requested menus attach hidden skill summaries', () => {
-    const files = {
-      math7: read('js/math.js'),
-      mathwars: read('js/mathwars.js'),
-      grade4: read('js/units.js'),
-      wordform: read('js/wordform.js'),
-    };
-    Object.entries(files).forEach(([menu, source]) => {
-      assert.truthy(source.includes('skills:'), menu + ' does not save skill results');
-      assert.falsy(source.includes('skillAnalytics'), menu + ' accidentally gained admin UI');
-    });
-    assert.truthy(files.mathwars.includes("':': 'divide'"), 'division must be independently measurable');
-    assert.truthy(files.mathwars.includes("'+': 'add'"), 'addition must be independently measurable');
-    assert.truthy(files.wordform.includes("neg: 'negative.prefix'"));
-  });
-
-  test('all English practice menus record detailed skill summaries', () => {
-    const files = {
-      grammar: read('js/grammar-units.js'), phrases: read('js/phrases.js'),
-      verbs: read('js/verbs.js'), rewrite: read('js/rewrite.js'), collocation: read('js/collocation.js'),
-    };
-    Object.entries(files).forEach(([menu, source]) => {
-      assert.truthy(source.includes('SkillSummaries'), menu + ' needs a skill taxonomy helper');
-      assert.truthy(source.includes('skills:'), menu + ' does not attach results to history');
-    });
-    assert.truthy(files.verbs.includes("skillKey:'verbs.v2"), 'V2 must be independently measurable');
-    assert.truthy(files.verbs.includes("skillKey:'verbs.v3"), 'V3 must be independently measurable');
-    assert.truthy(files.collocation.includes('collocation.understanding.meaning'));
-    assert.truthy(files.collocation.includes('collocation.understanding.reason'));
+  test('the Book units attach hidden skill summaries to their history', () => {
+    const units = read('js/units.js');
+    assert.truthy(units.includes('skills:'), 'units.js does not save skill results');
+    assert.falsy(units.includes('skillAnalytics'), 'units.js accidentally gained admin UI');
   });
 
   test('sync has its own retry ledger and does not post after every answer', () => {
@@ -79,13 +58,12 @@ suite('skill analytics: background producers', () => {
     assert.truthy(auth.includes("api('skills'"));
     assert.truthy(auth.includes('syncedSkillKeys'));
     assert.truthy(auth.includes('skillSyncEpoch'));
-    assert.truthy(auth.includes("(appState.mathHistory || []).forEach"));
-    assert.truthy(auth.includes("(appState.warsHistory || []).forEach"));
     assert.truthy(auth.includes("(appState.unitsHistory || []).forEach"));
-    assert.truthy(auth.includes("(appState.wordformHistory || []).forEach"));
-    for (const menu of ['grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {
-      assert.truthy(auth.includes("addSession('" + menu + "'"), 'sync missing ' + menu);
-    }
+    assert.truthy(auth.includes("addSession('grade4'"), 'the Book units must file under the menu the server accepts');
+    // Every menu the client files under must be one the server keeps —
+    // otherwise clean() drops the row and the client marks it synced anyway.
+    const filed = [...new Set([...auth.matchAll(/addSession\('([a-z0-9]+)'/g)].map(m => m[1]))];
+    assert.deepEqual(filed, ['grade4']);
     assert.truthy(auth.includes('const SKILL_SYNC_EPOCH = 2'));
   });
 });
@@ -100,16 +78,20 @@ suite('skill analytics: admin-only dashboard', () => {
     assert.truthy(admin.includes('selectSkillUser(uid, name)'));
   });
 
-  test('competency analytics is a responsive admin tab with every menu', () => {
+  test('competency analytics is a responsive admin tab whose menu filter matches the server', () => {
     assert.truthy(admin.includes('role="tablist"'));
     assert.truthy(admin.includes('id="skillsPanel"'));
     assert.truthy(admin.includes('data-tab="skills"'), 'the child page has a Năng lực tab');
     assert.truthy(/if \(tab === 'skills'\) loadSkills\(_skillUser, _skillName\)/.test(admin), 'opening the tab loads the open child');
     assert.truthy(admin.includes('@media (max-width: 640px)'));
     assert.truthy(admin.includes('min-height:44px'));
-    for (const menu of ['grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {
-      assert.truthy(admin.includes('value="' + menu + '"'), 'admin filter missing ' + menu);
-    }
+    // The filter offers exactly the menus admin/skills accepts: an option for
+    // a cut menu would be a filter that always comes back empty.
+    const sel = /<select id="skillMenu">([\s\S]*?)<\/select>/.exec(admin);
+    assert.truthy(sel, 'no menu filter');
+    const offered = [...sel[1].matchAll(/value="([a-z0-9]+)"/g)].map(m => m[1]);
+    assert.deepEqual(offered, ['grade4']);
+    assert.truthy(/SKILL_MENU_LABEL = \{ grade4:/.test(admin), 'and the menu has a readable label');
     assert.truthy(admin.includes('Ưu tiên giao bài'));
   });
 

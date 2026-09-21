@@ -135,89 +135,49 @@ function buildSandbox(opts) {
 
 // Names we want to expose to tests. Populated lazily by inspecting source.
 const EXPORT_NAMES = [
-    // vocabulary.js
-    'ieltsVocabulary', 'irregularVerbs',
-    // topics.js
-    'TOPICS', 'INDEX_RANGE_TOPICS', 'WORD_TOPIC_OVERRIDES', 'WORD_TOPIC_ADDITIONS',
-    'getTopicsForWord', 'getTopicsForWordIndex', 'getWordsForTopic', 'getTopicCounts',
-    'getTopicById', 'getDifficultyLabelForWordIdx', 'buildWordTopicsIndex',
-    'TOPIC_BONUS_LESSON', 'isBonusTopicLesson',
     // wrong-priority.js
     'prioStore', 'prioStreak', 'prioRecord', 'prioForced', 'prioPick',
-    // srs.js
-    'initWordSRS', 'updateWordSRS', 'getWordsDueForReview', 'getReviewCount',
-    'getSRSMasteryPercent', 'startReviewSession',
-    // srs.js — topic-aware SR (v3.26)
-    'getDueWordsForTopic', 'getDueCountForTopic', 'getTrackedWordsForTopic',
-    'getTopicSRSStats', 'getStrugglingWordsForTopic', 'getTopicOfTheDay',
-    'isWordStruggling', 'startTopicReviewSession',
-    'SRS_LEARNING_MAX', 'SRS_REVIEWING_MAX', 'SRS_MASTERED_INTERVAL', 'SRS_GRADUATED_INTERVAL',
+    // retrydrill.js
+    'RETRY_DRILLS', 'retryList', 'retryCount', 'retryAdd', 'retryGate', 'startRetryDrill',
+    'isRetryDrillActive', 'retryDrillKey', 'abandonRetryDrill',
+    // units.js (the three Books)
+    'UNIT_SETS', 'UNIT_HOSTS', 'unitsBank', 'unitsList', 'currentUnitSet', 'switchUnitSet',
+    'startUnitPractice', 'submitUnitAnswer', 'nextUnitQuestion', 'finishUnitPractice',
+    'isUnitPracticeActive', 'abandonUnitPractice', 'renderWordHome', 'renderUnitsBar',
+    'unitPracticeScreen', 'unitsRetryCount', 'unitsHostHistory', '_unitParse',
     // app.js
-    'WORDS_PER_LESSON', 'TOTAL_LESSONS', 'STREAK_MILESTONES', 'achievements',
+    'STREAK_MILESTONES', 'achievements',
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',
     'appEsc', 'getUsers', 'getUserData', 'renderUserList',
+    'switchScreen', 'openBook', 'navKeyForScreen', 'setBottomNavActive',
     // app.js — word audio (pre-generated recordings + TTS fallback)
     'WORD_AUDIO_PATH', 'wordAudioBase', 'wordAudioSlug', 'speakWord', 'speakWordFallback',
     'speakSequence', 'warmWord', 'warmHotWords',
     'audioMissing', 'audioCache',
     'prefetchAudio', 'preloadLessonAudio',
-    // grammar
-    'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
-    'isArrangementCorrect', 'scoreGrammarQuestion',
-    'PDF_PAGE_REFS', 'getPdfPageRef', 'formatPdfPageRef',
-    // grammar mistake bank (v3.24)
-    'resolveMistakeQuestion', 'getActiveMistakes', 'getBookmarkedMistakes',
-    'getWeakTopics', 'getGrammarAggregateStats',
-    'toggleMistakeBookmark', 'isQuestionBookmarked',
-    // grammar lessons (v3.25)
-    'GRAMMAR_LESSONS', 'getGrammarLessonsForUnit', 'getGrammarLesson',
-    'getLessonPracticeQuestions',
-    // grammar tips (v3.40 — Vietnamese mnemonics)
-    'GRAMMAR_TIPS', 'getGrammarTipForQuestion', 'renderGrammarTipHTML',
-    // grammar UI render layer (loaded only when includeGrammarUI is true)
-    'quizHeaderHTML', 'renderMCQuestion', 'renderArrangementQuestion',
-    'renderGrammarQuestion', 'finishGrammarQuiz',
-    'startMistakesQuiz', 'startCustomQuiz', 'startGrammarQuiz',
-    'startTopicReviewSession',
-    'nextGrammarQuestion', 'answerGrammarQuestion',
-    'confirmExitGrammarQuiz', 'isGrammarQuizActive', 'abandonGrammarQuiz',
-    'renderGrammarHome', 'renderGrammarLessons', 'openGrammarLesson',
-    'practiceGrammarLesson', 'closeGrammarLesson',
-    'switchGrammarSubTab', 'reviewLastGrammarSession',
-    '_buildQuizStateFromQuestions', 'scoreSoFar_',
-    // grammar UI — units collapse/expand (v3.32.2)
-    'toggleGrammarUnitExpanded', 'expandAllGrammarUnits', 'collapseAllGrammarUnits',
-    // grammar UI — lessons collapse/expand (v3.34)
-    'toggleGrammarLessonUnitExpanded', 'expandAllGrammarLessonUnits', 'collapseAllGrammarLessonUnits',
-    // (v3.38: word-bubbles game removed.)
-    // phrases tab — prepositions (v3.60, loaded only when includePhrases is true)
-    'PREPOSITION_QUESTIONS', 'renderPhrasesHome', 'startPhrasesQuiz',
-    'answerPhrQuestion', 'nextPhrQuestion', 'finishPhrasesQuiz',
-    'isPhrasesQuizActive', 'abandonPhrasesQuiz',
-    'startPhrasesReviewQuiz', 'setPhrHistoryFilter', 'openPhrSession',
-    'switchPhrSubTab', 'renderPhrasesLessons', 'phrasesLessonEntries', 'filterPhrLessons',
+    // hosting.js
+    'Hosting',
     // daily streak modal (v3.37)
     'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
     'hasShownStreakToday', 'markStreakShownToday',
     // homepage streak panel (v3.38)
     'renderHomeStreakPanel', 'goLearnToday', 'renderHomeSkillsPanel', 'toggleHomeSkillsDetails',
+    'goToSkillTab', 'HOME_BOOKS',
     // home.js
-    'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
-    'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
-    'getNextPracticeLesson', 'getReviewLessonGroups', 'getStreakTier', 'getNextMilestone',
+    'getStreakTier', 'getNextMilestone',
     'getDogLevel', 'getPointsForLevel', 'getDogStage', 'getDogTitle',
-    'STREAK_MILESTONE_DATA', 'DOG_STAGES', 'DOG_ACCESSORIES', 'DOG_FOOD',
+    'STREAK_MILESTONE_DATA', 'DOG_STAGES', 'DOG_ACCESSORIES', 'DOG_FOOD', 'PET_QUESTS',
     'getWeekStart', 'formatWeekRange', 'generateWeeklyRecap', 'getRecapMessage',
-    'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
+    'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn', 'checkQuestCompletion',
     'getHomeSkillStats', '_homeSkillSessions', '_homeAllSessionsCount',
     // login + profile migration (money-client tests)
     'loginUser', 'getUserData', 'createDefaultUserData', 'saveUserData',
-    'restoreStudyCheckpoint',
+    'restoreStudyCheckpoint', 'forgetProfileState',
     // shop spend paths (money-invariants tests)
     'buyFood', 'buyAccessory', 'buyShield',
-    // daily-challenge
-    'getDailyWords', 'seededRandom'
-    // (v3.47: Music & Videos tabs removed — no video globals.)
+    // profile.js
+    'renderProfile', 'unlockAchievement', 'checkStickerUnlocks', 'knownWordCount',
+    'seededRandom',
 ];
 
 function loadAppCode(opts) {
@@ -225,32 +185,26 @@ function loadAppCode(opts) {
     const sandbox = buildSandbox(opts);
     const ctx = vm.createContext(sandbox);
 
+    // Every eager script the app itself loads before js/home.js (index.html),
+    // in that order, plus the profile screen. Tests that need a lazy bank
+    // (js/word-data.js) load it themselves.
     const fileList = [
-        'js/vocabulary.js',
-        'js/topics.js',
-        'js/srs.js',
+        'js/retrydrill.js',
         'js/wrong-priority.js',
-        'js/grammar-units.js',
-        'js/grammar-lessons.js',
+        'js/answer-audio.js',
+        'js/units.js',
+        'js/tapwords.js',
+        'js/petart.js',
+        'js/petcheer.js',
+        'js/farm-rules.js',
+        'js/night-raid-rules.js',
+        'js/hosting.js',
         'js/app.js'
     ];
     if (opts.includeHome !== false) {
         fileList.push('js/home.js');
+        fileList.push('js/profile.js');
     }
-    if (opts.includeDailyChallenge) {
-        fileList.push('js/daily-challenge.js');
-    }
-    // (v3.47: Music & Videos tabs removed — no includeVideos option.)
-    // Load the grammar UI render layer too. Required for any test that
-    // exercises quizHeaderHTML / renderMCQuestion / finishGrammarQuiz / etc.
-    if (opts.includeGrammarUI) {
-        fileList.push('js/grammar-ui.js');
-    }
-    if (opts.includePhrases) {
-        fileList.push('js/phrases-data.js');
-        fileList.push('js/phrases.js');
-    }
-    // (v3.38: Word Bubbles game removed — no includeBubbles option.)
 
     let combined = '';
     for (const f of fileList) {
@@ -271,10 +225,8 @@ ${checks}
 globalThis.__setAppState = function(s) { try { appState = s; } catch(e) {} };
 globalThis.__getAppState = function() { try { return appState; } catch(e) { return undefined; } };
 globalThis.__setCurrentUser = function(u) { try { currentUser = u; } catch(e) {} };
-globalThis.__setLessonState = function(s) { try { lessonState = s; } catch(e) {} };
-globalThis.__getLessonState = function() { try { return lessonState; } catch(e) { return undefined; } };
-globalThis.__setGrammarQuizState = function(s) { try { _grammarQuizState = s; } catch(e) {} };
-globalThis.__getGrammarQuizState = function() { try { return _grammarQuizState; } catch(e) { return undefined; } };
+globalThis.__setUnitQuiz = function(s) { try { _unitQuiz = s; } catch(e) {} };
+globalThis.__getUnitQuiz = function() { try { return _unitQuiz; } catch(e) { return undefined; } };
 `;
 
     try {

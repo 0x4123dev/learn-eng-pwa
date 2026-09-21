@@ -23,20 +23,12 @@ function newestFirst(n) {
     })),
   }));
 }
-// Oldest-first history (push-style: lessonHistory).
-function oldestFirst(n) {
-  return Array.from({ length: n }, (_, i) => ({ lessonNum: i, date: 1755000000000 + i, points: 100, accuracy: 80 }));
-}
+// The one history the app keeps now (js/app.js HISTORY_BOOKS): the Book
+// practices, newest first. Big enough on its own to cross the quota below.
 function bigState() {
   return {
     coins: 5000, points: 90000,
-    phrasesHistory: newestFirst(300), wordformHistory: newestFirst(300),
-    rewriteHistory: newestFirst(300), collocHistory: newestFirst(300),
-    unitsHistory: newestFirst(300), grammarHistory: newestFirst(300),
-    mathHistory: newestFirst(300), warsHistory: newestFirst(300),
-    nightRaidHistory: newestFirst(100),
-    lessonHistory: oldestFirst(200),
-    speedChallenge: { history: oldestFirst(50) },
+    unitsHistory: newestFirst(3000),
   };
 }
 function withSetItem(fn, run) {
@@ -54,11 +46,9 @@ suite('appState quota: a full disk sheds by halving, never line-by-line', () => 
       if (String(v).length > 900000) { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; }
     }, () => app.saveUserData('Kid', st));
     assert.truthy(attempts <= 8, 'halving converges fast, got ' + attempts + ' attempts');
-    assert.truthy(st.phrasesHistory.length < 300, 'old sessions were shed');
-    assert.truthy(st.phrasesHistory.length >= 40, 'a floor of recent sessions survives');
-    assert.equal(st.phrasesHistory[0].id, 'phr-300', 'newest-first books keep the NEWEST entries');
-    const lessons = st.lessonHistory;
-    assert.equal(lessons[lessons.length - 1].lessonNum, 199, 'append-style books keep their newest tail');
+    assert.truthy(st.unitsHistory.length < 3000, 'old sessions were shed');
+    assert.truthy(st.unitsHistory.length >= 40, 'a floor of recent sessions survives');
+    assert.equal(st.unitsHistory[0].id, 'phr-3000', 'newest-first books keep the NEWEST entries');
   });
 
   test('a hopeless disk fails loudly after bounded attempts — no minute-long freeze', () => {
@@ -80,16 +70,16 @@ suite('appState quota: a full disk sheds by halving, never line-by-line', () => 
     assert.truthy(stored.length > 0, 'the save happened');
     assert.truthy(stored.length < 2400000,
       'an oversized profile must be trimmed under the soft limit, stored ' + stored.length + ' bytes');
-    assert.equal(st.phrasesHistory[0].id, 'phr-300', 'trimming still keeps the newest sessions');
+    assert.equal(st.unitsHistory[0].id, 'phr-3000', 'trimming still keeps the newest sessions');
   });
 
   test('a normal-sized profile is stored untouched in one attempt', () => {
-    const st = { coins: 120, phrasesHistory: newestFirst(20), lessonHistory: oldestFirst(10) };
+    const st = { coins: 120, unitsHistory: newestFirst(20) };
     let attempts = 0; let stored = '';
     withSetItem((k, v) => { attempts++; stored = String(v); }, () => app.saveUserData('Kid', st));
     assert.equal(attempts, 1);
-    assert.equal(st.phrasesHistory.length, 20, 'nothing is shed below the limit');
-    assert.equal(JSON.parse(stored).phrasesHistory.length, 20);
+    assert.equal(st.unitsHistory.length, 20, 'nothing is shed below the limit');
+    assert.equal(JSON.parse(stored).unitsHistory.length, 20);
   });
 });
 

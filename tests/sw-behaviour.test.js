@@ -286,8 +286,8 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
 
 suite('service worker: the API is never cached and never replayed', () => {
   const API = [
-    '/api/night-raid/home', '/api/friends', '/api/me/daily-tasks',
-    '/api/math-fight', '/api/admin/users',
+    '/api/night-raid/home', '/api/me/daily-tasks', '/api/activity',
+    '/api/coins', '/api/admin/users',
   ];
 
   test('an authenticated GET is left entirely alone', async () => {
@@ -555,7 +555,7 @@ suite('service worker: an update downloads only what changed', () => {
   });
 
   test('a body that is wrong even after the retry is a failed entry', async () => {
-    const BAD = '/js/exam.js';
+    const BAD = '/js/units.js';
     let n = 0;
     const worker = bootWorker(url => { if (pathOf(url) === BAD) { n++; return js('WRONG'); } return js('ok'); });
     await install(worker);
@@ -565,9 +565,9 @@ suite('service worker: an update downloads only what changed', () => {
 
   test('a stale copy left in the previous generation is never served cache-first', async () => {
     // The install came up short (>10% failed), so activate kept the previous
-    // cache — which holds LAST release's /js/collocation.js. That file must
+    // cache — which holds LAST release's /js/units.js. That file must
     // come from the network (verified), not from the old cache.
-    const STALE = '/js/collocation.js';
+    const STALE = '/js/units.js';
     // Every image 404s (a weak 4G mid-download) — more than 10% of the
     // manifest — and so does the file under test.
     const worker = bootWorker(url =>
@@ -691,12 +691,10 @@ suite('service worker: background updates are automatic but safe', () => {
       clearInterval() {}, setTimeout() { return 1; },
       saveStudyCheckpoint() { calls.checkpoints++; },
       saveUserData() { calls.saves++; },
-      document: { getElementById(id) {
-        if (id === 'lessonScreen') return { classList: { contains: () => !!opts.lesson } };
-        return null;
-      } },
+      document: { getElementById() { return null; } },
     };
-    if (opts.math) sandbox.isMathQuizActive = () => true;
+    if (opts.units) sandbox.isUnitPracticeActive = () => true;
+    if (opts.drill) sandbox.isRetryDrillActive = () => true;
     // The quiet-moment rule: which screen is up, whether the app is hidden,
     // and how long since the child last touched it.
     sandbox.document.hidden = !!opts.hidden;
@@ -715,14 +713,14 @@ suite('service worker: background updates are automatic but safe', () => {
 
   test('a results card is not a quiet moment: the tap heading for "Practice again" must not meet a reload', () => {
     // The finish screen is not "busy", so the 10 s poll used to fire there.
-    const results = runUpdater({ screen: 'phrasesScreen', tappedAgo: 1500 });
+    const results = runUpdater({ screen: 'wordScreen', tappedAgo: 1500 });
     assert.equal(results.posts, 0, 'no SKIP_WAITING on a results/practice screen');
     assert.equal(results.intervals[0].ms, 10000, 'it keeps polling instead');
     const fresh = runUpdater({ screen: 'homeScreen', tappedAgo: 1500 });
     assert.equal(fresh.posts, 0, 'a tap 1.5 s ago on Home is not quiet either');
     const idle = runUpdater({ screen: 'homeScreen', tappedAgo: 25000 });
     assert.equal(idle.posts, 1, 'Home with no tap for 25 s is the moment');
-    const hidden = runUpdater({ screen: 'phrasesScreen', tappedAgo: 500, hidden: true });
+    const hidden = runUpdater({ screen: 'wordScreen', tappedAgo: 500, hidden: true });
     assert.equal(hidden.posts, 1, 'the app in the background is always a quiet moment');
     assert.truthy(/visibilityState === 'hidden'[^\n]*applyUpdateWhenSafe\(reg\)/.test(APP), 'going to the background applies a waiting update at once');
     assert.truthy(/noteInteraction/.test(APP.slice(APP.indexOf('function registerServiceWorker('))), 'taps are tracked');
@@ -741,26 +739,31 @@ suite('service worker: background updates are automatic but safe', () => {
       'activity guard must run before activation');
     assert.truthy(/setInterval\(\(\) => applyUpdateWhenSafe\(reg\), 10000\)/.test(apply),
       'the update must retry quietly after the activity ends');
-    const guard = APP.slice(APP.indexOf('function _busyWithTimedActivity'), APP.indexOf('function applyUpdateWhenSafe'));
-    assert.truthy(/lessonScreen/.test(guard), 'matching-pairs lessons must count as in-progress work too');
-    const math = runUpdater({ math: true });
-    const lesson = runUpdater({ lesson: true });
-    assert.equal(math.posts, 0);
-    assert.equal(lesson.posts, 0);
-    assert.equal(math.intervals[0].ms, 10000);
-    assert.equal(lesson.intervals[0].ms, 10000);
+    const units = runUpdater({ units: true });
+    const drill = runUpdater({ drill: true });
+    assert.equal(units.posts, 0, 'a Book practice in progress holds the update back');
+    assert.equal(drill.posts, 0, 'so does the owed-words drill');
+    assert.equal(units.intervals[0].ms, 10000);
+    assert.equal(drill.intervals[0].ms, 10000);
   });
 
   test('every activity switchScreen guards, the reload guards too', () => {
     // The first version checked four of the nine. An update that reloads must
-    // be at least as careful as tapping a nav tab.
+    // be at least as careful as tapping a nav tab. Two activities are left:
+    // the Book practice (isUnitPracticeActive) and the owed-words drill,
+    // which switchScreen asks about through retryDrillKey() === 'word' and
+    // the reload guard through isRetryDrillActive().
     const APP_SRC = APP;
     const sw = APP_SRC.slice(APP_SRC.indexOf('function switchScreen('));
     const guarded = [...new Set([...sw.slice(0, 9000).matchAll(/&& (is[A-Za-z]+)\(\)/g)].map(m => m[1]))];
     const list = APP_SRC.slice(APP_SRC.indexOf('const _BUSY_CHECKS'), APP_SRC.indexOf('function _busyWithTimedActivity'));
     const missing = guarded.filter(g => !list.includes(`'${g}'`));
     assert.equal(missing.length, 0, 'not guarded against a reload: ' + missing.join(', '));
-    assert.truthy(guarded.length >= 9, 'the guard list must not have shrunk: ' + guarded.length);
+    assert.deepEqual(guarded, ['isUnitPracticeActive'], 'the guard list must not have shrunk');
+    assert.truthy(/retryDrillKey\(\) === 'word'/.test(sw.slice(0, 9000)), 'switchScreen must also guard the owed-words drill');
+    for (const name of ['isUnitPracticeActive', 'isRetryDrillActive']) {
+      assert.truthy(list.includes(`'${name}'`), name + ' must hold a reload back');
+    }
   });
 
   test('drafts and profile state are saved immediately before activation', () => {

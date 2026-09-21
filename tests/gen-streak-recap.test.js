@@ -1,6 +1,6 @@
 // tests/gen-streak-recap.test.js — Streak + weekly recap helpers (generated batch).
 // Covers: getWeekStart idempotence, year-boundary week ranges, two-week
-// lessonHistory bucketing in generateWeeklyRecap, getRecapMessage tiers vs
+// unitsHistory bucketing in generateWeeklyRecap, getRecapMessage tiers vs
 // accuracy, and streak-shield field defaults.
 // Deliberately different cases from tests/recap.test.js and tests/streak.test.js.
 const { suite, test, assert } = require('./harness');
@@ -109,17 +109,19 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
     // Week B: Sun 2025-03-09 … Sat 2025-03-15
     const WEEK_A = '2025-03-02';
     const WEEK_B = '2025-03-09';
+    // Book practice rows (js/units.js): xp = score × 5, perfect = score === total,
+    // wordsLearned = right answers (total − wrong.length).
     const historyTwoWeeks = () => ([
         // Week A: Mon + Wed
-        { lessonNum: 10, date: ts(2025, 2, 3, 9), points: 40, accuracy: 100 },
-        { lessonNum: 11, date: ts(2025, 2, 5, 18), points: 60, accuracy: 80 },
+        { unit: 'pr1-10', date: ts(2025, 2, 3, 9), score: 8, total: 8, wrong: [] },
+        { unit: 'pr1-11', date: ts(2025, 2, 5, 18), score: 12, total: 15, wrong: ['a', 'b', 'c'] },
         // Week B: Sun + Wed + Fri
-        { lessonNum: 11, date: ts(2025, 2, 9, 8), points: 10, accuracy: 100 },
-        { lessonNum: 12, date: ts(2025, 2, 12, 12), points: 20, accuracy: 100 },
-        { lessonNum: 12, date: ts(2025, 2, 14, 20), points: 30, accuracy: 60 }
+        { unit: 'pr1-11', date: ts(2025, 2, 9, 8), score: 2, total: 2, wrong: [] },
+        { unit: 'pr2-12', date: ts(2025, 2, 12, 12), score: 4, total: 4, wrong: [] },
+        { unit: 'pr2-12', date: ts(2025, 2, 14, 20), score: 6, total: 10, wrong: ['p', 'q', 'r', 's'] }
     ]);
     function setState() {
-        env.__setAppState({ lessonHistory: historyTwoWeeks(), streak: 9 });
+        env.__setAppState({ unitsHistory: historyTwoWeeks(), streak: 9 });
     }
 
     test('week A counts only its own 2 lessons', () => {
@@ -129,7 +131,7 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
 
     test('week A XP sums only week-A points', () => {
         setState();
-        assert.equal(env.generateWeeklyRecap(WEEK_A).xpEarned, 100); // 40+60
+        assert.equal(env.generateWeeklyRecap(WEEK_A).xpEarned, 100); // (8+12)×5
     });
 
     test('week A has exactly 1 perfect lesson', () => {
@@ -144,16 +146,16 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
         assert.equal(recap.daysActive, 2);
     });
 
-    test('lesson rows missing points/accuracy add 0 XP and are not perfect', () => {
+    test('lesson rows missing score/total add 0 XP and are not perfect', () => {
         env.__setAppState({
-            lessonHistory: [{ lessonNum: 3, date: ts(2025, 2, 4, 10) }], // no points/accuracy keys
+            unitsHistory: [{ unit: 'pr1-3', date: ts(2025, 2, 4, 10) }], // no score/total/wrong keys
             streak: 0
         });
         const r = env.generateWeeklyRecap(WEEK_A);
         assert.equal(r.lessonsCompleted, 1);
-        assert.equal(r.xpEarned, 0, 'points||0 treats a missing points field as 0');
-        assert.equal(r.perfectLessons, 0, 'accuracy===100 is strict — missing accuracy is not perfect');
-        assert.equal(r.wordsLearned, 5, '1 unique lesson × WORDS_PER_LESSON');
+        assert.equal(r.xpEarned, 0, 'score||0 treats a missing score field as 0');
+        assert.equal(r.perfectLessons, 0, 'a row with no total is not perfect');
+        assert.equal(r.wordsLearned, 0, 'no total → no words answered right');
     });
 
     test('weekEnd is the Saturday of each week', () => {
@@ -169,7 +171,7 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
 
     test('week B XP sums only week-B points', () => {
         setState();
-        assert.equal(env.generateWeeklyRecap(WEEK_B).xpEarned, 60); // 10+20+30
+        assert.equal(env.generateWeeklyRecap(WEEK_B).xpEarned, 60); // (2+4+6)×5
     });
 
     test('week B has 2 perfect lessons', () => {
@@ -177,10 +179,10 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
         assert.equal(env.generateWeeklyRecap(WEEK_B).perfectLessons, 2);
     });
 
-    test('week B wordsLearned dedupes repeated lessonNum 12', () => {
+    test('week B wordsLearned counts the right answers of each practice', () => {
         setState();
-        // Unique lessons 11 and 12 → 2 × 5 words
-        assert.equal(env.generateWeeklyRecap(WEEK_B).wordsLearned, 10);
+        // (2−0) + (4−0) + (10−4) = 12
+        assert.equal(env.generateWeeklyRecap(WEEK_B).wordsLearned, 12);
     });
 
     test('week B dayMap marks Sun+Wed+Fri only', () => {
@@ -206,8 +208,8 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
 
     test('lesson at exact week-B start midnight belongs to week B, not week A', () => {
         env.__setAppState({
-            lessonHistory: [
-                { lessonNum: 1, date: ts(2025, 2, 9, 0), points: 25, accuracy: 100 }
+            unitsHistory: [
+                { unit: 'pr1-1', date: ts(2025, 2, 9, 0), score: 5, total: 5, wrong: [] }
             ],
             streak: 0
         });
@@ -217,8 +219,8 @@ suite('gen: generateWeeklyRecap two-week bucketing', () => {
 
     test('lesson at exact next-week midnight is excluded (half-open interval)', () => {
         env.__setAppState({
-            lessonHistory: [
-                { lessonNum: 1, date: ts(2025, 2, 16, 0), points: 25, accuracy: 100 }
+            unitsHistory: [
+                { unit: 'pr1-1', date: ts(2025, 2, 16, 0), score: 5, total: 5, wrong: [] }
             ],
             streak: 0
         });
@@ -275,7 +277,7 @@ suite('gen: getRecapMessage tiers and accuracy independence', () => {
     });
 
     test('recap generated from an empty week feeds the gentle tier', () => {
-        env.__setAppState({ lessonHistory: [], streak: 0 });
+        env.__setAppState({ unitsHistory: [], streak: 0 });
         const recap = env.generateWeeklyRecap('2025-03-02');
         const msg = env.getRecapMessage(recap);
         assert.truthy(msg.includes('Every step counts'), `got: ${msg}`);
@@ -316,11 +318,11 @@ suite('gen: streak shield field defaults', () => {
     test('recordStudy coerces missing streakShields to 0 before awarding', () => {
         const yesterday = new Date(Date.now() - 86400000).toDateString();
         const appState = {
-            streak: 1, lastStudyDate: yesterday, // no streakShields field
-            lessonHistory: [
-                { lessonNum: 1, date: Date.now() },
-                { lessonNum: 2, date: Date.now() },
-                { lessonNum: 3, date: Date.now() }
+            streak: 1, lastStudyDate: yesterday, achievements: [], // no streakShields field
+            unitsHistory: [
+                { unit: 'pr1-1', date: Date.now(), score: 5, total: 5 },
+                { unit: 'pr1-2', date: Date.now(), score: 5, total: 5 },
+                { unit: 'pr1-3', date: Date.now(), score: 5, total: 5 }
             ]
         };
         const e2 = loadAppCode({ includeHome: true });

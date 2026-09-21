@@ -31,23 +31,19 @@ suite('coin grants: admin gives, the device claims once', () => {
     assert.truthy(/json\(\{ granted[,}]/.test(src), 'client needs the total to add locally');
   });
 
-  test('the same reply carries the per-user feature flags home', () => {
-    // A flag that gates a MENU CARD cannot be delivered by the tab it gates:
-    // the child could never open the tab to learn it was opened for them. This
-    // call already runs on every sync, so it is the one that carries them.
+  test('the reply no longer carries feature flags, and the client no longer expects them', () => {
+    // Until 2026-09 this reply also ferried the app-wide switches home
+    // (mathFight, bot, chuyen, cuuchuongSeconds) because it ran on every
+    // sync. Every feature they gated is gone; a claim must not read
+    // app_flags or the users' allow_* columns any more, and a client that
+    // still cached `flags` would be caching nothing.
     const src = read('functions/api/coins.js');
-    // Matched loosely on purpose: the switch is read alongside the other
-    // app-wide settings in one statement, so pinning the exact SQL text would
-    // fail every time another setting joins it. What must stay true is that
-    // THIS endpoint reads math_fight out of app_flags.
-    assert.truthy(/app_flags/.test(src) && /'math_fight'/.test(src),
-      'the Dau Toan switch rides home here');
-    assert.truthy(src.includes('flags'), 'flags travel in the same reply');
+    assert.falsy(/app_flags|allow_bot|allow_chuyen|math_fight|cuuchuong/.test(src.replace(/\/\/[^\n]*/g, '')),
+      'the claim path still reads a cut feature flag');
+    assert.falsy(/,\s*flags\s*\}/.test(src), 'no flags in the JSON reply');
     const client = read('js/auth.js');
-    assert.truthy(client.includes('r.data.flags'), 'the client caches what it was told');
-    assert.truthy(client.includes('appState.allowMathFight'));
-    assert.truthy(client.indexOf('r.data.flags') < client.indexOf('if (!granted) return;'),
-      'flags must be cached BEFORE the no-coins early return');
+    assert.falsy(client.includes('r.data.flags'), 'the client must not read a field the server stopped sending');
+    assert.falsy(/allowMathFight|allowBot|allowChuyen|cuuchuongSeconds/.test(client));
   });
 
   test('the app claims on every login sync and celebrates the gift', () => {
@@ -66,7 +62,7 @@ suite('coin grants: admin gives, the device claims once', () => {
     // The wallet write moved into applySignedGrant, which carries the part of
     // a negative grant the purse cannot cover instead of clamping it away —
     // `Math.max(0, wallet + delta)` was silently printing money whenever a
-    // raid debited a child for more than they actually had.
+    // correction debited a child for more than they actually had.
     assert.truthy(src.includes('applySignedGrant(granted)'), 'the signed total goes through the ledger');
     assert.truthy(src.includes('function applySignedGrant'), 'and that ledger lives here');
     assert.truthy(src.includes('appState.coinDebt = coinDebt() + (-after)'), 'an unpayable debit is carried');

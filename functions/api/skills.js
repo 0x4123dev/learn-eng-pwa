@@ -1,9 +1,9 @@
 import { requireAuth, json, err } from './_lib.js';
 
-const MENUS = [
-  'math7', 'math4', 'mathwars', 'grade4', 'wordform',
-  'grammar', 'phrases', 'verbs', 'rewrite', 'collocation',
-];
+// The menus a skill row may file under. Only the Book units are left
+// (js/units.js); js/auth.js has always uploaded them as 'grade4' and the
+// stored rows carry that name, so it stays.
+const MENUS = ['grade4'];
 const MAX_BATCH = 400;
 const MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000;
 

@@ -14,7 +14,6 @@ function grantHandler() { return loadModule('functions/api/admin/grant-coins.js'
 function homeHandler() { return loadModule('functions/api/night-raid/home.js'); }
 function collectHandler() { return loadModule('functions/api/night-raid/collect.js'); }
 function activityHandler() { return loadModule('functions/api/activity.js'); }
-function ghostHandler() { return loadModule('functions/api/ghost-offering.js'); }
 
 function farmLayout(readyAt) {
   return NR.normalizeLayout({
@@ -260,53 +259,6 @@ suite('money server: the home PUT can never wipe what a child owns', () => {
   });
 });
 
-suite('money server: ghost offering rewards ride the receipt-protected grant pipeline', () => {
-  const SESSION = '12345678-90ab-cdef-1234-567890abcdef';
-  const grants = (world, uid) => world.db.prepare(
-    'SELECT amount, note, claimed_at FROM coin_grants WHERE user_id=?').all(uid);
-
-  test('an award is one unclaimed grant; a replay adds nothing', async () => {
-    const world = createWorld();
-    const user = await world.createUser({ allowBot: true });
-    const claim = () => world.call(ghostHandler().onRequestPost, {
-      token: user.token, body: { itemId: 'mooncake1', sessionId: SESSION },
-    });
-    const first = await claim();
-    assert.equal(first.status, 200, JSON.stringify(first.data));
-    assert.truthy(first.data.awarded);
-    assert.equal(first.data.reward, 50);
-    const rows = grants(world, user.uid);
-    assert.equal(rows.length, 1, 'exactly one IOU per awarded item');
-    assert.equal(rows[0].amount, 50);
-    assert.truthy(String(rows[0].note).includes('mooncake1'), 'the note names the item');
-    assert.falsy(rows[0].claimed_at, 'the IOU waits for the receipt-protected claim');
-    // The event must NOT hand-write the raid wallet any more — that mirror
-    // was silently overwritten by the next syncHome on another device.
-    const home = world.db.prepare(
-      'SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(user.uid);
-    assert.falsy(home && home.lootable_coins > 0, 'no direct wallet write');
-    const replay = await claim();
-    assert.falsy(replay.data.awarded, 'a replay must not award again');
-    assert.equal(replay.data.reward, 0);
-    assert.equal(grants(world, user.uid).length, 1, 'a replay mints no second IOU');
-  });
-
-  test('end to end: the event reward arrives through POST /api/coins with a receipt', async () => {
-    const world = createWorld();
-    const user = await world.createUser({ allowBot: true });
-    await world.call(ghostHandler().onRequestPost, {
-      token: user.token, body: { itemId: 'hangnga', sessionId: SESSION },
-    });
-    const paid = await world.call(coinsHandler().onRequestPost,
-      { token: user.token, body: { proto: 2 } });
-    assert.equal(paid.data.granted, 200, 'the pig reward is paid by the grant pipeline');
-    assert.truthy(paid.data.receipt, 'and it is crash-protected like any other grant');
-    const again = await world.call(coinsHandler().onRequestPost,
-      { token: user.token, body: { proto: 2, ackReceipts: [paid.data.receipt] } });
-    assert.equal(again.data.granted, 0, 'acked means paid exactly once');
-  });
-});
-
 suite('money server: the daily snapshot is a real recovery net', () => {
   function snapshotBalance(db, uid) {
     const row = db.prepare('SELECT balance FROM user_coin_snapshots WHERE user_id=?').get(uid);
@@ -356,7 +308,7 @@ suite('money server: the daily snapshot is a real recovery net', () => {
   });
 
   test('a sync with no new activity still records the balance', async () => {
-    // Coins earned in pet chores / Night Raid / the shop produce no activity
+    // Coins earned in pet chores / the farm / the shop produce no activity
     // items, so a balance-only sync must still leave a recovery snapshot.
     const world = createWorld();
     const user = await world.createUser({});
@@ -382,7 +334,12 @@ suite('money server: the asset backup may only ever add', () => {
     });
     assert.equal(r.status, 200, JSON.stringify(r.data));
     assert.deepEqual(r.data.assets.accessories, ['bow', 'cap']);
-    assert.deepEqual(r.data.assets.castleSkins, ['stone-keep', 'royal-keep']);
+    assert.deepEqual(r.data.assets.stickers, ['star1']);
+    // The castle went with the 2026-09 cut: a legacy device that still sends
+    // castleSkins gets them dropped, not echoed back as an owned asset.
+    assert.falsy('castleSkins' in r.data.assets, 'castleSkins is not a backed-up asset any more');
+    assert.deepEqual(Object.keys(r.data.assets).sort(),
+      ['accessories', 'dogGrowthXP', 'stickers', 'streakShields']);
     assert.equal(r.data.assets.dogGrowthXP, 30000);
     assert.equal(r.data.assets.streakShields, 2);
   });
@@ -390,13 +347,13 @@ suite('money server: the asset backup may only ever add', () => {
   test('a wiped device syncing empty arrays cannot shrink the backup', async () => {
     const world = createWorld();
     const user = await world.createUser({});
-    await put(world, user, { accessories: ['bow'], castleSkins: ['royal-keep'],
+    await put(world, user, { accessories: ['bow'],
       stickers: ['star1'], dogGrowthXP: 30000, streakShields: 2 });
     const wiped = await put(world, user, {
-      accessories: [], castleSkins: [], stickers: [], dogGrowthXP: 0, streakShields: 0,
+      accessories: [], stickers: [], dogGrowthXP: 0, streakShields: 0,
     });
     assert.deepEqual(wiped.data.assets.accessories, ['bow'], 'owned assets never vanish');
-    assert.deepEqual(wiped.data.assets.castleSkins, ['royal-keep']);
+    assert.deepEqual(wiped.data.assets.stickers, ['star1']);
     assert.equal(wiped.data.assets.dogGrowthXP, 30000, 'XP is monotonic');
     assert.equal(wiped.data.assets.streakShields, 2);
     // …and the reply IS the restore: the wiped device gets everything back.
@@ -420,7 +377,7 @@ suite('money server: the asset backup may only ever add', () => {
       dogGrowthXP: 1e12, streakShields: 99,
     });
     assert.deepEqual(r.data.assets.accessories, ['bow', '42']);
-    assert.deepEqual(r.data.assets.castleSkins, []);
+    assert.falsy('castleSkins' in r.data.assets, 'an unknown key is dropped, not stored');
     assert.equal(r.data.assets.dogGrowthXP, 99999999, 'XP is capped');
     assert.equal(r.data.assets.streakShields, 3, 'shields cap at 3');
   });

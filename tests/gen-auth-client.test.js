@@ -82,7 +82,6 @@ function reset(opts = {}) {
     sandbox.__fetchPlan = opts.plan || null;
     sandbox.currentUser = ('user' in opts) ? opts.user : undefined;
     sandbox.appState = ('appState' in opts) ? opts.appState : null;
-    sandbox.getGrammarUnit = opts.getGrammarUnit; // undefined → call throws → title falls back
 }
 
 function seedAccount(username, data) {
@@ -97,27 +96,27 @@ function sentItems(i = 0) { return JSON.parse(calls()[i].body).items; }
 
 const NOW = Date.now();
 const AT = {
-    les: NOW - 1000, gram: NOW - 2000, phr: NOW - 3000,
-    wf: NOW - 4000, rw: NOW - 5000, vb: NOW - 6000,
+    u1: NOW - 1000, u2: NOW - 2000, u3: NOW - 3000,
+    u4: NOW - 4000, u5: NOW - 5000, u6: NOW - 6000,
     old: NOW - 31 * DAY,
 };
 
-// One entry per history type within 30 days, plus one too-old lesson and one
-// verbs entry with an invalid (NaN) date — both must be filtered out.
+// Six Book practices (js/units.js appState.unitsHistory — the ONLY history
+// the client uploads) within 30 days, plus one too-old row and one with an
+// invalid (NaN) date — both must be filtered out. Rows are written oldest
+// last so the newest-first sort is observable.
 function richAppState() {
     return {
-        lessonHistory: [
-            { lessonNum: 2, accuracy: 80, date: AT.les },
-            { lessonNum: 0, accuracy: 100, date: AT.old },
+        unitsHistory: [
+            { unit: 'pr1-3', score: 4, total: 5, date: AT.u1, wrong: ['x'] },
+            { unit: 'pr1-1', score: 10, total: 10, date: AT.old, wrong: [] },
+            { unit: 'pr2-7', score: 7, total: 10, date: AT.u2, wrong: [] },
+            { unit: 'pr1-mix', score: 4, total: 5, date: AT.u3, wrong: [] },
+            { unit: 'pr3-2', score: 9, total: 10, date: AT.u4, wrong: [] },
+            { unit: 'pr2-mix', score: 3, total: 5, date: AT.u5, wrong: [] },
+            { unit: 'pr3-15', score: 12, total: 15, date: AT.u6, wrong: [] },
+            { unit: 'pr1-2', score: 1, total: 5, date: NaN, wrong: [] },
         ],
-        grammarHistory: [{ unitId: 'u12', score: 7, total: 10, date: AT.gram }],
-        phrasesHistory: [{ score: 4, total: 5, date: AT.phr }],
-        wordformHistory: [{ score: 9, total: 10, date: AT.wf }],
-        rewriteHistory: [{ score: 3, total: 5, date: AT.rw }],
-        speedChallenge: { history: [
-            { level: 'hard', correct: 12, total: 15, score: 999, date: AT.vb },
-            { level: 'easy', correct: 1, total: 5, score: 5, date: NaN },
-        ] },
     };
 }
 
@@ -161,20 +160,26 @@ suite('gen: ActivityClock times an exercise from its entry function to its histo
         let t = 5000000;
         freeze(); setNow(t);
         try {
-            const g = { startGrammarQuiz(a, b) { return 'quiz:' + a + b; }, notAnEntry() {} };
+            const g = { startUnitPractice(a, b) { return 'quiz:' + a + b; }, notAnEntry() {} };
             assert.equal(Clock.hook(g), 1);
             assert.equal(Clock.hook(g), 0, 'a second pass wraps nothing again');
             t += 60 * 1000; setNow(t);
-            assert.equal(g.startGrammarQuiz('u', 12), 'quiz:u12', 'arguments and the return value pass through');
+            assert.equal(g.startUnitPractice('u', 12), 'quiz:u12', 'arguments and the return value pass through');
             t += 45 * 1000; setNow(t);
             assert.equal(Clock.take(), 45, 'the clock started when the quiz did, not a minute earlier');
         } finally { thaw(); }
     });
 
-    test('every entry name is a real top-level function somewhere in js/', () => {
-        const src = fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && f !== 'phaser.min.js')
+    test('every surviving exercise entry is in ENTRY and is a real top-level function', () => {
+        const src = fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js'))
             .map(f => fs.readFileSync(path.join(ROOT, 'js', f), 'utf8')).join('\n');
-        for (const name of Clock.ENTRY) {
+        // The three roads into an exercise the app still has: a Book practice,
+        // its retry, and the owed-words drill. (ENTRY also still names the
+        // entry functions of cut features; hook() skips a name that is not a
+        // function, so they are inert — but they should be pruned from
+        // js/auth.js ActivityClock.ENTRY.)
+        for (const name of ['startUnitPractice', 'startUnitRetry', 'startRetryDrill']) {
+            assert.contains(Clock.ENTRY, name, name + ' must be clocked');
             assert.truthy(new RegExp('^function ' + name + '\\s*\\(', 'm').test(src), name + ' is not a function in the app');
         }
     });
@@ -185,17 +190,14 @@ suite('gen: ActivityClock times an exercise from its entry function to its histo
         assert.truthy(/function switchScreen\(screenId\) \{[\s\S]{0,300}ActivityClock\.mark\(\)/.test(app));
         assert.truthy(/function init\(\) \{[\s\S]{0,120}ActivityClock\.hook\(\)/.test(app));
         assert.truthy(/loaded\[file\] = true;[\s\S]{0,400}ActivityClock\.hook\(\)/.test(lazy),
-            'startMathExam and friends only exist after the math group loads');
+            'a lazy code group (farm) may bring entry functions of its own');
     });
 
     test('every history writer stamps sec', () => {
-        for (const f of ['lessons.js', 'grammar-units.js', 'phrases.js', 'wordform.js', 'rewrite.js', 'collocation.js',
-                         'units.js', 'verbs.js', 'math.js', 'math-tables.js']) {
+        for (const f of ['units.js']) {
             const src = fs.readFileSync(path.join(ROOT, 'js', f), 'utf8');
             assert.truthy(/ActivityClock\.take\(\)/.test(src), 'js/' + f + ' writes history without timing it');
         }
-        const wars = fs.readFileSync(path.join(ROOT, 'js', 'mathwars.js'), 'utf8');
-        assert.truthy(/run\.sec = Math\.round\(run\.elapsedMs \/ 1000\)/.test(wars), 'Math Wars has its own timer');
         const activity = fs.readFileSync(path.join(ROOT, 'functions', 'api', 'admin', 'activity.js'), 'utf8');
         assert.truthy(activity.includes("json_extract(c.detail_json, '$.sec') AS time_spent_sec"), 'the admin must be able to read it back');
     });
@@ -322,11 +324,8 @@ suite('gen: syncNow gating', () => {
         assert.equal(calls().length, 0);
     });
 
-    test('token but every history array empty → synced 0, no fetch', () => {
-        reset({ user: 'Tester', appState: {
-            lessonHistory: [], grammarHistory: [], phrasesHistory: [],
-            wordformHistory: [], rewriteHistory: [], speedChallenge: { history: [] },
-        } });
+    test('token but the history array empty → synced 0, no fetch', () => {
+        reset({ user: 'Tester', appState: { unitsHistory: [] } });
         seedAccount('Tester', { token: 'tok123' });
         assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 0, total: 0 });
         assert.equal(calls().length, 0);
@@ -348,76 +347,39 @@ suite('gen: syncNow batch', () => {
     test('batch items are sorted newest-first by at', () => {
         seedRich();
         vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems().map(i => i.at), [AT.les, AT.gram, AT.phr, AT.wf, AT.rw, AT.vb]);
+        assert.deepEqual(sentItems().map(i => i.at), [AT.u1, AT.u2, AT.u3, AT.u4, AT.u5, AT.u6]);
     });
 
-    test('lesson item shape: title #lessonNum+1, accuracy 80% → score 4/5, detail.accuracy', () => {
+    test('item shape: type lesson, title "Unit <key> words practice" (the daily-task identity), score/total/at, no detail', () => {
         seedRich();
         vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[0], {
-            type: 'lesson', title: 'Vocabulary lesson #3',
-            score: 4, total: 5, at: AT.les, detail: { accuracy: 80 },
-        });
+        assert.deepEqual(sentItems()[0], { type: 'lesson', title: 'Unit pr1-3 words practice', score: 4, total: 5, at: AT.u1 });
+        assert.deepEqual(sentItems()[1], { type: 'lesson', title: 'Unit pr2-7 words practice', score: 7, total: 10, at: AT.u2 });
+        assert.deepEqual(sentItems()[2], { type: 'lesson', title: 'Unit pr1-mix words practice', score: 4, total: 5, at: AT.u3 });
+        assert.deepEqual(new Set(sentItems().map(i => i.type)), new Set(['lesson']), 'the server accepts only type lesson');
     });
 
-    test('grammar item falls back to the raw unitId in the title when getGrammarUnit is unavailable', () => {
+    test('the title is exactly what js/daily-task-catalog.js matches on (titleExact)', () => {
+        const catalog = fs.readFileSync(path.join(__dirname, '..', 'js', 'daily-task-catalog.js'), 'utf8');
+        assert.truthy(catalog.includes("{ titleExact: 'Unit ' + unitKey + ' words practice' }"),
+            'the catalog must build the same title');
         seedRich();
         vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[1], {
-            type: 'grammar', title: 'Grammar: u12',
-            // unitQs pairs the unit with the length so a daily task can name
-            // one Grammar button; unitId stays for the size-agnostic tasks.
-            score: 7, total: 10, at: AT.gram, detail: { unitId: 'u12', unitQs: 'u12:10' },
-        });
+        for (const it of sentItems()) assert.truthy(/^Unit pr[123]-(\d+|mix) words practice$/.test(it.title), it.title);
     });
 
-    test('grammar item uses the unit NAME when getGrammarUnit resolves it', () => {
-        seedRich({ getGrammarUnit: (id) => ({ name: 'Tenses (' + id + ')' }) });
-        vmAwait('EngAuth.syncNow()');
-        assert.equal(sentItems()[1].title, 'Grammar: Tenses (u12)');
-    });
-
-    test('phrases item shape: total baked into the title, no detail', () => {
-        seedRich();
-        vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[2], { type: 'phrases', title: 'Phrases practice (5 Qs)', score: 4, total: 5, at: AT.phr });
-    });
-
-    test('wordform item shape', () => {
-        seedRich();
-        vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[3], { type: 'wordform', title: 'Word form practice (10 Qs)', score: 9, total: 10, at: AT.wf });
-    });
-
-    test('how long it took rides up as detail.sec — the clock\'s sec or the exam engine\'s timeSpentSec', () => {
+    test('how long it took rides up as detail.sec — the clock\'s sec or a timeSpentSec', () => {
         // Rows written before the clock existed carry no key at all, and a
-        // module that never had a detail must not grow an empty one.
+        // row that never had a detail must not grow an empty one.
         const st = richAppState();
-        st.phrasesHistory[0].sec = 754.4;
-        st.grammarHistory[0].sec = 90;
-        st.ptnkHistory = [{ examId: 'ptnk-2024-kc', title: 'PTNK 2024', score: 30, total: 40, ts: AT.phr, timeSpentSec: 1800 }];
+        st.unitsHistory[0].sec = 754.4;
+        st.unitsHistory[2].timeSpentSec = 90;
         seedRich({ appState: st });
         vmAwait('EngAuth.syncNow()');
         const items = sentItems();
-        assert.deepEqual(items.find(i => i.type === 'phrases').detail, { sec: 754 }, 'rounded to whole seconds');
-        assert.equal(items.find(i => i.type === 'grammar').detail.sec, 90);
-        assert.equal(items.find(i => i.type === 'wordform').detail, undefined, 'no clock, no detail');
-        assert.equal(items.find(i => i.type === 'exam').detail.sec, 1800, 'the exam engine already timed itself');
-    });
-
-    test('rewrite item shape', () => {
-        seedRich();
-        vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[4], { type: 'rewrite', title: 'Rewrite practice (5 Qs)', score: 3, total: 5, at: AT.rw });
-    });
-
-    test('verbs item: score = correct answers, points score demoted to detail.score', () => {
-        seedRich();
-        vmAwait('EngAuth.syncNow()');
-        assert.deepEqual(sentItems()[5], {
-            type: 'verbs', title: 'Verbs challenge (hard)',
-            score: 12, total: 15, at: AT.vb, detail: { score: 999 },
-        });
+        assert.deepEqual(items[0].detail, { sec: 754 }, 'rounded to whole seconds');
+        assert.equal(items[1].detail.sec, 90);
+        assert.equal(items[2].detail, undefined, 'no clock, no detail');
     });
 
     test('successful sync resolves { ok:true, synced:6, total:6 }', () => {
@@ -430,21 +392,21 @@ suite('gen: syncNow batch', () => {
         vmAwait('EngAuth.syncNow()');
         const acct = EngAuth.getAccount('Tester');
         assert.equal(acct.syncedKeys.length, 6);
-        assert.contains(acct.syncedKeys, 'lesson|' + AT.les);
-        assert.contains(acct.syncedKeys, 'verbs|' + AT.vb);
+        assert.contains(acct.syncedKeys, 'lesson|' + AT.u1);
+        assert.contains(acct.syncedKeys, 'lesson|' + AT.u6);
         assert.notContains(acct.syncedKeys, 'lesson|' + AT.old, 'the filtered-out old item must not be marked synced');
         assert.equal(acct.token, 'tok123', 'setAccount merges syncedKeys without dropping the token');
         assert.equal(acct.role, 'user');
     });
 
     test('an account behind the sync epoch resends its whole window once', () => {
-        // Collocation and Math activities were uploaded, silently dropped by the
-        // server, and marked synced — so they could never be recovered by a
-        // retry. Raising the epoch forgets those marks exactly once.
+        // Activities were once uploaded, silently dropped by the server, and
+        // marked synced — so they could never be recovered by a retry. Raising
+        // the epoch forgets those marks exactly once.
         seedRich();
         seedAccount('Tester', {
             token: 'tok123', syncEpoch: 1,
-            syncedKeys: ['lesson|' + AT.les, 'grammar|' + AT.gram, 'verbs|' + AT.vb],
+            syncedKeys: ['lesson|' + AT.u1, 'lesson|' + AT.u2, 'lesson|' + AT.u6],
         });
         assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 6, total: 6 },
             'every item in the window goes up again, not just the unmarked ones');
@@ -459,11 +421,11 @@ suite('gen: syncNow batch', () => {
 
     test('a pre-existing syncedKey skips ONLY that item: 5 of 6 sent, total still 6', () => {
         seedRich();
-        seedAccount('Tester', { token: 'tok123', syncEpoch: 2, syncedKeys: ['grammar|' + AT.gram] });
+        seedAccount('Tester', { token: 'tok123', syncEpoch: 2, syncedKeys: ['lesson|' + AT.u2] });
         assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 5, total: 6 });
-        const types = sentItems().map(i => i.type);
-        assert.notContains(types, 'grammar');
-        assert.deepEqual(types, ['lesson', 'phrases', 'wordform', 'rewrite', 'verbs']);
+        const ats = sentItems().map(i => i.at);
+        assert.notContains(ats, AT.u2);
+        assert.deepEqual(ats, [AT.u1, AT.u3, AT.u4, AT.u5, AT.u6]);
         assert.equal(EngAuth.getAccount('Tester').syncedKeys.length, 6, 'old key kept + 5 new');
     });
 
@@ -477,7 +439,7 @@ suite('gen: syncNow batch', () => {
         assert.notContains(keys, 'exam|0');
         assert.notContains(keys, 'exam|5');
         assert.contains(keys, 'exam|6', 'eviction stops exactly 6 keys in');
-        assert.equal(keys[1999], 'verbs|' + AT.vb, 'new keys land at the tail');
+        assert.equal(keys[1999], 'lesson|' + AT.u6, 'new keys land at the tail');
     });
 
     test('second syncNow is a no-op: { synced:0, total:6 } and NO additional fetch', () => {
@@ -488,8 +450,8 @@ suite('gen: syncNow batch', () => {
     });
 
     test('batch is capped at 400 newest items; the remaining 50 go in the next call', () => {
-        const big = Array.from({ length: 450 }, (_, i) => ({ score: 1, total: 5, date: NOW - 1000 - i }));
-        reset({ user: 'Tester', appState: { wordformHistory: big } });
+        const big = Array.from({ length: 450 }, (_, i) => ({ unit: 'pr1-1', score: 1, total: 5, date: NOW - 1000 - i }));
+        reset({ user: 'Tester', appState: { unitsHistory: big } });
         seedAccount('Tester', { token: 'tok123' });
         const r1 = vmAwait('EngAuth.syncNow()');
         assert.deepEqual(r1, { ok: true, synced: 400, total: 450 });
@@ -504,13 +466,13 @@ suite('gen: syncNow batch', () => {
 
     test('two items sharing type+at are BOTH sent the first time but collapse to one syncedKey', () => {
         const d = NOW - 1234;
-        reset({ user: 'Tester', appState: { wordformHistory: [
-            { score: 1, total: 5, date: d }, { score: 2, total: 5, date: d },
+        reset({ user: 'Tester', appState: { unitsHistory: [
+            { unit: 'pr1-1', score: 1, total: 5, date: d }, { unit: 'pr1-2', score: 2, total: 5, date: d },
         ] } });
         seedAccount('Tester', { token: 'tok123' });
         assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 2, total: 2 });
         assert.equal(sentItems().length, 2);
-        assert.deepEqual(EngAuth.getAccount('Tester').syncedKeys, ['wordform|' + d]);
+        assert.deepEqual(EngAuth.getAccount('Tester').syncedKeys, ['lesson|' + d]);
     });
 });
 
@@ -638,7 +600,7 @@ suite('gen: syncAccount', () => {
     });
 
     test('an existing token skips register/login entirely and goes straight to the activity sync', () => {
-        reset({ user: 'Tester', appState: { wordformHistory: [{ score: 5, total: 5, date: NOW - 500 }] } });
+        reset({ user: 'Tester', appState: { unitsHistory: [{ unit: 'pr1-1', score: 5, total: 5, date: NOW - 500 }] } });
         seedAccount('Tester', { token: 'tok123' });
         vmAwait("EngAuth.syncAccount('Tester', '9999')");
         // /api/assets is the owned-asset backup (db/016) that rides every

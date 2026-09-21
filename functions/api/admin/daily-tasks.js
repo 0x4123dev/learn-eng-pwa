@@ -1,7 +1,7 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { progress, progressRange, shieldStatus, taskSpec, rewardedOn, MAX_TARGET, MAX_ACTIVE_TASKS } from '../_daily-task.js';
+import { progress, progressRange, taskSpec, rewardedOn, MAX_TARGET, MAX_ACTIVE_TASKS } from '../_daily-task.js';
 
-// Admin-only CRUD for a child's daily tasks.
+// Admin-only CRUD for a learner's daily tasks.
 //   GET    /api/admin/daily-tasks?user_id=N   → tasks with today's progress (read-only, never pays)
 //          &days=D (1–31) adds `history`: the same progress for each of the
 //          last D GMT+7 days, oldest first, for the who-studied grid
@@ -15,7 +15,7 @@ async function requireAdmin(request, env) {
 }
 
 // A nonexistent user_id stays 200 with an empty task list, not a 404: the
-// admin picks the child from the user list, so an empty list is the
+// admin picks the learner from the user list, so an empty list is the
 // friendlier contract for a panel than an error it has to special-case.
 export async function onRequestGet({ request, env }) {
   const { fail } = await requireAdmin(request, env);
@@ -30,7 +30,6 @@ export async function onRequestGet({ request, env }) {
   return json({
     date: p.date, tasks: p.tasks, allDone: p.allDone,
     rewardedToday: await rewardedOn(env, uid, p.date),
-    shields: await shieldStatus(env, uid, now),
     ...(days ? { history: await progressRange(env, uid, days, now) } : {}),
   });
 }

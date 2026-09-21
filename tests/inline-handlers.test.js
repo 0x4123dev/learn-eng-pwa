@@ -92,7 +92,7 @@ suite('inline handlers: the removed popup left nothing behind', () => {
         // must not have been removed with it.
         const app = read('js/app.js');
         assert.truthy(/function speakWord\(/.test(app), 'speakWord must still exist');
-        const callers = ['js/home.js', 'js/lessons.js', 'js/word-hunt.js']
+        const callers = ['js/home.js', 'js/units.js', 'js/answer-audio.js']
             .filter(f => /speakWord\(/.test(read(f)));
         assert.truthy(callers.length >= 2, `only ${callers.length} caller(s) left — check the removal`);
     });

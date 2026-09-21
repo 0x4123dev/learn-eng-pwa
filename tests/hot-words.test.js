@@ -87,14 +87,12 @@ suite('hot words: the generated list', () => {
         }
     });
 
-    test('frequencies are drawn from every quiz bank, not just grammar', () => {
+    test('frequencies are drawn from every Book bank', () => {
         const builder = requireBuilder();
-        assert.truthy(builder.BANKS.length >= 5, `only ${builder.BANKS.length} banks scanned`);
-        const names = builder.BANKS.map(b => b.file).join(' ');
-        for (const f of ['grammar-units', 'wordform-data', 'rewrite-data',
-                         'phrases-data', 'collocation-data']) {
-            assert.truthy(names.includes(f), `${f} is not scanned`);
-        }
+        assert.deepEqual(builder.BANKS.map(b => b.file), ['js/word-data.js', 'js/word-data.js', 'js/word-data.js'],
+            'the three Books share one bank file');
+        assert.deepEqual(builder.BANKS.map(b => b.global), ['UNIT_WORDS_PR1', 'UNIT_WORDS_PR2', 'UNIT_WORDS_PR3'],
+            'every Book is scanned');
     });
 });
 
@@ -230,12 +228,15 @@ suite('hot words: the rest of a question warms while you answer', () => {
         assert.deepEqual(fetched, [app.WORD_AUDIO_PATH + 'ticket.mp3']);
     });
 
-    test('every quiz renderer warms its question before the answer', () => {
-        const banks = ['js/grammar-ui.js', 'js/exam.js', 'js/wordform.js',
-                       'js/rewrite.js', 'js/phrases.js', 'js/collocation.js'];
-        const missing = banks.filter(f => !/twPrefetch\(/.test(read(f)));
-        assert.deepEqual(missing, [],
-            `these quiz screens never warm their words: ${missing.join(', ')}`);
+    test('the Book practice plays each word as it is answered, so the tap that follows is warm', () => {
+        // The word becomes tappable on the answer card (tapwordsWrap), and the
+        // same recording has just been played through speakWord() — which is
+        // the fetch the tap would otherwise wait on.
+        const units = read('js/units.js');
+        assert.truthy(/onAnswer:\s*\(w, ok\) => \{ _unitSpeak\(w\.en\);/.test(units), 'answering must say the word');
+        const speak = units.slice(units.indexOf('function _unitSpeak('), units.indexOf('function _unitSpeakAttr('));
+        assert.truthy(/speakWord\(String\(text\)\)/.test(speak), '_unitSpeak must go through the app-wide recordings');
+        assert.truthy(/tapwordsWrap\(q\.w\.en\)/.test(units), 'and the answered word is tappable');
     });
 });
 

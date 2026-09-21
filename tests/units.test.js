@@ -3,52 +3,56 @@
 const { suite, test, assert } = require('./harness');
 const path = require('path');
 
-const { UNIT_WORDS } = require(path.join(__dirname, '..', 'js', 'units-data.js'));
-global.UNIT_WORDS = UNIT_WORDS;
+// The bank is js/word-data.js (lazy in the app; loaded eagerly here): three
+// Career Paths books, fifteen units each.
+const bank = require(path.join(__dirname, '..', 'js', 'word-data.js'));
+global.UNIT_WORDS_PR1 = bank.UNIT_WORDS_PR1;
+global.UNIT_WORDS_PR2 = bank.UNIT_WORDS_PR2;
+global.UNIT_WORDS_PR3 = bank.UNIT_WORDS_PR3;
+global.UNIT_PR_TITLES = bank.UNIT_PR_TITLES;
 const units = require(path.join(__dirname, '..', 'js', 'units.js'));
+const SETS = ['pr1', 'pr2', 'pr3'];
+const UNIT_WORDS = units.unitsAllWords();
 
 suite('units: word bank', () => {
-    test('covers units 1..12 with a non-trivial word list', () => {
-        assert.deepEqual(units.unitsList('pre'), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
-        assert.truthy(UNIT_WORDS.length >= 140, `only ${UNIT_WORDS.length} words`);
+    test('every book covers units 1..15 with a non-trivial word list', () => {
+        for (const set of SETS) {
+            assert.deepEqual(units.unitsList(set), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], set);
+            assert.truthy(units.unitsBank(set).length >= 140, `${set}: only ${units.unitsBank(set).length} words`);
+        }
+        assert.equal(UNIT_WORDS.length, 527, 'the Vocabulary columns of the three Scope and Sequence pages');
     });
 
     test('every word has en, vi and an emoji/picture; en unique within its unit', () => {
-        const seen = new Set();
-        for (const w of UNIT_WORDS) {
-            assert.truthy(w.en && w.en.trim() === w.en, `bad en: "${w.en}"`);
-            assert.truthy(w.vi && w.vi.length > 0, `${w.en}: missing vi`);
-            assert.truthy(w.emoji && w.emoji.length > 0, `${w.en}: missing emoji`);
-            const key = w.unit + '|' + w.en.toLowerCase();
-            assert.falsy(seen.has(key), `duplicate in unit ${w.unit}: ${w.en}`);
-            seen.add(key);
+        for (const set of SETS) {
+            const seen = new Set();
+            for (const w of units.unitsBank(set)) {
+                assert.truthy(w.en && w.en.trim() === w.en, `bad en: "${w.en}"`);
+                assert.truthy(w.vi && w.vi.length > 0, `${w.en}: missing vi`);
+                assert.truthy(w.emoji && w.emoji.length > 0, `${w.en}: missing emoji`);
+                const key = w.unit + '|' + w.en.toLowerCase();
+                assert.falsy(seen.has(key), `duplicate in ${set} unit ${w.unit}: ${w.en}`);
+                seen.add(key);
+            }
         }
     });
 
     test('every unit has at least 6 words', () => {
-        for (const u of units.unitsList('pre')) {
-            const n = UNIT_WORDS.filter(w => w.unit === u).length;
-            assert.truthy(n >= 6, `unit ${u} has only ${n}`);
+        for (const set of SETS) {
+            for (const u of units.unitsList(set)) {
+                const n = units._unitPool(units._unitKey(set, u)).length;
+                assert.truthy(n >= 6, `${set} unit ${u} has only ${n}`);
+            }
         }
     });
 
-    test('per-unit word counts match the textbook picture dictionary', () => {
-        // Derived from the book pages (column-major flow, verified vs photos).
-        const expected = { 1: 7, 2: 11, 3: 27, 4: 11, 5: 15, 6: 15, 7: 15, 8: 14, 9: 13, 10: 12, 11: 15, 12: 14 };
-        const counts = {};
-        UNIT_WORDS.forEach(w => counts[w.unit] = (counts[w.unit] || 0) + 1);
-        assert.deepEqual(counts, expected);
-        assert.equal(UNIT_WORDS.length, 169);
-    });
-
-    test('book spot-checks: Unit 2 has its 11 places/animals, Unit 10 repeats farm', () => {
-        const u2 = UNIT_WORDS.filter(w => w.unit === 2).map(w => w.en).sort();
-        assert.deepEqual(u2, ['airport', 'bank', 'farm', 'fire station', 'hospital', 'nest',
-            'octopus', 'office', 'parrot', 'police station', 'store'].sort());
-        assert.truthy(UNIT_WORDS.some(w => w.unit === 10 && w.en === 'farm'), 'unit 10 -ar phonics farm');
-        assert.truthy(UNIT_WORDS.some(w => w.unit === 11 && w.en === 'nurse'), 'nurse belongs to unit 11');
-        assert.truthy(UNIT_WORDS.some(w => w.unit === 6 && w.en === 'yogurt'), 'yogurt belongs to unit 6');
-        assert.equal(UNIT_WORDS.filter(w => w.unit === 1).length, 7, 'unit 1 = 7 jobs only');
+    test('every unit carries its Scope and Sequence title', () => {
+        for (const set of SETS) {
+            for (const u of units.unitsList(set)) {
+                assert.truthy(units.unitTitle(set, u), `${set} unit ${u} has no title`);
+            }
+        }
+        assert.equal(units.unitTitle('pr1', 1), 'The Role of Public Relations');
     });
 });
 
@@ -90,7 +94,7 @@ suite('units: gap engine', () => {
         assert.inRange(g.nBlanks, 1, 2);   // "you" has 3 letters, first stays visible
     });
 
-    test('HK1 Mix numeric modes hide the first letter too', () => {
+    test('Mix numeric modes hide the first letter too', () => {
         const g = units.buildUnitGap('playground', 6, () => 0.5, true);
         assert.truthy(g.display[0].blank, 'the first letter must not remain as a Mix hint');
         assert.equal(g.nBlanks, 6);
@@ -105,15 +109,17 @@ suite('units: gap engine', () => {
         }
     });
 
-    test('HK1 Mix raises recall to 6, 7, 8 or the full word only', () => {
-        const seen = new Set();
-        for (let i = 0; i < 50; i++) seen.add(units.pickUnitGapModeForKey('hk1-mix', () => i / 50));
-        assert.deepEqual([...seen], [6, 7, 8, 'full']);
-        assert.equal(units.pickUnitGapModeForKey('hk1-3', () => 0), 4,
-            'individual units keep the gentler teaching level');
-        assert.equal(units.pickUnitGapModeForKey('hk1-mix', () => 0, 'Monday'), 'full',
+    test('Mix raises recall to 6, 7, 8 or the full word only, in every book', () => {
+        for (const set of SETS) {
+            const seen = new Set();
+            for (let i = 0; i < 50; i++) seen.add(units.pickUnitGapModeForKey(set + '-mix', () => i / 50));
+            assert.deepEqual([...seen], [6, 7, 8, 'full'], set);
+            assert.equal(units.pickUnitGapModeForKey(set + '-3', () => 0), 4,
+                'individual units keep the gentler teaching level');
+        }
+        assert.equal(units.pickUnitGapModeForKey('pr1-mix', () => 0, 'Monday'), 'full',
             'a short word must not keep its first-letter hint under a nominal 6-letter mode');
-        assert.equal(units.pickUnitGapModeForKey('hk1-mix', () => 0, 'playground'), 6);
+        assert.equal(units.pickUnitGapModeForKey('pr1-mix', () => 0, 'playground'), 6);
     });
 });
 
@@ -144,15 +150,19 @@ suite('units: grading', () => {
 });
 
 suite('units: mix mode, labels and voice', () => {
-    test('_unitPool("mix") draws from the whole bank; numbers stay per-unit', () => {
-        assert.equal(units._unitPool('mix').length, UNIT_WORDS.length);
-        assert.equal(units._unitPool(2).length, 11);
-        assert.truthy(units._unitPool(2).every(w => w.unit === 2));
+    test('_unitPool("<set>-mix") draws from the whole book; numbers stay per-unit', () => {
+        for (const set of SETS) {
+            assert.equal(units._unitPool(set + '-mix').length, units.unitsBank(set).length, set);
+            const u2 = units._unitPool(set + '-2');
+            assert.truthy(u2.length >= 6, set + ' unit 2');
+            assert.truthy(u2.every(w => w.unit === 2 && w.set === set));
+        }
     });
 
-    test('_unitLabel names mix and numeric units', () => {
-        assert.equal(units._unitLabel('mix'), '🎲 Mix');
-        assert.equal(units._unitLabel(3), 'Unit 3');
+    test('_unitLabel names the book, then mix or the unit number', () => {
+        assert.equal(units._unitLabel('pr1-mix'), 'Book 1 · 🎲 Mix');
+        assert.equal(units._unitLabel('pr2-3'), 'Book 2 · Unit 3');
+        assert.equal(units._unitLabel('mix'), '🎲 Mix', 'a row written before the sets is still readable');
     });
 
     test('_unitSpeak is a safe no-op without the Web Speech API', () => {

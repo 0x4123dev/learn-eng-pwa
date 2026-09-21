@@ -104,19 +104,20 @@ suite('layout: producers', () => {
   });
 });
 
-suite('layout: combat and home level ignore the farm', () => {
+suite('layout: the home level ignores the farm', () => {
   const base = { cells: [wall(0, 6), wall(1, 6)], soldiers: 2 };
   const farmy = { cells: base.cells.concat([{ type: 'farmhouse', gx: 8, gy: 8 }, { type: 'pumpkin', gx: 2, gy: 2, uid: 'c-11111111', day: 0, at: '2026-09-01' }]), soldiers: 2,
     farms: [{ cells: [{ type: 'windmill', gx: 0, gy: 0 }] }] };
-  test('homeLevel and combatPower are unchanged by farm items', () => {
+  test('homeLevel is unchanged by farm items', () => {
     assert.equal(R.homeLevel(farmy, 10), R.homeLevel(base, 10));
-    assert.deepEqual(R.combatPower(farmy, 10, 2, 0), R.combatPower(base, 10, 2, 0));
+    assert.equal(R.homeLevel({ cells: [], farms: farmy.farms }, 10), R.homeLevel({ cells: [] }, 10), 'an extra farm board is worth nothing to the level');
   });
-  test('createState does not throw on a layout with crops and buildings', () => {
-    const target = Object.assign(R.trainingTarget(2), { layout: R.normalizeLayout(farmy) });
-    let state = null;
-    assert.truthy((() => { state = R.createState(target, 7); return true; })(), 'createState must not throw');
-    assert.truthy(state && typeof state === 'object');
+  test('normalizeLayout keeps the farm and the soldiers side by side', () => {
+    const clean = R.normalizeLayout(farmy);
+    assert.equal(clean.soldiers, 2);
+    assert.equal(clean.cells.filter(c => R.defenseById(c.type)).length, 2, 'both walls');
+    assert.equal(clean.cells.filter(c => R.farmRules.byId(c.type)).length, 2, 'the farmhouse and the pumpkin');
+    assert.equal(clean.farms.length, 1);
   });
 });
 

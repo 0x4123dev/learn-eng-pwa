@@ -1,12 +1,13 @@
 // admin-daily-task-picker.test.js — the admin assigns a task by searching
 // for it (accents ignored, over label and path) or by browsing the same
-// Eng / Math tree a child walks.
+// Book 1 / 2 / 3 tree a child walks.
 //
 // Two halves. The catalog's tree() is pure and is checked as data: every
-// task sits at exactly one path, the top menus are in the app's own order,
-// and nothing is deeper than three sub-menus above the task. The admin
-// page's search is EXECUTED: searchTasks() and fold() are lifted out of
-// admin.html into a vm and run against the real catalog.
+// task sits at exactly one path, the top menus are the three Books in the
+// app's own order, and each Book holds its units directly — there is no
+// deeper level for the cascade to draw. The admin page's search is
+// EXECUTED: searchTasks() and fold() are lifted out of admin.html into a
+// vm and run against the real catalog.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const vm = require('vm');
@@ -23,8 +24,8 @@ suite('daily-task catalog: the tree', () => {
     node.children.forEach(c => walk(c, fn, depth + 1, trail.concat([c.label])));
   };
 
-  test('the root splits into Eng and Math, in that order', () => {
-    assert.deepEqual(tree.children.map(c => c.label), ['Eng', 'Math']);
+  test('the root splits into Book 1, Book 2, Book 3, in that order', () => {
+    assert.deepEqual(tree.children.map(c => c.label), ['Book 1', 'Book 2', 'Book 3']);
   });
 
   test('every task sits at exactly one path, and the path is its own', () => {
@@ -39,10 +40,18 @@ suite('daily-task catalog: the tree', () => {
     for (const e of Catalog.all()) assert.truthy(seen.has(e.key), e.key + ' is unreachable in the tree');
   });
 
-  test('no task is deeper than three sub-menus below Eng / Math', () => {
-    let deepest = 0;
-    walk(tree, (node, depth) => { if (node.entries.length) deepest = Math.max(deepest, depth); });
-    assert.truthy(deepest <= 4, 'a task sits ' + deepest + ' levels down — the picker was promised at most 3 sub-menus');
+  test('each Book holds its 15 units and Mix directly — no sub-menus', () => {
+    // The admin page draws one <details> per Book with the tasks inside it.
+    // A deeper level would render, but it would be a menu with one entry.
+    for (const book of tree.children) {
+      assert.deepEqual(book.children, [], book.label + ' has sub-menus');
+      assert.equal(book.entries.length, 16, book.label + ' should list 15 units + Mix');
+      assert.truthy(/🎲 Mix$/.test(book.entries[15].label), book.label + ': Mix comes last');
+      for (let i = 0; i < 15; i++) {
+        assert.truthy(book.entries[i].label.includes('Unit ' + (i + 1) + ' ·'),
+          book.label + ': entry ' + i + ' is ' + book.entries[i].label);
+      }
+    }
   });
 
   test('every node is worth stopping at: it has sub-menus or tasks', () => {
@@ -52,28 +61,18 @@ suite('daily-task catalog: the tree', () => {
     });
   });
 
-  test('Eng menus follow the Learn hub; Math follows the Math tab', () => {
-    const eng = tree.children[0].children.map(c => c.label);
-    assert.deepEqual(eng.slice(0, 5), ['Vocabulary', 'Grade 4', 'Word', 'Grammar', 'PTNK Exams']);
-    assert.truthy(eng.indexOf('Reading') < eng.indexOf('Cloze') && eng.indexOf('Cloze') < eng.indexOf('Error Correction'));
-    assert.deepEqual(tree.children[1].children.map(c => c.label), ['Toán 7', 'Toán 4', 'Math Wars']);
-  });
-
   test('the paths a parent would expect', () => {
-    assert.deepEqual(Catalog.get('math-chapter:6').path, ['Math', 'Toán 7', 'Học kì 2', 'Luyện chương']);
-    assert.deepEqual(Catalog.get('math-exam:hk1-exam2').path, ['Math', 'Toán 7', 'Học kì 1', 'Đề thi']);
-    assert.deepEqual(Catalog.get('math4:ccd89').path, ['Math', 'Toán 4', 'Bảng cửu chương']);
-    assert.deepEqual(Catalog.get('grammar:unit3:25').path, ['Eng', 'Grammar', 'Unit 3: Places']);
-    assert.deepEqual(Catalog.get('ptnk:ptnk-2024-kc').path, ['Eng', 'PTNK Exams', '2024']);
-    assert.deepEqual(Catalog.get('ptnk:any').path, ['Eng', 'PTNK Exams']);
-    assert.deepEqual(Catalog.get('reading:ch').path, ['Eng', 'Reading']);
-    assert.deepEqual(Catalog.get('units:hk1-3').path, ['Eng', 'Grade 4', 'HK1']);
+    assert.deepEqual(Catalog.get('word:pr1-1').path, ['Book 1']);
+    assert.deepEqual(Catalog.get('word:pr2-7').path, ['Book 2']);
+    assert.deepEqual(Catalog.get('word:pr3-mix').path, ['Book 3']);
+    assert.equal(Catalog.get('math4:cc'), null, 'the Math tasks are gone');
+    assert.equal(Catalog.get('grammar:unit3:25'), null, 'so are the Grammar ones');
   });
 });
 
 suite('admin page: the task search, executed', () => {
-  // The admin hands out a task by typing what she remembers of it — "hk2",
-  // "cuu chuong", "tenses" — and the picker searches the whole catalog,
+  // The admin hands out a task by typing what she remembers of it — "book
+  // 2", "unit 7", "marketing" — and the picker searches the whole catalog,
   // accents ignored, over the label AND the path a child would walk. The
   // functions are lifted out of admin.html by name and run for real.
   const html = read('admin.html');
@@ -88,30 +87,41 @@ suite('admin page: the task search, executed', () => {
   const search = (q, assigned, limit) => ctx.searchTasks(q, Catalog.all(), assigned || [], limit);
   const keys = (r) => r.groups.flatMap(g => g.items.map(i => i.entry.key));
 
-  test('"hk2" finds every Toán 7 HK2 paper, grouped under the path a child would walk', () => {
-    const r = search('hk2');
-    const g = r.groups.find(x => x.path === 'Math › Toán 7 › Học kì 2 › Đề thi');
-    assert.truthy(g, 'the HK2 exam group is missing: ' + r.groups.map(x => x.path).join(' | '));
-    assert.truthy(g.items.some(i => i.entry.key === 'math-exam:any-hk2'), 'the "bất kỳ" paper must be in the group');
-    assert.truthy(g.items.length > 10, 'all the HK2 papers, not a handful');
+  test('"book 2" finds every Book 2 task, grouped under the Book a child would open', () => {
+    const r = search('book 2');
+    const g = r.groups.find(x => x.path === 'Book 2');
+    assert.truthy(g, 'the Book 2 group is missing: ' + r.groups.map(x => x.path).join(' | '));
+    assert.equal(g.items.length, 16, 'all 15 units and Mix, not a handful');
+    assert.truthy(keys(r).includes('word:pr2-mix'), 'the Mix must be in the group');
+    // Each word is a substring match, so "2" also reaches Unit 2 and Unit 12
+    // of the other Books. That is the search's contract (a parent who types
+    // "unit 2" wants exactly that); what must hold is that nothing without
+    // a 2 in it sneaks in.
+    for (const g2 of r.groups) for (const it of g2.items) {
+      assert.truthy(/2/.test(g2.path + ' ' + it.entry.label), it.entry.key + ' matched "2" without one');
+    }
   });
 
-  test('accents are ignored on both sides: "cuu chuong" finds Bảng cửu chương', () => {
-    const r = search('cuu chuong');
-    assert.truthy(keys(r).includes('math4:cc'), 'the folded query must match the accented label');
-    assert.truthy(keys(search('Bảng CỬU chương')).includes('math4:cc'), 'and an accented query matches too');
+  test('accents are ignored on both sides: "markéting" still finds Marketing and PR', () => {
+    assert.deepEqual(keys(search('markéting')), ['word:pr1-4']);
+    assert.deepEqual(keys(search('MARKETING')), ['word:pr1-4'], 'and case does not matter');
   });
 
-  test('every word must match somewhere in path or label — "grammar 12" is Unit 12 only', () => {
-    const r = search('grammar 12');
-    assert.truthy(r.matched > 0);
-    for (const k of keys(r)) assert.truthy(/^grammar:unit12/.test(k), k + ' is not Unit 12');
+  test('every word must match somewhere in path or label — "unit 7" is Unit 7 of each Book', () => {
+    const r = search('unit 7');
+    assert.deepEqual(keys(r), ['word:pr1-7', 'word:pr2-7', 'word:pr3-7']);
+    assert.deepEqual(keys(search('book 3 mix')), ['word:pr3-mix']);
   });
 
-  test('a path word alone works: "toán 7 luyện chương" lists the chapters', () => {
-    const r = search('toan 7 luyen chuong');
-    assert.truthy(keys(r).includes('math-chapter:6'));
-    assert.truthy(keys(r).includes('math-chapter:1'));
+  test('a path word alone works: "book" reaches every task through its path', () => {
+    // The label says "Book 2 · …" too, so the path is not the only route —
+    // but the Mix rows are where it matters: "🎲 Mix" carries no unit title,
+    // and a query for the Book must still find them.
+    const r = search('book');
+    assert.equal(r.matched, Catalog.all().length);
+    const r3 = search('book 3');
+    assert.equal(keys(r3).filter(k => /^word:pr3-/.test(k)).length, 16, 'all of Book 3');
+    assert.truthy(keys(r3).includes('word:pr3-mix'));
   });
 
   test('an empty query matches the whole catalog, capped, and says how many were held back', () => {
@@ -122,8 +132,8 @@ suite('admin page: the task search, executed', () => {
   });
 
   test('a task the child already has is marked, not hidden', () => {
-    const r = search('đề thi hk2', ['math-exam:any-hk2']);
-    const it = r.groups.flatMap(g => g.items).find(i => i.entry.key === 'math-exam:any-hk2');
+    const r = search('mix', ['word:pr1-mix']);
+    const it = r.groups.flatMap(g => g.items).find(i => i.entry.key === 'word:pr1-mix');
     assert.truthy(it, 'the assigned task must still be listed');
     assert.equal(it.assigned, true);
     assert.truthy(r.groups.flatMap(g => g.items).some(i => !i.assigned), 'others stay assignable');
@@ -139,6 +149,11 @@ suite('admin page: the task search, executed', () => {
     assert.truthy(html.includes('id="taskSearch"'), 'no search box');
     assert.truthy(/getElementById\('taskSearch'\)\.addEventListener\('input'/.test(html), 'typing must re-render');
     assert.truthy(/DailyTaskCatalog\.tree\(\)/.test(html), 'the browse mode walks the catalog tree');
+    // The cascade renderer is recursive over node.children, and opens the
+    // top level: with the Books holding their tasks directly, every task is
+    // visible as soon as the tree view opens.
+    assert.truthy(/const node = \(n, depth\) => `<details\$\{depth === 0 \? ' open' : ''\}>/.test(html),
+      'the tree renderer must draw a node from its entries and recurse into children');
     const client = html.match(/id="dailyTarget"[^>]*max="(\d+)"/);
     const server = read('functions/api/_daily-task.js').match(/export const MAX_TARGET = (\d+);/);
     assert.truthy(client && server, 'both caps must exist');

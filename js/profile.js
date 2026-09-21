@@ -46,13 +46,9 @@ function renderProfile() {
         grid.appendChild(div);
     });
 
-    // Render new profile sections
-    if (typeof initFriendsSection === 'function') { try { initFriendsSection(); } catch (e) {} }
-    if (typeof renderCupCabinet === 'function') { try { renderCupCabinet(); } catch (e) {} }
     renderThemePicker();
     renderStickerBook();
     checkStickerUnlocks();
-    renderSavedSentences();
 }
 
 // ==================== THEME PICKER ====================
@@ -107,9 +103,16 @@ const stickerData = [
     { id: 's20', name: 'Infinity', emoji: '♾️', threshold: 200, rare: true }
 ];
 
+// A sticker per ten words KNOWN: words the learner has typed right at least
+// once in a Book practice (js/units.js keeps a level per word in
+// appState.unitWordLevels; level 1 is the first correct answer).
+function knownWordCount() {
+    const levels = (appState && appState.unitWordLevels) || {};
+    return Object.keys(levels).filter(k => (levels[k] || 0) >= 1).length;
+}
 function checkStickerUnlocks() {
     if (!appState) return;
-    const srsCount = appState.srs ? Object.keys(appState.srs).length : 0;
+    const srsCount = knownWordCount();
     if (!appState.stickers) appState.stickers = [];
     let newStickers = false;
     stickerData.forEach(s => {
@@ -142,25 +145,10 @@ function renderStickerBook() {
     });
 }
 
-// ==================== SAVED SENTENCES ====================
-function renderSavedSentences() {
-    const container = document.getElementById('sentencesList');
-    if (!container) return;
-    const sentences = appState.sentences || [];
-    if (sentences.length === 0) {
-        container.innerHTML = '<div class="empty-history">Complete lessons with 80%+ accuracy to create sentences!</div>';
-        return;
-    }
-    container.innerHTML = sentences.slice().reverse().map(s => `
-        <div class="sentence-card">
-            <div class="sentence-card-word">${s.word}</div>
-            <div class="sentence-card-text">${s.text}</div>
-        </div>
-    `).join('');
-}
-
 function unlockAchievement(id) {
-    if (!appState || appState.achievements.includes(id)) return;
+    if (!appState) return;
+    if (!Array.isArray(appState.achievements)) appState.achievements = [];
+    if (appState.achievements.includes(id)) return;
     appState.achievements.push(id);
     saveUserData(currentUser, appState);
 

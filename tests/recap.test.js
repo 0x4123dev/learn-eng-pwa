@@ -49,7 +49,7 @@ suite('formatWeekRange: human-readable range', () => {
 
 suite('generateWeeklyRecap: snapshot content', () => {
     test('returns expected fields', () => {
-        env.__setAppState({ lessonHistory: [], streak: 0 });
+        env.__setAppState({ unitsHistory: [], streak: 0 });
         const recap = env.generateWeeklyRecap('2025-01-12');
         assert.truthy('weekStart' in recap);
         assert.truthy('weekEnd' in recap);
@@ -72,28 +72,28 @@ suite('generateWeeklyRecap: snapshot content', () => {
         const afterWeek = new Date('2025-01-20T12:00:00').getTime();
 
         env.__setAppState({
-            lessonHistory: [
-                { lessonNum: 1, date: sun, points: 100, accuracy: 100 },
-                { lessonNum: 2, date: tue, points: 50,  accuracy: 80  },
-                { lessonNum: 3, date: sat, points: 75,  accuracy: 100 },
-                { lessonNum: 4, date: beforeWeek, points: 999, accuracy: 100 },
-                { lessonNum: 5, date: afterWeek,  points: 999, accuracy: 100 }
+            unitsHistory: [
+                { unit: 'pr1-1', date: sun, score: 20, total: 20, wrong: [] },
+                { unit: 'pr1-2', date: tue, score: 10, total: 12, wrong: ['a', 'b'] },
+                { unit: 'pr2-mix', date: sat, score: 15, total: 15, wrong: [] },
+                { unit: 'pr1-3', date: beforeWeek, score: 99, total: 99, wrong: [] },
+                { unit: 'pr1-4', date: afterWeek,  score: 99, total: 99, wrong: [] }
             ],
             streak: 0
         });
         const recap = env.generateWeeklyRecap('2025-01-12');
         assert.equal(recap.lessonsCompleted, 3);
-        assert.equal(recap.xpEarned, 225); // 100+50+75
-        assert.equal(recap.perfectLessons, 2); // accuracy 100 only
+        assert.equal(recap.xpEarned, 225); // (20+10+15) × 5
+        assert.equal(recap.perfectLessons, 2); // score === total only
     });
 
     test('marks correct days active', () => {
         const sun = new Date('2025-01-12T12:00:00').getTime();
         const wed = new Date('2025-01-15T12:00:00').getTime();
         env.__setAppState({
-            lessonHistory: [
-                { lessonNum: 1, date: sun, points: 10, accuracy: 100 },
-                { lessonNum: 2, date: wed, points: 10, accuracy: 100 }
+            unitsHistory: [
+                { unit: 'pr1-1', date: sun, score: 2, total: 2, wrong: [] },
+                { unit: 'pr1-2', date: wed, score: 2, total: 2, wrong: [] }
             ],
             streak: 0
         });
@@ -105,23 +105,23 @@ suite('generateWeeklyRecap: snapshot content', () => {
         assert.equal(recap.daysActive, 2);
     });
 
-    test('words learned = unique lessons × 5', () => {
+    test('words learned = words answered right this week', () => {
         const tue = new Date('2025-01-14T12:00:00').getTime();
         env.__setAppState({
-            lessonHistory: [
-                { lessonNum: 1, date: tue, points: 10, accuracy: 100 },
-                { lessonNum: 2, date: tue, points: 10, accuracy: 100 },
-                { lessonNum: 1, date: tue, points: 10, accuracy: 100 } // duplicate
+            unitsHistory: [
+                { unit: 'pr1-1', date: tue, score: 5, total: 5, wrong: [] },
+                { unit: 'pr1-2', date: tue, score: 3, total: 5, wrong: ['x', 'y'] },
+                { unit: 'pr1-3', date: tue, score: 0, total: 2, wrong: ['p', 'q'] }
             ],
             streak: 0
         });
         const recap = env.generateWeeklyRecap('2025-01-12');
-        // 2 unique lessons × 5 words/lesson = 10
-        assert.equal(recap.wordsLearned, 10);
+        // (5-0) + (5-2) + (2-2) = 8
+        assert.equal(recap.wordsLearned, 8);
     });
 
     test('empty week returns zero counts', () => {
-        env.__setAppState({ lessonHistory: [], streak: 0 });
+        env.__setAppState({ unitsHistory: [], streak: 0 });
         const recap = env.generateWeeklyRecap('2025-01-12');
         assert.equal(recap.lessonsCompleted, 0);
         assert.equal(recap.xpEarned, 0);

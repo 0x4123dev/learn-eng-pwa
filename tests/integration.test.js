@@ -1,10 +1,15 @@
 // tests/integration.test.js — Cross-module integration tests
 const { suite, test, assert } = require('./harness');
 const { loadAppCode } = require('./setup');
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
 
-function load(appState) {
+// The app plus its one lazy bank (js/word-data.js, the three Books), loaded
+// into the same sandbox the way js/lazy-data.js appends it in the browser.
+function loadWithBank() {
     const env = loadAppCode();
-    env.__setAppState(appState || {});
+    vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'js', 'word-data.js'), 'utf8'), env.global);
     return env;
 }
 
@@ -18,13 +23,12 @@ suite('createDefaultUserData: shape', () => {
         assert.equal(data.points, 0);
         assert.equal(data.streak, 0);
         assert.equal(data.lessonsCompleted, 0);
-        assert.equal(data.currentLesson, 0);
         assert.truthy(Array.isArray(data.achievements));
-        assert.truthy(Array.isArray(data.lessonHistory));
-        assert.truthy(typeof data.srs === 'object');
+        assert.truthy(Array.isArray(data.unitsHistory), 'the Book practices\' history');
         assert.equal(data.streakShields, 0);
         assert.equal(data.bestStreak, 0);
-        assert.truthy(typeof data.topicProgress === 'object');
+        assert.equal(data.coins, 0);
+        assert.equal(data.dogLevel, 1);
         assert.truthy(Array.isArray(data.weeklyRecaps));
         assert.truthy(typeof data.petMemory === 'object');
     });
@@ -39,64 +43,70 @@ suite('createDefaultUserData: shape', () => {
     });
 });
 
-suite('Topics: integration with vocabulary', () => {
-    test('every topic has at least 100 words', () => {
-        const env = loadAppCode();
-        const counts = env.getTopicCounts(null);
-        for (const t of env.TOPICS) {
-            assert.truthy(counts[t.id] >= 100,
-                `topic ${t.id} has only ${counts[t.id]} words`);
+suite('Books: integration with the word bank', () => {
+    test('every Book has 15 units and every unit has words', () => {
+        const env = loadWithBank();
+        for (const s of env.UNIT_SETS) {
+            const units = env.unitsList(s.id);
+            assert.deepEqual(units, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], s.id);
+            for (const u of units) {
+                const n = env.unitsBank(s.id).filter(w => w.unit === u).length;
+                assert.truthy(n >= 5, `${s.id} unit ${u} has only ${n} words`);
+            }
         }
     });
 
-    test('topic words are real vocabulary entries', () => {
+    test('the bank is empty — not a throw — before js/word-data.js lands', () => {
         const env = loadAppCode();
-        const words = env.getWordsForTopic('thinking', null);
-        for (let i = 0; i < Math.min(10, words.length); i++) {
-            const w = words[i].word;
-            assert.truthy(w.en);
-            assert.truthy(w.vi);
-            // Verify it really is in ieltsVocabulary
-            const found = env.ieltsVocabulary.find(x => x.en === w.en);
-            assert.truthy(found, `word ${w.en} not in vocab`);
-        }
+        for (const s of env.UNIT_SETS) assert.deepEqual(env.unitsBank(s.id), []);
+        assert.deepEqual(env.unitsList('pr1'), []);
     });
 });
 
-suite('Vocabulary: data integrity', () => {
-    test('vocabulary has 1957 entries', () => {
-        const env = loadAppCode();
-        assert.equal(env.ieltsVocabulary.length, 1957);
+suite('Word bank: data integrity', () => {
+    test('the three Books carry 527 words between them', () => {
+        const env = loadWithBank();
+        const all = env.UNIT_SETS.reduce((a, s) => a.concat(env.unitsBank(s.id)), []);
+        assert.equal(all.length, 527);
     });
 
-    test('duplicate-word count documented (intentional re-exposure)', () => {
-        // Some words intentionally repeat at different difficulty levels for re-exposure
-        // (e.g., "habitat", "stress", "motivation"). This test documents the expected count
-        // so any further duplication is caught early.
-        const env = loadAppCode();
-        const ens = env.ieltsVocabulary.map(w => w.en);
+    test('duplicate-word count documented (a word taught in two Books)', () => {
+        // A handful of words recur across Books (a Book 2 unit re-teaches a
+        // Book 1 word in a new context). This documents the expected count so
+        // any further duplication is caught early.
+        const env = loadWithBank();
+        const all = env.UNIT_SETS.reduce((a, s) => a.concat(env.unitsBank(s.id)), []);
+        const ens = all.map(w => w.en);
         const dupeCount = ens.length - new Set(ens).size;
-        // Currently ~335 duplicates. Threshold set at 400 to allow minor growth.
-        assert.truthy(dupeCount < 400, `${dupeCount} duplicates exceeds the documented baseline`);
-    });
-
-    test('every word has en, vi, ipa, ex', () => {
-        const env = loadAppCode();
-        for (let i = 0; i < env.ieltsVocabulary.length; i += 100) {
-            const w = env.ieltsVocabulary[i];
-            assert.truthy(w.en, `word ${i} missing en`);
-            assert.truthy(w.vi, `word ${i} (${w.en}) missing vi`);
-            assert.truthy(w.ipa, `word ${i} (${w.en}) missing ipa`);
-            assert.truthy(w.ex, `word ${i} (${w.en}) missing ex`);
+        assert.truthy(dupeCount <= 8, `${dupeCount} duplicates exceeds the documented baseline of 8`);
+        for (const s of env.UNIT_SETS) {
+            const inSet = env.unitsBank(s.id).map(w => w.en);
+            assert.equal(inSet.length, new Set(inSet).size, `${s.id} repeats a word within the Book`);
         }
     });
 
-    test('IPA is wrapped in slashes', () => {
-        const env = loadAppCode();
-        for (let i = 0; i < env.ieltsVocabulary.length; i += 200) {
-            const w = env.ieltsVocabulary[i];
-            assert.truthy(w.ipa.startsWith('/'), `word ${w.en} ipa missing leading /`);
-            assert.truthy(w.ipa.endsWith('/'), `word ${w.en} ipa missing trailing /`);
+    test('every word has en, vi, emoji, ex, exVi and is tagged with its set', () => {
+        const env = loadWithBank();
+        for (const s of env.UNIT_SETS) {
+            for (const w of env.unitsBank(s.id)) {
+                assert.truthy(w.en, `${s.id} word missing en`);
+                assert.truthy(w.vi, `${s.id} (${w.en}) missing vi`);
+                assert.truthy(w.emoji, `${s.id} (${w.en}) missing emoji`);
+                assert.truthy(w.ex, `${s.id} (${w.en}) missing ex`);
+                assert.truthy(w.exVi, `${s.id} (${w.en}) missing exVi`);
+                assert.equal(w.set, s.id, `${s.id} (${w.en}) tagged with the wrong set`);
+            }
+        }
+    });
+
+    test('every example sentence contains the word it teaches', () => {
+        const env = loadWithBank();
+        for (const s of env.UNIT_SETS) {
+            for (const w of env.unitsBank(s.id)) {
+                const head = String(w.en).split(/[\s/(]/)[0].slice(0, 4).toLowerCase();
+                assert.truthy(String(w.ex).toLowerCase().includes(head),
+                    `${s.id} (${w.en}) example does not use the word: ${w.ex}`);
+            }
         }
     });
 });
@@ -132,29 +142,6 @@ suite('shuffleArray: utility', () => {
         const input = [1, 2, 3, 4, 5];
         const out = env.shuffleArray([...input]).sort();
         assert.deepEqual(out, [1, 2, 3, 4, 5]);
-    });
-});
-
-suite('Lesson math: BEGINNING + IELTS levels = TOTAL', () => {
-    test('beginning + 4 IELTS levels = TOTAL_LESSONS', () => {
-        const env = loadAppCode();
-        const total = env.BEGINNING_LESSONS + env.IELTS_PER_LEVEL * 4;
-        // Should be >= TOTAL_LESSONS (slight overlap due to ceiling)
-        assert.truthy(total >= env.TOTAL_LESSONS);
-    });
-
-    test('all 5 ranges combined cover all lessons', () => {
-        const env = loadAppCode();
-        const ranges = ['beginning', 'basic', 'intermediate', 'upper', 'advanced'].map(k =>
-            env.getLessonRangeForDifficulty(k)
-        );
-        // Should be contiguous and cover [0, TOTAL_LESSONS)
-        assert.equal(ranges[0].start, 0);
-        for (let i = 1; i < ranges.length; i++) {
-            assert.equal(ranges[i].start, ranges[i-1].end,
-                `gap between ${ranges[i-1].end} and ${ranges[i].start}`);
-        }
-        assert.equal(ranges[ranges.length - 1].end, env.TOTAL_LESSONS);
     });
 });
 

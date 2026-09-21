@@ -143,11 +143,14 @@ suite('money client: every wallet reaches the recovery snapshot', () => {
       url === '/api/activity' ? { data: { ok: true, count: 1 } } : null);
     // One real history item, but appState.coins was never set (half-loaded
     // profile). Reporting 0 here would poison the recovery snapshot.
-    ctx.appState = { lessonHistory: [{ lessonNum: 0, date: Date.now(), accuracy: 80 }] };
+    ctx.appState = { unitsHistory: [{ unit: 'pr1-1', score: 8, total: 10, date: Date.now() }] };
     ctx.currentUser = 'Kid';
     await ctx.EngAuth.syncNow();
     const act = calls.find(c => c.url === '/api/activity');
     assert.truthy(act, 'the history item itself still syncs');
+    assert.equal(act.body.items.length, 1);
+    assert.equal(act.body.items[0].type, 'lesson');
+    assert.equal(act.body.items[0].title, 'Unit pr1-1 words practice');
     assert.falsy('coinBalance' in act.body,
       'a non-numeric wallet must be omitted, not sent as 0');
   });
@@ -218,21 +221,20 @@ suite('money client: grant receipts — the gift survives every crash point', ()
 
 suite('money client: owned assets ride the backup both ways', () => {
   const SERVER_ASSETS = {
-    accessories: ['bow', 'cap'], castleSkins: ['stone-keep', 'royal-keep'],
+    accessories: ['bow', 'cap'],
     stickers: ['star1'], dogGrowthXP: 30000, streakShields: 2,
   };
 
   test('a fresh device is restored from the sync reply, dog level included', async () => {
     const { ctx, calls } = loadAuth(url =>
       url === '/api/assets' ? { data: { ok: true, assets: SERVER_ASSETS } } : null);
-    ctx.appState = { coins: 0, petAccessories: [], petBattleCastleSkins: ['stone-keep'],
+    ctx.appState = { coins: 0, petAccessories: [],
       stickers: [], dogGrowthXP: 0, dogLevel: 1, streakShields: 0 };
     ctx.currentUser = 'Kid';
     ctx.getDogLevel = xp => Math.max(1, Math.floor(xp / 1000)); // stand-in formula
     let saves = 0; ctx.saveUserData = () => { saves++; };
     await ctx.EngAuth.syncAssets('Kid');
     assert.deepEqual(ctx.appState.petAccessories.sort(), ['bow', 'cap']);
-    assert.deepEqual(ctx.appState.petBattleCastleSkins.sort(), ['royal-keep', 'stone-keep']);
     assert.deepEqual(ctx.appState.stickers, ['star1']);
     assert.equal(ctx.appState.dogGrowthXP, 30000);
     assert.equal(ctx.appState.dogLevel, 30, 'the dog level is re-derived from restored XP');
@@ -247,16 +249,18 @@ suite('money client: owned assets ride the backup both ways', () => {
       url === '/api/assets'
         ? { data: { ok: true, assets: {
             accessories: ['bow'].concat(body.accessories || []),
-            castleSkins: body.castleSkins || [], stickers: body.stickers || [],
+            stickers: body.stickers || [],
             dogGrowthXP: Math.max(30000, body.dogGrowthXP || 0),
             streakShields: body.streakShields || 0 } } }
         : null);
-    ctx.appState = { petAccessories: ['crown'], petBattleCastleSkins: ['stone-keep'],
+    ctx.appState = { petAccessories: ['crown'],
       stickers: [], dogGrowthXP: 45000, dogLevel: 45, streakShields: 1 };
     ctx.currentUser = 'Kid';
     await ctx.EngAuth.syncAssets('Kid');
     const put = calls.find(c => c.url === '/api/assets');
     assert.deepEqual(put.body.accessories, ['crown'], 'local ownership is uploaded');
+    assert.deepEqual(Object.keys(put.body).sort(), ['accessories', 'dogGrowthXP', 'stickers', 'streakShields'],
+      'the backup carries exactly the four surviving asset fields (no castleSkins)');
     assert.equal(put.body.dogGrowthXP, 45000);
     assert.deepEqual(ctx.appState.petAccessories.sort(), ['bow', 'crown'],
       'the merged union lands locally');
@@ -310,7 +314,6 @@ function raidState(coins) {
   return {
     coins, dogLevel: 2, vaultCoins: 0,
     petBattleCastleSkin: 'stone-keep', nightRaidLayout: { cells: [], soldiers: 0 },
-    nightRaidClaimed: {}, nightRaidHistory: [],
   };
 }
 
@@ -369,13 +372,14 @@ suite('money client: night raid sync can never invent a zero', () => {
   });
 });
 
-// ---- the defender's wallet: the one number the SERVER moves ----------------
-// Every other coin path starts on the device. This one does not: when someone
-// attacks this child's house and LOSES, functions/api/night-raid/finish.js
-// credits night_raid_homes.lootable_coins while the child is asleep. The
-// device cannot know it happened — and the next PUT /night-raid/home used to
-// push the wallet the phone still remembered straight over it, so the xu the
-// child had earned by defending simply vanished.
+// ---- the mirror row: a number the device did not write ----------------------
+// Every coin path starts on the device; night_raid_homes.lootable_coins is a
+// MIRROR the next PUT overwrites. A device that has never pushed this
+// profile's wallet (a reinstall, a second phone) restores from it exactly
+// once (adoptServerCoins) — and until it has, no PUT may push the stale
+// wallet the phone remembers over a row that is ahead of it. (The raid that
+// used to credit this row from finish.js is gone; the row can still be ahead
+// after collect.js or a barracks purchase answered another device.)
 //
 // Both halves are REAL here: the actual client in a vm, the actual Pages
 // handler over a real SQLite row, with nothing between them but the network
@@ -409,11 +413,11 @@ async function seedRaidHome(world, user, coins) {
 }
 
 suite('money client: coins won while the child was offline survive the next sync', () => {
-  test('a defender who beat off a raid while asleep keeps the reward through open + PUT', async () => {
+  test('coins credited to the row by another device survive open + PUT on a fresh one', async () => {
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
     await seedRaidHome(world, user, 500);
-    // The attack the child slept through: finish.js pays the defender.
+    // A harvest collected on the other phone: collect.js adds to the row.
     world.db.prepare('UPDATE night_raid_homes SET lootable_coins=lootable_coins+? WHERE user_id=?')
       .run(100, user.uid);
     assert.equal(lootable(world, user.uid), 600);
@@ -432,7 +436,7 @@ suite('money client: coins won while the child was offline survive the next sync
   });
 
   test('a device that is AHEAD is never dragged down by a stale row', async () => {
-    // Lessons, the shop, the cups and the armoury all move appState.coins
+    // Lessons, the shop and the cups all move appState.coins
     // without telling any server (functions/api/coins.js: "the wallet lives in
     // the child's device profile"). Adopting the row outright would eat the xu
     // a child earned in a lesson two minutes ago.
@@ -485,7 +489,7 @@ suite('money client: coins won while the child was offline survive the next sync
       if ((opts && opts.method) === 'PUT') { puts.push(opts.body.coins); return { ok: true, data: { layout: { cells: [], soldiers: 0 } } }; }
       gets++;
       await gate;
-      return { ok: true, data: { home: { lockedUntil: 0, shieldUntil: 0, lootableCoins: 600, layout: { cells: [], soldiers: 0, dogLane: 2 } } } };
+      return { ok: true, data: { home: { lootableCoins: 600, layout: { cells: [], soldiers: 0, dogLane: 2 } } } };
     });
     ctx.appState = raidState(500);
     ctx.NightRaid.open();
@@ -549,7 +553,7 @@ suite('money client: logging in never costs a wallet or a dog', () => {
     const first = JSON.parse(JSON.stringify(app.__getAppState()));
     try { app.loginUser('Kid'); } catch (e) {}
     const second = app.__getAppState();
-    for (const k of ['coins', 'dogGrowthXP', 'dogLevel', 'petBattleCastleSkins', 'vaultCoins']) {
+    for (const k of ['coins', 'dogGrowthXP', 'dogLevel', 'petBattleCastleSkin', 'vaultCoins']) {
       assert.deepEqual(second[k], first[k], k + ' must not drift on re-login');
     }
   });

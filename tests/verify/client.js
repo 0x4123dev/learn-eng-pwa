@@ -4,16 +4,14 @@
 // The unit suite was written by the same hands as the bugs, and it mostly asks
 // questions the source can answer by containing a string. This layer refuses
 // to read source text as evidence. It boots the real index.html script list in
-// one shared global scope — the way a browser does — logs a child in, opens
-// every screen the way a finger reaches it, and then plays: matches a pair,
-// answers a grammar question right and the next one WRONG, types a verb,
-// finishes an exam, finds a word in the hunt grid, opens the raid target list.
+// one shared global scope — the way a browser does — logs a learner in, opens
+// every screen the way a finger reaches it, and then plays: types a Book word
+// right and the next one WRONG, finishes the practice, opens the farm shop.
 //
 // Every check has to be falsifiable. "renderX() returned a string" proves
-// nothing, so each render is proved against live data instead: Grammar must
-// draw one card per unit in GRAMMAR_UNITS, Phrases must print the real bank
-// size, Verbs must echo a best score planted in appState, Night Raid must show
-// one row per friend the stubbed server sent. And every grader is asked twice
+// nothing, so each render is proved against live data instead: a Book must
+// draw one card per unit in its bank, the farm's seed tray one card per crop
+// in FarmRules.CROPS. And every grader is asked twice
 // — once with the right answer and once with a wrong one — because a grader
 // stuck on "correct" passes any test that only ever answers correctly.
 //
@@ -210,7 +208,7 @@ function mountApp(opts) {
   }
 
   // Reach into the shared lexical scope: most app state is a top-level `let`
-  // (appState, _grammarQuizState, speedState…), which never lands on the
+  // (appState, _unitQuiz…), which never lands on the
   // global object and so cannot be read from outside without this.
   vm.runInContext(
     'globalThis.__peek = function (n) { try { return eval(n); } catch (e) { return undefined; } };'
@@ -395,9 +393,9 @@ function reachability(screenIds) {
       const host = el.closest('.screen');
       note(m[1], inNav ? 'bottom nav' : ('markup in ' + ((host && host.id) || 'index.html')));
     }
-    for (const m of code.matchAll(/\b(openPetBattle|openNightRaid|openWordHunt|navigateToProfile)\s*\(/g)) {
-      const map = { openPetBattle: 'petBattleScreen', openNightRaid: 'nightRaidScreen', navigateToProfile: 'profileScreen' };
-      if (map[m[1]]) note(map[m[1]], 'markup');
+    for (const m of code.matchAll(/\b(openNightRaid|openBook|navigateToProfile)\s*\(/g)) {
+      const map = { openNightRaid: 'nightRaidScreen', openBook: 'wordScreen', navigateToProfile: 'profileScreen' };
+      if (map[m[1]]) note(map[m[1]], el.closest('.bottom-nav') ? 'bottom nav' : 'markup');
     }
   });
 
@@ -432,7 +430,7 @@ function screenPlaybook() {
       },
     },
     homeScreen: {
-      title: 'Trang chủ: tên bé, phiên bản, thẻ kỹ năng',
+      title: 'Trang chủ: tên học viên, phiên bản, ba cuốn sách',
       open: async (h) => {
         if (!h.peek('currentUser')) h.sandbox.loginUser(TEST_USER);   // arriving from the login screen
         h.sandbox.switchScreen('homeScreen');
@@ -441,7 +439,13 @@ function screenPlaybook() {
         const text = squash(el.textContent);
         must(text.includes(TEST_USER), 'the home screen greets this child by name');
         must(text.includes(h.peek('APP_VERSION')), 'the running version is shown: ' + h.peek('APP_VERSION'));
-        return 'greets ' + TEST_USER + ', shows ' + h.peek('APP_VERSION') + ', ' + el.innerHTML.length + ' chars';
+        // The skills panel is collapsed by default; open it the way a tap does.
+        h.sandbox.toggleHomeSkillsDetails();
+        const panel = squash(h.el('homeSkillsPanel').textContent);
+        for (const b of ['Book 1', 'Book 2', 'Book 3']) must(panel.includes(b), 'the skills panel has a row for ' + b);
+        must(!/Grammar|Grade 4|Phrases|Word form|Rewrite|Verbs/.test(panel), 'no cut skill is listed');
+        h.sandbox.toggleHomeSkillsDetails();
+        return 'greets ' + TEST_USER + ', shows ' + h.peek('APP_VERSION') + ', rows for Book 1·2·3';
       },
     },
     dailyTaskScreen: {
@@ -450,9 +454,10 @@ function screenPlaybook() {
         stubServer(h, (p) => {
           if (/daily-task/.test(p)) return { ok: true, data: {
             date: '2026-01-01', tasks: [
-              { kind: 'grammar', target: 1, done: 0, progress: 0 },
-              { kind: 'math', target: 1, done: 0, progress: 0 },
-            ], allDone: false, shields: { count: 1, activeUntil: 0 }, swords: { count: 2 }, pending: [], recent: [] } };
+              { kind: 'word:pr1-1', target: 1, done: 0, progress: 0 },
+              { kind: 'word:pr2-mix', target: 1, done: 0, progress: 0 },
+            ], allDone: false, rewardedToday: false, justRewarded: false,
+            seeds: { progress: 0, goal: 2, next: { id: 'lettuce', name: 'Rau cải' }, inventory: [], recent: [] } } };
           return { ok: false, data: null };
         });
         h.peek('DailyTask').open();
@@ -461,42 +466,15 @@ function screenPlaybook() {
       prove: (h, el) => {
         const rows = el.querySelectorAll('.dt-task, .dt-list > *');
         must(rows.length >= 2, 'one row per task the server sent (got ' + rows.length + ')');
-        must(squash(el.textContent).includes('Kiếm'), 'the armory strip is drawn');
-        return rows.length + ' task row(s) from the stubbed server';
-      },
-    },
-    lessonScreen: {
-      title: 'Bài học từ vựng: hai cột thẻ để ghép',
-      open: async (h) => { h.sandbox.startLesson(0); },
-      prove: (h, el) => {
-        const left = el.querySelectorAll('#leftColumn .match-card');
-        const right = el.querySelectorAll('#rightColumn .match-card');
-        const per = h.peek('WORDS_PER_LESSON');
-        mustEqual(left.length, per, 'left column holds one card per lesson word');
-        mustEqual(right.length, per, 'right column holds one card per lesson word');
-        const vocab = h.peek('ieltsVocabulary');
-        const words = right.map((c) => c.getAttribute('data-word'));
-        must(words.every((w) => vocab.some((v) => v.en === w)), 'every card is a real vocabulary word');
-        return per + ' pairs drawn from ieltsVocabulary (' + words.slice(0, 3).join(', ') + '…)';
-      },
-    },
-    speedChallengeScreen: {
-      title: 'Động từ bất quy tắc: bảng điểm + nút bắt đầu',
-      open: async (h) => {
-        const st = h.state();
-        st.speedChallenge = { bestScore: 4242, bestStreak: 7, totalGames: 3 };
-        h.sandbox.switchScreen('speedChallengeScreen');
-      },
-      prove: (h, el) => {
-        mustEqual(h.el('bestScore').textContent, '4242', 'the best score comes from appState, not from the markup');
-        mustEqual(h.el('bestStreak').textContent, '7', 'and so does the best streak');
-        must(wiredTo(el, 'startSpeedChallenge').length >= 1, 'a Start button exists');
-        return 'best score 4242 / streak 7 read back from appState';
+        const text = squash(el.textContent);
+        must(!/khiên|kiếm|Kho Khiên/i.test(text), 'no shield/sword/armory copy survives on the task screen');
+        must(text.includes('200'), 'the 200 xu reward is what the screen promises');
+        return rows.length + ' task row(s) from the stubbed server, 200 xu promised';
       },
     },
     wordScreen: {
-      title: 'Word: 15 thẻ Unit + Mix của Book 1, bộ từ Career Paths đã tải',
-      open: async (h) => { h.sandbox.switchScreen('wordScreen'); await settle(); },
+      title: 'Book 1: 15 thẻ Unit + Mix, bộ từ Career Paths đã tải, tiêu đề đúng cuốn',
+      open: async (h) => { h.sandbox.openBook('pr1'); await settle(); },
       prove: (h, el) => {
         const bank = h.peek('UNIT_WORDS_PR1');
         must(Array.isArray(bank) && bank.length > 0, 'the Career Paths bank arrived (lazy)');
@@ -505,147 +483,19 @@ function screenPlaybook() {
         const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
         mustEqual(cards.length, 15, 'one card per unit of Book 1');
         must(bar.querySelectorAll('.g4-mix-card').length === 1, 'and a Mix card');
-        must(bar.querySelectorAll('.g4-set-tabs .grammar-subtab').length === 3, 'Book 1 · 2 · 3 set tabs, and nothing of Grade 4');
+        mustEqual(bar.querySelectorAll('.g4-set-tabs .grammar-subtab').length, 0, 'no set strip: the bottom bar picks the book');
+        must(squash(h.el('wordTitle').textContent).includes('Book 1'), 'the header names the open book');
         const titles = h.peek('UNIT_PR_TITLES');
         must(squash(bar.textContent).includes(titles.pr1[1]), 'the first unit is titled from the bank: ' + titles.pr1[1]);
         must(el.querySelectorAll('#wordSubTabs .grammar-subtab').length === 2, 'practice/history tabs are drawn');
-        must(!h.el('unitsBar').innerHTML.includes("switchUnitSet('pr1')"), 'no Book tab leaked onto the Grade 4 screen');
-        return '15 unit cards + Mix for Book 1 of ' + bank.length + ' words';
-      },
-    },
-    ptnkScreen: {
-      title: 'PTNK: danh sách đề thật, mở một đề, trả lời, thoát',
-      open: async (h) => { h.sandbox.switchScreen('ptnkScreen'); await settle(); },
-      prove: (h, el) => {
-        // Same engine as the Exam tab, its own bank and its own screen. What
-        // can go wrong silently: the bank not arriving (an empty year list),
-        // a paper opening on the WRONG screen (the HCMC one), or the answer
-        // buttons rendering but not advancing. Each is checked by doing it.
-        const bank = h.peek('PTNK_EXAMS');
-        must(Array.isArray(bank) && bank.length > 0, 'the PTNK bank arrived (lazy)');
-        const text = squash(el.textContent);
-        must(text.includes(bank[0].title), 'the first paper is listed by its real title: ' + bank[0].title);
-        must(wiredTo(el, 'startPtnkExam').length === bank.length,
-          'every paper in the bank has a button (' + wiredTo(el, 'startPtnkExam').length + '/' + bank.length + ')');
-        const years = (h.el('ptnkScreen').innerHTML.match(/ptnk-year">\d{4}</g) || []);
-        must(years.length >= 2, 'papers are grouped under year headings');
-        h.sandbox.startExam(bank[0].id, 'ptnk');
-        must(h.sandbox.isExamActive(), 'the paper did not start');
-        must(h.sandbox.examCurrentSet() === 'ptnk', 'the paper opened in the ptnk set, not the HCMC one');
-        const q = h.el('ptnkScreen').textContent;
-        must(q.length > 20, 'the first question is drawn on the PTNK screen, not the Exam screen');
-        h.sandbox.abandonExam();
-        must(!h.sandbox.isExamActive(), 'the paper did not stop');
-        h.sandbox.renderPtnkHome();
-        return bank.length + ' PTNK papers listed under ' + years.length + ' years; "' + bank[0].title + '" opens in the ptnk set';
-      },
-    },
-    readingScreen: {
-      title: 'Reading: bấm Practice, được bài Không chuyên, thấy đoạn văn',
-      open: async (h) => { h.sandbox.switchScreen('readingScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('READING_PASSAGES');
-        must(Array.isArray(bank) && bank.length > 0, 'the reading bank arrived (lazy)');
-        must(wiredTo(el, 'startReadingPractice').length === 1, 'one Practice button');
-        must(bank.some(p => p.level === 'kc') && bank.some(p => p.level === 'ch'), 'both levels are in the bank');
-        // A fresh child is served Không chuyên: the rule the parent set.
-        h.sandbox.startReadingPractice();
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'reading', 'Practice opened a passage in the reading set');
-        const opened = h.peek('_examState');
-        must(opened && /^rd-kc-/.test(opened.examId), 'a fresh child is served a Không chuyên passage, got ' + (opened && opened.examId));
-        const ps = bank.find(p => p.id === opened.examId);
-        const text = squash(h.el('readingScreen').textContent);
-        must(text.includes(squash(ps.passage.replace(/<[^>]+>/g, ' ')).slice(0, 40)), 'the passage is drawn above the question');
-        h.sandbox.abandonExam();
-        h.sandbox.renderReadingHome();
-        return bank.length + ' passages; Practice served "' + ps.title + '" (Không chuyên) with its passage on screen';
-      },
-    },
-    clozeScreen: {
-      title: 'Cloze: bấm Practice, được bài Không chuyên, thấy 10 chỗ trống',
-      open: async (h) => { h.sandbox.switchScreen('clozeScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('CLOZE_PASSAGES');
-        must(Array.isArray(bank) && bank.length > 0, 'the cloze bank arrived (lazy)');
-        must(wiredTo(el, 'startClozePractice').length === 1, 'one Practice button');
-        must(bank.some(p => p.mode === 'mcq') && bank.some(p => p.mode === 'open'), 'both cloze modes are in the bank');
-        h.sandbox.startClozePractice();
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'cloze', 'Practice opened a text in the cloze set');
-        const opened = h.peek('_examState');
-        must(opened && /^cl-kc-/.test(opened.examId), 'a fresh child is served Không chuyên, got ' + (opened && opened.examId));
-        must(squash(h.el('clozeScreen').textContent).includes('(10)____'), 'all ten blanks are on screen');
-        h.sandbox.abandonExam();
-        h.sandbox.renderClozeHome();
-        return bank.length + ' cloze texts; Practice served a Không chuyên text with its ten blanks';
-      },
-    },
-    errorsScreen: {
-      title: 'Error Correction: bấm Practice, được lượt Không chuyên, bốn phần gạch chân',
-      open: async (h) => { h.sandbox.switchScreen('errorsScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('ERROR_ITEMS');
-        must(Array.isArray(bank) && bank.length >= 20, 'the errors bank arrived (lazy)');
-        must(wiredTo(el, 'startErrorsPractice').length === 1, 'one Practice button');
-        h.sandbox.startErrorsPractice();
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'errors', 'Practice started a round in the errors set');
-        must(/^er-round-kc:/.test(h.peek('_examState').examId), 'a fresh child is served a Không chuyên round');
-        const opts = h.el('errorsScreen').querySelectorAll('.grammar-option');
-        must(opts.length === 4, 'four segments to choose from');
-        h.sandbox.answerExamChoice(0);
-        must(h.sandbox.isExamActive(), 'one answer does not end a ten-item round');
-        h.sandbox.abandonExam();
-        h.sandbox.renderErrorsHome();
-        return bank.length + ' items; a Không chuyên round opens with four segments';
-      },
-    },
-    grammarVocabScreen: {
-      title: 'Grammar & Vocabulary: bấm Practice, được lượt Không chuyên 15 câu, bốn phương án, nhiều dạng',
-      open: async (h) => { h.sandbox.switchScreen('grammarVocabScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('GRAMMAR_VOCAB_ITEMS');
-        must(Array.isArray(bank) && bank.length >= 20, 'the grammar & vocabulary bank arrived (lazy)');
-        must(wiredTo(el, 'startGrammarVocabPractice').length === 1, 'one Practice button');
-        h.sandbox.startGrammarVocabPractice();
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'grammarvocab', 'Practice started a round in the grammarvocab set');
-        const st = h.peek('_examState');
-        must(/^gv-round-kc:/.test(st.examId), 'a fresh child is served a Không chuyên round');
-        const paper = h.sandbox.grammarVocabLookup(st.examId);
-        must(paper && paper.questions.length === h.peek('GRAMMAR_VOCAB_ROUND_SIZE'), 'the round holds ' + h.peek('GRAMMAR_VOCAB_ROUND_SIZE') + ' sentences');
-        must(new Set(paper.questions.map(q => q.section)).size >= 6, 'the round mixes at least six focuses, like the paper');
-        const opts = h.el('grammarVocabScreen').querySelectorAll('.grammar-option');
-        must(opts.length === 4, 'four options to choose from');
-        h.sandbox.answerExamChoice(0);
-        must(h.sandbox.isExamActive(), 'one answer does not end the round');
-        h.sandbox.abandonExam();
-        h.sandbox.renderGrammarVocabHome();
-        return bank.length + ' items; a Không chuyên round of ' + paper.questions.length + ' opens with four options';
-      },
-    },
-    phoneticsScreen: {
-      title: 'Phonetics & Stress: bài học mở được, Practice cho lượt 5 phát âm + 5 trọng âm, có nút nghe sau khi trả lời',
-      open: async (h) => { h.sandbox.switchScreen('phoneticsScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('PHONETICS_ITEMS'), lessons = h.peek('PHONETICS_LESSONS');
-        must(Array.isArray(bank) && bank.length >= 20, 'the phonetics bank arrived (lazy)');
-        must(Array.isArray(lessons) && lessons.length >= 10, 'the lessons arrived (lazy)');
-        must(el.querySelectorAll('.exam-lesson-card').length === lessons.length, 'one card per lesson on the Lessons tab');
-        h.sandbox.openPhoneticsLesson(lessons[0].key);
-        must(/<h4>/.test(h.el('phoneticsScreen').innerHTML) && h.el('phoneticsScreen').querySelector('.exam-lesson-content'), 'a lesson opens with its sections');
-        h.sandbox.switchPhoneticsSubTab('practice');
-        must(wiredTo(h.el('phoneticsScreen'), 'startPhoneticsPractice').length === 1, 'one Practice button');
-        h.sandbox.startPhoneticsPractice();
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'phonetics', 'Practice started a round in the phonetics set');
-        const st = h.peek('_examState');
-        must(/^ph-round-kc:/.test(st.examId), 'a fresh child is served a Không chuyên round');
-        must(st.questions.length === h.peek('PHONETICS_ROUND_SIZE'), 'the round holds ' + h.peek('PHONETICS_ROUND_SIZE'));
-        must(st.questions.filter(q => q.section === 'Phonetics').length === 5 && st.questions.filter(q => q.section === 'Stress').length === 5, 'five pronunciation then five stress');
-        must(h.el('phoneticsScreen').querySelectorAll('.grammar-option').length === 4, 'four words to choose from');
-        must(!h.el('phoneticsScreen').querySelector('.exam-hear-btn'), 'no 🔊 before answering — it would give the answer away');
-        h.sandbox.answerExamChoice(0);
-        must(h.el('phoneticsScreen').querySelectorAll('.exam-hear-btn').length === 4, 'four 🔊 word buttons once answered');
-        h.sandbox.abandonExam();
-        h.sandbox.switchPhoneticsSubTab('lessons');
-        return bank.length + ' items, ' + lessons.length + ' lessons; a round opens with four words and four 🔊 after answering';
+        // The other two buttons swap the book on the same screen.
+        h.sandbox.openBook('pr3');
+        must(squash(h.el('wordTitle').textContent).includes('Book 3'), 'Book 3 button re-titles the screen');
+        mustEqual(h.el('wordUnitsBar').querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card')).length, 15, 'and draws Book 3\'s 15 units');
+        const active = h.el('bottomNav').querySelectorAll('.nav-item.active').map((b) => b.dataset.navKey);
+        mustEqual(active.join(','), 'book3', 'the bottom bar highlights Book 3');
+        h.sandbox.openBook('pr1');
+        return '15 unit cards + Mix per book, header and nav follow the button';
       },
     },
     profileScreen: {
@@ -658,27 +508,8 @@ function screenPlaybook() {
         return 'names ' + TEST_USER + ' and echoes points=' + h.state().points;
       },
     },
-    petBattleScreen: {
-      title: 'Đấu trường thú cưng: danh sách bạn để thách đấu',
-      open: async (h) => {
-        stubServer(h, (p) => {
-          if (p === 'battle') return { ok: true, data: { ammo: 3, readyAt: 0, stats: { wins: 1, losses: 0 }, battle: null } };
-          return { ok: false, data: null };
-        });
-        h.run("_friendsData = { friends: [{userId:22,username:'Oleole'},{userId:33,username:'Mai'},{userId:44,username:'Bin'}], incoming: [], outgoing: [] }");
-        h.sandbox.openPetBattle();
-        await settle(8);
-      },
-      prove: (h, el) => {
-        const rows = el.querySelectorAll('.pb-friend');
-        mustEqual(rows.length, 3, 'one row per friend the server listed');
-        const names = squash(el.textContent);
-        for (const n of ['Oleole', 'Mai', 'Bin']) must(names.includes(n), 'friend ' + n + ' is on screen');
-        return '3 friend rows: Oleole, Mai, Bin';
-      },
-    },
     nightRaidScreen: {
-      title: 'Cướp Đêm: nhà của bé, chỉ số DAM/DEF, và cửa hàng nông trại',
+      title: 'Nông trại: nhà của bạn, thanh nhiệm vụ, cửa hàng và kho hạt giống',
       open: async (h) => {
         const Farm = h.peek('FarmRules');
         const seeds = { progress: 1, goal: 2, next: { id: 'lettuce', name: 'Rau cải' },
@@ -702,10 +533,14 @@ function screenPlaybook() {
       },
       prove: (h, el) => {
         const text = squash(el.textContent);
-        for (const chip of ['DAM', 'DEF', 'LÍNH']) must(text.includes(chip), 'the ' + chip + ' chip is drawn');
-        must(wiredTo(el, 'nrShowLiveTargets').length >= 1 || text.includes('CƯỚP ĐÊM'), 'the raid action is offered');
-        // The farm is the other half of this screen: the yard only grows on the
-        // days the child finishes every task, so the task bar has to say so.
+        // Raiding is gone: nothing on this screen may lead to another home.
+        mustEqual(wiredTo(el, 'nrShowLiveTargets').length, 0, 'no "đi cướp" button');
+        mustEqual(wiredTo(el, 'nrShowReports').length, 0, 'no raid reports button');
+        mustEqual(wiredTo(el, 'nrOpenArmory').length, 0, 'no armory button');
+        must(!/Cướp Đêm|CƯỚP ĐÊM/.test(text), 'the screen no longer calls itself Cướp Đêm');
+        must(h.el('bottomNav').style.display !== 'none', 'the bottom bar stays: the farm is a tab, not a game screen');
+        // The yard only grows on the days the learner finishes every task, so
+        // the task bar has to say so.
         must(text.includes('nhiệm vụ'), 'the task bar ties the garden to today\'s tasks');
 
         // Coin purchases stay in SHOP. Earned seeds have their own peer-level
@@ -742,147 +577,9 @@ function screenPlaybook() {
           must(squash(card[0].textContent).includes('x1 hạt'), 'the ' + crop.id + ' card shows the earned quantity');
           must(!card[0].querySelector('.nr-item-price'), 'the ' + crop.id + ' seed has no coin price');
         }
-        return 'castle yard with DAM/DEF/LÍNH chips and a task bar; earned-seed inventory lists all '
+        return 'castle yard with a task bar and no raid action; earned-seed inventory lists all '
           + Farm.CROPS.length + ' crops (' + Farm.CROPS.map((c) => c.name.vi).join(', ') + '); coin shop keeps '
           + tabs.length + ' tabs';
-      },
-    },
-    learnHubScreen: {
-      title: 'Trang Học: các thẻ dẫn tới từng kỹ năng',
-      open: async (h) => { h.sandbox.switchScreen('learnHubScreen'); },
-      prove: (h, el) => {
-        const cards = el.querySelectorAll('.nav-hub-card');
-        // Derived from index.html, not from a number typed here.
-        const declared = (readIndex().body.match(/class="nav-hub-card[^"]*"/g) || []).length;
-        mustEqual(cards.length, declared, 'every hub card declared in index.html is on screen');
-        const targets = cards.map((c) => (c.getAttribute('onclick') || '').match(/switchScreen\(['"](\w+)['"]\)/)).filter(Boolean).map((m) => m[1]);
-        must(targets.length >= 5, 'the hub cards point at screens (' + targets.length + ' do)');
-        return cards.length + ' hub cards → ' + targets.join(', ');
-      },
-    },
-    mathHubScreen: {
-      title: 'Toán: chọn phần, rồi chọn chương',
-      open: async (h) => { h.sandbox.switchScreen('mathHubScreen'); await settle(); },
-      prove: async (h, el) => {
-        must(wiredTo(el, 'openMathSection').length >= 2, 'the hub offers its sections');
-        h.sandbox.openMathSection('toan7');
-        must(wiredTo(h.el('mathHubScreen'), 'openMathSection').length >= 2, 'Toán 7 offers both semesters');
-        const listed = [];
-        for (const semester of ['hk1', 'hk2']) {
-          h.sandbox.openMathSection(semester);
-          // Học kì 2 is its own lazy group (js/lazy-data.js GROUP_FILES) that
-          // arrives after the view opens; the placeholder must give way to
-          // the chapter list once it has.
-          if (semester === 'hk2') {
-            must(h.sandbox.LazyData.filesFor('mathHk2').length === 4, 'HK2 must be a lazy group of its own');
-            await settle();
-            must(h.sandbox.LazyData.ready('mathHk2'), 'the HK2 group did not arrive');
-            must(!/Đang tải bài/.test(h.el('mathHubScreen').textContent), 'HK2 is still showing its placeholder after loading');
-          }
-          const chapters = h.sandbox.mathChapters();
-          must(chapters.length > 0, semester + ' has no chapters — its bank did not arrive');
-          const text = squash(h.el('mathHubScreen').textContent);
-          const missing = chapters.filter((c) => !text.includes(c.title));
-          mustEqual(missing.length, 0, semester + ' hides chapters that exist in the bank: ' + missing.map((c) => c.title).join(', '));
-          listed.push(semester + '=' + chapters.length);
-        }
-        // Toán 4 is a second môn in the same tab, and its bank is lazy like
-        // the rest — a card that leads to an empty paper is the failure this
-        // catches.
-        h.sandbox.openMathSection('toan4');
-        const g4 = h.sandbox.math4Types();
-        must(g4.length > 0, 'Toán 4 has no dạng — its bank did not arrive');
-        const g4text = squash(h.el('mathHubScreen').textContent);
-        const hidden = g4.filter((t) => !g4text.includes(t.title));
-        mustEqual(hidden.length, 0, 'Toán 4 hides dạng that exist: ' + hidden.map((t) => t.title).join(', '));
-        must(wiredTo(h.el('mathHubScreen'), 'startMath4Pre').length >= 1, 'Toán 4 offers no Pre paper');
-        // Bảng cửu chương: six drills behind one CTA. Open it, start the
-        // hardest one, answer a question and prove the round advances — the
-        // clock is 30 seconds, so a screen that renders but does not respond
-        // to a tap is indistinguishable from one that works until a child has
-        // already lost the round.
-        h.sandbox.openMathSection('cuuchuong');
-        const cc = h.el('mathHubScreen');
-        mustEqual(wiredTo(cc, 'startMathTables').length, 6,
-          'Bảng cửu chương must offer all six drills');
-        h.sandbox.startMathTables('d', '89');
-        must(h.sandbox.isMathTablesActive(), 'the bảng chia 8, 9 round did not start');
-        const ccOpts = h.el('mathHubScreen').querySelectorAll('.wars-option');
-        mustEqual(ccOpts.length, 4, 'a cửu chương question must offer four answers');
-        h.sandbox.answerMathTables(0);
-        must(h.sandbox.isMathTablesActive(), 'one answer must not end a ten-question round');
-        h.sandbox.abandonMathTables();
-        must(!h.sandbox.isMathTablesActive(), 'the round did not stop');
-        h.sandbox.openMathSection('home');
-        return 'every chapter listed in both semesters (' + listed.join(', ')
-          + '), Toán 4 lists ' + g4.length + ' dạng';
-      },
-    },
-    grammarScreen: {
-      title: 'Ngữ pháp: danh sách 13 unit',
-      open: async (h) => { h.sandbox.switchScreen('grammarScreen'); await settle(); },
-      prove: (h, el) => {
-        const units = h.peek('GRAMMAR_UNITS');
-        must(Array.isArray(units) && units.length > 0, 'the grammar bank arrived (lazy)');
-        mustEqual(el.querySelectorAll('.grammar-unit-card').length, units.length, 'one card per unit in GRAMMAR_UNITS');
-        must(squash(el.textContent).includes(units[0].name), 'the first unit is named: ' + units[0].name);
-        return units.length + ' unit cards, first = "' + units[0].name + '"';
-      },
-    },
-    phrasesScreen: {
-      title: 'Giới từ / cụm từ: trang chính',
-      open: async (h) => { h.sandbox.switchScreen('phrasesScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.peek('PREPOSITION_QUESTIONS');
-        must(Array.isArray(bank) && bank.length > 0, 'the phrases bank arrived (lazy)');
-        must(squash(el.textContent).includes(String(bank.length)), 'the real bank size (' + bank.length + ') is printed');
-        must(wiredTo(el, 'startPhrasesQuiz').length >= 1, 'a practice button is offered');
-        return 'bank of ' + bank.length + ' printed on screen';
-      },
-    },
-    wordformScreen: {
-      title: 'Word form: trang chính',
-      open: async (h) => { h.sandbox.switchScreen('wordformScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.sandbox.wordformBank();
-        must(bank.length > 0, 'the word-form bank arrived (lazy)');
-        must(squash(el.textContent).includes(String(bank.length)), 'the real bank size (' + bank.length + ') is printed');
-        must(wiredTo(el, 'startWordformQuiz').length >= 1, 'a practice button is offered');
-        return 'bank of ' + bank.length + ' printed on screen';
-      },
-    },
-    rewriteScreen: {
-      title: 'Rewrite: trang chính',
-      open: async (h) => { h.sandbox.switchScreen('rewriteScreen'); await settle(); },
-      prove: (h, el) => {
-        const bank = h.sandbox.rewriteBank();
-        must(bank.length > 0, 'the rewrite bank arrived (lazy)');
-        must(squash(el.textContent).includes(String(bank.length)), 'the real bank size (' + bank.length + ') is printed');
-        must(wiredTo(el, 'startRewriteQuiz').length >= 1, 'a practice button is offered');
-        return 'bank of ' + bank.length + ' printed on screen';
-      },
-    },
-    gradeFourScreen: {
-      title: 'Grade 4 trực tiếp từ Learn',
-      open: async (h) => { h.sandbox.switchScreen('gradeFourScreen'); h.sandbox.renderGrade4Home(); },
-      prove: (h, el) => {
-        const bar = h.el('unitsBar');
-        const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
-        const units = h.sandbox.unitsList();
-        must(cards.length > 0, 'the Grade-4 unit cards are drawn');
-        mustEqual(cards.length, units.length, 'one card per unit in the active set');
-        must(el.querySelectorAll('#grade4SubTabs .grammar-subtab').length === 2, 'practice/history tabs are drawn');
-        return cards.length + ' Grade-4 unit cards on its own screen';
-      },
-    },
-    topicsScreen: {
-      title: 'Topics: từ vựng theo chủ đề',
-      open: async (h) => { h.sandbox.switchScreen('topicsScreen'); h.sandbox.renderTopicsHome(); },
-      prove: (h, el) => {
-        const cards = el.querySelectorAll('#topicsGrid .topic-card');
-        must(cards.length > 0, 'the vocabulary topic cards are drawn');
-        mustEqual(el.querySelectorAll('#unitsBar').length, 0, 'Grade 4 is no longer nested inside Topics');
-        return cards.length + ' vocabulary topic cards, no nested Grade 4 menu';
       },
     },
   };
@@ -930,23 +627,22 @@ async function verifyClient() {
       return boot.scripts.length + ' scripts booted into one global scope with no error';
     });
 
-  // The Arena and the Math tab are code the first paint no longer carries
-  // (js/lazy-data.js GROUP_FILES arena / math). Each group must run cleanly
-  // AFTER the startup set, in its own order, and the names startup code reaches
-  // for by hand — openPetBattle, openNightRaid — must stop being placeholders
-  // once the real file has run. A group that threw would otherwise be an
-  // Arena that says "Đang tải…" forever.
+  // The farm is code the first paint does not carry (js/lazy-data.js
+  // GROUP_FILES.farm). Each group must run cleanly AFTER the startup set, in
+  // its own order, and the name startup code reaches for by hand —
+  // openNightRaid — must stop being a placeholder once the real file has run.
+  // A group that threw would otherwise be a farm that says "Đang tải…" forever.
   {
     const groups = Object.keys(boot.sandbox.LazyData.GROUP_FILES)
       .filter((g) => boot.sandbox.LazyData.GROUP_FILES[g].some((f) => !/-data|-exams|-lessons|-source-exams/.test(f)));
-    must(groups.length >= 2, 'expected at least the arena and math code groups, found: ' + groups.join(', '));
+    must(groups.includes('farm'), 'expected the farm code group, found: ' + groups.join(', '));
     for (const group of groups) {
       await R.check('boot-lazy-group-runs-clean-' + group,
         'Khởi động: nhóm mã tải chậm "' + group + '" chạy sạch sau khi khởi động',
         async () => {
           const h = mountApp();
           mustEqual(h.loadErrors.length, 0, 'the startup set itself threw');
-          const before = { openPetBattle: h.sandbox.openPetBattle, openNightRaid: h.sandbox.openNightRaid };
+          const before = { openNightRaid: h.sandbox.openNightRaid };
           const files = h.sandbox.LazyData.GROUP_FILES[group];
           for (const f of files) must(!h.scripts.includes(f), f + ' is ALSO an eager <script> — it would run twice');
           await h.sandbox.LazyData.ensure(group);
@@ -956,14 +652,9 @@ async function verifyClient() {
             'files that threw while loading lazily: ' + lazyErrors.map((e) => e.src + ' → ' + e.message).join('; '));
           mustEqual(h.banksLoaded.filter((f) => files.includes(f)).length, files.length, 'not every file of the group ran');
           must(h.sandbox.LazyData.ready(group), 'LazyData does not report the group ready');
-          if (group === 'arena') {
-            for (const name of ['openPetBattle', 'openNightRaid']) {
-              must(typeof h.sandbox[name] === 'function', name + ' vanished');
-              must(h.sandbox[name] !== before[name], name + ' is still the startup placeholder after the Arena code ran');
-            }
-          }
-          if (group === 'math') {
-            must(typeof h.sandbox.renderMathHome === 'function', 'renderMathHome is not defined after the math group ran');
+          if (group === 'farm') {
+            must(typeof h.sandbox.openNightRaid === 'function', 'openNightRaid vanished');
+            must(h.sandbox.openNightRaid !== before.openNightRaid, 'openNightRaid is still the startup placeholder after the farm code ran');
           }
           return files.length + ' files ran after the ' + h.scripts.length + ' startup scripts with no error';
         });
@@ -1029,11 +720,11 @@ async function verifyClient() {
     'flashlingo-users': JSON.stringify([TEST_USER]),
     ['flashlingo-user-' + TEST_USER]: JSON.stringify({ username: TEST_USER, avatar: '🐶', passcode: '1234', points: 5, coins: 10, srs: {} }),
     'flashlingo-active-user': TEST_USER,
-    'flashlingo-study-checkpoint-v1': JSON.stringify({ kind: 'lesson', screen: 'lessonScreen', state: {} }),
+    'flashlingo-study-checkpoint-v1': JSON.stringify({ kind: 'units', screen: 'wordScreen', state: {} }),
     'flashlingo_examHistory': JSON.stringify([]),
     'flashlingo_device_id': 'dev-1',
     'flashlingo_accounts': JSON.stringify({}),
-    'flashlingo-last-tab': 'grammarScreen',
+    'flashlingo-last-tab': 'wordScreen',
     'hotWordsWarmed-v2': '0',
     ['flashlingo-streak-shown-' + TEST_USER]: new Date().toDateString(),
   });
@@ -1076,7 +767,7 @@ async function verifyClient() {
       const missingId = inv.byClass.filter((id) => !/Screen$/.test(id));
       mustEqual(missingClass.length, 0, 'ids ending in "Screen" without class="screen": ' + missingClass.join(', '));
       mustEqual(missingId.length, 0, 'elements with class="screen" whose id is not a …Screen: ' + missingId.join(', '));
-      must(inv.byClass.length >= 10, 'the inventory found only ' + inv.byClass.length + ' screens — the parser is probably wrong');
+      must(inv.byClass.length >= 6, 'the inventory found only ' + inv.byClass.length + ' screens — the parser is probably wrong');
       return inv.byClass.length + ' screens found at runtime: ' + inv.byClass.join(', ');
     });
 
@@ -1158,30 +849,6 @@ async function verifyClient() {
     }
   }
 
-  await R.check('screen-renders-armoryScreen',
-    'Kho Khiên & Kiếm: màn hình được dựng lúc chạy, không có trong index.html',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 500 });
-      must(!h.el('armoryScreen'), 'index.html must NOT already carry this screen — it is built by js/armory.js');
-      stubServer(h, (p) => (/daily-task/.test(p)
-        ? { ok: true, data: { date: '2026-01-01', tasks: [], allDone: true,
-            shields: { count: 1, activeUntil: 0 }, swords: { count: 3 }, pending: ['2026-01-01'], recent: [] } }
-        : { ok: false, data: null }));
-      h.peek('Armory').open();
-      await settle(8);
-      const el = h.el('armoryScreen');
-      must(el, 'Armory.open() did not build #armoryScreen');
-      must(el.classList.contains('active'), 'and did not make it the active screen');
-      must(el.innerHTML.trim().length > 0, 'and it rendered nothing');
-      const text = squash(el.textContent);
-      must(text.includes('Khiên') && text.includes('Kiếm'), 'both collection cards are drawn');
-      const rules = h.peek('NightRaidRules');
-      const dam = rules && typeof rules.swordBonus === 'function' ? rules.swordBonus(3) : null;
-      must(dam === null || text.includes(String(dam)), 'the sword bonus shown (+' + dam + ' DAM) comes from NightRaidRules');
-      return 'built at runtime; shows 1 shield / 3 swords' + (dam === null ? '' : ' worth +' + dam + ' DAM');
-    });
-
   // ===== a wallet that only moves when the app says it moves ==============
 
   await R.check('wallet-untouched-by-plain-rendering',
@@ -1205,332 +872,7 @@ async function verifyClient() {
       return 'coins stayed at ' + before + ' across ' + rendered + ' screen renders';
     });
 
-  await R.check('wallet-earns-on-a-finished-maths-round',
-    'Ví xu: làm xong một lượt Toán thì được cộng xu',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 1000 });
-      h.sandbox.switchScreen('mathHubScreen'); await settle();
-      const rate = h.peek('MATH_COINS_PER_CORRECT');
-      const chapter = h.sandbox.mathChapters()[0].num;
-      h.sandbox.startMathQuiz(chapter);
-      const st = h.peek('_mathQuiz');
-      must(st, 'the round started');
-      const mcq = st.questions.map((q, i) => (h.sandbox.mathIsTyped(q) ? -1 : i)).filter((i) => i >= 0);
-      must(mcq.length >= 2, 'the round has multiple-choice questions to answer');
-      st.answers = st.questions.map((q, i) => (mcq.includes(i) ? q.correct : null));
-      const expectedScore = st.answers.reduce((s, a, i) => s + (h.sandbox.mathIsCorrect(st.questions[i], a) ? 1 : 0), 0);
-      const before = h.state().coins;
-      h.sandbox.finishMathQuiz();
-      const gained = h.state().coins - before;
-      must(gained >= expectedScore * rate, 'expected at least ' + (expectedScore * rate) + ' coins for ' + expectedScore + ' correct, got ' + gained);
-      must(gained > 0, 'a finished round paid nothing');
-      return expectedScore + ' correct × ' + rate + ' xu → wallet ' + before + ' → ' + h.state().coins;
-    });
-
-  await R.check('wallet-spends-on-a-shield',
-    'Ví xu: mua khiên thì trừ đúng số xu, và hết tiền thì không mua được',
-    async () => {
-      const h = mountApp();
-      const price = h.peek('SHIELD_PRICE');
-      must(typeof price === 'number' && price > 0, 'SHIELD_PRICE is a real price');
-      loginTestUser(h, { coins: price + 5, streakShields: 0 });
-      h.sandbox.switchScreen('homeScreen');
-      h.sandbox.buyShield();
-      mustEqual(h.state().coins, 5, 'the shield cost exactly ' + price);
-      mustEqual(h.state().streakShields, 1, 'and one shield arrived');
-      // Now broke: the same tap must change nothing at all.
-      h.sandbox.buyShield();
-      mustEqual(h.state().coins, 5, 'a purchase with too few coins must not move the wallet');
-      mustEqual(h.state().streakShields, 1, 'and must not hand out a free shield');
-      return 'paid ' + price + ' for a shield; a second tap with 5 xu left changed nothing';
-    });
-
   // ===== the primary interaction of every screen that plays ==============
-
-  await R.check('play-topics-matching-pair',
-    'Từ vựng: mở bài, ghép đúng một cặp, ghép sai một cặp',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.startLesson(0);
-      const left = () => h.el('leftColumn').querySelectorAll('.match-card');
-      const right = () => h.el('rightColumn').querySelectorAll('.match-card');
-      const l = left()[0];
-      const word = l.getAttribute('data-word');
-      const r = right().find((c) => c.getAttribute('data-word') === word);
-      must(r, 'the matching English card is on screen');
-      l.click(); r.click();
-      const afterGood = h.peek('lessonState');
-      mustEqual(afterGood.matchedPairs, 1, 'a correct pair must count as matched');
-      mustEqual(afterGood.correctInLesson, 1, 'and must be recorded as correct');
-      must(l.classList.contains('matched') && r.classList.contains('matched'), 'both cards must show as matched');
-      // A wrong pair must NOT be accepted.
-      const l2 = left().find((c) => !c.classList.contains('matched'));
-      const r2 = right().find((c) => !c.classList.contains('matched') && c.getAttribute('data-word') !== l2.getAttribute('data-word'));
-      must(l2 && r2, 'there are unmatched cards left to mis-match');
-      const wrongBefore = h.peek('lessonState').wrongInLesson;
-      l2.click(); r2.click();
-      const st = h.peek('lessonState');
-      mustEqual(st.matchedPairs, 1, 'a wrong pair must NOT count as matched');
-      mustEqual(st.wrongInLesson, wrongBefore + 1, 'a wrong pair must be recorded as wrong');
-      return 'matched "' + word + '" correctly; a deliberate mis-match was rejected and counted wrong';
-    });
-
-  await R.check('play-grammar-answer-right-and-wrong',
-    'Ngữ pháp: mở tab, trả lời một câu đúng và một câu sai',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('grammarScreen'); await settle();
-      const unit = h.peek('GRAMMAR_UNITS')[0];
-      h.sandbox.startGrammarQuiz(unit.id, 4);
-      let st = h.peek('_grammarQuizState');
-      must(st && st.questions.length >= 2, 'a quiz of at least 2 questions started');
-      // The first multiple-choice question that has ANOTHER one after it.
-      // Picking simply the first MC made this check a dice roll: a draw that
-      // put the only MC last had nextGrammarQuestion() finish the quiz, the
-      // state went null, and line "st.questions" below threw — one run in
-      // several, on nothing the app did wrong.
-      const mcs = st.questions.map((q, i) => (q.type !== 'arrangement' ? i : -1)).filter((i) => i >= 0);
-      must(mcs.length >= 2, 'there are two multiple-choice questions to answer (got ' + mcs.length + ')');
-      const mc = mcs[0];
-      st.currentIdx = mc;
-      h.sandbox.renderGrammarQuestion();
-      const q = st.questions[mc];
-      h.sandbox.answerGrammarQuestion(q.correct);
-      let opts = h.el('grammarScreen').querySelectorAll('.grammar-option');
-      mustEqual(opts.length, q.options.length, 'every option is on screen');
-      must(opts[q.correct].classList.contains('correct'), 'the right answer must be marked correct');
-      mustEqual(opts.filter((o) => o.classList.contains('wrong')).length, 0, 'nothing may be marked wrong when the child was right');
-      // Now the same grader, given a wrong answer.
-      h.sandbox.nextGrammarQuestion();
-      st = h.peek('_grammarQuizState');
-      must(st && st.questions, 'the quiz is still running after one answer');
-      const mc2 = mcs[1];
-      st.currentIdx = mc2;
-      h.sandbox.renderGrammarQuestion();
-      const q2 = st.questions[mc2];
-      const bad = (q2.correct + 1) % q2.options.length;
-      h.sandbox.answerGrammarQuestion(bad);
-      opts = h.el('grammarScreen').querySelectorAll('.grammar-option');
-      must(opts[bad].classList.contains('wrong'), 'a wrong answer must be marked wrong — a grader stuck on "correct" fails here');
-      must(opts[q2.correct].classList.contains('correct'), 'and the right one must still be shown');
-      h.sandbox.abandonGrammarQuiz();
-      return 'unit "' + unit.name + '": right answer marked correct, wrong answer marked wrong';
-    });
-
-  await R.check('play-verbs-speed-challenge',
-    'Động từ: chơi thử thách tốc độ, gõ đúng một động từ rồi gõ sai một động từ',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('speedChallengeScreen');
-      h.sandbox.startSpeedChallenge(1);
-      const ss = h.peek('speedState');
-      must(ss && ss.currentVerbs.length > 1, 'a challenge with more than one verb started');
-      const v = ss.currentVerbs[0];
-      h.el('inputV2').value = v.v2.split('/')[0].trim();
-      h.el('inputV3').value = v.v3.split('/')[0].trim();
-      h.sandbox.submitSpeedAnswer();
-      mustEqual(ss.correctCount, 1, 'the right forms must score');
-      must(ss.score > 0, 'a correct verb must add points (got ' + ss.score + ')');
-      mustEqual(ss.verbResults[0].correct, true, 'and be recorded as correct');
-      must(h.el('speedFeedback').className.includes('correct'), 'the feedback must say correct');
-      h.sandbox.nextSpeedQuestion();
-      h.el('inputV2').value = 'zzzz'; h.el('inputV3').value = 'zzzz';
-      h.sandbox.submitSpeedAnswer();
-      mustEqual(ss.correctCount, 1, 'nonsense must NOT score');
-      mustEqual(ss.verbResults[1].correct, false, 'and must be recorded as wrong');
-      mustEqual(ss.streak, 0, 'a wrong answer must break the streak');
-      must(h.el('speedFeedback').className.includes('wrong'), 'the feedback must say wrong');
-      // Both forms have to be right. Half-right answers are the ones a lazy
-      // grader lets through, so ask for each half on its own.
-      const half = [];
-      for (const [which, v2, v3] of [['V3 wrong', null, 'zzzz'], ['V2 wrong', 'zzzz', null]]) {
-        h.sandbox.nextSpeedQuestion();
-        const cur = ss.currentVerbs[ss.currentIndex];
-        if (!cur) break;
-        h.el('inputV2').value = v2 === null ? cur.v2.split('/')[0].trim() : v2;
-        h.el('inputV3').value = v3 === null ? cur.v3.split('/')[0].trim() : v3;
-        const scoreBefore = ss.score;
-        h.sandbox.submitSpeedAnswer();
-        const rec = ss.verbResults[ss.verbResults.length - 1];
-        mustEqual(rec.correct, false, 'a half-right answer (' + which + ') must NOT be accepted');
-        mustEqual(ss.score, scoreBefore, 'and must not score');
-        half.push(which);
-      }
-      return v.v1 + ' → ' + v.v2 + ' accepted (+' + ss.score + '); "zzzz" rejected; half-right rejected ('
-        + half.join(', ') + ')';
-    });
-
-  await R.check('play-phrases-answer-right-and-wrong',
-    'Giới từ: luyện tập, chọn đúng rồi chọn sai',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('phrasesScreen'); await settle();
-      h.sandbox.startPhrasesQuiz(6);
-      const st = h.peek('_phrQuiz');
-      must(st, 'a phrases practice started');
-      const i1 = st.questions.findIndex((q) => !q.typed);
-      must(i1 >= 0, 'there is a multiple-choice question');
-      st.idx = i1; h.sandbox.renderPhrQuestion();
-      const q = st.questions[i1];
-      h.sandbox.answerPhrQuestion(q.correct);
-      let opts = h.el('phrasesScreen').querySelectorAll('.grammar-option');
-      must(opts[q.correct].classList.contains('correct'), 'the right preposition must be marked correct');
-      mustEqual(opts.filter((o) => o.classList.contains('wrong')).length, 0, 'nothing is marked wrong when the child was right');
-      const i2 = st.questions.findIndex((qq, i) => i > i1 && !qq.typed);
-      must(i2 >= 0, 'there is a second multiple-choice question');
-      st.idx = i2; h.sandbox.renderPhrQuestion();
-      const q2 = st.questions[i2];
-      const bad = (q2.correct + 1) % q2.options.length;
-      h.sandbox.answerPhrQuestion(bad);
-      opts = h.el('phrasesScreen').querySelectorAll('.grammar-option');
-      must(opts[bad].classList.contains('wrong'), 'a wrong preposition must be marked wrong');
-      // The paint is one grader; the SCORE is another. Answer a known mix and
-      // read back what the session actually recorded.
-      const choiceIdx = st.questions.map((qq, i) => (qq.typed || !Array.isArray(qq.options) ? -1 : i)).filter((i) => i >= 0);
-      must(choiceIdx.length >= 2, 'the practice has multiple-choice questions to score');
-      const wantRight = choiceIdx.slice(0, Math.ceil(choiceIdx.length / 2));
-      st.answers = st.questions.map((qq, i) => {
-        if (!choiceIdx.includes(i)) return null;
-        return wantRight.includes(i) ? qq.correct : (qq.correct + 1) % qq.options.length;
-      });
-      const before = h.sandbox.phrasesHistory().length;
-      h.sandbox.finishPhrasesQuiz();
-      const session = h.sandbox.phrasesHistory()[0];
-      mustEqual(h.sandbox.phrasesHistory().length, before + 1, 'finishing writes one session');
-      mustEqual(session.score, wantRight.length,
-        'the recorded score must count ONLY the right answers — a grader stuck on "correct" fails here');
-      mustEqual(session.total, st.questions.length, 'out of every question asked');
-      return 'right marked correct, wrong marked wrong, and the session scored '
-        + session.score + '/' + session.total + ' (' + wantRight.length + ' answered right on purpose)';
-    });
-
-  await R.check('play-collocation-answer-right-and-wrong',
-    'Collocation: luyện tập trong tab Phrases, chọn đúng rồi chọn sai',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('phrasesScreen'); await settle();
-      must(h.sandbox.collocBank().length > 0, 'the collocation bank arrived (lazy, shares the Phrases screen)');
-      h.sandbox.startCollocPractice(8);
-      const st = h.peek('_colQuiz');
-      must(st, 'a collocation practice started');
-      const pick = (from) => st.questions.findIndex((q, i) => i > from && !q.followup && Array.isArray(q.options));
-      const i1 = pick(-1);
-      must(i1 >= 0, 'there is a multiple-choice collocation');
-      st.idx = i1; h.sandbox.renderCollocQuestion();
-      const q = st.questions[i1];
-      h.sandbox.answerCollocChoice(q.correct);
-      mustEqual(st.answers[i1].isCorrect, true, 'the right collocation must be graded correct');
-      let opts = h.el('phrasesScreen').querySelectorAll('.grammar-option');
-      must(opts[q.correct].classList.contains('correct'), 'and shown as correct');
-      const i2 = pick(i1);
-      must(i2 >= 0, 'there is a second multiple-choice collocation');
-      st.idx = i2; h.sandbox.renderCollocQuestion();
-      const q2 = st.questions[i2];
-      const bad = (q2.correct + 1) % q2.options.length;
-      h.sandbox.answerCollocChoice(bad);
-      mustEqual(st.answers[i2].isCorrect, false, 'a wrong collocation must be graded wrong');
-      opts = h.el('phrasesScreen').querySelectorAll('.grammar-option');
-      must(opts[bad].classList.contains('wrong'), 'and shown as wrong');
-      h.run('_colQuiz = null');
-      return 'right answer marked correct, wrong answer marked wrong';
-    });
-
-  await R.check('play-wordform-answer-right-and-wrong',
-    'Word form: luyện tập, chọn đúng rồi chọn sai, và điểm cuối buổi phải khớp',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('wordformScreen'); await settle();
-      h.sandbox.startWordformQuiz(6);
-      const st = h.peek('_wfQuiz');
-      must(st, 'a word-form practice started');
-      const i1 = st.questions.findIndex((q) => !q.followup && !q.typed && Array.isArray(q.options));
-      must(i1 >= 0, 'there is a multiple-choice question');
-      st.idx = i1; h.sandbox.renderWfQuestion();
-      const q = st.questions[i1];
-      h.sandbox.answerWfQuestion(q.correct);
-      let opts = h.el('wordformScreen').querySelectorAll('.grammar-option');
-      must(opts[q.correct].classList.contains('correct'), 'the right form must be marked correct');
-      mustEqual(opts.filter((o) => o.classList.contains('wrong')).length, 0, 'nothing is marked wrong when the child was right');
-      const i2 = st.questions.findIndex((qq, i) => i > i1 && !qq.followup && !qq.typed && Array.isArray(qq.options));
-      must(i2 >= 0, 'there is a second multiple-choice question');
-      st.idx = i2; h.sandbox.renderWfQuestion();
-      const q2 = st.questions[i2];
-      const bad = (q2.correct + 1) % q2.options.length;
-      h.sandbox.answerWfQuestion(bad);
-      opts = h.el('wordformScreen').querySelectorAll('.grammar-option');
-      must(opts[bad].classList.contains('wrong'), 'a wrong form must be marked wrong');
-
-      // Now play the WHOLE practice through the real tap handlers — base
-      // questions alternately right and wrong, every understanding check right
-      // — and hold the app to the score that implies.
-      let expected = 0, answeredRight = 0, answeredWrong = 0, checks = 0;
-      let flip = true;
-      for (let i = 0; i < st.questions.length; i++) {
-        const qq = st.questions[i];
-        st.idx = i;
-        if (st.answers[i] !== null) {                      // the two answered above
-          if (st.answers[i].isCorrect) { expected++; answeredRight++; } else answeredWrong++;
-          continue;
-        }
-        h.sandbox.renderWfQuestion();
-        if (qq.followup) {
-          for (const part of h.sandbox.wfFollowParts(qq)) { h.sandbox.answerWfFollowup(part, qq[part].correct); expected++; checks++; }
-          continue;
-        }
-        const wantRight = (flip = !flip);
-        if (qq.typed || !Array.isArray(qq.options)) {
-          const input = h.el('wfTextInput');
-          must(input, 'a typed question must offer a text box');
-          input.value = wantRight ? (qq.answer || '') : 'zzz-not-a-word';
-          h.sandbox.submitWfText();
-        } else {
-          h.sandbox.answerWfQuestion(wantRight ? qq.correct : (qq.correct + 1) % qq.options.length);
-        }
-        const graded = st.answers[i] && st.answers[i].isCorrect;
-        mustEqual(!!graded, !!wantRight,
-          'question ' + i + ' was answered ' + (wantRight ? 'RIGHT' : 'WRONG') + ' but graded ' + (graded ? 'correct' : 'wrong'));
-        if (graded) { expected++; answeredRight++; } else answeredWrong++;
-      }
-      const before = h.sandbox.wordformHistory().length;
-      h.sandbox.finishWordformQuiz();
-      const session = h.sandbox.wordformHistory()[0];
-      mustEqual(h.sandbox.wordformHistory().length, before + 1, 'finishing writes one session');
-      mustEqual(session.score, expected,
-        'the recorded score must count only what was actually right — a grader stuck on "correct" fails here');
-      must(answeredWrong > 0, 'the run has to contain wrong answers for that to mean anything');
-      return 'played ' + st.questions.length + ' screens (' + answeredRight + ' right, ' + answeredWrong
-        + ' wrong, ' + checks + ' understanding checks) → recorded ' + session.score + '/' + session.total;
-    });
-
-  await R.check('play-rewrite-typed-right-and-wrong',
-    'Rewrite: gõ đúng câu rồi gõ sai câu',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('rewriteScreen'); await settle();
-      h.sandbox.startRewriteQuiz(4);
-      const st = h.peek('_rwQuiz');
-      must(st && st.questions.length >= 2, 'a rewrite practice of at least 2 questions started');
-      const q = st.questions[0];
-      const good = q.answer || (q.accept || [])[0];
-      must(good, 'the first question has a model answer to type');
-      h.el('rwTextInput').value = good;
-      h.sandbox.submitRwText();
-      must(st.answers[0] && st.answers[0].isCorrect === true, 'the model answer must be graded correct');
-      h.sandbox.nextRwQuestion();
-      h.el('rwTextInput').value = 'qqqq wrong sentence qqqq';
-      h.sandbox.submitRwText();
-      must(st.answers[1] && st.answers[1].isCorrect === false, 'nonsense must be graded wrong — a grader stuck on "correct" fails here');
-      h.run('_rwQuiz = null');
-      return 'model answer accepted, nonsense rejected';
-    });
 
   await R.check('play-word-type-right-and-wrong-finish',
     'Word: mở Unit 1 Book 1, gõ đúng, gõ sai, xem kết quả trên màn hình Word',
@@ -1547,7 +889,6 @@ async function verifyClient() {
       must(st, 'a Word practice started');
       mustEqual(h.sandbox.unitPracticeScreen(), 'wordScreen', 'the practice belongs to the Word screen');
       must(h.el('wordDetail').querySelector('#unitTextInput'), 'the typing box is on the Word screen');
-      mustEqual(h.el('grade4Detail').innerHTML.trim(), '', 'and nothing was drawn on Grade 4');
       must(st.questions.every((q) => q.w.set === 'pr1' && q.w.unit === 1), 'every question is a Book 1 Unit 1 word');
       // Right answer: the full word.
       h.el('unitTextInput').value = st.questions[0].w.en;
@@ -1568,244 +909,31 @@ async function verifyClient() {
       mustEqual(app.coins, coinsBefore + right * 5, 'five coins per right answer, no more');
       must(!h.sandbox.isUnitPracticeActive(), 'the practice is over');
       must(h.sandbox.unitsRetryCount('word') >= 1, 'the missed word is owed on the Word queue');
-      mustEqual(h.sandbox.unitsRetryCount('units'), 0, 'and not on the Grade 4 queue');
       return 'Book 1 Unit 1: right graded right, wrong graded wrong, row keyed pr1-1, +' + (right * 5) + ' xu';
-    });
-
-  await R.check('play-math-answer-right-and-wrong',
-    'Toán: mở chương, trả lời đúng rồi trả lời sai',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('mathHubScreen'); await settle();
-      const chapter = h.sandbox.mathChapters()[0];
-      h.sandbox.startMathQuiz(chapter.num);
-      const st = h.peek('_mathQuiz');
-      must(st, 'a maths round started');
-      const i1 = st.questions.findIndex((q) => !h.sandbox.mathIsTyped(q));
-      must(i1 >= 0, 'there is a multiple-choice question');
-      st.idx = i1; h.sandbox.renderMathQuestion();
-      const q = st.questions[i1];
-      h.sandbox.answerMathQuestion(q.correct);
-      let opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
-      must(opts[q.correct].classList.contains('correct'), 'the right answer must be marked correct');
-      must(h.sandbox.mathIsCorrect(q, q.correct), 'and the grader must agree');
-      const i2 = st.questions.findIndex((qq, i) => i > i1 && !h.sandbox.mathIsTyped(qq));
-      must(i2 >= 0, 'there is a second multiple-choice question');
-      st.idx = i2; h.sandbox.renderMathQuestion();
-      const q2 = st.questions[i2];
-      const bad = (q2.correct + 1) % q2.options.length;
-      h.sandbox.answerMathQuestion(bad);
-      opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
-      must(opts[bad].classList.contains('wrong'), 'a wrong answer must be marked wrong');
-      must(!h.sandbox.mathIsCorrect(q2, bad), 'and the grader must agree it is wrong');
-      h.run('_mathQuiz = null');
-      return chapter.title + ': right answer marked correct, wrong answer marked wrong';
-    });
-
-  await R.check('play-toan4-pre-paper',
-    'Toán 4: làm trọn một đề Pre — chọn đáp án, xem lời giải, khoá thanh dưới',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 0 });
-      h.sandbox.switchScreen('mathHubScreen'); await settle();
-      h.sandbox.openMathSection('toan4');
-      h.sandbox.startMath4Pre();
-      const st = h.peek('_mathQuiz');
-      must(st, 'the Pre paper did not open');
-      mustEqual(st.questions.length, 10, 'a Pre paper is ten questions');
-      mustEqual(st.questions.map((q) => q.t).join(''), '1122334455', 'two of each dạng, in đề order');
-      const nav = h.el('bottomNav');
-      mustEqual(nav.style.display, 'none', 'the bottom bar must be hidden while a paper is open');
-      // Sit it the way a child does: one tap among four large choices, read
-      // the explanation from the source bank, then move to the next question.
-      for (let i = 0; i < 10; i++) {
-        const q = h.sandbox.mathCurrentQuestion();
-        must(q, 'ran out of questions at ' + i);
-        must(!h.sandbox.mathHasAnswerParts(q), q.id + ' still renders input boxes');
-        mustEqual(q.options.length, 4, q.id + ' must have four answers');
-        mustEqual(new Set(q.options).size, 4, q.id + ' repeats an answer');
-        let opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
-        mustEqual(opts.length, 4, q.id + ' did not draw four buttons');
-        h.sandbox.answerMathQuestion(q.correct);
-        opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
-        must(opts[q.correct].classList.contains('correct'), q.id + ' did not mark the right answer');
-        must(h.el('mathHubScreen').querySelector('.grammar-explanation'), q.id + ' did not show its explanation');
-        h.sandbox.nextMathQuestion();
-      }
-      must(!h.sandbox.isMathQuizActive(), 'the paper is over');
-      mustEqual(nav.style.display, '', 'the bottom bar must come back');
-      const hist = h.peek('appState').mathHistory;
-      mustEqual(hist[0].score, 10, 'a perfect sitting scores 10');
-      mustEqual(hist[0].grade, 4, 'the run must be filed as Toán 4');
-      mustEqual(hist[0].g4set, 'pre', 'and carry what the daily task matches on');
-      must(h.peek('appState').coins >= 70,
-        '10 × 2 xu plus the 50-xu perfect bonus (pet combo may add more)');
-      must(h.el('mathHubScreen').textContent.includes('+50 xu'),
-        'the result must name the exact 50-xu perfect bonus');
-      return '10/10 selected from four answers, at least +70 xu, filed as ' + hist[0].label;
-    });
-
-  await R.check('play-word-hunt-find-a-word',
-    'Săn chữ: tìm đúng một từ trong lưới, và một lựa chọn bừa bị từ chối',
-    async () => {
-      const h = mountApp();
-      const vocab = h.peek('ieltsVocabulary');
-      const srs = {};
-      vocab.filter((w) => /^[a-z]{3,8}$/i.test(w.en)).slice(0, 12)
-        .forEach((w) => { srs[w.en] = { interval: 1, ease: 2.5, repetitions: 1, nextReview: Date.now(), lastReview: Date.now() }; });
-      loginTestUser(h, { coins: 100, points: 500, lessonsCompleted: 5, srs });
-      h.sandbox.openWordHunt();
-      const hs = h.peek('huntState');
-      must(hs && hs.words.length > 0, 'a hunt started with words to find');
-      const grid = hs.grid;
-      const target = hs.words[0].en.toUpperCase();
-      const N = grid.length;
-      const dirs = [[0, 1], [1, 0], [1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1], [-1, 1]];
-      let cells = null;
-      for (let r = 0; r < N && !cells; r++) {
-        for (let c = 0; c < N && !cells; c++) {
-          for (const [dr, dc] of dirs) {
-            const cs = []; let ok = true;
-            for (let k = 0; k < target.length; k++) {
-              const rr = r + dr * k, cc = c + dc * k;
-              if (rr < 0 || cc < 0 || rr >= N || cc >= N || grid[rr][cc] !== target[k]) { ok = false; break; }
-              cs.push({ r: rr, c: cc });
-            }
-            if (ok) { cells = cs; break; }
-          }
-        }
-      }
-      must(cells, '"' + target + '" was never actually placed in the grid it must be found in');
-      const pointsBefore = h.state().points;
-      hs.selectedCells = cells;
-      h.sandbox.checkHuntSelection();
-      mustEqual(h.peek('huntState').foundWords.length, 1, 'tracing the word must find it');
-      mustEqual(h.peek('huntState').foundWords[0], hs.words[0].en, 'and it must be the word that was traced');
-      must(h.state().points > pointsBefore, 'finding a word must score (' + pointsBefore + ' → ' + h.state().points + ')');
-      const after = h.state().points;
-      const hs2 = h.peek('huntState');
-      hs2.selectedCells = [{ r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 }];
-      h.sandbox.checkHuntSelection();
-      const stillFound = h.peek('huntState').foundWords.length;
-      must(stillFound <= 1, 'a random drag must not be accepted as a find');
-      mustEqual(h.state().points, after, 'and must not score');
-      return 'found "' + target + '" (+' + (after - pointsBefore) + ' points); a random three-cell drag scored nothing';
-    });
-
-  await R.check('play-pet-battle-friend-list',
-    'Đấu trường: mở đấu trường, thấy danh sách bạn bè',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100, dogLevel: 4 });
-      stubServer(h, (p) => {
-        if (p === 'battle') return { ok: true, data: { ammo: 2, readyAt: 0, stats: { wins: 3, losses: 1 }, battle: null } };
-        return { ok: false, data: null };
-      });
-      h.run("_friendsData = { friends: [{userId:22,username:'Oleole'},{userId:33,username:'Mai'}], incoming: [], outgoing: [] }");
-      h.sandbox.openPetBattle();
-      await settle(8);
-      const el = h.el('petBattleScreen');
-      const rows = el.querySelectorAll('.pb-friend');
-      mustEqual(rows.length, 2, 'one challenge row per friend');
-      const text = squash(el.textContent);
-      must(text.includes('Oleole') && text.includes('Mai'), 'both friends are named');
-      must(rows.every((r) => /challengePetFriend\(\d+\)/.test(r.getAttribute('onclick') || '')),
-        'each row is wired to a real challenge, not a dead button');
-      return '2 friend rows, each wired to challengePetFriend()';
-    });
-
-  await R.check('play-pet-battle-history-from-server',
-    'Đấu trường: trận đã đấu trên hồ sơ khác vẫn hiện trong 📜 Lịch sử đấu, và được trả xu',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 100, dogLevel: 4 });
-      // The server remembers a battle this profile never watched finish: the
-      // other child on this phone fought it from THEIR profile.
-      const serverBattle = {
-        id: 77, status: 'done', seed: 5, winnerId: 1, draw: false, finishedAt: Date.now() - 60000,
-        me: { id: 1, name: 'Bé', level: 4, hp: 60 }, foe: { id: 22, name: 'Oleole', level: 6, hp: 0 },
-        turns: [{ turnNo: 1, userId: 1, shots: 3, damage: 40, angle: 45, power: 70 },
-                { turnNo: 2, userId: 22, shots: 2, damage: 40, angle: 50, power: 60 },
-                { turnNo: 3, userId: 1, shots: 3, damage: 60, angle: 45, power: 70 }],
-      };
-      let historyCalls = 0;
-      stubServer(h, (p) => {
-        if (p === 'battle') return { ok: true, data: { ammo: 2, readyAt: 0, stats: { wins: 1, losses: 0 }, battle: null } };
-        if (p.startsWith('battle/history')) { historyCalls++; return { ok: true, data: { battles: [serverBattle], wins: 1, now: Date.now() } }; }
-        return { ok: false, data: null };
-      });
-      h.run("_friendsData = { friends: [{userId:22,username:'Oleole'}], incoming: [], outgoing: [] }");
-      h.sandbox.openPetBattle();
-      await settle(10);
-      must(historyCalls >= 1, 'opening the lobby asks the server for the finished battles');
-      const hist = h.state().petBattleHistory || [];
-      mustEqual(hist.length, 1, 'the battle the profile never watched is in its history');
-      mustEqual(hist[0].battleId, 77, 'keyed by the server id');
-      must(hist[0].won === true && hist[0].reconciled === true, 'recorded as a win, flagged reconciled');
-      mustEqual(hist[0].damageDealt, 100, 'damage dealt rebuilt from the turns');
-      mustEqual(hist[0].damageTaken, 40, 'damage taken rebuilt from the turns');
-      mustEqual(h.state().coins, 150, 'paid 20 + 30 for the win, exactly what a watching phone pays');
-      mustEqual((h.state().cups || {}).won, 1, 'the trophy is on the shelf');
-      const el = h.el('petBattleScreen');
-      const text = squash(el.textContent);
-      must(text.includes('Oleole') && /60\s*❤️\s*–\s*0\s*❤️/.test(text), 'the history panel shows the battle: Oleole, 60 ❤️ – 0 ❤️');
-      // Idempotent: a second open pays nothing more and adds nothing more.
-      h.sandbox.closePetBattle();
-      h.sandbox.openPetBattle();
-      await settle(10);
-      mustEqual((h.state().petBattleHistory || []).length, 1, 'still one entry after a second reconcile');
-      mustEqual(h.state().coins, 150, 'and not paid twice');
-      mustEqual((h.state().cups || {}).won, 1, 'and not a second cup');
-      return 'battle #77 vs Oleole merged from the server, paid 50 xu + 1 cup once; second open: no change';
-    });
-
-  await R.check('play-night-raid-target-list',
-    'Cướp Đêm: mở nhà của bé, rồi mở danh sách nhà để cướp',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, { coins: 2000, dogLevel: 4 });
-      stubServer(h, (p) => {
-        if (p === 'night-raid/home') return { ok: true, data: { home: { coins: 2000, dogLevel: 4, layout: null } } };
-        if (p === 'night-raid/friends') return { ok: true, data: {
-          me: { lockedUntil: 0, shieldUntil: 0 }, ticketsLeft: 3,
-          friends: [{ userId: 22, name: 'Oleole', homeLevel: 2, difficulty: 'Dễ' },
-                    { userId: 33, name: 'Mai', homeLevel: 3, difficulty: 'Vừa' }] } };
-        return { ok: false, data: { error: 'not stubbed' } };
-      });
-      h.sandbox.openNightRaid();
-      await settle(10);
-      const el = h.el('nightRaidScreen');
-      must(squash(el.textContent).includes('DAM'), 'the raid home shows the attack chip');
-      await h.peek('NightRaid').showLiveTargets();
-      await settle(8);
-      const text = squash(el.textContent);
-      const friendRows = el.querySelectorAll('.nr-friend-list li, .nr-friend-row');
-      must(text.includes('Oleole') && text.includes('Mai'), 'both friends appear as houses to raid');
-      must(friendRows.length >= 2, 'one row per friend (' + friendRows.length + ' found)');
-      must(text.includes('3 lượt còn lại'), 'the remaining raid tickets come from the server');
-      return '2 real friend houses listed, 3 tickets shown';
     });
 
   // ===== the wrong-answer paths that carry state =========================
 
   await R.check('retry-drill-owes-back-a-missed-question',
-    'Luyện lại: làm sai một câu thì câu đó bị nợ lại',
+    'Luyện lại: làm sai một từ thì từ đó bị nợ lại',
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('wordformScreen'); await settle();
-      mustEqual(h.sandbox.retryCount('wf'), 0, 'the child starts owing nothing');
-      h.sandbox.startWordformQuiz(6);
-      const st = h.peek('_wfQuiz');
+      h.sandbox.openBook('pr1'); await settle();
+      mustEqual(h.sandbox.retryCount('word'), 0, 'the learner starts owing nothing');
+      h.sandbox.startUnitPractice('pr1-2');
+      const st = h.peek('_unitQuiz');
       must(st, 'a practice started');
-      // Answer every multiple-choice question WRONG on purpose.
-      st.answers = st.questions.map((q) => (Array.isArray(q.options) && !q.typed ? (q.correct + 1) % q.options.length : null));
-      st.idx = st.questions.length - 1;
-      h.sandbox.finishWordformQuiz();
-      const owed = h.sandbox.retryCount('wf');
-      must(owed > 0, 'missing questions must leave a debt, but retryCount(wf) is ' + owed);
-      return owed + ' question(s) owed back after a deliberately bad practice';
+      // Answer every word WRONG on purpose.
+      for (let i = 0; i < st.questions.length; i++) {
+        if (i) h.sandbox.nextUnitQuestion();
+        h.el('unitTextInput').value = 'zzzz';
+        h.sandbox.submitUnitAnswer();
+      }
+      h.sandbox.finishUnitPractice();
+      const owed = h.sandbox.retryCount('word');
+      must(owed > 0, 'missed words must leave a debt, but retryCount(word) is ' + owed);
+      return owed + ' word(s) owed back after a deliberately bad practice';
     });
 
   await R.check('retry-drill-gate-blocks-then-clears',
@@ -1813,25 +941,25 @@ async function verifyClient() {
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('wordformScreen'); await settle();
-      const bank = h.sandbox.wordformBank();
+      h.sandbox.openBook('pr1'); await settle();
+      const bank = h.sandbox.unitsBank('pr1');
       const owed = bank.slice(0, 2);
-      h.sandbox.retryAdd('wf', owed);
-      mustEqual(h.sandbox.retryCount('wf'), 2, 'two questions are owed');
+      h.sandbox.retryAdd('word', owed);
+      mustEqual(h.sandbox.retryCount('word'), 2, 'two words are owed');
 
       // The gate: asking for a new practice must open the drill instead.
-      h.sandbox.startWordformQuiz(10);
-      must(!h.peek('_wfQuiz'), 'a new practice must NOT start while a debt is owed');
+      h.sandbox.startUnitPractice('pr1-3');
+      must(!h.peek('_unitQuiz'), 'a new practice must NOT start while a debt is owed');
       must(h.sandbox.isRetryDrillActive(), 'the drill must open instead');
-      mustEqual(h.sandbox.retryDrillKey(), 'wf', 'and it must be the word-form drill');
+      mustEqual(h.sandbox.retryDrillKey(), 'word', 'and it must be the Book drill');
 
-      const cfg = h.sandbox.retryCfg('wf');
+      const cfg = h.sandbox.retryCfg('word');
       // A wrong answer keeps the debt.
       const first = h.peek('_retryDrill').queue[0];
       h.el('retryInput').value = 'definitely-not-the-answer';
       h.sandbox.submitRetryAnswer();
       mustEqual(h.peek('_retryDrill').answered.ok, false, 'a wrong answer in the drill is marked wrong');
-      mustEqual(h.sandbox.retryCount('wf'), 2, 'and the debt does not shrink');
+      mustEqual(h.sandbox.retryCount('word'), 2, 'and the debt does not shrink');
       h.sandbox.nextRetryQuestion();
 
       // Now answer both correctly; the debt must clear.
@@ -1845,12 +973,12 @@ async function verifyClient() {
           'the drill rejected its own answerText() for ' + cfg.idOf(item));
         h.sandbox.nextRetryQuestion();
       }
-      mustEqual(h.sandbox.retryCount('wf'), 0, 'answering everything owed must clear the debt');
+      mustEqual(h.sandbox.retryCount('word'), 0, 'answering everything owed must clear the debt');
       must(!h.sandbox.isRetryDrillActive(), 'and close the drill');
 
       // The gate is open again.
-      h.sandbox.startWordformQuiz(6);
-      must(h.peek('_wfQuiz'), 'a new practice must start once nothing is owed');
+      h.sandbox.startUnitPractice('pr1-3');
+      must(h.peek('_unitQuiz'), 'a new practice must start once nothing is owed');
       return 'owed 2 → wrong answer kept the debt → 2 right answers cleared it → practice reopened (first owed: '
         + cfg.idOf(first) + ')';
     });
@@ -1860,20 +988,20 @@ async function verifyClient() {
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('wordformScreen'); await settle();
-      h.sandbox.retryAdd('wf', h.sandbox.wordformBank().slice(0, 3));
-      mustEqual(h.sandbox.retryCount('wf'), 3, 'three owed before the reload');
+      h.sandbox.openBook('pr1'); await settle();
+      h.sandbox.retryAdd('word', h.sandbox.unitsBank('pr1').slice(0, 3));
+      mustEqual(h.sandbox.retryCount('word'), 3, 'three owed before the reload');
       const saved = h.store['flashlingo-user-' + TEST_USER];
-      must(saved && JSON.parse(saved).wfRetry && JSON.parse(saved).wfRetry.length === 3,
+      must(saved && JSON.parse(saved).wordRetry && JSON.parse(saved).wordRetry.length === 3,
         'the debt must be written to storage, not just held in memory');
       // A genuine cold start: a second mount reading the same localStorage.
       const h2 = mountApp({ storage: Object.assign({}, h.store) });
       h2.sandbox.loginUser(TEST_USER);
-      h2.sandbox.switchScreen('wordformScreen'); await settle();
-      mustEqual(h2.sandbox.retryCount('wf'), 3, 'the debt must still be owed after a reload');
-      h2.sandbox.startWordformQuiz(10);
-      must(!h2.peek('_wfQuiz'), 'and must still block a new practice');
-      return '3 owed questions survived a full remount and still gate the tab';
+      h2.sandbox.openBook('pr1'); await settle();
+      mustEqual(h2.sandbox.retryCount('word'), 3, 'the debt must still be owed after a reload');
+      h2.sandbox.startUnitPractice('pr1-4');
+      must(!h2.peek('_unitQuiz'), 'and must still block a new practice');
+      return '3 owed words survived a full remount and still gate the Books';
     });
 
   await R.check('wrong-priority-forces-a-missed-item-back',
@@ -1923,50 +1051,26 @@ async function verifyClient() {
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 100 });
-      h.sandbox.switchScreen('grammarScreen'); await settle();
-      h.sandbox.startGrammarQuiz(h.peek('GRAMMAR_UNITS')[0].id, 5);
-      must(h.sandbox.isGrammarQuizActive(), 'a quiz is running');
+      h.sandbox.openBook('pr1'); await settle();
+      h.sandbox.startUnitPractice('pr1-1');
+      must(h.sandbox.isUnitPracticeActive(), 'a practice is running');
       h.sandbox.__confirmAnswer = false;                      // the child taps "stay"
       h.sandbox.__confirmLog.length = 0;
       const left = h.sandbox.switchScreen('homeScreen');
       mustEqual(left, false, 'tapping another tab must not leave the quiz when the child says no');
       must(h.sandbox.__confirmLog.length === 1, 'and it must actually have asked (' + h.sandbox.__confirmLog.length + ' prompts)');
-      must(h.sandbox.isGrammarQuizActive(), 'the quiz must still be running');
-      h.sandbox.__confirmAnswer = true;                       // now the child says yes
+      must(h.sandbox.isUnitPracticeActive(), 'the practice must still be running');
+      h.sandbox.__confirmAnswer = true;                       // now the learner says yes
       mustEqual(h.sandbox.switchScreen('homeScreen'), true, 'saying yes must leave');
-      must(!h.sandbox.isGrammarQuizActive(), 'and must end the quiz');
+      must(!h.sandbox.isUnitPracticeActive(), 'and must end the practice');
       return 'asked before leaving; Cancel kept the quiz, OK ended it';
     });
 
-  // ===== a claim the screen makes that the data must back ================
-
-  await R.check('verbs-start-button-tells-the-truth',
-    'Động từ: nút "All N verbs" phải khớp số động từ thật trong dữ liệu',
-    async () => {
-      const h = mountApp();
-      loginTestUser(h, {});
-      // Rendered, not read out of index.html. The number used to be typed into
-      // the markup — it said 144 while the bank held 257, because the bank grew
-      // and the label did not. It is derived now, so this has to render the
-      // screen to see what a child would actually be promised.
-      h.sandbox.renderSpeedChallenge();
-      const label = squash(h.el('speedChallengeScreen').textContent);
-      const m = label.match(/All\s+(\d+)\s+verbs/i);
-      must(m, 'the Start button no longer states how many verbs there are');
-      const claimed = Number(m[1]);
-      const actual = h.peek('irregularVerbs').length;
-      mustEqual(claimed, actual, 'the button promises ' + claimed + ' verbs but irregularVerbs holds ' + actual);
-      return 'button says ' + claimed + ', bank holds ' + actual;
-    });
-
-  // What this layer CANNOT see. Named rather than left as a gap, because the
-  // dangerous kind of coverage is the kind nobody knows is missing. Nothing
-  // below is asserted anywhere in this file, so no check quietly passes for it.
   const limitations = [
     'Pixels and layout: the DOM shim does no layout, so overlap, clipping, z-order and off-screen buttons are invisible here. They belong in a browser.',
-    'Pointer gestures: Word Hunt is driven through checkHuntSelection() with real grid cells rather than a drag across .wh-cell nodes, and the Night Raid builder\'s drag-and-drop is not driven at all.',
-    'Canvas and Phaser: the pet-battle fight, the Night Raid march and the maths board paint into a stubbed 2D context, so their artwork is never checked — only that painting does not throw.',
-    'Timers: setTimeout/setInterval are recorded, not fired, so the speed-challenge countdown, the exam auto-submit at 0:00 and the lobby polls are not exercised.',
+    'Pointer gestures: the farm builder\'s drag-and-drop is not driven at all.',
+    'Canvas: the farm yard paints into a stubbed 2D context, so its artwork is never checked — only that painting does not throw.',
+    'Timers: setTimeout/setInterval are recorded, not fired, so the farm production ticker is not exercised.',
     'Audio: speakWord/answer-audio are stubbed, so the answer gate is proved to exist but never actually heard.',
     'The server: Pet Battle, Night Raid, Đấu Toán, Cướp Cô Hồn and the daily-task/armory claims run against stubbed replies. What the real Functions endpoints do is another layer\'s job.',
     'Math Wars and Đấu Toán (MathFight) rounds are not played here; only their hub entries are verified to render.',

@@ -71,16 +71,13 @@ suite('Cloudflare _headers: immutable caching for versioned assets only', () => 
 suite('images below the fold load lazily', () => {
   // Every lazy image also decodes off the main thread. Home's own hero art
   // (the sun, the yard scene) and anything absolutely positioned inside a
-  // cropped scene (math source figures, board pieces) deliberately stay
-  // eager — see js/math-figures.js for the Mobile Safari reason.
+  // cropped scene (board pieces) deliberately stay eager — Mobile Safari
+  // never paints a lazy image that is clipped out of the scroll container.
   const LAZY = [
     ['js/daily-task.js', 'dt-farm-art'],
     ['js/night-raid.js', 'nr-build-art'],
-    ['js/petbattlegame.js', 'pb-squad-avatar'],
-    ['js/petbattle.js', 'pb-hire-avatar'],
-    ['js/petbattle.js', '${scene.poster}'],
   ];
-  test('cards, shop tiles, avatars and arena posters carry loading="lazy" decoding="async"', () => {
+  test('cards and shop tiles carry loading="lazy" decoding="async"', () => {
     for (const [file, marker] of LAZY) {
       const src = read(file);
       const tags = src.match(/<img[^>]*>/g).filter(t => t.includes(marker));

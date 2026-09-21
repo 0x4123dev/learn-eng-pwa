@@ -1,8 +1,5 @@
 // app.js - Core application logic, state management, and utilities
 
-const WORDS_PER_LESSON = 5;
-const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
-const SRS_WORDS_PER_REVIEW = 5;
 const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100];
 
 const achievements = [
@@ -160,53 +157,11 @@ function currentDraftInputs() {
 function buildStudyCheckpoint() {
     if (!currentUser) return null;
     const base = { version:1, user:currentUser, savedAt:Date.now(), drafts:currentDraftInputs() };
-    if (typeof _grammarQuizState !== 'undefined' && _grammarQuizState)
-        return Object.assign(base, { kind:'grammar', screen:'grammarScreen', state:checkpointClone(_grammarQuizState) });
-    if (typeof _phrQuiz !== 'undefined' && _phrQuiz)
-        return Object.assign(base, { kind:'phrases', screen:'phrasesScreen', state:checkpointClone(_phrQuiz) });
-    if (typeof _wfQuiz !== 'undefined' && _wfQuiz)
-        return Object.assign(base, { kind:'wordform', screen:'wordformScreen', state:checkpointClone(_wfQuiz) });
-    if (typeof _rwQuiz !== 'undefined' && _rwQuiz)
-        return Object.assign(base, { kind:'rewrite', screen:'rewriteScreen', state:checkpointClone(_rwQuiz) });
-    if (typeof _colQuiz !== 'undefined' && _colQuiz)
-        return Object.assign(base, { kind:'collocation', screen:'phrasesScreen', state:checkpointClone(_colQuiz) });
+    // The one exercise left in the app: a Book practice (js/units.js). It
+    // comes back on the Word screen — the host of every Book set.
     if (typeof _unitQuiz !== 'undefined' && _unitQuiz) {
-        // The host's own screen: a Word practice must come back on the Word
-        // tab (js/units.js UNIT_HOSTS), not on Grade 4.
-        const unitScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'gradeFourScreen';
+        const unitScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'wordScreen';
         return Object.assign(base, { kind:'units', screen: unitScreen, state:checkpointClone(_unitQuiz) });
-    }
-    if (typeof _mathQuiz !== 'undefined' && _mathQuiz)
-        return Object.assign(base, { kind:'math', screen:'mathHubScreen', state:checkpointClone(_mathQuiz) });
-    if (typeof _warsQuiz !== 'undefined' && _warsQuiz) {
-        const state = checkpointClone(_warsQuiz, ['timer']);
-        state.remainingMs = typeof warsLeftMs === 'function' ? warsLeftMs() : Math.max(0, state.endsAt - Date.now());
-        return Object.assign(base, { kind:'mathwars', screen:'mathHubScreen', state });
-    }
-    if (typeof _examState !== 'undefined' && _examState && !_examState.finished) {
-        const state = checkpointClone(_examState, ['timerId']);
-        state.remainingMs = Math.max(0, _examState.deadlineTs - Date.now());
-        // The set's own screen, so a PTNK paper reopens on the PTNK tab.
-        const examScreenId = (typeof EXAM_SETS !== 'undefined' && EXAM_SETS[_examState.set])
-            ? EXAM_SETS[_examState.set].screen : 'ptnkScreen';
-        return Object.assign(base, { kind:'exam', screen: examScreenId, state });
-    }
-    const speedOverlay = document.getElementById('speedGameOverlay');
-    if (speedOverlay && speedOverlay.classList.contains('active') && speedState.currentVerbs.length) {
-        return Object.assign(base, { kind:'verbs', screen:'speedChallengeScreen', state:checkpointClone(speedState, ['timer']) });
-    }
-    const lessonActive = document.getElementById('lessonScreen')?.classList.contains('active');
-    if (lessonActive && lessonState && Array.isArray(lessonState.roundWords) && lessonState.roundWords.length) {
-        const state = checkpointClone(lessonState, ['selectedLeft', 'selectedRight']);
-        // DOM classes know which pairs remain; saving only those prevents
-        // already-matched words from returning after an iOS reload.
-        const remaining = Array.from(document.querySelectorAll('#leftColumn .match-card:not(.matched)'))
-            .map(el => el.dataset.word);
-        if (remaining.length) {
-            state.roundWords = lessonState.roundWords.filter(w => remaining.includes(w.en));
-            state.matchedPairs = 0;
-            return Object.assign(base, { kind:'lesson', screen:'lessonScreen', state });
-        }
     }
     return null;
 }
@@ -267,37 +222,26 @@ function restoreStudyCheckpoint() {
         clearStudyCheckpoint();
         return false;
     }
-    // Grammar and Exam checkpoints need a bank that no longer loads at
-    // startup (js/lazy-data.js). Reopening the question before it lands would
-    // show an empty one, so wait — and come back here when it arrives. For a
-    // maths or Math Wars round the screen's files include the Math tab's CODE
-    // (renderMathQuestion, renderWars — GROUP_FILES.math), so the same wait
-    // is what keeps the calls below from being ReferenceErrors.
-    const needsBankOne = {
-        grammar: 'grammarScreen', exam: checkpoint.screen || 'ptnkScreen',
-        phrases: 'phrasesScreen', collocation: 'phrasesScreen',
-        wordform: 'wordformScreen', rewrite: 'rewriteScreen',
-        math: 'mathHubScreen', mathwars: 'mathHubScreen',
-        // A Word practice carries its words in the checkpoint, but its results
-        // screen and the cards behind it read the lazy bank (js/word-data.js).
-        units: checkpoint.screen === 'wordScreen' ? 'wordScreen' : null,
-    }[checkpoint.kind];
-    // A Toán 7 Học kì 2 quiz also needs its own lazy group (js/lazy-data.js
-    // GROUP_FILES): the questions travel inside the checkpoint, but hints,
-    // the wrong-answer list and the result screen look them up by id.
-    const s0 = checkpoint.state || {};
-    const needsHk2 = checkpoint.kind === 'math'
-        && (Number(s0.chapter) >= 6 || /^hk2-/.test(String(s0.examId || '')));
-    const needsBank = needsBankOne ? [needsBankOne].concat(needsHk2 ? ['mathHk2'] : []) : null;
-    const notReady = needsBank && typeof LazyData !== 'undefined' ? needsBank.filter(g => !LazyData.ready(g)) : [];
+    // A Book practice carries its words in the checkpoint, but its results
+    // screen and the cards behind it read the lazy bank (js/word-data.js),
+    // which no longer loads at startup (js/lazy-data.js). Reopening before it
+    // lands would draw an empty screen, so wait — and come back here when it
+    // arrives.
+    if (checkpoint.kind !== 'units' || checkpoint.screen !== 'wordScreen') {
+        // A checkpoint of an exercise this app no longer has (an older build's
+        // grammar quiz, a maths round) is simply dropped.
+        clearStudyCheckpoint();
+        return false;
+    }
+    const notReady = typeof LazyData !== 'undefined' && !LazyData.ready('wordScreen') ? ['wordScreen'] : [];
     if (notReady.length) {
         // Ask ONCE. LazyData resolves even when a bank fails to download (a
         // tab must render what it has rather than spin), so `ready()` can
         // still be false when this promise settles — and re-arming on that was
-        // an unbroken microtask loop with nothing to yield to. A child who was
-        // mid-quiz when js/grammar-units.js failed to load came back to a
-        // frozen page with no error, and because the checkpoint was never
-        // cleared, to a frozen page on EVERY open for the next 24 hours.
+        // an unbroken microtask loop with nothing to yield to. A learner who
+        // was mid-quiz when the bank failed to load came back to a frozen page
+        // with no error, and because the checkpoint was never cleared, to a
+        // frozen page on EVERY open for the next 24 hours.
         if (_studyCheckpointWaited) { clearStudyCheckpoint(); return false; }
         _studyCheckpointWaited = true;
         Promise.all(notReady.map(g => LazyData.ensure(g))).then(() => restoreStudyCheckpoint());
@@ -306,58 +250,17 @@ function restoreStudyCheckpoint() {
     _studyCheckpointRestored = true;
     const s = checkpoint.state;
     try {
-        // v4.17.63 moved Grade 4 out of Topics. Migrate a checkpoint saved by
-        // an older build instead of restoring its question into a hidden pane;
-        // a Word practice (checkpoint.screen === 'wordScreen') keeps its screen.
-        const unitScreen = checkpoint.screen === 'wordScreen' ? 'wordScreen' : 'gradeFourScreen';
-        activateCheckpointScreen(checkpoint.kind === 'units' ? unitScreen : checkpoint.screen);
-        if (checkpoint.kind === 'grammar') { _grammarQuizState = s; renderGrammarQuestion(); }
-        else if (checkpoint.kind === 'phrases') { _phrQuiz = s; renderPhrQuestion(); }
-        else if (checkpoint.kind === 'wordform') { _wfQuiz = s; renderWfQuestion(); }
-        else if (checkpoint.kind === 'rewrite') { _rwQuiz = s; renderRwQuestion(); }
-        else if (checkpoint.kind === 'collocation') { _colQuiz = s; renderCollocQuestion(); }
-        else if (checkpoint.kind === 'units') {
-            _unitQuiz = s;
-            // Put the engine on the practice's host first, or the question is
-            // drawn (and the finish scored and owed) on the wrong screen.
-            if (s && s.unit && typeof _unitParse === 'function' && typeof unitHostOfSet === 'function'
-                && typeof unitSelectHost === 'function') {
-                unitSelectHost(unitHostOfSet(_unitParse(s.unit).set));
-            }
-            const pieces = unitScreen === 'wordScreen'
-                ? ['wordUnitsBar','wordSubTabs','wordHistory']
-                : ['unitsBar','grade4SubTabs','grade4History'];
-            pieces.forEach(id => {
-                const el = document.getElementById(id); if (el) el.style.display = 'none';
-            });
-            renderUnitQuestion();
+        activateCheckpointScreen('wordScreen');
+        _unitQuiz = s;
+        // Put the engine on the practice's set first, or the header names the
+        // wrong book.
+        if (s && s.unit && typeof _unitParse === 'function' && typeof switchUnitSet === 'function') {
+            switchUnitSet(_unitParse(s.unit).set);
         }
-        else if (checkpoint.kind === 'math') { _mathQuiz = s; renderMathQuestion(); }
-        else if (checkpoint.kind === 'mathwars') {
-            _warsQuiz = s; _warsQuiz.endsAt = Date.now() + Math.max(1000, s.remainingMs || 0);
-            _warsQuiz.timer = setInterval(warsClockTick, 250); renderWars();
-        }
-        else if (checkpoint.kind === 'exam') {
-            if (typeof examSelectSet === 'function') examSelectSet(s.set);
-            _examState = s; _examState.deadlineTs = Date.now() + Math.max(1000, s.remainingMs || 0);
-            _examState.timerId = setInterval(_examTick, 1000); renderExamQuestion();
-        }
-        else if (checkpoint.kind === 'verbs') {
-            speedState = Object.assign(speedState, s);
-            document.getElementById('speedGameOverlay').classList.add('active');
-            document.getElementById('bottomNav').style.display = 'none';
-            showSpeedQuestion();
-            speedState.timeLeft = Math.max(1000, s.timeLeft || SPEED_TIME_LIMIT);
-            updateTimerBar();
-        }
-        else if (checkpoint.kind === 'lesson') {
-            // The Set checkpointClone flattened to an array, back as a Set.
-            s.reviewWrongWords = new Set(Array.isArray(s.reviewWrongWords) ? s.reviewWrongWords : []);
-            lessonState = s;
-            document.getElementById('bottomNav').style.display = 'none';
-            renderMatchingRound();
-        }
-        else throw new Error('unknown checkpoint');
+        ['wordUnitsBar','wordSubTabs','wordHistory'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.style.display = 'none';
+        });
+        renderUnitQuestion();
         restoreDraftInputs(checkpoint.drafts);
         showToast('↩️ Đã mở lại bài đang làm dở');
         return true;
@@ -384,45 +287,6 @@ function startStudyCheckpointing() {
 }
 
 let appState = null;
-let selectedDifficultyFilter = 'beginning';
-
-let lessonState = {
-    categoryId: null,
-    lessonNumber: 0,
-    words: [],
-    currentRound: 0,
-    totalRounds: 0,
-    roundWords: [],
-    selectedLeft: null,
-    selectedRight: null,
-    matchedPairs: 0,
-    correctInLesson: 0,
-    wrongInLesson: 0,
-    lessonPoints: 0
-};
-
-let currentHistoryTab = 'history';
-let historyPage = 0;
-
-let pendingLoginUser = null;
-
-const SPEED_TIME_LIMIT = 45000; // 45 seconds
-const SPEED_PENALTY_TIME = 3000; // 3 second penalty
-const SPEED_QUESTIONS_PER_GAME = 10;
-
-let speedState = {
-    currentVerbs: [],
-    currentIndex: 0,
-    score: 0,
-    streak: 0,
-    bestStreakInGame: 0,
-    correctCount: 0,
-    timer: null,
-    timeLeft: SPEED_TIME_LIMIT,
-    isAnswering: false,
-    level: 0,
-    verbResults: [] // { v1, v2, v3, userV2, userV3, correct, timeUsed }
-};
 
 // Both readers below are called from checkExistingUsers(), the FIRST thing
 // init() does. An unparseable value there — an interrupted write, a quota
@@ -468,13 +332,7 @@ function getUserData(username) {
 // so it converges in a handful of attempts and every menu shares it.
 const HISTORY_BOOKS = Object.freeze([
     // newest entry sits at index 0 (unshift-style) — trim from the tail
-    { key: 'phrasesHistory', keep: 'head' }, { key: 'wordformHistory', keep: 'head' },
-    { key: 'rewriteHistory', keep: 'head' }, { key: 'collocHistory', keep: 'head' },
-    { key: 'unitsHistory', keep: 'head' }, { key: 'grammarHistory', keep: 'head' },
-    { key: 'mathHistory', keep: 'head' }, { key: 'warsHistory', keep: 'head' },
-    { key: 'nightRaidHistory', keep: 'head' },
-    // appended oldest-first (push-style) — trim from the head
-    { key: 'lessonHistory', keep: 'tail' },
+    { key: 'unitsHistory', keep: 'head' },
 ]);
 const HISTORY_FLOOR = 40;                 // recent sessions that always survive
 const APPSTATE_SOFT_LIMIT = 2400000;      // ~2.4MB of a ~5MB origin quota
@@ -528,23 +386,16 @@ function createDefaultUserData(username, avatar, passcode) {
         streak: 0,
         lastStudyDate: null,
         lessonsCompleted: 0,
-        currentLesson: 0, // 0-199 for 200 total lessons
         totalCorrect: 0,
         totalAnswers: 0,
         achievements: [],
-        lessonHistory: [], // Array of { lessonNum, date, points, accuracy }
-        srs: {}, // { [englishWord]: { interval, ease, repetitions, nextReview, lastReview } }
-        reviewsCompleted: 0, // Total words reviewed via SRS
+        unitsHistory: [], // Book practices: { unit:'pr1-3', score, total, date, wrong:[…], skills:[…] }
         createdAt: Date.now(),
         streakShields: 0,
         bestStreak: 0,
         lastStreakMilestone: 0,
         theme: 'default',
         stickers: [],
-        dailyChallenge: { lastDate: null, streak: 0, bestStreak: 0 },
-        wordOfDayViewed: null,
-        sentences: [],
-        battleHistory: { wins: 0, losses: 0, draws: 0 },
         petName: null,
         petHunger: 100,
         petLastFed: Date.now(),
@@ -567,10 +418,7 @@ function createDefaultUserData(username, avatar, passcode) {
         },
         weeklyRecaps: [],                 // Array of { weekStart, weekEnd, xpEarned, daysActive[7], lessonsCompleted, perfectLessons, wordsLearned, streakAtEnd }
         lastWeeklyRecapShown: null,       // ISO date of last week recap modal shown
-        pendingShieldCelebration: null,   // Streak count to celebrate after shield-saved
-        topicProgress: {},                // { [topicId]: { [chunkIdx]: { mistakes, accuracy, date } } }
-        grammarHistory: [],               // Array of completed quiz sessions (Grammar tab)
-        grammarMistakes: {}               // { [questionId]: { qId, unitId, topic, misses, lastWrong, bookmarked } }
+        pendingShieldCelebration: null    // Streak count to celebrate after shield-saved
     };
 }
 
@@ -955,86 +803,9 @@ function loginUser(username) {
         EngAuth.syncAccount(username, userData.passcode);
     }
 
-    // Migrate: add SRS data for existing users
-    if (!appState.srs) {
-        appState.srs = {};
-        if (appState.reviewsCompleted === undefined) appState.reviewsCompleted = 0;
-        // Retroactively init SRS for all previously-learned words
-        if (appState.lessonHistory && appState.lessonHistory.length > 0) {
-            const seenLessons = new Set(appState.lessonHistory.map(h => h.lessonNum));
-            seenLessons.forEach(lessonNum => {
-                const startIdx = lessonNum * WORDS_PER_LESSON;
-                const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
-                lessonWords.forEach(w => {
-                    if (!appState.srs[w.en]) {
-                        appState.srs[w.en] = {
-                            interval: 1,
-                            ease: 2.5,
-                            repetitions: 1,
-                            nextReview: Date.now(),
-                            lastReview: Date.now()
-                        };
-                    }
-                });
-            });
-        }
-        saveUserData(currentUser, appState);
-    }
-
     // Migrate: add fun features state for existing users
     if (!Array.isArray(appState.achievements)) appState.achievements = [];
     if (appState.streakShields === undefined) appState.streakShields = 0;
-    if (appState.bestStreak === undefined) appState.bestStreak = appState.streak || 0;
-    if (appState.lastStreakMilestone === undefined) appState.lastStreakMilestone = 0;
-    if (appState.petMemory === undefined) appState.petMemory = {
-        lessonsTogether: appState.lessonsCompleted || 0,
-        lastSeen: Date.now(),
-        lastSeenGreeted: null,
-        longestAbsenceDays: 0,
-        lastStreakBroken: 0,
-        lastStreakBrokenDate: null,
-        milestonesSeen: []
-    };
-    if (appState.weeklyRecaps === undefined) appState.weeklyRecaps = [];
-    if (appState.lastWeeklyRecapShown === undefined) appState.lastWeeklyRecapShown = null;
-    if (appState.pendingShieldCelebration === undefined) appState.pendingShieldCelebration = null;
-    if (appState.topicProgress === undefined) appState.topicProgress = {};
-    if (appState.grammarHistory === undefined) appState.grammarHistory = [];
-    if (appState.grammarMistakes === undefined) appState.grammarMistakes = {};
-    if (appState.theme === undefined) appState.theme = 'default';
-    if (appState.stickers === undefined) appState.stickers = [];
-    if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };
-    if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
-    if (appState.sentences === undefined) appState.sentences = [];
-    if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
-    // (v3.38: Word Bubbles game removed — bubblesStats no longer migrated.)
-    // (v3.47: Music & Videos tabs removed — videoStats/musicStats no longer migrated.)
-
-    // Migrate: shift lesson numbers after adding 112 house words at the start of vocabulary
-    // Old lesson 0 = "important..." (IELTS), now lesson 0 = "apartment..." (house)
-    // IELTS words shifted by BEGINNING_LESSONS (23) positions
-    if (!appState.houseMigrated && typeof BEGINNING_LESSONS !== 'undefined') {
-        // Shift currentLesson
-        if (appState.currentLesson > 0) {
-            appState.currentLesson += BEGINNING_LESSONS;
-        }
-        // Shift all lesson history entries
-        if (appState.lessonHistory && appState.lessonHistory.length > 0) {
-            appState.lessonHistory = appState.lessonHistory.map(h => ({
-                ...h,
-                lessonNum: h.lessonNum + BEGINNING_LESSONS
-            }));
-        }
-        // Shift mistake lessonNum references
-        if (appState.mistakes && appState.mistakes.length > 0) {
-            appState.mistakes = appState.mistakes.map(m => ({
-                ...m,
-                lessonNum: m.lessonNum !== undefined ? m.lessonNum + BEGINNING_LESSONS : m.lessonNum
-            }));
-        }
-        appState.houseMigrated = true;
-        saveUserData(currentUser, appState);
-    }
 
     // Pet system migration
     if (appState.petName === undefined) appState.petName = null;
@@ -1055,25 +826,12 @@ function loginUser(username) {
     if (appState.dogLevel === undefined && typeof getDogLevel === 'function') appState.dogLevel = getDogLevel(appState.dogGrowthXP);
     if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
     if (appState.petPoops === undefined) appState.petPoops = [];
-    if (!Array.isArray(appState.petBattleCastleSkins)) appState.petBattleCastleSkins = ['stone-keep'];
     if (appState.petBattleCastleSkin === undefined) appState.petBattleCastleSkin = 'stone-keep';
-    // Castle Night Raid is additive and local-first. Never replace a saved
-    // layout or route when an existing learner receives the feature.
-    if (appState.nightRaidRouteLevel === undefined) appState.nightRaidRouteLevel = 1;
-    if (!appState.nightRaidStars || typeof appState.nightRaidStars !== 'object') appState.nightRaidStars = {};
-    if (!Array.isArray(appState.nightRaidHistory)) appState.nightRaidHistory = [];
+    // Nông trại (the learner's own home: js/night-raid.js) is additive and
+    // local-first. Never replace a saved layout when an existing learner
+    // receives the feature.
     if (appState.nightRaidLayout === undefined) appState.nightRaidLayout = null;
-    if (appState.nightRaidPending === undefined) appState.nightRaidPending = null;
-    if (appState.nightRaidTicketDate === undefined) appState.nightRaidTicketDate = null;
-    if (appState.nightRaidTicketCount === undefined) appState.nightRaidTicketCount = 0;
-    if (appState.nightRaidRewardDate === undefined) appState.nightRaidRewardDate = null;
-    if (appState.nightRaidRewardToday === undefined) appState.nightRaidRewardToday = 0;
-    if (!appState.nightRaidClaimed || typeof appState.nightRaidClaimed !== 'object') appState.nightRaidClaimed = {};
     if (appState.vaultCoins === undefined) appState.vaultCoins = 0;
-    if (appState.nightShieldUntil === undefined) appState.nightShieldUntil = null;
-    if (appState.nightRaidRuinedUntil === undefined) appState.nightRaidRuinedUntil = null;
-    if (!appState.nightRaidResources || typeof appState.nightRaidResources !== 'object') appState.nightRaidResources = { wood:180, stone:120, food:160 };
-    if (appState.nightRaidResourceAt === undefined) appState.nightRaidResourceAt = Date.now();
     // Has this profile ever pushed its wallet to the server?
     //
     // js/night-raid.js adoptServerCoins restores the wallet from
@@ -1081,45 +839,30 @@ function loginUser(username) {
     // nothing of its own to be authoritative with — a reinstall, or a second
     // phone signing in. It is gated on this flag, which was introduced without
     // being seeded: so on the first load after that shipped, every EXISTING
-    // child looked like a fresh install, and any of them whose server mirror
+    // profile looked like a fresh install, and any of them whose server mirror
     // was stale-high got a one-off refund with a cheerful toast.
     //
-    // A profile that has already played Cướp Đêm is not a fresh install, and
-    // anything it has built, earned or been raided for is proof of that. Say
+    // A profile that has already built something is not a fresh install. Say
     // so, so the restore does not fire for a wallet that needs no restoring.
     if (appState.nightRaidWalletSynced === undefined) {
-        const played = !!(appState.nightRaidLayout
-            || (Array.isArray(appState.nightRaidHistory) && appState.nightRaidHistory.length)
-            || (appState.nightRaidClaimed && Object.keys(appState.nightRaidClaimed).length)
-            || appState.nightRaidPending
-            || appState.vaultCoins > 0);
-        appState.nightRaidWalletSynced = played;
+        appState.nightRaidWalletSynced = !!(appState.nightRaidLayout || appState.vaultCoins > 0);
+    }
+    // Left behind by features this app no longer has (raiding, the Arena,
+    // the old lessons). Dropped so the blob stops carrying them — nothing
+    // reads them, and appstate-quota shedding never touched them.
+    for (const k of ['nightRaidRouteLevel', 'nightRaidStars', 'nightRaidHistory', 'nightRaidPending',
+        'nightRaidTicketDate', 'nightRaidTicketCount', 'nightRaidRewardDate', 'nightRaidRewardToday',
+        'nightRaidClaimed', 'nightShieldUntil', 'nightRaidRuinedUntil', 'nightRaidResources', 'nightRaidResourceAt',
+        'petBattleCastleSkins', 'battleHistory', 'srs', 'reviewsCompleted', 'lessonHistory', 'mistakes',
+        'currentLesson', 'dailyChallenge', 'wordOfDayViewed', 'sentences', 'grammarHistory', 'phrasesHistory',
+        'collocHistory', 'wordformHistory', 'rewriteHistory', 'mathHistory', 'warsHistory', 'speedChallenge',
+        'ptnkHistory', 'readingHistory', 'clozeHistory', 'errorsHistory', 'grammarVocabHistory', 'phoneticsHistory',
+        'allowMathFight', 'allowBot', 'allowChuyen', 'cuuchuongSeconds', 'unitsSet',
+        'topicProgress', 'grammarMistakes', 'wordformMistakes', 'rewriteMistakes', 'phrasesMistakes']) {
+      if (k in appState) delete appState[k];
     }
     if (appState.coinDebt === undefined) appState.coinDebt = 0;
     if (appState.nightRaidHomeDirty === undefined) appState.nightRaidHomeDirty = false;
-
-    // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
-    if (appState.currentLesson > 0) {
-        if (!appState.lessonHistory || !Array.isArray(appState.lessonHistory)) {
-            appState.lessonHistory = [];
-        }
-        // If history is shorter than currentLesson, fill in the gaps
-        if (appState.lessonHistory.length < appState.currentLesson) {
-            const existingLessons = new Set(appState.lessonHistory.map(h => h.lessonNum));
-            for (let i = 0; i < appState.currentLesson; i++) {
-                if (!existingLessons.has(i)) {
-                    appState.lessonHistory.push({
-                        lessonNum: i,
-                        date: appState.createdAt || Date.now(),
-                        points: 100,
-                        accuracy: 80
-                    });
-                }
-            }
-            // Sort by lesson number
-            appState.lessonHistory.sort((a, b) => a.lessonNum - b.lessonNum);
-        }
-    }
 
     saveUserData(currentUser, appState);
 
@@ -1147,21 +890,10 @@ function loginUser(username) {
     appState.petMemory.lastSeen = Date.now();
     saveUserData(currentUser, appState);
 
-    // Auto-select difficulty tab based on user's current lesson
-    if (typeof getDifficultyLevel === 'function' && appState.currentLesson > 0) {
-        const diff = getDifficultyLevel(appState.currentLesson);
-        selectedDifficultyFilter = diff.key;
-    }
-
     // Show main app
     document.getElementById('onboardingScreen').classList.remove('active');
     document.getElementById('homeScreen').classList.add('active');
     document.getElementById('bottomNav').style.display = 'flex';
-
-    // Highlight the correct difficulty chip
-    document.querySelectorAll('.difficulty-chip').forEach(c => c.classList.remove('active'));
-    const activeChip = document.querySelector(`.difficulty-chip[data-level="${selectedDifficultyFilter}"]`);
-    if (activeChip) activeChip.classList.add('active');
 
     renderHome();
     renderProfile();
@@ -1182,85 +914,41 @@ function loginUser(username) {
 // Per-child state that lives in a module rather than in appState. Modules opt
 // in by exposing a silent teardown; anything without one simply is not asked.
 function forgetProfileState() {
-    if (typeof pbForgetProfile === 'function') { try { pbForgetProfile(); } catch (e) {} }
+    // Nông trại: the farm's builder state, timers and yard scene.
     if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.forgetProfile === 'function') {
         try { NightRaid.forgetProfile(); } catch (e) {}
     }
-    // The trophy cabinet's once-a-session reconcile latch, and the friends
-    // list the Profile screen paints before its own refresh lands.
-    if (typeof cupsForgetProfile === 'function') { try { cupsForgetProfile(); } catch (e) {} }
-    if (typeof friendsForgetProfile === 'function') { try { friendsForgetProfile(); } catch (e) {} }
-    // Cướp Cô Hồn. Not its own close(): that one ends by re-arming the arena
-    // poll, which would undo pbForgetProfile() two lines above. Its teardown
-    // stops at the unlock, and leaves petBattleScreen exactly as
-    // pbForgetProfile does, so the order of the two does not matter.
-    if (typeof GhostOfferingEvent !== 'undefined' && GhostOfferingEvent
-        && typeof GhostOfferingEvent.forgetProfile === 'function') {
-        try { GhostOfferingEvent.forgetProfile(); } catch (e) {}
-    }
-    // Everything with a clock of its own. Each of these keeps ticking against
-    // whatever appState is current, so a timer that outlives the switch spends
-    // the NEXT child's minutes and banks into the next child's profile.
-    if (typeof MathFight !== 'undefined' && MathFight && typeof MathFight.forgetProfile === 'function') {
-        try { MathFight.forgetProfile(); } catch (e) {}
-    }
-    if (typeof examForgetProfile === 'function') { try { examForgetProfile(); } catch (e) {} }
-    if (typeof warsForgetProfile === 'function') { try { warsForgetProfile(); } catch (e) {} }
-    if (typeof mathTablesForgetProfile === 'function') { try { mathTablesForgetProfile(); } catch (e) {} }
-    if (typeof verbsForgetProfile === 'function') { try { verbsForgetProfile(); } catch (e) {} }
-    // The maths scratch pad: four sheets of the previous child's handwriting.
-    if (typeof mathBoardForgetProfile === 'function') { try { mathBoardForgetProfile(); } catch (e) {} }
-
-    // Every in-progress round. None of these has a clock, but all of them leak
-    // by the same two roads: the is…Active() guards in switchScreen — which
-    // asked B "You are in the middle of…" about A's work — and, worse,
-    // buildStudyCheckpoint() below, which reads them at every save and writes
-    // whichever it finds into localStorage tagged with the CURRENT user. A
+    // The in-progress Book practice. It has no clock, but it leaks by two
+    // roads: the isUnitPracticeActive() guard in switchScreen — which asked B
+    // "You are in the middle of…" about A's work — and, worse,
+    // buildStudyCheckpoint() below, which reads it at every save and writes
+    // whatever it finds into localStorage tagged with the CURRENT user. A
     // round left standing by A was therefore saved under B's name and offered
     // back to B, "↩️ Đã mở lại bài đang làm dở", as if it were theirs.
     if (typeof unitsForgetProfile === 'function') { try { unitsForgetProfile(); } catch (e) {} }
-    if (typeof phrasesForgetProfile === 'function') { try { phrasesForgetProfile(); } catch (e) {} }
-    if (typeof wordformForgetProfile === 'function') { try { wordformForgetProfile(); } catch (e) {} }
-    if (typeof rewriteForgetProfile === 'function') { try { rewriteForgetProfile(); } catch (e) {} }
-    if (typeof collocForgetProfile === 'function') { try { collocForgetProfile(); } catch (e) {} }
-    if (typeof grammarForgetProfile === 'function') { try { grammarForgetProfile(); } catch (e) {} }
-    if (typeof mathForgetProfile === 'function') { try { mathForgetProfile(); } catch (e) {} }
     if (typeof retryDrillForgetProfile === 'function') { try { retryDrillForgetProfile(); } catch (e) {} }
     // The combo counter is COINS: petComboBonus() banks whatever has accrued at
     // the end of the next round to FINISH, whoever is playing by then.
     if (typeof petCheerForgetProfile === 'function') { try { petCheerForgetProfile(); } catch (e) {} }
-    // The Home screen's "name your dog" flag, and the account-link failure
-    // reason that js/friends.js turns into a sentence the child reads.
+    // The Home screen's "name your dog" flag, and the account-link failure reason.
     if (typeof homeForgetProfile === 'function') { try { homeForgetProfile(); } catch (e) {} }
     if (typeof EngAuth !== 'undefined' && EngAuth && typeof EngAuth.forgetProfile === 'function') {
         try { EngAuth.forgetProfile(); } catch (e) {}
     }
 
     // ---- js/app.js's own per-child state -----------------------------------
-    // A matching round in progress. Its screen is deactivated by switchUser,
-    // but the words, the points and the wrong-word Set are the previous
-    // child's, and buildStudyCheckpoint reads them.
-    lessonState = {
-        categoryId: null, lessonNumber: 0, words: [], currentRound: 0, totalRounds: 0,
-        roundWords: [], selectedLeft: null, selectedRight: null, matchedPairs: 0,
-        correctInLesson: 0, wrongInLesson: 0, lessonPoints: 0,
-    };
     // "Have we already offered this child their unfinished work?" and "have we
     // already waited once for a lazy bank?" — both are about ONE child's login.
     // _studyCheckpointWaited was never reset anywhere: once A hit a slow bank,
     // B's own perfectly good checkpoint was thrown away instead of waited for.
     _studyCheckpointRestored = false;
     _studyCheckpointWaited = false;
-    // Where the Home screen was left standing: A's history tab, A's page, and
-    // the word band A was working through.
-    currentHistoryTab = 'history';
-    historyPage = 0;
-    selectedDifficultyFilter = 'beginning';
     // Deliberately NOT cleared: _studyCheckpointListening and _updateRetryTimer.
-    // Neither belongs to a child — the first is the page's set of save
+    // Neither belongs to a profile — the first is the page's set of save
     // listeners, which re-read currentUser on every save and write nothing
-    // while there is no user, and removing them would leave the NEXT child
-    // with no checkpointing at all; the second is the app-update nag. _profileOriginScreen is not cleared either: openProfile() sets it
+    // while there is no user, and removing them would leave the NEXT profile
+    // with no checkpointing at all; the second is the app-update nag.
+    // _profileOriginScreen is not cleared either: openProfile() sets it
     // before anything can read it.
 }
 
@@ -1270,11 +958,8 @@ function switchUser() {
         saveUserData(currentUser, appState);
     }
 
-    // Hand nothing of this child to the next one. Two children share one iPad
-    // and battle each other on it; a live pet battle used to survive the
-    // switch, and startPetBattleGame's "a live game keeps the screen" guard
-    // then showed the SECOND child the first child's battle — their pet, their
-    // castle — with the relay still animating turns nobody was controlling.
+    // Hand nothing of this profile to the next one: two profiles can share a
+    // device, and a round left standing used to be offered to the wrong one.
     forgetProfileState();
 
     // Reset and show onboarding
@@ -1401,9 +1086,9 @@ function recordStudy() {
             setTimeout(() => showStreakMilestone(milestone), 1500);
         }
 
-        // Award streak shield if 3+ lessons today and shields < 3
-        const todayCount = (appState.lessonHistory || []).filter(h =>
-            new Date(h.date).toDateString() === today
+        // Award streak shield if 3+ Book practices today and shields < 3
+        const todayCount = (appState.unitsHistory || []).filter(h =>
+            h && new Date(h.date).toDateString() === today
         ).length;
         if (todayCount >= 3 && (appState.streakShields || 0) < 3) {
             appState.streakShields = (appState.streakShields || 0) + 1;
@@ -1422,34 +1107,26 @@ function recordStudy() {
 
 let _profileOriginScreen = 'homeScreen';
 
-// Five stable destinations own the bottom bar. Deeper activity screens inherit
-// their parent highlight, so opening Grammar still reads as being inside Learn.
+// Five stable destinations own the bottom bar: Home, the three Books and
+// Nông trại. Deeper screens inherit their parent highlight. The Word screen
+// is shared by the three Books, so its key is whichever book is open.
 const NAV_GROUP_BY_SCREEN = Object.freeze({
     homeScreen: 'home',
     dailyTaskScreen: 'home',
-    armoryScreen: 'home',
-    learnHubScreen: 'learn',
-    gradeFourScreen: 'learn',
-    topicsScreen: 'learn',
-    grammarScreen: 'learn',
-    speedChallengeScreen: 'learn',
-    phrasesScreen: 'learn',
-    wordformScreen: 'learn',
-    rewriteScreen: 'learn',
-    petBattleScreen: 'arena',
-    nightRaidScreen: 'arena',
-    mathHubScreen: 'math',
-    ptnkScreen: 'learn',
-    readingScreen: 'learn',
-    clozeScreen: 'learn',
-    errorsScreen: 'learn',
-    grammarVocabScreen: 'learn',
-    phoneticsScreen: 'learn',
-    wordScreen: 'word'
+    profileScreen: 'home',
+    nightRaidScreen: 'farm',
 });
+const NAV_KEY_BY_BOOK = Object.freeze({ pr1: 'book1', pr2: 'book2', pr3: 'book3' });
+function navKeyForScreen(screenOrKey) {
+    if (screenOrKey === 'wordScreen') {
+        const set = (typeof currentUnitSet === 'function') ? currentUnitSet('word') : 'pr1';
+        return NAV_KEY_BY_BOOK[set] || 'book1';
+    }
+    return NAV_GROUP_BY_SCREEN[screenOrKey] || screenOrKey || '';
+}
 
 function setBottomNavActive(screenOrKey) {
-    const key = NAV_GROUP_BY_SCREEN[screenOrKey] || screenOrKey || '';
+    const key = navKeyForScreen(screenOrKey);
     document.querySelectorAll('.nav-item').forEach(item => {
         const active = item.dataset && item.dataset.navKey === key;
         item.classList[active ? 'add' : 'remove']('active');
@@ -1468,16 +1145,6 @@ function ensureHomeBottomNav() {
     const nav = document.getElementById('bottomNav');
     if (!home || !nav || !home.classList.contains('active') || !currentUser || !appState) return;
 
-    const board = document.getElementById('mathBoardOverlay');
-    const boardVisible = !!(board && !board.classList.contains('hidden'));
-    if (boardVisible) return;
-
-    // A killed/reloaded board used to leave this class behind. Its !important
-    // CSS rule wins over `nav.style.display = 'flex'`, which explains why the
-    // earlier one-shot repair in renderHome was not sufficient.
-    if (document.documentElement.classList.contains('math-board-open')) {
-        document.documentElement.classList.remove('math-board-open');
-    }
     if (nav.style.display !== 'flex') nav.style.display = 'flex';
     if (nav.hasAttribute('aria-hidden')) nav.removeAttribute('aria-hidden');
 }
@@ -1494,35 +1161,19 @@ function installHomeBottomNavInvariant() {
     _homeBottomNavObserver = new MutationObserver(ensureHomeBottomNav);
     _homeBottomNavObserver.observe(home, { attributes: true, attributeFilter: ['class'] });
     _homeBottomNavObserver.observe(nav, { attributes: true, attributeFilter: ['style', 'aria-hidden'] });
-    _homeBottomNavObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    const board = document.getElementById('mathBoardOverlay');
-    if (board) _homeBottomNavObserver.observe(board, { attributes: true, attributeFilter: ['class'] });
     ensureHomeBottomNav();
-}
-
-function renderLearnHub() {
-    const label = document.getElementById('learnDueText');
-    if (!label) return;
-    let due = 0;
-    try {
-        due = typeof getReviewCount === 'function' ? Math.max(0, getReviewCount()) : 0;
-    } catch (e) { due = 0; }
-    label.textContent = due
-        ? due + (due === 1 ? ' word is ready to review.' : ' words are ready to review.')
-        : 'Nothing due yet — practise again to build your queue.';
 }
 
 // ---- doors into code that is not loaded yet -------------------------------
 //
-// The Arena's scripts (js/lazy-data.js GROUP_FILES.arena: pet battles, Cướp
-// Đêm, Cúng Cô Hồn) no longer load at startup, but the bottom bar and the
-// Daily Task card still call openPetBattle() / openNightRaid() by name. Until
-// the group lands, those names are these placeholders: switch to the screen —
-// which draws the "Đang tải…" line and starts the download, exactly as a
-// deferred tab does — then call the real function, which js/petbattle.js and
-// js/night-raid.js declare under the SAME name and so replace the placeholder
-// the moment they run. After that first visit the placeholder is gone and a
-// tap goes straight to the real thing.
+// The farm's script (js/lazy-data.js GROUP_FILES.farm: js/night-raid.js)
+// does not load at startup, but the bottom bar and the Daily Task card call
+// openNightRaid() by name. Until the group lands, that name is this
+// placeholder: switch to the screen — which draws the "Đang tải…" line and
+// starts the download, exactly as a deferred tab does — then call the real
+// function, which js/night-raid.js declares under the SAME name and so
+// replaces the placeholder the moment it runs. After that first visit the
+// placeholder is gone and a tap goes straight to the real thing.
 function lazyEntry(group, name, screenId) {
     const placeholder = function () {
         const args = Array.from(arguments);
@@ -1540,200 +1191,55 @@ function lazyEntry(group, name, screenId) {
                 if (screen) screen.innerHTML = '<div class="lazy-loading" role="status">Không tải được. Kiểm tra mạng rồi thử lại nhé!</div>';
                 return;
             }
-            // The child may have moved on while it downloaded. Opening the
-            // Arena under them would start its polling behind another tab.
+            // The learner may have moved on while it downloaded.
             if (!document.getElementById(screenId)?.classList.contains('active')) return;
             return real.apply(null, args);
         });
     };
     return placeholder;
 }
-var openPetBattle = lazyEntry('arena', 'openPetBattle', 'petBattleScreen');
-var openNightRaid = lazyEntry('arena', 'openNightRaid', 'nightRaidScreen');
+var openNightRaid = lazyEntry('farm', 'openNightRaid', 'nightRaidScreen');
 
-// Returns FALSE when the switch did not happen — a guard below asked the child
-// and they chose to stay, or the screen does not exist. Callers that do more
-// than switch (openPetBattle starts polling) MUST check it: carrying on after a
-// refusal is how the Arena once ended up running behind a live đề thi.
+// A Book tab: the shared Word screen, on that book's set. The set is chosen
+// BEFORE the switch so the bottom bar highlights the right book at once, and
+// the header names it (js/units.js renderWordHome).
+function openBook(set) {
+    // Another Book is a way out of a live round: the round is on one book's
+    // words and switchScreen alone cannot tell (both books share wordScreen).
+    if (typeof currentUnitSet === 'function' && set !== currentUnitSet('word')
+        && typeof leaveWordRound === 'function' && !leaveWordRound()) return false;
+    if (typeof switchUnitSet === 'function') switchUnitSet(set, { silent: true });
+    if (switchScreen('wordScreen') === false) return false;
+    return true;
+}
+
+// Ask before dropping a live Book practice or owed-words drill; returns false
+// when the child chose to stay. Used where a round would be replaced ON the
+// Word screen itself (another Book, a Daily Task deep link), which
+// switchScreen's own-screen rule cannot see.
+function leaveWordRound() {
+    if (typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {
+        if (!confirm('You are in the middle of a practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) return false;
+        if (typeof abandonUnitPractice === 'function') abandonUnitPractice();
+    }
+    if (typeof retryDrillKey === 'function' && retryDrillKey() === 'word') {
+        if (!confirm('You are practising the words you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) return false;
+        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
+    }
+    return true;
+}
+
+// Returns FALSE when the switch did not happen — a guard below asked and the
+// learner chose to stay, or the screen does not exist. Callers that do more
+// than switch MUST check it.
 function switchScreen(screenId) {
     // A new screen is a new exercise as far as the parent's history clock
     // is concerned (js/auth.js ActivityClock).
     if (typeof ActivityClock !== 'undefined') ActivityClock.mark();
-    // Guard the live Ghost Offering scene. Previously the bottom navigation
-    // merely hid the Arena screen, leaving go-event-active/overflow:hidden on
-    // it. Returning to Arena then showed a lobby that could no longer scroll.
-    if (screenId !== 'petBattleScreen' &&
-        typeof GhostOfferingEvent !== 'undefined' &&
-        GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) {
-        // Ask only while the room is actually open for grabbing (isPlaying).
-        // The same scene also shows the countdown before the event and the
-        // "đã kết thúc" card after it — nothing is at stake there, and a
-        // question about a rope that is not being pulled just teaches the
-        // child to tap OK without reading. close() still runs either way, so
-        // the go-event-active lock never outlives the scene.
-        const playing = typeof GhostOfferingEvent.isPlaying !== 'function' || GhostOfferingEvent.isPlaying();
-        if (playing && !confirm('Bạn đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nBạn có chắc muốn thoát không?')) {
-            return false;
-        }
-        GhostOfferingEvent.close();
-    }
-
-    // Guard: a live pet battle. There is another child at the other end
-    // waiting for the next volley, and unlike Night Raid or Đấu Toán this game
-    // leaves the bottom bar up while it runs — so this is the front line, not
-    // a backstop. The server scores a walked-out battle on remaining HP; a
-    // child who comes back while it is still live is put straight back in.
-    if (screenId !== 'petBattleScreen' &&
-        typeof isPetBattleActive === 'function' && isPetBattleActive()) {
-        if (!confirm('Bạn đang đấu pháo với đối thủ.\nThoát bây giờ thì đối thủ phải chờ, và nếu bạn không quay lại thì trận sẽ được tính theo máu còn lại.\n\nVẫn thoát?')) {
-            return false;
-        }
-        if (typeof abandonPetBattle === 'function') abandonPetBattle();
-    }
-
-    // Guard: warn before leaving an in-progress grammar exam (tapping a different
-    // bottom-nav tab would otherwise silently discard the user's answers).
-    if (screenId !== 'grammarScreen' &&
-        typeof isGrammarQuizActive === 'function' && isGrammarQuizActive()) {
-        if (!confirm('You are in the middle of an exam.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return false; // stay on the quiz
-        }
-        if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
-    }
-
-    // Guard: warn before leaving an in-progress timed exam (the PTNK tab or a
-    // practice menu — all on the same engine, each on its own screen).
-    const _examOwnScreen = (typeof _examSetCfg === 'function') ? _examSetCfg().screen : 'ptnkScreen';
-    if (screenId !== _examOwnScreen &&
-        typeof isExamActive === 'function' && isExamActive()) {
-        if (!confirm('You are in the middle of a timed exam.\nIf you leave now, your progress will be lost and it will NOT be saved.\n\nLeave anyway?')) {
-            return false; // stay on the exam
-        }
-        if (typeof abandonExam === 'function') abandonExam();
-    }
-
-    // Guard: warn before leaving an in-progress Word form practice — or its
-    // owed-questions drill, which sits on the same screen and is just as easy
-    // to lose to a mis-tap on the bottom bar (the Toán guard below does the
-    // same for its own drill).
-    if (screenId !== 'wordformScreen' &&
-        ((typeof isWordformQuizActive === 'function' && isWordformQuizActive()) ||
-         (typeof retryDrillKey === 'function' && retryDrillKey() === 'wf'))) {
-        if (!confirm('You are in the middle of a Word form practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonWordformQuiz === 'function') abandonWordformQuiz();
-        if (typeof abandonRetryDrill === 'function' &&
-            typeof retryDrillKey === 'function' && retryDrillKey() === 'wf') {
-            abandonRetryDrill();
-        }
-    }
-
-    // Guard: warn before leaving an in-progress Toán 7 round — or the retry
-    // drill, which is just as easy to lose to a mis-tap on the bottom bar.
-    // Asked in Vietnamese because the whole tab is.
-    if (screenId !== 'mathHubScreen' &&
-        ((typeof isMathQuizActive === 'function' && isMathQuizActive()) ||
-         (typeof retryDrillKey === 'function' && retryDrillKey() === 'math'))) {
-        if (!confirm('Bạn đang làm dở bài Toán.\nRa khỏi bây giờ thì phần đã làm sẽ mất.\n\nVẫn ra chứ?')) {
-            return false;
-        }
-        if (typeof abandonMathQuiz === 'function') abandonMathQuiz();
-        if (typeof abandonRetryDrill === 'function' &&
-            typeof retryDrillKey === 'function' && retryDrillKey() === 'math') {
-            abandonRetryDrill();
-        }
-    }
-
-    // Guard: warn before walking out of a live Đấu Toán. Unlike a quiz, this
-    // one has another child sitting on the other side and 200 coins on the
-    // table — leaving IS a loss, so say so before it happens rather than
-    // letting the server's walk-away timer decide 20 seconds later.
-    if (screenId !== 'mathHubScreen' &&
-        typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
-        if (!confirm('Bạn đang đấu toán với đối thủ.\n\nThoát bây giờ sẽ ĐÓNG trận và chấm điểm luôn — bạn bị XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
-            return false; // stay in the fight
-        }
-        if (MathFight.forfeitNow) MathFight.forfeitNow();
-    }
-
-    // Guard: the Math Wars round. Its own guard rather than a clause on the
-    // one above, because what is lost is different — two minutes of a timed
-    // round that is scored only when it ends, so walking out mid-way scores
-    // nothing at all.
-    if (screenId !== 'mathHubScreen' &&
-        typeof isWarsActive === 'function' && isWarsActive()) {
-        const left = (typeof warsClockText === 'function' && typeof warsLeftMs === 'function')
-            ? warsClockText(warsLeftMs()) : '';
-        if (!confirm('Bạn đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
-                   + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) {
-            return false;
-        }
-        if (typeof abandonWars === 'function') abandonWars();
-    }
-
-    // Guard: a bảng cửu chương round. Under a minute, scored only when it
-    // ends — the shortest clock in the app and therefore the easiest to lose
-    // to a mis-tap on the nav bar.
-    if (screenId !== 'mathHubScreen' &&
-        typeof isMathTablesActive === 'function' && isMathTablesActive()) {
-        const left = (typeof mathTablesClockText === 'function' && typeof mathTablesLeftMs === 'function')
-            ? mathTablesClockText(mathTablesLeftMs()) : '';
-        if (!confirm('Bạn đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
-                   + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')) {
-            return false;
-        }
-        if (typeof abandonMathTables === 'function') abandonMathTables();
-    }
-
-    // Guard: a live Night Raid. The raid stage hides the bottom bar, so this is
-    // a backstop rather than the front line — but the server has already
-    // written the raid row by the time the army marches, and start.js refuses
-    // a second visit to the same home today, so leaving costs the house.
-    // NightRaid.close() asks and clears the raid before it calls us, so a child
-    // who has already answered is never asked twice.
-    if (screenId !== 'nightRaidScreen' &&
-        typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) {
-        if (!confirm('Bạn đang cướp nhà người khác.\nBỏ ngang thì hôm nay không vào lại nhà này được nữa, và không nhận được xu nào.\n\nVẫn thoát?')) {
-            return false;
-        }
-        if (NightRaid.abandonRaid) NightRaid.abandonRaid();
-    }
-
-    // Guard: Phrases and Collocation share one screen, and BOTH were missing
-    // from this list — a mis-tap on the bottom bar ended either practice with
-    // no question asked at all.
-    if (screenId !== 'phrasesScreen' &&
-        typeof isPhrasesQuizActive === 'function' && isPhrasesQuizActive()) {
-        if (!confirm('You are in the middle of a Phrases practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonPhrasesQuiz === 'function') abandonPhrasesQuiz();
-    }
-
-    if (screenId !== 'phrasesScreen' &&
-        typeof isCollocActive === 'function' && isCollocActive()) {
-        if (!confirm('You are in the middle of a Collocation practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonCollocPractice === 'function') abandonCollocPractice();
-    }
-
-    // Guard: the owed-question drill of either Phrases sub-tab (js/retrydrill.js
-    // keys 'phr' and 'col'). It draws on the same screen and was the one thing
-    // there the bottom bar left without a word — and left RUNNING, so the app
-    // counted the child as busy (_busyWithTimedActivity) long after.
-    if (screenId !== 'phrasesScreen' &&
-        typeof retryDrillKey === 'function' && (retryDrillKey() === 'phr' || retryDrillKey() === 'col')) {
-        if (!confirm('You are in the middle of a retry drill.\nIf you leave now, you can finish it next time.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
-    }
-
-    // Guard: a units practice (Grade 4, or the Word tab — one engine, two
-    // screens) belongs to the screen it started on.
-    const _unitOwnScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'gradeFourScreen';
+    // Guard: a Book practice (js/units.js) belongs to the Word screen. Its
+    // three nav buttons all open that screen, so switching books mid-practice
+    // asks too — the round is on one book's words.
+    const _unitOwnScreen = (typeof unitPracticeScreen === 'function') ? unitPracticeScreen() : 'wordScreen';
     if (screenId !== _unitOwnScreen &&
         typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {
         if (!confirm('You are in the middle of a practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
@@ -1742,95 +1248,18 @@ function switchScreen(screenId) {
         if (typeof abandonUnitPractice === 'function') abandonUnitPractice();
     }
 
-    // Guard: the Grade 4 owed-words drill (js/retrydrill.js, key 'units').
-    // Nothing typed is lost — each word is cleared the moment it is fixed —
-    // but the drill itself used to outlive a tap on the bottom bar: it kept
+    // Guard: the owed-words drill (js/retrydrill.js, key 'word'). Nothing typed
+    // is lost — each word is cleared the moment it is fixed — but the drill
+    // itself used to outlive a tap on the bottom bar: it kept
     // isRetryDrillActive() true from whatever tab came next, which holds app
-    // updates back (_busyWithTimedActivity) until some other drill replaced
-    // it. Same shape as the Toán branch above.
-    // Both units hosts: the Grade 4 drill (key 'units') lives on
-    // gradeFourScreen, the Word drill (key 'word') on wordScreen.
-    const _unitDrillScreen = { units: 'gradeFourScreen', word: 'wordScreen' };
-    const _unitDrillKey = (typeof retryDrillKey === 'function') ? retryDrillKey() : null;
-    if (_unitDrillKey && _unitDrillScreen[_unitDrillKey] && screenId !== _unitDrillScreen[_unitDrillKey]) {
+    // updates back (_busyWithTimedActivity) until some other drill replaced it.
+    if (screenId !== 'wordScreen' &&
+        typeof retryDrillKey === 'function' && retryDrillKey() === 'word') {
         if (!confirm('You are practising the words you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) {
             return false;
         }
         if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
     }
-
-    // Guard: a live Verbs speed run. Its overlay hides the bottom bar, so like
-    // the Night Raid this is a backstop — a switchScreen() from code (a deep
-    // link, a restored checkpoint) used to change the screen under the
-    // overlay, re-show the bar behind it and leave the 100 ms clock running.
-    if (screenId !== 'speedChallengeScreen' &&
-        typeof isSpeedGameActive === 'function' && isSpeedGameActive()) {
-        const done = (typeof speedState !== 'undefined' && speedState && Array.isArray(speedState.verbResults))
-            ? speedState.verbResults.length : 0;
-        if (!confirm((done ? 'You are ' + done + ' verbs into this speed run.' : 'You are in the middle of a speed run.')
-                   + '\nIf you leave now, this run will not be scored.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonSpeedGame === 'function') abandonSpeedGame();
-    }
-
-    // Guard: the owed-verbs drill (js/retrydrill.js key 'verbs'), which the
-    // speed run's gate opens on speedChallengeScreen. Every other drill key
-    // had a branch here; this one did not, so a tap on the bottom bar left
-    // the drill RUNNING under the next tab — isRetryDrillActive() stayed true
-    // and held app updates back. tests/leave-guard-contract.test.js is what
-    // now makes a drill key without a branch here impossible to add.
-    if (screenId !== 'speedChallengeScreen' &&
-        typeof retryDrillKey === 'function' && retryDrillKey() === 'verbs') {
-        if (!confirm('You are typing back the verbs you got wrong.\nThey will still be waiting for you if you leave now.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
-    }
-
-    // Guard: warn before leaving an in-progress Rewrite practice, or its
-    // owed-questions drill (same screen — see the Word form guard above).
-    if (screenId !== 'rewriteScreen' &&
-        ((typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) ||
-         (typeof retryDrillKey === 'function' && retryDrillKey() === 'rw'))) {
-        if (!confirm('You are in the middle of a Rewrite practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return false;
-        }
-        if (typeof abandonRewriteQuiz === 'function') abandonRewriteQuiz();
-        if (typeof abandonRetryDrill === 'function' &&
-            typeof retryDrillKey === 'function' && retryDrillKey() === 'rw') {
-            abandonRetryDrill();
-        }
-    }
-
-    // Guard: a matching lesson (Home lesson, SRS review, mistakes review,
-    // daily challenge, topic lesson — all on lessonScreen). The lesson hides
-    // the bottom bar while it runs, so this is the backstop for deep links
-    // and for the bar once the result is up. While the round is still being
-    // played (isLessonActive) it asks with the ×'s own wording —
-    // lessonLeaveQuestion(), null when nothing has been answered yet; once
-    // scored it is silent, and abandonLesson() takes the result overlays and
-    // the state away with it either way.
-    if (screenId !== 'lessonScreen' &&
-        typeof isLessonOnScreen === 'function' && isLessonOnScreen()) {
-        const q = (typeof isLessonActive === 'function' && isLessonActive()
-                   && typeof lessonLeaveQuestion === 'function') ? lessonLeaveQuestion() : null;
-        if (q && !confirm(q)) {
-            return false;
-        }
-        if (typeof abandonLesson === 'function') abandonLesson();
-    }
-
-    // Guard: Word Hunt is a 60-second overlay over Home, and the bottom bar
-    // is NOT hidden beneath it — a tab switch under a running hunt is one tap
-    // away, and used to change the screen while the clock kept ticking on
-    // top. Unfinished, ask; the finished score card is only taken down so it
-    // never covers the next tab (js/word-hunt.js).
-    if (typeof isWordHuntActive === 'function' && isWordHuntActive() &&
-        !confirm('You are in the middle of a Word Hunt.\nIf you leave now, the hunt ends here.\n\nLeave anyway?')) {
-        return false;
-    }
-    if (typeof abandonWordHunt === 'function') abandonWordHunt();
 
     const nextScreen = document.getElementById(screenId);
     if (!nextScreen) return false;
@@ -1839,35 +1268,14 @@ function switchScreen(screenId) {
 
     setBottomNavActive(screenId);
 
-    // The Grammar and Exam banks are 4.7 MB and no longer block the first
-    // paint (js/lazy-data.js). Render such a tab only once its bank has
-    // arrived, or the child meets an empty question list. Everything else
-    // renders synchronously exactly as before.
-    //
-    // Since 2026-09-11 the same wait covers CODE: filesFor('mathHubScreen')
-    // begins with the Math tab's own scripts, and the two Arena screens list
-    // theirs (GROUP_FILES math / arena). renderMathHome does not exist until
-    // the group has run, which is why paint() reaches for it by typeof. The
-    // Arena screens have no paint() entry: openPetBattle / openNightRaid
-    // render them once this returns.
+    // The word bank does not block the first paint (js/lazy-data.js). Render
+    // the Word screen only once its bank has arrived, or the learner meets an
+    // empty card grid. The same wait covers CODE: filesFor('nightRaidScreen')
+    // begins with the farm's own script (GROUP_FILES.farm); that screen has
+    // no paint() entry because openNightRaid renders it once this returns.
     if (typeof LazyData !== 'undefined' && LazyData.filesFor(screenId).length) {
         const paint = () => {
-            if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
-            else if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
-            else if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
-            else if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
-            else if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
-            else if (screenId === 'grammarVocabScreen' && typeof renderGrammarVocabHome === 'function') renderGrammarVocabHome();
-            else if (screenId === 'phoneticsScreen' && typeof renderPhoneticsHome === 'function') renderPhoneticsHome();
-            else if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
-            else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
-            else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
-            else if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
-            else if (screenId === 'gradeFourScreen' && typeof renderGrade4Home === 'function') renderGrade4Home();
-            else if (screenId === 'wordScreen' && typeof renderWordHome === 'function') renderWordHome();
-            // petBattleScreen, nightRaidScreen and armoryScreen list only a
-            // stylesheet here; their openers (openPetBattle, NightRaid.open,
-            // Armory.open) render right after this call returns.
+            if (screenId === 'wordScreen' && typeof renderWordHome === 'function') renderWordHome();
         };
         // ensure() is a no-op once the bank is in, but it also records this as
         // the tab to warm next time — so call it either way.
@@ -1877,13 +1285,12 @@ function switchScreen(screenId) {
             if (target && !target.innerHTML.trim()) {
                 target.innerHTML = '<div class="lazy-loading" role="status">Đang tải bài…</div>';
             }
-            // A screen whose stylesheet is still on its way (css/arena.css,
-            // css/night-raid.css, css/math.css — js/lazy-data.js) must not
-            // show its content unstyled: the Arena and Night Raid openers
-            // render synchronously right after this call. Keep everything
-            // but the loading notice invisible until the sheet has arrived,
-            // then let the modules that size themselves from the DOM
-            // (the raid builder, the battle camera) re-measure.
+            // A screen whose stylesheet is still on its way (css/night-raid.css
+            // — js/lazy-data.js) must not show its content
+            // unstyled: the farm's opener renders synchronously right after
+            // this call. Keep everything but the loading notice invisible
+            // until the sheet has arrived, then let the modules that size
+            // themselves from the DOM (the farm builder) re-measure.
             const cssPending = typeof LazyData.pendingCss === 'function' && LazyData.pendingCss(screenId).length > 0;
             if (cssPending) nextScreen.classList.add('lazy-css-pending');
             LazyData.ensure(screenId).then(() => {
@@ -1900,19 +1307,6 @@ function switchScreen(screenId) {
     }
 
     if (screenId === 'homeScreen') renderHome();
-    if (screenId === 'learnHubScreen') renderLearnHub();
-    if (screenId === 'gradeFourScreen' && typeof renderGrade4Home === 'function') renderGrade4Home();
-    if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
-    if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
-    if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
-    if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
-    if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
-    if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
-    if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
-    if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
-    if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
-    if (screenId === 'grammarVocabScreen' && typeof renderGrammarVocabHome === 'function') renderGrammarVocabHome();
-    if (screenId === 'phoneticsScreen' && typeof renderPhoneticsHome === 'function') renderPhoneticsHome();
     if (screenId === 'profileScreen') renderProfile();
 
     // Do this after rendering: Home replaces its pet hero contents, and scroll
@@ -2008,17 +1402,7 @@ let _updateRetryTimer = null;
 // guards with a confirm() — an update that reloads must be at least as careful
 // as tapping a nav tab, and the first version of this checked four of eleven.
 const _BUSY_CHECKS = [
-    'isCollocActive', 'isExamActive', 'isGrammarQuizActive', 'isMathQuizActive',
-    'isMathTablesActive', 'isPhrasesQuizActive', 'isRewriteQuizActive',
-    'isUnitPracticeActive', 'isWarsActive', 'isWordformQuizActive', 'isRetryDrillActive',
-    // The matching lesson: the round being played, and the result card up
-    // over it (js/lessons.js). The lessonScreen check below is the same
-    // thing said without the helpers, from before they existed.
-    'isLessonActive', 'isLessonOnScreen',
-    'isSpeedGameActive',
-    'isPetBattleActive',
-    // Word Hunt's 60-second clock (js/word-hunt.js).
-    'isWordHuntActive',
+    'isUnitPracticeActive', 'isRetryDrillActive',
 ];
 function _busyWithTimedActivity() {
     try {
@@ -2026,19 +1410,6 @@ function _busyWithTimedActivity() {
             const fn = typeof globalThis !== 'undefined' ? globalThis[name] : undefined;
             if (typeof fn === 'function' && fn()) return true;
         }
-        const speed = document.getElementById('speedGameOverlay');
-        if (speed && speed.classList.contains('active')) return true;
-        // Matching-pairs lessons predate the shared is…Active helpers. Treat
-        // the visible lesson screen as work in progress so a background update
-        // never makes the cards disappear under the child's finger.
-        const lesson = document.getElementById('lessonScreen');
-        if (lesson && lesson.classList.contains('active')) return true;
-        if (typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) return true;
-        if (typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) return true;
-        if (typeof GhostOfferingEvent !== 'undefined' && GhostOfferingEvent.isActive
-            && GhostOfferingEvent.isActive()) return true;
-        // A pet battle in progress is a live match against another child.
-        if (typeof _pbGame !== 'undefined' && _pbGame) return true;
     } catch (e) { /* a missing tab is not a reason to withhold the update */ }
     return false;
 }
@@ -2052,7 +1423,7 @@ function _busyWithTimedActivity() {
 // background (the best one: the reload lands before they look again), or a
 // MENU screen with no tap for a while — never a results card, never a
 // screen a child is reading.
-const UPDATE_QUIET_SCREENS = ['homeScreen', 'learnHubScreen', 'profileScreen', 'dailyTaskScreen', 'topicsScreen', 'onboardingScreen'];
+const UPDATE_QUIET_SCREENS = ['homeScreen', 'profileScreen', 'dailyTaskScreen', 'onboardingScreen'];
 const UPDATE_IDLE_MS = 20000;
 let _lastInteractionAt = 0;
 function noteInteraction() { _lastInteractionAt = Date.now(); }

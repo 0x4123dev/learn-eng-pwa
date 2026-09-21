@@ -1,82 +1,55 @@
-// units.js — picture-dictionary practice: the Learn → Grade 4 screen and the
-// bottom bar's Word tab, one engine.
+// units.js — picture-dictionary practice: the three Book tabs, one engine.
 // A card grid opens a typed gap-fill practice: the app shows the picture
-// (emoji) + Vietnamese meaning and a gapped word (st__ent / ch_cken /
-// _ _ _ _ _), and the student types the FULL word. The number of missing
-// letters is random per question: 4, 5 or the whole word.
+// (emoji) + Vietnamese meaning, an example sentence with the word blanked,
+// and a gapped word (st__ent / _ _ _ _ _); the learner types the FULL word.
+// The number of missing letters is random per question: 4, 5 or the whole
+// word.
 //
-// Grade 4 is split into four word sets, each with its own units and its own
-// Mix:
-//   pre — the picture-dictionary units the app started with (12 units)
-//   posthk — Global Maths 4 & Science 4 glossaries
-//   hk1 — Tiếng Anh 4 Global Success, Tập một: the book's ten units merged
-//         two-by-two into five units carrying the whole Wordlist from
-//         pages 78-80 (js/units-hk1-data.js)
-//   hk2 — Tiếng Anh 4 Global Success, Tập hai: book units 11..20 merged the
-//         same way, carrying the whole Wordlist from pages 74-75
-// The Word tab carries three more, on its own screen:
+// Three word sets, one per book, each with its own units and its own Mix:
 //   pr1, pr2, pr3 — Career Paths: Public Relations, Book 1/2/3 (Express
 //         Publishing), 15 units each, exactly the Vocabulary column of each
 //         book's Scope and Sequence page (js/word-data.js, generated from
 //         data/career-paths/ by scripts/build-word-data.js; lazy-loaded)
 //
-// A unit is addressed by a KEY. 'pre' keeps its bare keys (3, 'mix') so every
-// history row, best score and mastery count written before the split still
-// counts; the newer sets prefix theirs ('hk1-3', 'hk1-mix', 'pr2-7').
+// A unit is addressed by a KEY: 'pr2-7', 'pr1-mix'. Every history row, best
+// score, mastery count and owed word is keyed that way.
 //
-// A HOST is a screen that carries the tab's pieces — the set strip, the unit
-// cards, the history list and the detail pane a practice draws in. Every set
-// names its host, and every DOM id in this file goes through the host of the
-// set in play, so one practice engine serves two bottom-bar destinations.
+// A HOST is the screen that carries the pieces — the sub-tabs, the unit
+// cards, the history list and the detail pane a practice draws in. There is
+// one host now (the Word screen, shared by the three Book tabs); the
+// indirection stayed because every DOM id goes through it.
 
 let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[] }
 
 const UNIT_HOSTS = {
-  grade4: {
-    screen: 'gradeFourScreen', tabs: 'grade4SubTabs', bar: 'unitsBar',
-    history: 'grade4History', detail: 'grade4Detail',
-    stateKey: 'unitsSet', defaultSet: 'hk1',
-    // Owed words and the silent priority list are kept per host, so a Word
-    // debt gates the Word tab and a Grade 4 debt gates Grade 4 — never both.
-    retryKey: 'units',
-    homeFn: 'renderGrade4Home', homeLabel: '📗 Bài học', skillPrefix: 'grade4',
-  },
   word: {
     screen: 'wordScreen', tabs: 'wordSubTabs', bar: 'wordUnitsBar',
     history: 'wordHistory', detail: 'wordDetail',
+    title: 'wordTitle', subtitle: 'wordSubtitle',
     stateKey: 'wordSet', defaultSet: 'pr1',
     retryKey: 'word',
-    homeFn: 'renderWordHome', homeLabel: '🔤 Bài học', skillPrefix: 'word',
+    homeFn: 'renderWordHome', homeLabel: '📖 Bài học', skillPrefix: 'word',
   },
 };
 
 const UNIT_SETS = [
-  { id: 'pre', host: 'grade4', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
-  // The two English-medium subject books the class moves on to. Their
-  // glossaries are one word bank, split by subject. The id stays 'posthk' even
-  // though the tab reads "Post": it is written into every owed word and every
-  // history row, and renaming it would strand both.
-  { id: 'posthk', host: 'grade4', label: '📙 Post', name: 'Post', sub: 'Global Maths 4 & Science 4 · Glossary' },
-  { id: 'hk1', host: 'grade4', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
-  { id: 'hk2', host: 'grade4', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
-  { id: 'pr1', host: 'word', label: '📘 Book 1', name: 'Book 1', sub: 'Career Paths · Public Relations 1 · 15 Units' },
-  { id: 'pr2', host: 'word', label: '📙 Book 2', name: 'Book 2', sub: 'Career Paths · Public Relations 2 · 15 Units' },
-  { id: 'pr3', host: 'word', label: '📗 Book 3', name: 'Book 3', sub: 'Career Paths · Public Relations 3 · 15 Units' },
+  { id: 'pr1', host: 'word', label: '📘 Book 1', name: 'Book 1', sub: 'Career Paths · Public Relations 1' },
+  { id: 'pr2', host: 'word', label: '📙 Book 2', name: 'Book 2', sub: 'Career Paths · Public Relations 2' },
+  { id: 'pr3', host: 'word', label: '📗 Book 3', name: 'Book 3', sub: 'Career Paths · Public Relations 3' },
 ];
-const UNIT_SET_RE = /^(hk1|hk2|posthk|pr1|pr2|pr3)-(mix|\d+)$/;
+const UNIT_SET_RE = /^(pr1|pr2|pr3)-(mix|\d+)$/;
 
 function unitHostOfSet(set) {
   const meta = UNIT_SETS.find(s => s.id === set);
-  return (meta && meta.host) || 'grade4';
+  return (meta && meta.host) || 'word';
 }
 function unitHostSets(hostId) {
   return UNIT_SETS.filter(s => s.host === hostId);
 }
-// The host the child is standing in: the last home drawn, or the host of the
-// practice under way. Grade 4 until anything says otherwise, which is what
-// every caller written before the Word tab expects.
-let _unitHostId = 'grade4';
-function _unitHost() { return UNIT_HOSTS[_unitHostId] || UNIT_HOSTS.grade4; }
+// The host in play. One host today; kept as state so a second one could
+// come back without touching the renderers.
+let _unitHostId = 'word';
+function _unitHost() { return UNIT_HOSTS[_unitHostId] || UNIT_HOSTS.word; }
 function unitCurrentHost() { return _unitHostId; }
 // For a restored study checkpoint (js/app.js): the practice's host before its
 // question is redrawn, or it lands on the other host's screen.
@@ -88,9 +61,9 @@ function _unitHostEl(piece) {
 // The screen a live practice belongs to, for the leave guard in js/app.js.
 function unitPracticeScreen() { return _unitHost().screen; }
 
-// Which set the cards are showing, per host. Stored per user so each tab
-// reopens where the child left it; HK1 is Grade 4's default because that is
-// the book in use, Book 1 is the Word tab's.
+// Which Book the cards are showing. Stored per user so the app reopens on the
+// book the learner was last in; Book 1 for a fresh profile. The bottom bar's
+// three Book buttons call switchUnitSet through openBook (js/app.js).
 const _unitSetFallback = {};
 function currentUnitSet(hostId) {
   const host = UNIT_HOSTS[hostId] || _unitHost();
@@ -99,7 +72,7 @@ function currentUnitSet(hostId) {
   else saved = _unitSetFallback[host.stateKey] || null;
   return unitHostSets(hostId || _unitHostId).some(s => s.id === saved) ? saved : host.defaultSet;
 }
-function switchUnitSet(set) {
+function switchUnitSet(set, opts) {
   if (!UNIT_SETS.some(s => s.id === set)) return;
   _unitHostId = unitHostOfSet(set);
   const host = _unitHost();
@@ -110,16 +83,17 @@ function switchUnitSet(set) {
       try { saveUserData(currentUser, appState); } catch (e) {}
     }
   }
-  if (typeof renderUnitsBar === 'function') renderUnitsBar();
+  // openBook switches the screen next, and that redraws; a bare switch
+  // (a deep link, a test) redraws here.
+  if (!(opts && opts.silent) && typeof renderUnitsBar === 'function') renderUnitsBar();
 }
 
 // Each word remembers which set it came from. An owed word is stored by id and
 // looked up again later, and the id used to be the English alone — which is
 // wrong wherever two sets spell a word the same and mean different things:
-// "ring" is a piece of jewellery in Pre and a bell ringing in Post-HK, "right"
-// is a direction in HK2 and "suitable" in Post-HK. Twenty such pairs exist
-// across the four sets, and a child who missed one of them was handed the other
-// word's meaning to type back.
+// the same spelling can carry a different sense in another book, and a
+// learner who missed one of them was handed the other word's meaning to type
+// back.
 //
 // Tagged in place, once: the arrays are module constants and the objects are
 // shared with every draw, so copying them here would break nothing visibly and
@@ -131,15 +105,12 @@ function _unitsTagSet(bank, set) {
 }
 function unitsBank(set) {
   const s = set || currentUnitSet();
-  if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK1, 'hk1') : [];
-  if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK2, 'hk2') : [];
-  if (s === 'posthk') return (typeof UNIT_WORDS_POSTHK !== 'undefined') ? _unitsTagSet(UNIT_WORDS_POSTHK, 'posthk') : [];
   // js/word-data.js is lazy (js/lazy-data.js SCREEN_FILES.wordScreen): until
-  // the Word tab is opened these are empty, and every caller copes with [].
+  // the Word screen has opened these are empty, and every caller copes with [].
   if (s === 'pr1') return (typeof UNIT_WORDS_PR1 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR1, 'pr1') : [];
   if (s === 'pr2') return (typeof UNIT_WORDS_PR2 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR2, 'pr2') : [];
   if (s === 'pr3') return (typeof UNIT_WORDS_PR3 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_PR3, 'pr3') : [];
-  return (typeof UNIT_WORDS !== 'undefined') ? _unitsTagSet(UNIT_WORDS, 'pre') : [];
+  return [];
 }
 // Every word the tab knows, across all sets. Used where a word arrives with no
 // set attached — an owed word from an earlier practice, a history row.
@@ -150,44 +121,26 @@ function unitsList(set) {
   return [...new Set(unitsBank(set).map(w => w.unit))].sort((a, b) => a - b);
 }
 function unitTitle(set, unit) {
-  if (set === 'hk1' && typeof UNIT_HK1_TITLES !== 'undefined') return UNIT_HK1_TITLES[unit] || '';
-  if (set === 'hk2' && typeof UNIT_HK2_TITLES !== 'undefined') return UNIT_HK2_TITLES[unit] || '';
-  if (set === 'posthk' && typeof UNIT_POSTHK_TITLES !== 'undefined') return UNIT_POSTHK_TITLES[unit] || '';
   if (/^pr[123]$/.test(set) && typeof UNIT_PR_TITLES !== 'undefined') return (UNIT_PR_TITLES[set] || {})[unit] || '';
   return '';
 }
-// The textbook units a practice unit merges. HK1 and HK2 both renumber theirs
-// 1..5, so the card says which pair it covers ("Bài 1-2", "Bài 11-12") — the
-// number alone would not point anywhere in the book.
-function unitBooks(set, unit) {
-  const map = set === 'hk1' ? (typeof UNIT_HK1_BOOKS !== 'undefined' ? UNIT_HK1_BOOKS : null)
-            : set === 'hk2' ? (typeof UNIT_HK2_BOOKS !== 'undefined' ? UNIT_HK2_BOOKS : null)
-            : null;
-  return (map && map[unit]) || null;
-}
-function unitBooksLabel(set, unit) {
-  // Post-HK words come from a glossary at the BACK of a book rather than from
-  // any one unit of it, so "Bài 3-4" would point nowhere. The card names the
-  // book instead — two subjects share this tab and the child needs to know
-  // which one a unit belongs to.
-  if (set === 'posthk') {
-    return (typeof UNIT_POSTHK_SOURCE !== 'undefined' && UNIT_POSTHK_SOURCE[unit]) || '';
-  }
-  const b = unitBooks(set, unit);
-  if (!b || !b.length) return '';
-  return 'Bài ' + (b.length > 1 ? b[0] + '-' + b[b.length - 1] : b[0]);
-}
+// A Book unit IS a book unit — the card needs no "Bài n" pointer.
+function unitBooks() { return null; }
+function unitBooksLabel() { return ''; }
 
 // ---- unit keys ----
-// 'hk1-4' → { set:'hk1', unit:4 }; a bare 4 or 'mix' is the original 'pre' set.
+// 'pr1-4' → { set:'pr1', unit:4 }; 'pr3-mix' → { set:'pr3', unit:'mix' }.
+// A key from no known set (a row written by an older build) parses to set
+// null, which unitsBank answers with [] — it counts for nothing and breaks
+// nothing.
 function _unitKey(set, unit) {
-  return (set && set !== 'pre') ? set + '-' + unit : unit;
+  return set + '-' + unit;
 }
 function _unitParse(key) {
   const s = String(key);
   const m = s.match(UNIT_SET_RE);
   if (m) return { set: m[1], unit: m[2] === 'mix' ? 'mix' : Number(m[2]) };
-  return { set: 'pre', unit: s === 'mix' ? 'mix' : Number(s) };
+  return { set: null, unit: s === 'mix' ? 'mix' : Number(s) };
 }
 // The key as a JavaScript literal, for inline onclick handlers.
 function _unitKeyArg(key) {
@@ -202,7 +155,8 @@ function _unitPool(key) {
 }
 function _unitLabel(key) {
   const { set, unit } = _unitParse(key);
-  const prefix = set === 'pre' ? '' : (UNIT_SETS.find(s => s.id === set) || {}).name + ' · ';
+  const meta = UNIT_SETS.find(s => s.id === set);
+  const prefix = meta ? meta.name + ' · ' : '';
   return prefix + (unit === 'mix' ? '🎲 Mix' : 'Unit ' + unit);
 }
 
@@ -301,7 +255,7 @@ function pickUnitGapMode(rand) {
 // while Mix recalls substantially more of each word. Full appears twice so a
 // child cannot pass the mixed review mostly from its first letter.
 function pickUnitGapModeForKey(key, rand, word) {
-  if (String(key) !== 'hk1-mix') return pickUnitGapMode(rand);
+  if (!/-mix$/.test(String(key))) return pickUnitGapMode(rand);
   const rnd = rand || Math.random;
   const modes = [6, 7, 8, 'full', 'full'];
   const mode = modes[Math.floor(rnd() * modes.length)];
@@ -347,13 +301,13 @@ function _unitAnswerCorrect(input, en) {
 
 // ---- owed words: every word missed must be typed back ----
 // The rule, the queue, the gate, the 👁 hint and the verdict screen live in
-// js/retrydrill.js — six tabs share one implementation. This file only says
-// what a Grade 4 word looks like inside it.
+// js/retrydrill.js, shared by every practice that ever had one. This file
+// only says what a Book word looks like inside it.
 // Named and exported rather than passed straight in, so the two functions that
 // decide what an owed word IS can be tested without standing up the whole drill.
-const UNITS_RETRY_CONFIG = {
-  key: 'units',
-  screenId: 'grade4Detail',
+const WORD_RETRY_CONFIG = {
+  key: 'word',
+  screenId: 'wordDetail',
   noun: 'từ',
   // An owed word is stored as "set|word" so it comes back meaning what it meant
   // when it was missed. Debts written before this carry the bare word; those
@@ -379,24 +333,7 @@ const UNITS_RETRY_CONFIG = {
     <div class="unit-q-vi">${unitEsc(w.vi)}</div>`,
   sayHTML: (w) => `<button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>`,
   onAnswer: (w, ok) => { _unitSpeak(w.en); if (ok) _unitBumpWordLevel(w.en, true); },
-  // The drill takes over the Topics detail pane, so the home pieces step aside.
-  onOpen: () => {
-    _unitQuiz = null;
-    _unitHostId = 'grade4';
-    ['unitsBar', 'grade4SubTabs', 'grade4History']
-      .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    const d = document.getElementById('grade4Detail');
-    if (d) d.style.display = '';
-  },
-  home: () => { if (typeof renderGrade4Home === 'function') renderGrade4Home(); },
-};
-if (typeof defineRetryDrill === 'function') defineRetryDrill(UNITS_RETRY_CONFIG);
-
-// The Word tab owes its words on its own screen. Same rules, same word
-// shape; only where it draws and which queue it keeps differ.
-const WORD_RETRY_CONFIG = Object.assign({}, UNITS_RETRY_CONFIG, {
-  key: 'word',
-  screenId: 'wordDetail',
+  // The drill takes over the detail pane, so the home pieces step aside.
   onOpen: () => {
     _unitQuiz = null;
     _unitHostId = 'word';
@@ -406,12 +343,13 @@ const WORD_RETRY_CONFIG = Object.assign({}, UNITS_RETRY_CONFIG, {
     if (d) d.style.display = '';
   },
   home: () => { if (typeof renderWordHome === 'function') renderWordHome(); },
-});
+};
 if (typeof defineRetryDrill === 'function') defineRetryDrill(WORD_RETRY_CONFIG);
+// The name the rest of this file (and its tests) knew the config by.
+const UNITS_RETRY_CONFIG = WORD_RETRY_CONFIG;
 
 // Named wrappers so this tab reads in its own vocabulary. They answer for the
-// host in play; an argument names a host ('grade4', 'word') or its retry key
-// ('units', 'word') explicitly.
+// host in play; an argument names a host ('word') or its retry key explicitly.
 function unitsRetryKey(which) {
   if (which && UNIT_HOSTS[which]) return UNIT_HOSTS[which].retryKey;
   const byKey = which && Object.values(UNIT_HOSTS).find(h => h.retryKey === which);
@@ -421,7 +359,7 @@ function unitsRetryList(hostId) { return (typeof retryList === 'function' ? retr
 function unitsRetryCount(hostId) { return (typeof retryCount === 'function' ? retryCount(unitsRetryKey(hostId)) : 0); }
 function startUnitRetry(hostId) { return (typeof startRetryDrill === 'function' ? startRetryDrill(unitsRetryKey(hostId)) : undefined); }
 
-// ---- Grade 4 view: one card per unit, with word count + best score ----
+// ---- Book view: one card per unit, with word count + best score ----
 // ---- mastery ----
 // Ten perfect 10/10 runs retires a unit. The point is to stop a child grinding
 // the one unit they already know for easy coins: once it is mastered the card
@@ -441,7 +379,7 @@ function unitPerfectCount(unit, history) {
 
 // Mix is deliberately never mastered: it draws from every unit, so retiring it
 // would leave a fully-mastered child with nothing to do. Matched by suffix so
-// every set's Mix key ('mix', 'hk1-mix') is covered.
+// every book's Mix key ('pr1-mix', 'pr2-mix'…) is covered.
 function isUnitMastered(unit, history) {
   if (/(^|-)mix$/.test(String(unit))) return false;
   return unitPerfectCount(unit, history) >= UNIT_MASTERY_TARGET;
@@ -498,11 +436,17 @@ function unitsHostHistory(hostId) {
   return hist.filter(h => h && unitHostOfSet(_unitParse(h.unit).set) === id);
 }
 
-function renderUnitSetTabsHTML() {
-  const active = currentUnitSet();
-  return `<div class="grammar-subtabs g4-set-tabs">` + unitHostSets(_unitHostId).map(s => `
-    <button class="grammar-subtab ${s.id === active ? 'active' : ''}"
-            onclick="switchUnitSet('${s.id}')">${s.label}</button>`).join('') + `</div>`;
+// The bottom bar's three Book buttons choose the set, so the screen carries no
+// set strip of its own; its header names the open book instead.
+function renderUnitSetTabsHTML() { return ''; }
+function renderUnitHeader() {
+  if (typeof document === 'undefined') return;
+  const host = _unitHost();
+  const meta = UNIT_SETS.find(s => s.id === currentUnitSet()) || UNIT_SETS[0];
+  const title = document.getElementById(host.title);
+  const sub = document.getElementById(host.subtitle);
+  if (title) title.textContent = meta.label;
+  if (sub) sub.textContent = meta.sub;
 }
 
 function renderUnitsBar() {
@@ -514,6 +458,7 @@ function renderUnitsBar() {
   const set = currentUnitSet();
   const setMeta = UNIT_SETS.find(s => s.id === set) || UNIT_SETS[0];
   const tabs = renderUnitSetTabsHTML();
+  renderUnitHeader();
 
   // A set with no words yet says so plainly, instead of showing an empty grid
   // that reads as a bug.
@@ -649,7 +594,7 @@ function renderUnitsHistory() {
 }
 
 // Which sub-tab (Bài học / Lịch sử) each host is showing.
-const _unitView = { grade4: 'practice', word: 'practice' };
+const _unitView = { word: 'practice' };
 function _renderUnitsHome(hostId, view) {
   _unitHostId = hostId;
   const host = _unitHost();
@@ -667,16 +612,10 @@ function _renderUnitsHome(hostId, view) {
   const history = _unitHostEl('history');
   if (bar) bar.style.display = cur === 'practice' ? '' : 'none';
   if (history) history.style.display = cur === 'history' ? '' : 'none';
+  renderUnitHeader();
   if (cur === 'history') renderUnitsHistory(); else renderUnitsBar();
 }
-function renderGrade4Home(view) { _renderUnitsHome('grade4', view); }
 function renderWordHome(view) { _renderUnitsHome('word', view); }
-function openGrade4(view) {
-  _unitView.grade4 = view === 'history' ? 'history' : 'practice';
-  if (typeof switchScreen === 'function' && switchScreen('gradeFourScreen') === false) return false;
-  renderGrade4Home();
-  return true;
-}
 function openWord(view) {
   _unitView.word = view === 'history' ? 'history' : 'practice';
   if (typeof switchScreen === 'function' && switchScreen('wordScreen') === false) return false;
@@ -723,7 +662,7 @@ function startUnitPractice(unit) {
     // like the textbook's st__ent / ch_cken style. Per-word levels are still
     // tracked (see _unitBumpWordLevel) for possible future use.
     const mode = pickUnitGapModeForKey(unit, undefined, w.en);
-    return { w, mode, gap: buildUnitGap(w.en, mode, undefined, String(unit) === 'hk1-mix') };
+    return { w, mode, gap: buildUnitGap(w.en, mode, undefined, /-mix$/.test(String(unit))) };
   });
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
@@ -913,6 +852,9 @@ function nextUnitQuestion() {
 function finishUnitPractice() {
   const st = _unitQuiz;
   if (!st) return;
+  // Claimed BEFORE the payout and the render (as every other finish did since
+  // ca64527f): a render that throws must not let a second tap pay again.
+  _unitQuiz = null;
   const total = st.questions.length;
   let score = 0;
   const wrong = [];
@@ -959,10 +901,16 @@ function finishUnitPractice() {
       skills: Object.keys(skillMap).map(k => skillMap[k])
     });
     if (appState.unitsHistory.length > 300) appState.unitsHistory.length = 300;
-    // Count today toward the daily streak, like lessons and grammar do.
+    // Count today toward the daily streak, and tell the dog (js/home.js
+    // PET_QUESTS: 'lesson' / 'perfect').
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
+    if (typeof checkQuestCompletion === 'function') { try { checkQuestCompletion('lesson', { accuracy: pct }); } catch (e) {} }
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-      try { saveUserData(currentUser, appState); } catch (e) {}
+      // saveUserData sheds old history and retries on a full disk; if it still
+      // gives up, the coins and the row stay in memory for this session and
+      // the learner is TOLD — a silent loss is how a wallet "goes backwards".
+      try { saveUserData(currentUser, appState); }
+      catch (e) { if (typeof showToast === 'function') showToast('⚠️ Không lưu được kết quả — bộ nhớ máy đầy'); }
     }
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
@@ -1004,7 +952,6 @@ function finishUnitPractice() {
         : `<button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${_unitKeyArg(st.unit)})">🔁 Practice ${_unitLabel(st.unit)} again</button>`}
     </div>`;
   fireRewardCelebration(coinsEarned, pct);
-  _unitQuiz = null;
   // No round left → the checkpoint is cleared at once (js/app.js), so a
   // finished one is never offered back after a reload and paid for twice.
   if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
@@ -1024,7 +971,7 @@ if (typeof module !== 'undefined' && module.exports) {
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
-    modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderGrade4Home, openGrade4,
+    modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderUnitHeader,
     _unitLabel, _unitSpeak, _unitSpeakAttr,
     unitsWrongAggregate, renderUnitsWrongPanelHTML,
   };

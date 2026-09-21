@@ -1,7 +1,9 @@
 import { requireAuth, json, err } from './_lib.js';
 
 // GET/PUT /api/assets — the server backup for everything a child OWNS:
-// pet accessories, castle skins, stickers, streak shields, dogGrowthXP.
+// pet accessories, stickers, streak shields, dogGrowthXP. (castleSkins rode
+// here too until the 2026-09 cut took the castle with it; a stored blob that
+// still carries the key is simply ignored.)
 // These used to live only in the device's localStorage; a cleared iPad lost
 // every purchase with no recovery path.
 //
@@ -46,7 +48,6 @@ function normalize(raw) {
   const s = raw && typeof raw === 'object' ? raw : {};
   return {
     accessories: cleanSet(s.accessories),
-    castleSkins: cleanSet(s.castleSkins),
     stickers: cleanSet(s.stickers),
     dogGrowthXP: cleanNum(s.dogGrowthXP, MAX_XP),
     streakShields: cleanNum(s.streakShields, MAX_SHIELDS),
@@ -76,7 +77,6 @@ export async function onRequestPut({ request, env }) {
   const sent = normalize(body);
   const merged = {
     accessories: union(stored.accessories, sent.accessories),
-    castleSkins: union(stored.castleSkins, sent.castleSkins),
     stickers: union(stored.stickers, sent.stickers),
     dogGrowthXP: Math.max(stored.dogGrowthXP, sent.dogGrowthXP),
     streakShields: Math.max(stored.streakShields, sent.streakShields),

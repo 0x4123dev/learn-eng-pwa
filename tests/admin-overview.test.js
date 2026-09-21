@@ -232,8 +232,10 @@ suite('admin overview: routes', () => {
         assert.deepEqual(page.parseRoute('#/be/12/lich-su'), { view: 'child', uid: '12', tab: 'history' });
         assert.deepEqual(page.parseRoute('#/be/12/nang-luc'), { view: 'child', uid: '12', tab: 'skills' });
         assert.deepEqual(page.parseRoute('#/be/abc'), { view: 'overview', uid: null, tab: null }, 'a non-numeric id is not a child');
-        assert.deepEqual(page.parseRoute('#/cai-dat'), { view: 'settings', uid: null, tab: 'flags' });
-        assert.deepEqual(page.parseRoute('#/cai-dat/cuop-dem'), { view: 'settings', uid: null, tab: 'raid' });
+        assert.deepEqual(page.parseRoute('#/cai-dat'), { view: 'settings', uid: null, tab: null });
+        // The settings page lost its tabs with the Cướp Đêm rulebook; an old
+        // bookmark still lands on the page.
+        assert.deepEqual(page.parseRoute('#/cai-dat/cuop-dem'), { view: 'settings', uid: null, tab: null });
         assert.deepEqual(page.parseRoute('#/tai-khoan'), { view: 'accounts', uid: null, tab: null });
         assert.deepEqual(page.parseRoute('#/nonsense'), { view: 'overview', uid: null, tab: null });
     });

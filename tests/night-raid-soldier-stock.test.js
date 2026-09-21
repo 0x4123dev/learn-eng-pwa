@@ -1,16 +1,15 @@
-// Kho lính sau khi bỏ trần và bỏ tiêu hao.
+// Kho lính sau khi bỏ trần và bỏ tiêu hao (và, từ 09/2026, bỏ luôn cướp đêm:
+// lính chỉ còn là đội duyệt binh trang trí trên bãi cỏ).
 //
-// Luật mới, do phụ huynh chốt:
+// Luật, do phụ huynh chốt:
 //   - nuôi bao nhiêu lính cũng được, KHÔNG còn trần 10;
-//   - cướp đêm KHÔNG còn tiêu lính, thắng hay thua cũng giữ nguyên quân;
+//   - không có gì tiêu lính; chỉ thu hoạch mới thêm lính;
 //   - bãi cỏ chỉ vẽ tối đa ARMY_DISPLAY_CAP con cho đỡ rối, còn HUD trên đầu
-//     màn hình vẫn hiện SỐ THẬT, cùng tổng DAM và DEF.
+//     màn hình vẫn hiện SỐ THẬT.
 //
-// Ba lỗi cũ đã ăn mất lính của bé và đều được chốt lại ở đây:
-//   1. trận đánh bot trừ sạch kho lính ngay trên máy;
-//   2. finish.js trừ tiếp một lần nữa trên máy chủ;
-//   3. PUT /night-raid/home lấy min(kho cũ, số client gửi), nên một client cũ
-//      kéo tụt kho lính và nuốt luôn mẻ vừa thu hoạch.
+// Lỗi cũ đã ăn mất lính của bé và được chốt lại ở đây: PUT /night-raid/home
+// lấy min(kho cũ, số client gửi), nên một client cũ kéo tụt kho lính và nuốt
+// luôn mẻ vừa thu hoạch.
 'use strict';
 
 const fs = require('fs');
@@ -88,14 +87,9 @@ suite('kho lính: không còn trần', () => {
         assert.truthy(NR.SOLDIER_SANITY_CAP > 1000, 'chặn rác không được thành luật chơi');
     });
 
-    test('mỗi lính vẫn cộng đúng 20 DAM, kể cả khi vượt xa 10', () => {
-        // Chữ ký sau khi master bỏ đồng đội: (layout, dogLevel, soldierCount?, swordCount?)
-        const base = NR.combatPower({ cells: [], soldiers: 0 }, 10);
+    test('số lính lớn đi qua normalizeLayout nguyên vẹn, kể cả khi vượt xa 10', () => {
         for (const n of [4, 10, 25, 300]) {
-            const army = NR.combatPower({ cells: [], soldiers: n }, 10);
-            assert.equal(army.soldiers, n, `${n} lính phải được tính đủ`);
-            assert.equal(army.damage - base.damage, n * 20, `${n} lính phải cộng ${n * 20} DAM`);
-            assert.equal(army.defense, base.defense, 'lính không đổi DEF');
+            assert.equal(NR.normalizeLayout({ cells: [], soldiers: n }).soldiers, n, `${n} lính phải được giữ đủ`);
         }
     });
 
@@ -115,19 +109,12 @@ suite('kho lính: không còn trần', () => {
     });
 });
 
-suite('kho lính: cướp đêm không còn tiêu lính', () => {
-    test('máy chủ không còn trừ lính của bên tấn công', () => {
-        const finish = read('functions/api/night-raid/finish.js');
-        assert.falsy(/soldierLayout\.soldiers\s*=\s*Math\.max\(0,\s*soldierLayout\.soldiers\s*-/.test(finish),
-            'finish.js vẫn trừ lính khỏi nhà bên tấn công');
-        assert.falsy(/UPDATE night_raid_homes SET layout_json=\?,updated_at=\? WHERE user_id=\?'\)\.bind\(JSON\.stringify\(soldierLayout\)/.test(finish),
-            'finish.js vẫn ghi đè layout để trừ lính');
-    });
-
-    test('máy của bé không còn trừ lính sau trận đánh bot', () => {
+suite('kho lính: không có gì tiêu lính', () => {
+    test('máy của bé không còn chỗ nào trừ lính', () => {
         const ui = read('js/night-raid.js');
-        assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui), 'trận bot vẫn trừ lính');
-        assert.falsy(/soldiers=Math\.max\(0,appState\.nightRaidLayout\.soldiers-/.test(ui), 'trận bot vẫn trừ lính');
+        assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui), 'vẫn có chỗ trừ lính');
+        assert.falsy(/soldiers=Math\.max\(0,appState\.nightRaidLayout\.soldiers-/.test(ui), 'vẫn có chỗ trừ lính');
+        assert.falsy(/night-raid\/finish|startRaid|combatPower/.test(ui), 'không còn trận đánh nào để tiêu lính');
     });
 });
 
@@ -163,11 +150,10 @@ suite('kho lính: chỉ thu hoạch mới đổi được', () => {
         assert.truthy(r.ok, JSON.stringify(r.data));
         assert.equal(storedSoldiers(world, user.uid), 0, 'nhà mới bắt đầu với 0 lính');
         assert.equal(NR.normalizeLayout(r.data.layout).soldiers, 0, 'và client được trả về số thật');
-        // Và DAM không được vọt lên trần vì một con số client tự khai.
+        // Và trong DB cũng là 0, không phải con số client tự khai.
         const layout = NR.normalizeLayout(JSON.parse(
             world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(user.uid).layout_json));
-        assert.equal(NR.combatPower(layout, 1, layout.soldiers).damage,
-            NR.combatPower({ cells: [], soldiers: 0 }, 1, 0).damage, 'không có quân trời cho');
+        assert.equal(layout.soldiers, 0, 'không có quân trời cho');
     });
 
     test('client cũng không tự nâng kho lính lên được', async () => {
@@ -192,28 +178,20 @@ suite('kho lính: bãi cỏ giới hạn hiển thị, HUD hiện số thật', 
         }
     });
 
-    test('HUD hiện số lính thật chứ không phải số con vẽ được, kèm DAM và DEF', () => {
+    test('HUD hiện số lính thật chứ không phải số con vẽ được; DAM và DEF đã đi cùng trận đánh', () => {
         const ui = read('js/night-raid.js');
-        assert.falsy(ui.includes('${power.soldiers}/10'), 'HUD vẫn còn mẫu "n/10" của thời có trần');
-        assert.truthy(ui.includes('<small>LÍNH</small><strong>${power.soldiers}</strong>'),
+        assert.falsy(/soldiers\}\/10/.test(ui), 'HUD vẫn còn mẫu "n/10" của thời có trần');
+        assert.truthy(ui.includes('<small>LÍNH</small><strong>${soldiers}</strong>'),
             'HUD phải hiện đúng số lính đang có');
-        assert.truthy(ui.includes('<small>DAM</small><strong>${power.damage}</strong>'), 'HUD phải còn tổng DAM');
-        assert.truthy(ui.includes('<small>DEF</small><strong>${power.defense}</strong>'), 'HUD phải còn tổng DEF');
+        assert.falsy(ui.includes('<small>DAM</small>'), 'không còn trận đánh thì không còn tổng DAM trên HUD');
+        assert.falsy(ui.includes('<small>DEF</small>'), 'không còn trận đánh thì không còn tổng DEF trên HUD');
         // Nhãn trợ năng của bãi cỏ nói cả hai con số khi chúng khác nhau.
         assert.truthy(ui.includes('data-total="${total}"'), 'bãi cỏ phải mang theo tổng số lính thật');
     });
 
-    test('màn đánh cũng chỉ vẽ tối đa ngần ấy con', () => {
-        for (const f of ['js/night-raid-game.js', 'js/night-raid-phaser.js', 'js/night-raid-choreo.js']) {
-            assert.truthy(/ARMY_DISPLAY_CAP/.test(read(f)), `${f} không giới hạn số lính vẽ ra`);
-        }
-    });
-
     test('không file nào còn dùng trần MAX_SOLDIERS cũ', () => {
-        for (const f of ['js/night-raid-rules.js', 'js/night-raid.js', 'js/night-raid-game.js',
-            'js/night-raid-phaser.js', 'js/night-raid-choreo.js',
-            'functions/api/night-raid/collect.js', 'functions/api/night-raid/finish.js',
-            'functions/api/night-raid/home.js']) {
+        for (const f of ['js/night-raid-rules.js', 'js/night-raid.js',
+            'functions/api/night-raid/collect.js', 'functions/api/night-raid/home.js']) {
             assert.falsy(read(f).includes('MAX_SOLDIERS'), `${f} vẫn còn MAX_SOLDIERS`);
         }
         assert.equal(NR.MAX_SOLDIERS, undefined, 'hằng số trần cũ phải biến mất khỏi rules');

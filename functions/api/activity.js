@@ -4,15 +4,12 @@ import { evaluate } from './_daily-task.js';
 // Every type js/auth.js can emit. A type missing from this list is not
 // rejected loudly — clean() returns null, the row is dropped, the response is
 // still ok, and the client marks it synced and never sends it again. That is
-// exactly what happened to Collocation and Math: both tabs recorded history,
-// both uploaded it, and none of it ever reached the admin. Keep this in step
-// with _localHistoryItems() — tests/feature-sync.test.js pins the two together.
-// 'exam' is the PTNK papers (js/ptnk.js). The HCMC Exam tab still reports
-// through /api/attempts only; PTNK ALSO lands here because this table is
-// what a daily task is matched against, and an admin hands out "làm đề PTNK
-// 2022" as a task.
-const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'collocation', 'wordform',
-               'rewrite', 'verbs', 'math', 'battle', 'exam'];
+// exactly what happened to Collocation and Math once: both tabs recorded
+// history, both uploaded it, and none of it ever reached the admin. Keep this
+// in step with _localHistoryItems() — tests/feature-sync.test.js pins the two
+// together. Since the 2026-09 cut the app has ONE practice: the Book units
+// (js/units.js), uploaded as 'lesson'.
+const TYPES = ['lesson'];
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 const GMT7_MS = 7 * 60 * 60 * 1000;
 
@@ -103,7 +100,7 @@ export async function onRequestPost({ request, env }) {
          VALUES (?, ?, ?, ?, ?, ?, ?)`
       ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson, at);
     });
-    // Coins earned in pet chores, Night Raid or the shop produce no activity
+    // Coins earned in pet chores, the farm or the shop produce no activity
     // items, so a balance-only sync (items: []) must still leave its snapshot
     // — otherwise a day of pure economy play records nothing recoverable.
     const snapshot = coinSnapshot(env, auth.uid, body,

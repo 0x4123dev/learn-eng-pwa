@@ -4,7 +4,6 @@
 //   • Service-worker ASSETS completeness: every js/*.js is cached
 //   • Streak-modal greeting boundaries at tier transitions (0/1/3/7/14/30)
 //   • Pet level evolution boundaries
-//   • Cross-module consistency: GRAMMAR_UNITS ↔ GRAMMAR_LESSONS metadata
 //   • App-version propagation: APP_VERSION matches package.json
 //   • Localstorage migration safety
 
@@ -302,70 +301,7 @@ suite('pet: level evolution boundaries', () => {
 });
 
 // ============================================================================
-// CROSS-MODULE: GRAMMAR_UNITS ↔ GRAMMAR_LESSONS metadata consistency
-// ============================================================================
-suite('cross-module: GRAMMAR_UNITS and GRAMMAR_LESSONS share unit IDs + icons', () => {
-    test('every GRAMMAR_LESSONS unit has a matching GRAMMAR_UNITS entry', () => {
-        const env = loadAppCode();
-        for (const lu of env.GRAMMAR_LESSONS) {
-            const gu = env.getGrammarUnit(lu.unitId);
-            assert.truthy(gu, `${lu.unitId} in GRAMMAR_LESSONS but not GRAMMAR_UNITS`);
-        }
-    });
-    test('every GRAMMAR_UNITS unit has a matching GRAMMAR_LESSONS entry', () => {
-        const env = loadAppCode();
-        for (const u of env.GRAMMAR_UNITS) {
-            const lu = env.GRAMMAR_LESSONS.find(x => x.unitId === u.id);
-            assert.truthy(lu, `${u.id} in GRAMMAR_UNITS but not GRAMMAR_LESSONS`);
-        }
-    });
-    test('icon and color match between modules for every unit', () => {
-        const env = loadAppCode();
-        for (const u of env.GRAMMAR_UNITS) {
-            const lu = env.GRAMMAR_LESSONS.find(x => x.unitId === u.id);
-            assert.equal(u.icon, lu.icon,
-                `${u.id} icon: GRAMMAR_UNITS="${u.icon}" vs GRAMMAR_LESSONS="${lu.icon}"`);
-            assert.equal(u.color, lu.color,
-                `${u.id} color: GRAMMAR_UNITS="${u.color}" vs GRAMMAR_LESSONS="${lu.color}"`);
-        }
-    });
-});
-
-// ============================================================================
-// SRS — basic interval progression
-// ============================================================================
-suite('srs: interval progression sequence on consecutive correct answers', () => {
-    test('5 correct in a row produces growing intervals', () => {
-        const env = loadAppCode();
-        const appState = { srs: { word: { interval: 1, ease: 2.5, repetitions: 0, nextReview: 0, lastReview: 0 } } };
-        env.__setAppState(appState);
-        const seen = [];
-        for (let i = 0; i < 5; i++) {
-            env.updateWordSRS('word', 2);
-            seen.push(appState.srs.word.interval);
-        }
-        // Intervals should be monotonically non-decreasing
-        for (let i = 1; i < seen.length; i++) {
-            assert.truthy(seen[i] >= seen[i - 1],
-                `interval regressed: ${seen[i - 1]} → ${seen[i]} (full: ${seen.join(', ')})`);
-        }
-        // And the last interval should be substantially bigger than the first
-        assert.truthy(seen[4] > seen[0] * 5,
-            `interval growth too slow: ${seen.join(' → ')}`);
-    });
-
-    test('wrong answer after long interval resets to 1 day', () => {
-        const env = loadAppCode();
-        const appState = { srs: { word: { interval: 30, ease: 2.5, repetitions: 5, nextReview: 0, lastReview: 0 } } };
-        env.__setAppState(appState);
-        env.updateWordSRS('word', 0);
-        assert.equal(appState.srs.word.interval, 1, 'wrong should reset interval to 1');
-        assert.equal(appState.srs.word.repetitions, 0, 'wrong should reset reps to 0');
-    });
-});
-
-// ============================================================================
-// GRAMMAR QUIZ flow — once-per-day streak doesn't get marked unless modal shown
+// STREAK MODAL — the once-per-day gate is keyed per user
 // ============================================================================
 suite('streak: localStorage gate uses per-user keys', () => {
     test('mark for "Alice" doesn\'t affect "Bob"', () => {
@@ -394,36 +330,6 @@ suite('streak: localStorage gate uses per-user keys', () => {
         env.localStorage.clear();
         assert.falsy(env.hasShownStreakToday('X'));
         assert.falsy(env.hasShownStreakToday('Y'));
-    });
-});
-
-// ============================================================================
-// GRAMMAR — every unit's quiz can be generated for sizes 5/10/25
-// ============================================================================
-suite('grammar: generateGrammarQuiz works for every unit × every common size', () => {
-    const env = loadAppCode();
-    for (const u of env.GRAMMAR_UNITS) {
-        for (const n of [5, 10, 25]) {
-            test(`${u.id} can generate a ${n}-question quiz with unique IDs`, () => {
-                const qs = env.generateGrammarQuiz(u.id, n);
-                assert.equal(qs.length, n, `${u.id}/${n}: got ${qs.length}`);
-                const ids = new Set(qs.map(q => q.id));
-                assert.equal(ids.size, n, `${u.id}/${n}: duplicate IDs in single quiz`);
-            });
-        }
-    }
-});
-
-// ============================================================================
-// COVERAGE INTEGRATION: data structure invariants we rely on for UI rendering
-// ============================================================================
-suite('grammar: every unit has a unique color (no palette collisions)', () => {
-    test('every unit color is distinct across GRAMMAR_UNITS', () => {
-        const env = loadAppCode();
-        const colors = env.GRAMMAR_UNITS.map(u => u.color);
-        const unique = new Set(colors);
-        assert.equal(unique.size, env.GRAMMAR_UNITS.length,
-            `${env.GRAMMAR_UNITS.length - unique.size} units share a color: ${colors.join(', ')}`);
     });
 });
 

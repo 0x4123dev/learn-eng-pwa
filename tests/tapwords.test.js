@@ -82,7 +82,7 @@ suite('tapwords: dictionary integrity + coverage invariant', () => {
     // bank must resolve via twLookup. Adding questions with new vocabulary
     // fails this test until the dictionary is regenerated.
     test('every bank word resolves through the dictionary', () => {
-        const SKIP = new Set(['explanation', 'vi', 'id', 'type', 'cat', 'topic', 'icon', 'emoji', 'n', 'correct', 'date', 'level', 'keyword', 'pos', 'section']);
+        const SKIP = new Set(['explanation', 'vi', 'exVi', 'id', 'type', 'cat', 'topic', 'icon', 'emoji', 'n', 'correct', 'date', 'level', 'keyword', 'pos', 'section', 'book', 'unit']);
         const texts = [];
         function walk(v, key) {
             if (v == null) return;
@@ -91,8 +91,7 @@ suite('tapwords: dictionary integrity + coverage invariant', () => {
             if (typeof v === 'object') { for (const [k, x] of Object.entries(v)) walk(x, k); }
         }
         const root = f => { const m = require(path.join(__dirname, '..', 'js', f)); Object.values(m).forEach(v => walk(v, 'root')); };
-        ['collocation-data.js', 'phrases-data.js', 'phrases-meanings.js', 'wordform-data.js',
-         'rewrite-data.js', 'grammar-units.js', 'units-data.js', 'vocabulary.js'].forEach(root);
+        ['word-data.js'].forEach(root);
 
         const VN = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
         const words = new Set(['a', 'i']);

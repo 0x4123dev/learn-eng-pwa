@@ -28,7 +28,11 @@ function realScreens() {
   return [...new Set([...read('index.html').matchAll(/id="([a-zA-Z]+Screen)"/g)].map(m => m[1]))].sort();
 }
 function realNavDestinations() {
-  return [...new Set([...read('index.html').matchAll(/switchScreen\('([a-zA-Z]+)'\)/g)].map(m => m[1]))].sort();
+  const html = read('index.html');
+  const direct = [...html.matchAll(/switchScreen\('([a-zA-Z]+)'\)/g)].map(m => m[1]);
+  // The three Book buttons open the shared Word screen through openBook(set).
+  const books = /openBook\('pr[123]'\)/.test(html) ? ['wordScreen'] : [];
+  return [...new Set(direct.concat(books))].sort();
 }
 function realRoutes() {
   const out = [];
@@ -59,83 +63,30 @@ function realMigrations() {
 const FEATURES = [
   { id: 'onboarding', name: 'Tạo hồ sơ và đăng nhập',
     screens: ['onboardingScreen'], routes: ['register', 'login'], verifiedBy: 'client+server' },
-  { id: 'home', name: 'Trang chủ, thú cưng, cửa hàng',
-    screens: ['homeScreen', 'profileScreen', 'learnHubScreen'], routes: ['assets', 'me/wins'], verifiedBy: 'client' },
-  { id: 'topics', name: 'Chủ đề và bài học ghép từ',
-    screens: ['topicsScreen', 'lessonScreen'], routes: [], verifiedBy: 'client' },
-  { id: 'grade4', name: 'Grade 4 trực tiếp từ Learn',
-    screens: ['gradeFourScreen'], routes: [], verifiedBy: 'client' },
-  { id: 'grammar', name: 'Ngữ pháp — 13 unit',
-    screens: ['grammarScreen'], banks: ['js/grammar-units.js', 'js/grammar-lessons.js'], verifiedBy: 'client' },
-  { id: 'verbs', name: 'Động từ bất quy tắc — Speed Challenge',
-    screens: ['speedChallengeScreen'], verifiedBy: 'client' },
-  { id: 'phrases', name: 'Cụm động từ và collocation',
-    screens: ['phrasesScreen'],
-    banks: ['js/phrases-data.js', 'js/phrases-meanings.js', 'js/collocation-data.js', 'js/collocation-followups.js'],
-    verifiedBy: 'client' },
-  { id: 'wordform', name: 'Word form',
-    screens: ['wordformScreen'],
-    banks: ['js/wordform-data.js', 'js/wordform-lessons.js', 'js/wordform-followups.js'], verifiedBy: 'client' },
-  { id: 'rewrite', name: 'Viết lại câu',
-    screens: ['rewriteScreen'], banks: ['js/rewrite-data.js', 'js/rewrite-lessons.js'], verifiedBy: 'client' },
-  { id: 'word', name: 'Word — Career Paths: Public Relations, 3 cuốn × 15 unit, điền từ theo tranh',
+  { id: 'home', name: 'Trang chủ, thú cưng, cửa hàng, hồ sơ',
+    screens: ['homeScreen', 'profileScreen'], routes: ['assets'], verifiedBy: 'client' },
+  { id: 'word', name: 'Book 1 · 2 · 3 — Career Paths: Public Relations, 15 unit mỗi cuốn, điền từ theo tranh và câu ví dụ',
     screens: ['wordScreen'], banks: ['js/word-data.js'], verifiedBy: 'client' },
-  { id: 'ptnk', name: 'PTNK — đề thi thật vào lớp 10',
-    screens: ['ptnkScreen'], banks: ['js/ptnk-data.js'], verifiedBy: 'client' },
-  { id: 'ptnk-practice', name: 'PTNK — luyện dạng đề: đọc hiểu, điền từ, tìm lỗi sai, ngữ pháp & từ vựng, phát âm & trọng âm',
-    screens: ['readingScreen', 'clozeScreen', 'errorsScreen', 'grammarVocabScreen', 'phoneticsScreen'],
-    banks: ['js/reading-data.js', 'js/cloze-data.js', 'js/errors-data.js', 'js/grammar-vocab-data.js', 'js/phonetics-data.js', 'js/phonetics-lessons.js'], verifiedBy: 'client' },
-  // `banks` is everything js/lazy-data.js defers — question data AND, since
-  // 2026-09-11, the code of the two heaviest tabs (GROUP_FILES arena / math).
-  // A code file listed here is proven by the client layer the same way a bank
-  // is: the screen that needs it is opened for real, the group is fetched
-  // through LazyData, and the render is checked afterwards.
-  { id: 'math', name: 'Toán 7 — luyện tập và đề thi',
-    screens: ['mathHubScreen'],
-    banks: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js', 'js/math-luythua.js',
-            'js/math-source-exams.js', 'js/math-fight-bank.js', 'js/mathwars-bank.js', 'js/math-data-hk2.js',
-            'js/math-exams-hk2.js', 'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js',
-            // the tab's code (lazy group "math")
-            'js/math-glossary.js', 'js/math-figures.js', 'js/mathwars.js', 'js/math.js',
-            'js/math-copy.js', 'js/math-board.js'],
-    verifiedBy: 'client' },
-  { id: 'math4', name: 'Toán 4 — Mix, Pre và Bảng cửu chương',
-    banks: ['js/math4-data.js', 'js/math-tables.js'], verifiedBy: 'client' },
-  { id: 'math-fight', name: 'Đấu Toán với bạn',
-    banks: ['js/math-fight-rules.js', 'js/math-fight.js'],
-    routes: ['math-fight/index', 'math-fight/challenge', 'math-fight/respond',
-             'math-fight/progress', 'math-fight/submit'], verifiedBy: 'client+server' },
-  { id: 'pet-battle', name: 'Đấu thú cưng',
-    screens: ['petBattleScreen'],
-    // the Arena's code (lazy group "arena"), shared with night-raid below
-    banks: ['js/battlecalc.js', 'js/battle-teammates.js', 'js/battle-camera.js', 'js/battle-scenes.js',
-            'js/battlelink.js', 'js/petbattle.js', 'js/petbattlegame.js'],
-    routes: ['battle/index', 'battle/challenge', 'battle/respond', 'battle/state', 'battle/turn', 'battle/hire',
-             'battle/history'],
-    verifiedBy: 'client+server' },
-  { id: 'night-raid', name: 'Cướp Đêm và nông trại theo ngày nhiệm vụ',
+  // `banks` is everything js/lazy-data.js defers — question data AND the
+  // farm's code (GROUP_FILES.farm). A code file listed here is proven by the
+  // client layer the same way a bank is: the screen that needs it is opened
+  // for real, the group is fetched through LazyData, and the render is
+  // checked afterwards.
+  { id: 'farm', name: 'Nông trại — xây nhà bằng xu, gieo hạt từ nhiệm vụ hằng ngày, thu hoạch',
     screens: ['nightRaidScreen'],
-    banks: ['js/castle-skins.js', 'js/farm-art-manifest.js', 'js/night-raid-choreo.js', 'js/night-raid-art.js',
-            'js/night-raid-game.js', 'js/night-raid-ruins.js', 'js/night-raid-phaser.js', 'js/night-raid.js'],
-    routes: ['night-raid/home', 'night-raid/start', 'night-raid/finish', 'night-raid/targets',
-             'night-raid/friends', 'night-raid/reports', 'night-raid/collect', 'night-raid/shield', 'night-raid/plant'],
+    banks: ['js/farm-art-manifest.js', 'js/night-raid.js'],
+    routes: ['night-raid/home', 'night-raid/collect', 'night-raid/plant'],
     verifiedBy: 'client+server' },
-  { id: 'ghost-offering', name: 'Hái Quà – Cướp Hằng Nga (sự kiện)',
-    banks: ['js/ghost-offering-schedule.js', 'js/ghost-offering-link.js', 'js/ghost-offering-event.js'],
-    routes: ['ghost-offering'], verifiedBy: 'client+server' },
   { id: 'daily-task', name: 'Nhiệm vụ hằng ngày',
     screens: ['dailyTaskScreen'],
-    routes: ['daily-task/claim', 'daily-task/claim-all', 'me/daily-tasks'], verifiedBy: 'client+server' },
-  { id: 'friends', name: 'Bạn bè',
-    routes: ['friends/index', 'friends/respond', 'friends/activity'], verifiedBy: 'server' },
+    routes: ['me/daily-tasks'], verifiedBy: 'client+server' },
   { id: 'wallet', name: 'Ví xu và phần thưởng',
     routes: ['coins'], verifiedBy: 'server' },
   { id: 'progress-sync', name: 'Đồng bộ tiến độ lên máy chủ',
     routes: ['activity', 'attempts', 'skills', 'me/attempts'], verifiedBy: 'server' },
   { id: 'admin', name: 'Bảng quản trị',
-    routes: ['admin/users', 'admin/activity', 'admin/attempts', 'admin/app-flags',
-             'admin/user-flags', 'admin/grant-coins', 'admin/skills', 'admin/daily-tasks',
-             'admin/night-raid-config'], verifiedBy: 'server' },
+    routes: ['admin/users', 'admin/activity', 'admin/attempts',
+             'admin/user-flags', 'admin/grant-coins', 'admin/skills', 'admin/daily-tasks'], verifiedBy: 'server' },
   { id: 'version', name: 'Điểm kiểm tra bản đang chạy',
     routes: ['version'], verifiedBy: 'server+live' },
 ];
@@ -144,18 +95,16 @@ const FEATURES = [
 // realScreens() cannot see them. Listing them by hand is a compromise, but a
 // named compromise: the check below fails if one of these stops existing, and
 // the rule that every screen must be claimed still applies to it.
-const RUNTIME_SCREENS = {
-    armoryScreen: { source: 'js/armory.js', feature: 'night-raid' },
-};
+const RUNTIME_SCREENS = {};
 
 // Screens with no nav entry are reached from another screen, on purpose.
 const REACHED_FROM_ELSEWHERE = {
   onboardingScreen: 'shown by init() when the device has no signed-in profile',
-  lessonScreen: 'opened from topicsScreen by starting a lesson',
-  petBattleScreen: 'opened from homeScreen',
-  nightRaidScreen: 'opened from petBattleScreen',
   dailyTaskScreen: 'opened from homeScreen',
   profileScreen: 'opened from the home header',
+  // The bottom bar reaches it through openNightRaid(), not switchScreen(),
+  // so realNavDestinations() (which scrapes switchScreen calls) misses it.
+  nightRaidScreen: 'the Nông trại nav button calls openNightRaid() (a lazyEntry, not switchScreen)',
 };
 
 // ---- the check -------------------------------------------------------------

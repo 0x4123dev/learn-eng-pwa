@@ -28,9 +28,9 @@ function load(opts) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/daily-task.js'), 'utf8'), ctx);
   return { DailyTask: ctx.DailyTask, html, calls, sandbox };
 }
-const TASKS = [{ id: 1, kind: 'phrases', label: 'Phrases practice', target: 1, count: 0, done: false }];
+const TASKS = [{ id: 1, kind: 'word:pr1-1', label: 'Book 1 · Unit 1 · The Role of Public Relations', target: 1, count: 0, done: false }];
 const farm = over => Object.assign({ crops: 4, ripe: 1, growing: 3, wiltedCount: 0, wilted: false, barracksReady: 0, preview: { id: 'tomato', g: 1, days: 2, wilted: false }, dayCount: 5, ctx: { today: TODAY, doneYesterday: true, doneToday: false } }, over || {});
-const stateWith = over => ({ allowBot: true, dailyTask: Object.assign({ fetchedAt: Date.now(), date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, shields: { count: 0, activeUntil: 0 }, farm: farm() }, over || {}) });
+const stateWith = over => ({ allowBot: true, dailyTask: Object.assign({ fetchedAt: Date.now(), date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, farm: farm() }, over || {}) });
 
 suite('daily task farm ui: the hero and the strip', () => {
   test('growing: the hero promises growth and the strip shows the closest crop', () => {
@@ -51,7 +51,7 @@ suite('daily task farm ui: the hero and the strip', () => {
     assert.truthy(out.includes('4 cây đang héo'));
   });
   test('done: the hero says the plants grew today', () => {
-    const { DailyTask, html } = load({ appState: stateWith({ allDone: true, rewardedToday: true, tasks: [{ id: 1, kind: 'phrases', label: 'P', target: 1, count: 1, done: true }], farm: farm({ ctx: { today: TODAY, doneYesterday: true, doneToday: true } }) }) });
+    const { DailyTask, html } = load({ appState: stateWith({ allDone: true, rewardedToday: true, tasks: [{ id: 1, kind: 'word:pr1-1', label: 'P', target: 1, count: 1, done: true }], farm: farm({ ctx: { today: TODAY, doneYesterday: true, doneToday: true } }) }) });
     DailyTask.renderScreen();
     assert.truthy(html.dailyTaskScreen.includes('Cây đã lớn hôm nay 🌼'));
   });
@@ -78,11 +78,12 @@ suite('daily task farm ui: the home card and the celebration', () => {
     assert.truthy(html.dailyTaskCard.includes('Cây đang héo 🥀'));
   });
   test('refresh stores farm from the server and the celebration toast mentions the garden', async () => {
-    const { DailyTask, calls, sandbox } = load({ appState: { allowBot: true }, api: () => ({ ok: true, data: { date: TODAY, tasks: [{ id: 1, kind: 'phrases', label: 'P', target: 1, count: 1, done: true }], allDone: true, rewardedToday: true, justRewarded: true, shields: { count: 0, activeUntil: 0 }, swords: { count: 0 }, pending: [TODAY], recent: [], farm: farm({ ripe: 2, ctx: { today: TODAY, doneYesterday: false, doneToday: true } }) } }) });
+    const { DailyTask, calls, sandbox } = load({ appState: { allowBot: true }, api: () => ({ ok: true, data: { date: TODAY, tasks: [{ id: 1, kind: 'word:pr1-1', label: 'P', target: 1, count: 1, done: true }], allDone: true, rewardedToday: true, justRewarded: true, farm: farm({ ripe: 2, ctx: { today: TODAY, doneYesterday: false, doneToday: true } }) } }) });
     await DailyTask.refresh('sync');
     assert.equal(sandbox.appState.dailyTask.farm.ripe, 2);
     const toast = calls.find(c => c[0] === 'toast');
     assert.truthy(toast && toast[1].includes('Cây tươi lại rồi 🌱') && toast[1].includes('2 cây chín'), toast && toast[1]);
+    assert.truthy(toast[1].includes('+200 xu') && !/khiên|kiếm|quà/.test(toast[1]), 'the toast promises the 200 xu and nothing to pick: ' + toast[1]);
   });
 });
 

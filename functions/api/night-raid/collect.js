@@ -12,7 +12,7 @@ export async function onRequestPost({request,env}) {
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid is not enabled',403);
   let body={};try{body=await request.json();}catch(e){}
   const uid=String(body.uid||''),row=await env.DB.prepare('SELECT layout_json,lootable_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
-  if(!row)return err('Hãy mở Nhà Cướp Đêm trước',409);
+  if(!row)return err('Hãy mở nông trại trước',409);
   const now=Date.now(),{dayCount,ctx}=await farmClock(env,auth.uid,now),Farm=NR.farmRules;
   const rawLayout=safeJson(row.layout_json,{cells:[],soldiers:0});
   const layout=NR.normalizeLayout(rawLayout,{dayCount,today:ctx.today,now});
@@ -60,16 +60,17 @@ export async function onRequestPost({request,env}) {
     // for ever. It escaped only when some OTHER write (a builder PUT, or a
     // collect that harvested something else) happened to save the conversion.
     //
-    // Layout ONLY: lootable_coins is never touched here. A raid may be
-    // deducting from that column right now, which is exactly why the harvest
-    // below adds its coins as a delta instead of an absolute number.
+    // Layout ONLY: lootable_coins is never touched here. Another request may
+    // be moving that column right now (a barracks purchase, a second collect),
+    // which is exactly why the harvest below adds its coins as a delta
+    // instead of an absolute number.
     const fixed=JSON.stringify(withBarracksTraining(layout,training));
     if(fixed!==String(row.layout_json||''))await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,updated_at=? WHERE user_id=?').bind(fixed,now,auth.uid).run();
     return json({ok:true,nothingReady:true,wilted,layout,coins,soldiers,dayCount,ctx});
   }
   // Add the harvest as a DELTA instead of writing back the absolute number:
-  // the old read-modify-write raced with a concurrent collect or a raid
-  // deduction, and whichever wrote last silently undid the other's money.
+  // the old read-modify-write raced with a concurrent collect or purchase,
+  // and whichever wrote last silently undid the other's money.
   await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=MIN(100000,MAX(0,lootable_coins)+?),updated_at=? WHERE user_id=?').bind(JSON.stringify(withBarracksTraining(layout,training)),collectedCoins,now,auth.uid).run();
   const fresh=await env.DB.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
   return json({ok:true,layout,coins:Math.max(0,Math.trunc(+((fresh&&fresh.lootable_coins))||0)),soldiers,collectedCoins,collectedSoldiers,harvested,wilted,dayCount,ctx});

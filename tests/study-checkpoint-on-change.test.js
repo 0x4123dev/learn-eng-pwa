@@ -25,11 +25,11 @@ function checkpointSource() {
   return consts + "const STUDY_CHECKPOINT_MAX_AGE = 86400000;\n" + APP.slice(from, to);
 }
 
-// A page with a phrases quiz on it and a localStorage that remembers what
-// was written and when. Timers are real (the debounce is the thing under
-// test) but short.
+// A page with a Book practice on it (js/units.js on the Word screen) and a
+// localStorage that remembers what was written and when. Timers are real
+// (the debounce is the thing under test) but short.
 function page() {
-  const doc = createDocument('<div id="phrasesScreen" class="screen active"></div><div id="ptnkScreen" class="screen"></div>');
+  const doc = createDocument('<div id="wordScreen" class="screen active"><div id="wordUnitsBar"></div><div id="wordSubTabs"></div><div id="wordHistory"></div><div id="wordDetail"></div></div><div id="homeScreen" class="screen"></div>');
   const store = {};
   const writes = [];
   const sandbox = {
@@ -45,11 +45,9 @@ function page() {
     getUsers: () => ['kid'], getUserData: () => ({}),
     saveUserData() {}, showToast() {}, switchScreen() {}, renderHome() {}, createConfetti() {},
     setBottomNavActive() {}, speakAnswer() {}, petCheerAnswer() {}, recordStudy() {},
-    savePhrasesSession() {}, phrasesSkillSummaries: () => [], prioRecord() {}, retryAdd() {},
-    phrasesById: () => null, petComboBonus: () => 0, fireRewardCelebration() {},
+    prioRecord() {}, retryAdd() {}, petComboBonus: () => 0,
     answerGateHTML: () => '', tapwordsWrap: s => s,
     EngAuth: { syncNow() {} },
-    speedState: { currentVerbs: [] }, lessonState: null,
     addEventListener() {}, removeEventListener() {},
     module: { exports: {} },
   };
@@ -57,8 +55,7 @@ function page() {
   sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
   vm.runInContext(checkpointSource(), sandbox, { filename: 'app.js#checkpoint' });
-  vm.runInContext(read('js/phrases.js'), sandbox, { filename: 'js/phrases.js' });
-  vm.runInContext(read('js/exam.js'), sandbox, { filename: 'js/exam.js' });
+  vm.runInContext(read('js/units.js'), sandbox, { filename: 'js/units.js' });
   vm.runInContext('startStudyCheckpointing();', sandbox);
   const saved = () => {
     const raw = store['flashlingo-study-checkpoint-v1'];
@@ -67,11 +64,14 @@ function page() {
   return { sandbox, doc, store, writes, saved, run: code => vm.runInContext(code, sandbox) };
 }
 
-const QUIZ = `_phrQuiz = { questions: [
-  { id: 'p1', q: 'He is good ___ maths.', options: ['at', 'in', 'on', 'of'], correct: 0, explanation: 'good at' },
-  { id: 'p2', q: 'She is keen ___ art.', options: ['at', 'in', 'on', 'of'], correct: 2, explanation: 'keen on' },
-], idx: 0, answers: [null, null], startedAt: Date.now() };
-renderPhrQuestion();`;
+// Two Book 1 words, the shape startUnitPractice builds.
+const QUIZ = `_unitQuiz = { unit: 'pr1-1', questions: [
+  { w: { set: 'pr1', unit: 1, en: 'advocate', vi: 'người ủng hộ', emoji: '📣' }, mode: 4, gap: buildUnitGap('advocate', 4) },
+  { w: { set: 'pr1', unit: 1, en: 'client', vi: 'khách hàng', emoji: '🤝' }, mode: 4, gap: buildUnitGap('client', 4) },
+], idx: 0, answers: [null, null] };
+renderUnitQuestion();`;
+// Type an answer into the box the practice drew, and check it.
+const ANSWER = (text) => `document.getElementById('unitTextInput').value = ${JSON.stringify(text)}; submitUnitAnswer();`;
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
@@ -87,20 +87,10 @@ suite('study checkpoint: saved on change, not every second', () => {
     assert.truthy(APP.includes('const STUDY_CHECKPOINT_DRAFT_MS = 500'));
   });
 
-  test('every engine the checkpoint covers saves from its render and clears at its end', () => {
+  test('the engine the checkpoint covers saves from its render and clears at its end', () => {
     // [file, render function, end-of-round function, the line in it after which it must save]
     const ENGINES = [
-      ['js/grammar-ui.js', 'renderGrammarQuestion', 'finishGrammarQuiz', '_grammarQuizState = null;'],
-      ['js/phrases.js', 'renderPhrQuestion', 'finishPhrasesQuiz', '_phrQuiz = null;'],
-      ['js/wordform.js', 'renderWfQuestion', 'finishWordformQuiz', '_wfQuiz = null;'],
-      ['js/rewrite.js', 'renderRwQuestion', 'finishRewriteQuiz', '_rwQuiz = null;'],
-      ['js/collocation.js', 'renderCollocQuestion', 'finishCollocPractice', '_colQuiz = null;'],
-      ['js/units.js', 'renderUnitQuestion', 'finishUnitPractice', '_unitQuiz = null;'],
-      ['js/math.js', 'renderMathQuestion', 'finishMathQuiz', '_mathQuiz = null;'],
-      ['js/mathwars.js', 'renderWars', 'finishWars', '_warsQuiz = null;'],
-      ['js/exam.js', 'renderExamQuestion', 'finishExam', 's.finished = true;'],
-      ['js/verbs.js', 'showSpeedQuestion', 'completeSpeedChallenge', "getElementById('speedCompleteOverlay').classList.add('active');"],
-      ['js/lessons.js', 'renderMatchingRound', null, null],
+      ['js/units.js', 'renderUnitQuestion', 'finishUnitPractice', 'fireRewardCelebration(coinsEarned, pct);'],
     ];
     const CALL = "if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();";
     const fnBody = (src, name) => {
@@ -118,25 +108,24 @@ suite('study checkpoint: saved on change, not every second', () => {
         assert.truthy(body.slice(at, at + 400).includes(CALL), file + ': ' + finish + ' does not clear the checkpoint');
       }
     }
-    // The clocks keep the remaining time honest without a page-wide timer.
-    for (const [file, tick] of [['js/exam.js', '_examTick'], ['js/mathwars.js', 'warsClockTick'], ['js/verbs.js', 'showSpeedQuestion']]) {
-      const src = read(file);
-      const body = src.slice(src.indexOf('function ' + tick + '('));
-      assert.truthy(body.slice(0, 2500).includes('saveStudyCheckpointOnClock()'), file + ': ' + tick + ' does not tick the clock save');
-    }
+    // The only kind js/app.js builds is the Book practice, on the Word screen.
+    const build = APP.slice(APP.indexOf('function buildStudyCheckpoint()'), APP.indexOf('function saveStudyCheckpoint()'));
+    assert.deepEqual([...build.matchAll(/kind:\s*'(\w+)'/g)].map(m => m[1]), ['units']);
+    assert.truthy(build.includes("unitPracticeScreen() : 'wordScreen'"), 'it names the screen the engine says the round is on');
   });
 
   test('an answer is in localStorage before any clock could have ticked', () => {
     const p = page();
     p.run(QUIZ);
-    assert.equal(p.saved().kind, 'phrases', 'starting the quiz checkpointed it');
+    assert.equal(p.saved().kind, 'units', 'starting the practice checkpointed it');
+    assert.equal(p.saved().screen, 'wordScreen', 'on the Word screen');
     assert.deepEqual(p.saved().state.answers, [null, null]);
     const before = p.writes.length;
-    p.run('answerPhrQuestion(2)');
+    p.run(ANSWER('advocate'));
     // No await, no tick: the write already happened.
-    assert.deepEqual(p.saved().state.answers, [2, null], 'the answer was saved synchronously');
+    assert.deepEqual(p.saved().state.answers, [{ value: 'advocate', isCorrect: true }, null], 'the answer was saved synchronously');
     assert.truthy(p.writes.length > before, 'a write happened');
-    p.run('nextPhrQuestion()');
+    p.run('nextUnitQuestion()');
     assert.equal(p.saved().state.idx, 1, 'moving on was saved synchronously');
     assert.equal(p.saved().user, 'kid');
   });
@@ -144,54 +133,44 @@ suite('study checkpoint: saved on change, not every second', () => {
   test('finishing the round clears the checkpoint, so it is never offered back', () => {
     const p = page();
     p.run(QUIZ);
-    p.run('answerPhrQuestion(0); nextPhrQuestion(); answerPhrQuestion(2);');
-    assert.deepEqual(p.saved().state.answers, [0, 2]);
-    p.run('nextPhrQuestion()');   // past the last question → finishPhrasesQuiz
-    assert.equal(p.run('_phrQuiz'), null);
+    p.run(ANSWER('advocate') + ' nextUnitQuestion(); ' + ANSWER('zzz'));
+    assert.deepEqual(p.saved().state.answers.map(a => a.isCorrect), [true, false]);
+    p.run('nextUnitQuestion()');   // past the last question → finishUnitPractice
+    assert.equal(p.run('_unitQuiz'), null);
+    assert.equal(p.run('appState.coins'), 5, 'the round was scored');
     assert.equal(p.saved(), null, 'a finished round must not survive as a checkpoint');
-  });
-
-  test('a scored exam paper clears its checkpoint the moment it is finished', () => {
-    const p = page();
-    p.run(`_examState = { set: 'ptnk', questions: [{ type: 'mcq', q: 'x', options: ['a','b'], correct: 0 }],
-      answers: [null], idx: 0, deadlineTs: Date.now() + 60000, finished: false, timerId: null, startedAt: Date.now() };
-      saveStudyCheckpoint();`);
-    assert.equal(p.saved().kind, 'exam');
-    p.run("_examState.answers[0] = { value: 0, isCorrect: true }; try { finishExam(false); } catch (e) {}");
-    assert.equal(p.run('_examState && _examState.finished'), true);
-    assert.equal(p.saved(), null, 'the finished paper is not a checkpoint any more');
   });
 
   test('typing is saved ~500 ms after the last keystroke, not on every one', async () => {
     const p = page();
     p.run(QUIZ);
-    // Give the active screen a text box the way a typed question would.
-    p.run("document.getElementById('phrasesScreen').innerHTML += '<input id=\"phrTextInput\" type=\"text\">'");
-    const inp = p.doc.getElementById('phrTextInput');
+    // The practice draws its own text box on the active screen.
+    const inp = p.doc.getElementById('unitTextInput');
+    assert.truthy(inp, 'the answer box is on the Word screen');
     const before = p.writes.length;
     inp.value = 'a'; p.doc.dispatch('input');
-    inp.value = 'at'; p.doc.dispatch('input');
+    inp.value = 'ad'; p.doc.dispatch('input');
     assert.equal(p.writes.length, before, 'no write per keystroke');
     await wait(650);
     assert.equal(p.writes.length, before + 1, 'exactly one write after the debounce');
-    assert.equal(p.saved().drafts.phrTextInput, 'at', 'the draft is what was typed last');
+    assert.equal(p.saved().drafts.unitTextInput, 'ad', 'the draft is what was typed last');
   });
 
   test('a tap saves once, after its handlers ran; going hidden saves at once', async () => {
     const p = page();
     p.run(QUIZ);
     const before = p.writes.length;
-    p.run("_phrQuiz.idx = 1;");           // a handler changed state…
-    p.doc.dispatch('click');              // …during a tap
-    p.doc.dispatch('click');              // two taps, one save
+    p.run("_unitQuiz.idx = 1;");           // a handler changed state…
+    p.doc.dispatch('click');               // …during a tap
+    p.doc.dispatch('click');               // two taps, one save
     assert.equal(p.writes.length, before, 'the tap save is deferred past the handlers');
     await wait(20);
     assert.equal(p.writes.length, before + 1, 'one coalesced write');
     assert.equal(p.saved().state.idx, 1);
-    p.run("_phrQuiz.answers[1] = 2;");
+    p.run("_unitQuiz.answers[1] = { value: 'zzz', isCorrect: false };");
     p.doc.visibilityState = 'hidden';
     p.doc.dispatch('visibilitychange');
-    assert.deepEqual(p.saved().state.answers, [null, 2], 'hidden saved synchronously');
+    assert.deepEqual(p.saved().state.answers, [null, { value: 'zzz', isCorrect: false }], 'hidden saved synchronously');
   });
 
   test('the clock save writes at most once per STUDY_CHECKPOINT_CLOCK_MS', () => {

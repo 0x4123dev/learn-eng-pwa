@@ -36,21 +36,15 @@ const PUBLIC_4XX = new Set(['functions/api/login.js', 'functions/api/register.js
 // human names — what a parent would call the thing that just broke
 // ---------------------------------------------------------------------------
 const AREA = [
-  ['/api/night-raid/', 'Cướp Đêm'],
-  ['/api/battle/', 'Đấu Thú Cưng'],
-  ['/api/math-fight/', 'Đấu Toán'],
-  ['/api/daily-task/', 'Nhiệm vụ hằng ngày'],
+  ['/api/night-raid/', 'Nông trại'],
   ['/api/me/daily-tasks', 'Nhiệm vụ hằng ngày'],
-  ['/api/ghost-offering', 'Hái Quà – Cướp Hằng Nga'],
   ['/api/coins', 'Ví xu'],
-  ['/api/friends', 'Bạn bè'],
   ['/api/admin/', 'Trang quản trị'],
-  ['/api/me/wins', 'Tủ cúp'],
   ['/api/me/attempts', 'Lịch sử làm đề'],
   ['/api/login', 'Đăng nhập'],
   ['/api/register', 'Tạo tài khoản'],
   ['/api/version', 'Phiên bản app'],
-  ['/api/assets', 'Kho đồ của bé'],
+  ['/api/assets', 'Kho đồ của bạn'],
   ['/api/activity', 'Đồng bộ bài học'],
   ['/api/attempts', 'Đồng bộ bài thi'],
   ['/api/skills', 'Đồng bộ kỹ năng'],
@@ -324,39 +318,11 @@ const call = (world, handler, method, url, token, body) =>
 
 function sqlTime(ms) { return new Date(ms).toISOString().replace('T', ' ').slice(0, 19); }
 
-function befriend(world, a, b, daysAgo) {
-  const when = sqlTime(Date.now() - daysAgo * 86400000);
-  world.db.prepare(
-    "INSERT INTO friendships (requester_id, addressee_id, status, created_at, responded_at) VALUES (?,?,'accepted',?,?)"
-  ).run(a.uid, b.uid, when, when);
-}
-
 const grantsOf = (world, uid) =>
   world.db.prepare('SELECT amount FROM coin_grants WHERE user_id=?').all(uid)
     .reduce((sum, r) => sum + Number(r.amount), 0);
 const allGrants = world =>
   world.db.prepare('SELECT COALESCE(SUM(amount),0) AS s FROM coin_grants').get().s;
-
-async function seedHome(world, user, o) {
-  const home = loadModule('functions/api/night-raid/home.js');
-  const r = await hit(world, home.onRequestPut, {
-    method: 'PUT', url: '/api/night-raid/home', token: user.token,
-    body: {
-      layout: { cells: [], soldiers: 0, dogLane: 2 },
-      dogLevel: o.dogLevel || 1, castleSkin: 'stone-keep', coins: o.coins == null ? 800 : o.coins,
-    },
-  });
-  if (o.soldiers) {
-    const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(user.uid);
-    const layout = JSON.parse(row.layout_json);
-    layout.soldiers = o.soldiers;
-    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
-      .run(JSON.stringify(layout), user.uid);
-  }
-  return r;
-}
-const STRONG = { dogLevel: 100, soldiers: 10 };
-const WEAK = { dogLevel: 1, soldiers: 0 };
 
 // ---------------------------------------------------------------------------
 // verifyServer
@@ -392,7 +358,7 @@ async function verifyServer() {
         `${r.file} is routed at ${r.url} but exports no onRequestGet/Post/Put/Delete — every call to it is a 405`);
       else add(id, featureFor(r.url, r.methods[0]), true, `${r.url} → ${r.methods.join(', ')} (${r.file})`);
     }
-    add('route-inventory', 'Toàn bộ API', routes.length >= 40,
+    add('route-inventory', 'Toàn bộ API', routes.length >= 15,
       `${routes.length} routed files under functions/api, ` +
       `${routes.reduce((n, r) => n + r.methods.length, 0)} exported handlers (walked from disk, not a list)`);
 
@@ -439,14 +405,12 @@ async function verifyServer() {
     }
 
     // --- phase 3: a real token, on a real database -------------------------
-    // Four personas across two flag states, so a route that is gated on
-    // users.allow_bot or the math_fight app flag is genuinely entered rather
-    // than bouncing off its own 403.
+    // Two personas — a learner and an admin — so every route is genuinely
+    // entered rather than bouncing off its own 403.
     const w = newWorld(seenSql);
-    const kid = await w.createUser({ username: 'Bé Thường' });
-    const bot = await w.createUser({ username: 'Bé QA', allowBot: true });
-    const boss = await w.createUser({ username: 'Bố', role: 'admin' });
-    const personas = [['plain', kid], ['allow_bot', bot], ['admin', boss]];
+    const kid = await w.createUser({ username: 'Học viên' });
+    const boss = await w.createUser({ username: 'Admin', role: 'admin' });
+    const personas = [['plain', kid], ['admin', boss]];
 
     const statuses = new Map();                   // "METHOD url" -> { persona: status }
     const runSweep = async (label, list) => {
@@ -464,12 +428,8 @@ async function verifyServer() {
         }
       }
     };
-    await runSweep('flagOff', personas);
-    w.db.prepare("INSERT INTO app_flags(key,value,updated_at,updated_by) VALUES('math_fight',1,?,0) " +
-      'ON CONFLICT(key) DO UPDATE SET value=1').run(Date.now());
-    await runSweep('flagOn', [['allow_bot', bot]]);
+    await runSweep('as', personas);
 
-    let flagFlips = [];
     for (const r of routes) {
       for (const method of r.methods) {
         const key = method + ' ' + r.url;
@@ -482,20 +442,15 @@ async function verifyServer() {
         const opened = Object.entries(s).some(([k, v]) => k !== 'boom' && v !== 403);
         if (!opened) { add(id, feature, false, `every persona was refused 403 — the route was never actually entered: ${shown}`); continue; }
         add(id, feature, true, `no 5xx; ${shown}`);
-        if (s['flagOff:allow_bot'] === 403 && s['flagOn:allow_bot'] !== 403) flagFlips.push(`${key} 403→${s['flagOn:allow_bot']}`);
       }
     }
-    add('feature-flag.math_fight', 'Đấu Toán: công tắc bật/tắt', flagFlips.length > 0,
-      flagFlips.length
-        ? `the math_fight app flag really opens: ${flagFlips.join(', ')}`
-        : 'no route changed behaviour when app_flags.math_fight was switched on — either the flag is dead or the sweep never reached the gated routes');
-    const publicRaid = routes.flatMap(r => r.methods.map(m => [m + ' ' + r.url, statuses.get(m + ' ' + r.url)]))
+    const farmRoutes = routes.flatMap(r => r.methods.map(m => [m + ' ' + r.url, statuses.get(m + ' ' + r.url)]))
       .filter(([key]) => key.includes(' /api/night-raid/'));
-    const gatedRaid = publicRaid.filter(([, s]) => s && s['flagOff:plain'] === 403).map(([key]) => key);
-    add('feature.night-raid-global', 'Cướp Đêm: mở cho mọi bé', publicRaid.length > 0 && gatedRaid.length === 0,
-      gatedRaid.length
-        ? `normal children are still blocked from: ${gatedRaid.join(', ')}`
-        : `all ${publicRaid.length} Night Raid route(s) enter normally for a signed-in child without allow_bot`);
+    const gatedFarm = farmRoutes.filter(([, s]) => s && s['as:plain'] === 403).map(([key]) => key);
+    add('feature.farm-open', 'Nông trại: mở cho mọi học viên', farmRoutes.length > 0 && gatedFarm.length === 0,
+      gatedFarm.length
+        ? `signed-in learners are still blocked from: ${gatedFarm.join(', ')}`
+        : `all ${farmRoutes.length} farm route(s) enter normally for a signed-in learner`);
 
     // --- phase 4: the money paths -----------------------------------------
     await moneyChecks(add, seenSql, drainLogs);
@@ -514,79 +469,7 @@ async function verifyServer() {
 // money: the paths that must never regress
 // ---------------------------------------------------------------------------
 async function moneyChecks(add, seenSql, drainLogs) {
-  const NR = 'Cướp Đêm';
-  const start = loadModule('functions/api/night-raid/start.js');
-  const finish = loadModule('functions/api/night-raid/finish.js');
   const coins = loadModule('functions/api/coins.js');
-  const ghost = loadModule('functions/api/ghost-offering.js');
-
-  // ---- Cướp Đêm: a WIN debits only its loot portion ----
-  try {
-    const w = newWorld(seenSql);
-    const attacker = await w.createUser({ allowBot: true });
-    const victim = await w.createUser({ allowBot: true });
-    await seedHome(w, attacker, Object.assign({ coins: 500 }, STRONG));
-    await seedHome(w, victim, Object.assign({ coins: 1000 }, WEAK));
-    const s = await hit(w, start.onRequestPost, { url: '/api/night-raid/start', token: attacker.token, body: { targetId: victim.uid } });
-    const f = await hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId: s.data && s.data.raid && s.data.raid.raidId } });
-    const res = (f.data && f.data.result) || {};
-    const reward = Number(res.reward || 0);
-    const loot = Number(res.loot || 0);
-    const bonus = Number(res.victoryBonus || 0);
-    const victimOwed = grantsOf(w, victim.uid);
-    const attackerOwed = grantsOf(w, attacker.uid);
-    const world = allGrants(w);
-    const ok = f.status === 200 && res.won === true && reward > 0
-      && reward === loot + bonus && victimOwed === -loot && attackerOwed === 0 && world === -loot;
-    add('money.raid-win', `${NR}: đánh thắng nhà bạn`, ok,
-      ok ? `won ${reward} xu = ${loot} loot + ${bonus} system bonus; the victim's device is debited exactly -${loot}, while the attacker applies the total once per raidId on their own phone`
-         : `start=${s.status} finish=${f.status} won=${res.won} reward=${reward} loot=${loot} bonus=${bonus} victimOwed=${victimOwed} attackerOwed=${attackerOwed} ledgerSum=${world} :: ${JSON.stringify(f.data).slice(0, 300)}`);
-  } catch (e) { add('money.raid-win', `${NR}: đánh thắng nhà bạn`, false, 'threw: ' + ((e && e.stack) || e)); }
-
-  // ---- Cướp Đêm: a LOSS burns the fee and the SYSTEM pays the defender ----
-  try {
-    const w = newWorld(seenSql);
-    const attacker = await w.createUser({ allowBot: true });
-    const defender = await w.createUser({ allowBot: true });
-    await seedHome(w, attacker, Object.assign({ coins: 900 }, WEAK));
-    await seedHome(w, defender, Object.assign({ coins: 900 }, STRONG));
-    const s = await hit(w, start.onRequestPost, { url: '/api/night-raid/start', token: attacker.token, body: { targetId: defender.uid } });
-    const f = await hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId: s.data && s.data.raid && s.data.raid.raidId } });
-    const res = (f.data && f.data.result) || {};
-    const loss = Number(res.loss || 0);
-    const gain = Number(res.defenderGain || 0);
-    const defOwed = grantsOf(w, defender.uid);
-    const atkOwed = grantsOf(w, attacker.uid);
-    const cfg = await loadModule('functions/api/_night-raid.js').readRaidConfig(w.env);
-    const ok = f.status === 200 && res.won === false && loss > 0
-      && gain === cfg.defense_reward && res.defenseReason === 'defense_reward'
-      && defOwed === gain && atkOwed === 0 && allGrants(w) === gain;
-    add('money.raid-loss', `${NR}: đánh thua, mất xu`, ok,
-      ok ? `lost ${loss} xu (burned, paid on the attacker's own device); the defender is credited the system's defense_reward of +${gain} exactly once, independent of what the raider had`
-         : `start=${s.status} finish=${f.status} won=${res.won} loss=${loss} defenderGain=${res.defenderGain} defenseReason=${res.defenseReason} defOwed=${defOwed} atkOwed=${atkOwed} :: ${JSON.stringify(f.data).slice(0, 300)}`);
-  } catch (e) { add('money.raid-loss', `${NR}: đánh thua, mất xu`, false, 'threw: ' + ((e && e.stack) || e)); }
-
-  // ---- Cướp Đêm: one raid settles once, however many /finish calls arrive ----
-  try {
-    const w = newWorld(seenSql);
-    const attacker = await w.createUser({ allowBot: true });
-    const victim = await w.createUser({ allowBot: true });
-    await seedHome(w, attacker, Object.assign({ coins: 500 }, STRONG));
-    await seedHome(w, victim, Object.assign({ coins: 1000 }, WEAK));
-    const s = await hit(w, start.onRequestPost, { url: '/api/night-raid/start', token: attacker.token, body: { targetId: victim.uid } });
-    const raidId = s.data && s.data.raid && s.data.raid.raidId;
-    const [a, b] = await Promise.all([
-      hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId } }),
-      hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId } }),
-    ]);
-    const reward = Number((a.data && a.data.result && a.data.result.reward) || 0);
-    const loot = Number((a.data && a.data.result && a.data.result.loot) || 0);
-    const rows = w.db.prepare('SELECT COUNT(*) AS n FROM coin_grants WHERE user_id=?').get(victim.uid).n;
-    const ok = a.status === 200 && b.status === 200 && reward > 0 && Number(rows) === 1 && grantsOf(w, victim.uid) === -loot;
-    add('money.raid-settled-once', `${NR}: bấm hai lần chỉ tính một`, ok,
-      ok ? `two overlapping /finish calls for one raid wrote exactly 1 loot IOU row of -${loot}`
-         : `a=${a.status} b=${b.status} reward=${reward} loot=${loot} iouRows=${rows} owed=${grantsOf(w, victim.uid)}`);
-  } catch (e) { add('money.raid-settled-once', `${NR}: bấm hai lần chỉ tính một`, false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- POST /api/coins: claim → ack → not re-offered ----
   try {
@@ -619,24 +502,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
          : `phone=${phone.data && phone.data.granted} tablet=${tablet.data && tablet.data.granted} — a second device being charged again is a double DEBIT`);
   } catch (e) { add('money.coins-negative-once', 'Ví xu: bị trừ đúng một lần', false, 'threw: ' + ((e && e.stack) || e)); }
 
-  // ---- Hái Quà – Cướp Hằng Nga: the scene replays, the coins do not ----
-  try {
-    const w = newWorld(seenSql);
-    const child = await w.createUser({ allowBot: true });
-    const g1 = await hit(w, ghost.onRequestGet, { method: 'GET', url: '/api/ghost-offering', token: child.token });
-    const c1 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'hangnga', sessionId: g1.data.sessionId } });
-    const g2 = await hit(w, ghost.onRequestGet, { method: 'GET', url: '/api/ghost-offering', token: child.token });
-    const c2 = await hit(w, ghost.onRequestPost, { url: '/api/ghost-offering', token: child.token, body: { itemId: 'hangnga', sessionId: g2.data.sessionId } });
-    const owed = grantsOf(w, child.uid);
-    const ok = c1.status === 200 && Number(c1.data.reward) === 200 && c2.status === 200
-      && Number(c2.data.reward) === 0 && c2.data.replay === true
-      && g2.data.sessionId !== g1.data.sessionId && owed === 200;
-    add('money.ghost-offering-once-a-day', 'Hái Quà – Cướp Hằng Nga: mỗi món chỉ trả thưởng một lần mỗi ngày', ok,
-      ok ? 'reopening the screen mints a fresh preview session and re-lays the gifts, but Hằng Nga pays 200 xu exactly once per event day (ledger total 200)'
-         : `first=${c1.status}/${c1.data && c1.data.reward} second=${c2.status}/${c2.data && c2.data.reward} replay=${c2.data && c2.data.replay} freshSession=${g2.data && g2.data.sessionId !== g1.data.sessionId} owed=${owed}`);
-  } catch (e) { add('money.ghost-offering-once-a-day', 'Hái Quà – Cướp Hằng Nga: mỗi món chỉ trả thưởng một lần mỗi ngày', false, 'threw: ' + ((e && e.stack) || e)); }
-
-  // ---- Nhiệm vụ hằng ngày: earn → 200 xu → turn the pick into a shield ----
+  // ---- Nhiệm vụ hằng ngày: earn → 200 xu, once ----
   try {
     const w = newWorld(seenSql);
     const child = await w.createUser({});
@@ -666,17 +532,13 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const again = await hit(w, me.onRequestGet, { method: 'GET', url: '/api/me/daily-tasks', token: child.token });
     const paidTwice = grantsOf(w, child.uid);
 
-    const claim = loadModule('functions/api/daily-task/claim.js');
-    const pick = await hit(w, claim.onRequestPost, { url: '/api/daily-task/claim', token: child.token, body: { date: view.data.date, kind: 'shield' } });
-    const dup = await hit(w, claim.onRequestPost, { url: '/api/daily-task/claim', token: child.token, body: { date: view.data.date, kind: 'shield' } });
-    const shields = w.db.prepare('SELECT night_shields FROM users WHERE id=?').get(child.uid).night_shields;
+    const rewardRows = w.db.prepare('SELECT COUNT(*) AS n FROM daily_task_rewards WHERE user_id=?').get(child.uid).n;
 
     const ok = created.status === 200 && view.status === 200 && view.data.allDone === true
-      && paidOnce === 200 && paidTwice === 200
-      && pick.status === 200 && dup.status === 409 && Number(shields) === 1;
-    add('money.daily-task-claim', 'Nhiệm vụ hằng ngày: xong việc, nhận 200 xu và một khiên', ok,
-      ok ? `task "${entry.key}" completed once → exactly 200 xu (a second look pays nothing more), and the pick turns into 1 khiên; a repeat claim answers 409 and credits nothing`
-         : `create=${created.status} view=${view.status} allDone=${view.data && view.data.allDone} paid=${paidOnce}/${paidTwice} claim=${pick.status} repeat=${dup.status} shields=${shields} :: ${JSON.stringify(view.data).slice(0, 250)}`);
+      && paidOnce === 200 && paidTwice === 200 && Number(rewardRows) === 1;
+    add('money.daily-task-claim', 'Nhiệm vụ hằng ngày: xong việc, nhận 200 xu', ok,
+      ok ? `task "${entry.key}" completed once → exactly 200 xu and one reward row (the farm's clock); a second look pays nothing more`
+         : `create=${created.status} view=${view.status} allDone=${view.data && view.data.allDone} paid=${paidOnce}/${paidTwice} rows=${rewardRows} :: ${JSON.stringify(view.data).slice(0, 250)}`);
 
     // The admin's per-day history (the who-did-their-tasks grid): the one
     // assembled query in progressRange() runs here for real, and the day the
@@ -690,167 +552,9 @@ async function moneyChecks(add, seenSql, drainLogs) {
       okGrid ? `7 days back, today ${last.date}: 1 task, done, all done, rewarded — the grid cell would be green`
              : `status=${grid.status} days=${hist.length} last=${JSON.stringify(last).slice(0, 200)}`);
 
-    // claim-all, so the other dynamic UPDATE in _daily-task.js is executed too
-    const child2 = await w.createUser({});
-    w.db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?,?,200,1)").run(child2.uid, '2026-01-01');
-    const claimAll = loadModule('functions/api/daily-task/claim-all.js');
-    const all = await hit(w, claimAll.onRequestPost, { url: '/api/daily-task/claim-all', token: child2.token, body: { kind: 'sword' } });
-    const swords = w.db.prepare('SELECT night_swords FROM users WHERE id=?').get(child2.uid).night_swords;
-    const okAll = all.status === 200 && Number(all.data.claimed) === 1 && Number(swords) === 1;
-    add('money.daily-task-claim-all', 'Nhiệm vụ hằng ngày: nhận tất cả làm kiếm', okAll,
-      okAll ? 'one pending reward day turned into exactly 1 kiếm in a single transaction'
-            : `status=${all.status} claimed=${all.data && all.data.claimed} swords=${swords}`);
   } catch (e) {
-    add('money.daily-task-claim', 'Nhiệm vụ hằng ngày: xong việc, nhận 200 xu và một khiên', false, 'threw: ' + ((e && e.stack) || e));
+    add('money.daily-task-claim', 'Nhiệm vụ hằng ngày: xong việc, nhận 200 xu', false, 'threw: ' + ((e && e.stack) || e));
   }
-
-  // ---- Đấu Thú Cưng: challenge → respond → turn → a finished battle ----
-  try {
-    const w = newWorld(seenSql);
-    const a = await w.createUser({ username: 'Chủ nhà' });
-    const b = await w.createUser({ username: 'Khách' });
-    befriend(w, a, b, 5);
-    for (const u of [a, b]) {
-      w.db.prepare('INSERT INTO activities (user_id, type, title, score, total, created_at) VALUES (?,?,?,?,?,?)')
-        .run(u.uid, 'grammar', 'Verify warmup', 20, 20, sqlTime(Date.now()));
-    }
-    const challenge = loadModule('functions/api/battle/challenge.js');
-    const respond = loadModule('functions/api/battle/respond.js');
-    const hire = loadModule('functions/api/battle/hire.js');
-    const turn = loadModule('functions/api/battle/turn.js');
-    const c = await hit(w, challenge.onRequestPost, { url: '/api/battle/challenge', token: a.token, body: { friendId: b.uid, level: 10, stage: 'chihuahua', petName: 'Miu' } });
-    const battleId = c.data && c.data.battle && c.data.battle.id;
-    const r = await hit(w, respond.onRequestPost, { url: '/api/battle/respond', token: b.token, body: { battleId, accept: true, level: 10 } });
-    const hired = await hit(w, hire.onRequestPost, { url: '/api/battle/hire', token: a.token, body: { battleId, hires: ['engineer'] } });
-    // One shot each, so the arena reaches its "both out of ammo" ending and
-    // the finishing UPDATE (a different, dynamically built statement) runs.
-    w.db.prepare('UPDATE battles SET challenger_ammo=1, opponent_ammo=1 WHERE id=?').run(battleId);
-    const before = w.db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-    const t1 = await hit(w, turn.onRequestPost, { url: '/api/battle/turn', token: a.token, body: { battleId, turnNo: before.turn_no, angle: 45, power: 80, shots: 1, rawDamage: 9999 } });
-    const mid = w.db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-    const t2 = await hit(w, turn.onRequestPost, { url: '/api/battle/turn', token: b.token, body: { battleId, turnNo: mid.turn_no, angle: 45, power: 80, shots: 1, rawDamage: 9999 } });
-    const end = w.db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
-    const turnsRecorded = w.db.prepare('SELECT COUNT(*) AS n FROM battle_turns WHERE battle_id=?').get(battleId).n;
-    const ok = c.status === 200 && r.status === 200 && hired.status === 200 && t1.status === 200 && t2.status === 200
-      && String(mid.status) === 'active' && String(end.status) === 'done'
-      && JSON.parse(end.challenger_hires || '[]').includes('engineer')
-      && Number(end.challenger_ammo) === 0 && Number(end.opponent_ammo) === 0
-      && Number(turnsRecorded) === 2 && allGrants(w) === 0;
-    add('money.battle-flow', 'Đấu Thú Cưng: mời → nhận lời → bắn → kết thúc', ok,
-      ok ? `a full arena run: invite → accept → hire → two volleys → status 'done', both magazines spent, 2 turns recorded, winner_id=${end.winner_id}, and the arena created 0 coin_grants rows (it must not print money)`
-         : `challenge=${c.status} respond=${r.status} hire=${hired.status} turn1=${t1.status} turn2=${t2.status} mid=${mid && mid.status} end=${end && end.status} turns=${turnsRecorded} grants=${allGrants(w)} :: ${JSON.stringify(c.data).slice(0, 200)} ${JSON.stringify(t1.data).slice(0, 200)}`);
-
-    // The finished battle is readable by BOTH children, each from their own
-    // side — this is what the arena's history is rebuilt from, so a child
-    // whose profile was not signed in when the last shot landed still gets
-    // the entry (and its pay). A third child gets nothing.
-    const history = loadModule('functions/api/battle/history.js');
-    const z = await w.createUser({ username: 'Người lạ' });
-    const ha = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: a.token });
-    const hb = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: b.token });
-    const hz = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: z.token });
-    const hs = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history?since=' + Number(end.finished_at), token: a.token });
-    const fa = ha.data && ha.data.battles && ha.data.battles[0];
-    const fb = hb.data && hb.data.battles && hb.data.battles[0];
-    const okHist = ha.status === 200 && hb.status === 200 && hz.status === 200 && hs.status === 200
-      && fa && fb && fa.id === battleId && fb.id === battleId && fa.status === 'done' && fb.status === 'done'
-      && fa.me.id === a.uid && fa.foe.id === b.uid && fb.me.id === b.uid && fb.foe.id === a.uid
-      && fa.me.hp === fb.foe.hp && fa.foe.hp === fb.me.hp
-      && fa.winnerId === end.winner_id && fb.winnerId === end.winner_id
-      && Array.isArray(fa.turns) && fa.turns.length === 2 && fb.turns.length === 2
-      && fa.turns[0].userId === a.uid && fa.turns[1].userId === b.uid
-      && hz.data.battles.length === 0 && hs.data.battles.length === 0;
-    add('money.battle-history-both-sides', 'Đấu Thú Cưng: lịch sử đấu đọc từ máy chủ, cả hai bé đều thấy', okHist,
-      okHist ? `GET /api/battle/history: the challenger sees me=${a.uid}/foe=${b.uid} and the opponent the mirror image, same winner ${end.winner_id}, 2 turns each; a stranger sees 0 battles; ?since=<finished_at> returns 0 (the lobby's cheap repeat call)`
-             : `a=${ha.status} b=${hb.status} stranger=${hz.status} since=${hs.status} :: ${JSON.stringify(ha.data).slice(0, 300)} :: ${JSON.stringify(hb.data).slice(0, 200)} :: stranger ${JSON.stringify(hz.data).slice(0, 100)}`);
-
-    // A client that claims a ceiling it never earned must not be believed.
-    const w2 = newWorld(seenSql);
-    const x = await w2.createUser({}); const y = await w2.createUser({});
-    befriend(w2, x, y, 5);
-    for (const u of [x, y]) {
-      w2.db.prepare('INSERT INTO activities (user_id, type, title, score, total, created_at) VALUES (?,?,?,?,?,?)')
-        .run(u.uid, 'grammar', 'Verify warmup', 20, 20, sqlTime(Date.now()));
-    }
-    const c2 = await hit(w2, challenge.onRequestPost, { url: '/api/battle/challenge', token: x.token, body: { friendId: y.uid, level: 200 } });
-    const id2 = c2.data && c2.data.battle && c2.data.battle.id;
-    await hit(w2, respond.onRequestPost, { url: '/api/battle/respond', token: y.token, body: { battleId: id2, accept: true, level: 200 } });
-    const row2 = w2.db.prepare('SELECT * FROM battles WHERE id=?').get(id2);
-    // Straight up at zero power: the shell cannot reach the other castle.
-    await hit(w2, turn.onRequestPost, { url: '/api/battle/turn', token: x.token, body: { battleId: id2, turnNo: row2.turn_no, angle: 90, power: 0, shots: 1, rawDamage: 100000 } });
-    const dmg = w2.db.prepare('SELECT damage FROM battle_turns WHERE battle_id=? AND turn_no=?').get(id2, row2.turn_no);
-    const okCheat = dmg && Number(dmg.damage) === 0;
-    add('money.battle-damage-not-declared', 'Đấu Thú Cưng: không bắn trúng thì không ăn gian được', okCheat,
-      okCheat ? 'a shot fired straight up at zero power scored 0, even though the client reported 100000 — the server re-runs the volley instead of believing the device'
-              : `the server stored damage=${dmg && dmg.damage} for a shot that cannot possibly connect`);
-  } catch (e) { add('money.battle-flow', 'Đấu Thú Cưng: mời → nhận lời → bắn → kết thúc', false, 'threw: ' + ((e && e.stack) || e)); }
-
-  // ---- Đấu Toán: challenge → respond → submit → settle → paid ----
-  try {
-    const MF = require(path.join(ROOT, 'js', 'math-fight-rules.js'));
-    const wars = require(path.join(ROOT, 'js', 'mathwars.js'));
-    const { MATH_FIGHT_BANK } = require(path.join(ROOT, 'js', 'math-fight-bank.js'));
-    global.MATH_FIGHT_BANK = MATH_FIGHT_BANK;
-    global.MathFightRules = MF;
-    global.warsQuestions = wars.warsQuestions;
-
-    const w = newWorld(seenSql);
-    w.db.prepare("INSERT INTO app_flags(key,value,updated_at,updated_by) VALUES('math_fight',1,?,0) " +
-      'ON CONFLICT(key) DO UPDATE SET value=1').run(Date.now());
-    const a = await w.createUser({ username: 'Toán A' });
-    const b = await w.createUser({ username: 'Toán B' });
-    befriend(w, a, b, 5);
-    const mfChallenge = loadModule('functions/api/math-fight/challenge.js');
-    const mfRespond = loadModule('functions/api/math-fight/respond.js');
-    const mfSubmit = loadModule('functions/api/math-fight/submit.js');
-
-    // The tab's own list first: with a friend in it, the set-based "who is
-    // already fighting?" read is actually executed.
-    const mfList = loadModule('functions/api/math-fight/index.js');
-    const list = await hit(w, mfList.onRequestGet, { method: 'GET', url: '/api/math-fight', token: a.token });
-    add('money.math-fight-list', 'Đấu Toán: danh sách bạn để thách đấu', list.status === 200 && Array.isArray(list.data.friends) && list.data.friends.length === 1,
-      list.status === 200 && Array.isArray(list.data.friends)
-        ? `GET /api/math-fight lists ${list.data.friends.length} challengeable friend(s)`
-        : `status=${list.status} :: ${JSON.stringify(list.data).slice(0, 200)}`);
-
-    const off = await hit(w, mfChallenge.onRequestPost, { url: '/api/math-fight/challenge', token: a.token, body: { friendId: b.uid, level: 3, foeLevel: 3 } });
-    const fightId = off.data && off.data.fight && off.data.fight.fightId;
-    const acc = await hit(w, mfRespond.onRequestPost, { url: '/api/math-fight/respond', token: b.token, body: { fightId, accept: true } });
-    const row = w.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
-    const perfect = MF.fightQuestions(row.seed, row.challenger_level, MATH_FIGHT_BANK).map(q => q.answer);
-    const winner = await hit(w, mfSubmit.onRequestPost, { url: '/api/math-fight/submit', token: a.token, body: { fightId, answers: perfect, coins: 500 } });
-    const loser = await hit(w, mfSubmit.onRequestPost, { url: '/api/math-fight/submit', token: b.token, body: { fightId, answers: [], coins: 500 } });
-    const done = w.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
-    const winCoins = Number(winner.data && winner.data.coins);
-    // The winner's own /submit answered before the loser's, so re-ask for the
-    // settled verdict the way js/math-fight.js does.
-    const winClaim = await hit(w, mfSubmit.onRequestPost, { url: '/api/math-fight/submit', token: a.token, body: { fightId, answers: perfect, coins: 500 } });
-    const paidWin = Number(winClaim.data && winClaim.data.coins);
-    const paidLose = Number(loser.data && loser.data.coins);
-    const ok = off.status === 200 && acc.status === 200 && winner.status === 200 && loser.status === 200
-      && String(done.status) === 'done' && Number(done.winner_id) === a.uid
-      && paidWin === MF.PRIZE && paidLose === -MF.PRIZE;
-    add('money.math-fight-flow', 'Đấu Toán: thách đấu → nhận lời → nộp bài → chia xu', ok,
-      ok ? `a full duel: 20/20 beats 0/20, the fight settles once, the winner is offered +${paidWin} and the loser -${-paidLose} — equal and opposite, and neither number comes from the device`
-         : `challenge=${off.status} respond=${acc.status} submitWin=${winner.status} submitLose=${loser.status} status=${done && done.status} winner=${done && done.winner_id}(expect ${a.uid}) winnerCoins=${winCoins}/${paidWin} loserCoins=${paidLose} :: ${JSON.stringify(off.data).slice(0, 200)}`);
-
-    // A settled fight must not pay a second time.
-    const replay = await hit(w, mfSubmit.onRequestPost, { url: '/api/math-fight/submit', token: a.token, body: { fightId, answers: perfect, coins: 500 } });
-    const after = w.db.prepare('SELECT finished_at, winner_id FROM math_fights WHERE id=?').get(fightId);
-    const okReplay = replay.status === 200 && Number(after.winner_id) === a.uid
-      && Number(after.finished_at) === Number(done.finished_at);
-    add('money.math-fight-verdict-stands', 'Đấu Toán: kết quả đã chốt thì không đổi', okReplay,
-      okReplay ? 'a third /submit on a finished fight replays the same verdict and does not re-settle it'
-               : `replay=${replay.status} winner=${after && after.winner_id} finished_at ${after && after.finished_at} vs ${done && done.finished_at}`);
-
-    // /progress is the pulse; it must never carry money.
-    const mfProgress = loadModule('functions/api/math-fight/progress.js');
-    const pulse = await hit(w, mfProgress.onRequestPost, { url: '/api/math-fight/progress', token: a.token, body: { fightId, answers: [] } });
-    add('money.math-fight-pulse-carries-no-money', 'Đấu Toán: nhịp 5 giây không mang tiền', pulse.status === 200 && !pulse.data.coins,
-      pulse.status === 200 && !pulse.data.coins
-        ? 'POST /progress answers 200 and carries no coin field — the money is only ever claimed through /submit'
-        : `status=${pulse.status} coins=${pulse.data && pulse.data.coins}`);
-  } catch (e) { add('money.math-fight-flow', 'Đấu Toán: thách đấu → nhận lời → nộp bài → chia xu', false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- Nông trại: một ngày nhiệm vụ xong là cây lớn một nấc, chín thì ra xu ----
   // Spec 7 asks the verify manifest to cover the farm on the server too. The
@@ -861,7 +565,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
   // the premise of this file is that expectations are read from live data.
   try {
     const w = newWorld(seenSql);
-    const kid = await w.createUser({ username: 'Bé Nông Dân', allowBot: true });
+    const kid = await w.createUser({ username: 'Nông Dân' });
     const Farm = require(path.join(ROOT, 'js', 'farm-rules.js'));
     const crop = Farm.cropById('carrot') || Farm.CROPS[Farm.CROPS.length - 1];
     const gmt7 = ms => new Date(ms + 7 * 3600000).toISOString().slice(0, 10);
@@ -921,7 +625,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
       && gone && harvestedIt && earlySoldiers === 1 && soldiers === 1
       && Number(board.soldiers) === earlySoldiers + soldiers
       && grantsOf(w, kid.uid) === 0;
-    add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', ok,
+    add('money.farm-harvest-per-task-day', 'Nông trại: lớn theo ngày nhiệm vụ, hái ra xu', ok,
       ok ? `${crop.name.vi} planted on task-day 1 (the server refused the client's day=-999 / at=2000-01-01), paid nothing while it was ${crop.days - 1} of ${crop.days} days grown, then paid exactly ${crop.yield} xu on the day it ripened and left the board; lootable_coins moved by ${crop.yield}; the barracks charged 1 banked day for soldier 1, then 2 for soldier 2 while preserving its extra day; 0 coin_grants rows — the harvest never touches that ledger`
          : `put=${planted.status} plant=${plantedSeed.status} stamped=${stampedToday} (${JSON.stringify(seeded)}) unripeAfter${crop.days - 1}=${stillGrowing} collect=${paid.status} coins=${paid.data && paid.data.collectedCoins} want=${crop.yield} purse=${purse} cropGone=${gone} harvested=${harvestedIt} soldiers=${earlySoldiers}+${soldiers} stock=${board.soldiers} grants=${grantsOf(w, kid.uid)}`);
 
@@ -930,25 +634,23 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const idle = await collect();
     const okIdle = idle.status === 200 && !!idle.data.nothingReady
       && JSON.stringify(boardOf().cells) === before && purseOf() === crop.yield;
-    add('money.farm-grows-on-tasks-not-hours', 'Cướp Đêm: nông trại không lớn theo giờ', okIdle,
+    add('money.farm-grows-on-tasks-not-hours', 'Nông trại: không lớn theo giờ', okIdle,
       okIdle ? 'a second harvest with no new daily_task_rewards row pays nothing and changes no cell — only a finished task-day moves the farm'
              : `status=${idle.status} nothingReady=${idle.data && idle.data.nothingReady} purse=${purseOf()} want=${crop.yield} boardChanged=${JSON.stringify(boardOf().cells) !== before}`);
-  } catch (e) { add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', false, 'threw: ' + ((e && e.stack) || e)); }
+  } catch (e) { add('money.farm-harvest-per-task-day', 'Nông trại: lớn theo ngày nhiệm vụ, hái ra xu', false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- extra executions purely so dynamically-built SQL is covered ----
   try {
     const w = newWorld(seenSql);
     const boss = await w.createUser({ role: 'admin' });
     const adminActivity = loadModule('functions/api/admin/activity.js');
-    const appFlags = loadModule('functions/api/admin/app-flags.js');
     const a1 = await hit(w, adminActivity.onRequestGet, { method: 'GET', url: '/api/admin/activity', token: boss.token });
     const a2 = await hit(w, adminActivity.onRequestGet, { method: 'GET', url: '/api/admin/activity?userId=' + boss.uid, token: boss.token });
-    const f1 = await hit(w, appFlags.onRequestGet, { method: 'GET', url: '/api/admin/app-flags', token: boss.token });
-    const ok = a1.status === 200 && a2.status === 200 && f1.status === 200;
-    add('admin.console-reads', 'Trang quản trị: bảng hoạt động và công tắc tính năng', ok,
-      ok ? 'GET /api/admin/activity (all children and filtered to one) and GET /api/admin/app-flags both answer 200 — both build their SQL at run time, so this is the only way their column names get checked'
-         : `activity=${a1.status} activity?userId=${a2.status} app-flags=${f1.status}`);
-  } catch (e) { add('admin.console-reads', 'Trang quản trị: bảng hoạt động và công tắc tính năng', false, 'threw: ' + ((e && e.stack) || e)); }
+    const ok = a1.status === 200 && a2.status === 200;
+    add('admin.console-reads', 'Trang quản trị: bảng hoạt động', ok,
+      ok ? 'GET /api/admin/activity (all learners and filtered to one) answers 200 — it builds its SQL at run time, so this is the only way its column names get checked'
+         : `activity=${a1.status} activity?userId=${a2.status}`);
+  } catch (e) { add('admin.console-reads', 'Trang quản trị: bảng hoạt động', false, 'threw: ' + ((e && e.stack) || e)); }
 
   drainLogs();
 }
@@ -1024,7 +726,7 @@ function schemaChecks(add, seenSql) {
 
   // A guard on the scanner itself: if it ever stops finding SQL (a refactor to
   // a query builder, a lexer bug), the two checks above would pass vacuously.
-  add('schema.scanner-alive', 'Toàn bộ API: bộ dò SQL còn hoạt động', sqlLiteral.length > 100 && dynamic.length > 0,
+  add('schema.scanner-alive', 'Toàn bộ API: bộ dò SQL còn hoạt động', sqlLiteral.length > 40 && dynamic.length > 0,
     `${sites.length} .prepare() call sites found: ${sqlLiteral.length} fully literal, ${dynamic.length} assembled at run time, ${notSql.length} unrecognised`);
 }
 

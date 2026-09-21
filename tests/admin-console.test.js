@@ -258,13 +258,13 @@ suite('admin on a phone: still a table at 393px', () => {
     test('an icon-only button still announces what it does', () => {
         // display:none removes the label from the accessibility tree, so each
         // button would otherwise announce nothing but an emoji. Every .mini row
-        // action counts: the six in the users table (🌱 Chơi trước, 🎓 Chuyên,
-        // coins, clear device, enable, disable), plus the Daily task tab's
-        // delete, which is the same icon-only button in a different table.
+        // action counts: the four in the users table (coins, clear device,
+        // enable, disable), plus the Daily task tab's delete, which is the
+        // same icon-only button in a different table. (🌱 Chơi trước and
+        // 🎓 Chuyên went with the features they switched on, 2026-09.)
         const tags = adminHtml.match(/<button class="mini[\s\S]*?>/g) || [];
-        assert.equal(tags.length, 7, `expected 7 row-action buttons, found ${tags.length}`);
-        for (const cls of ['bot-toggle', 'chuyen-toggle', 'act-coins', 'act-clear', 'act-enable', 'act-disable',
-                           'act-daily-del']) {
+        assert.equal(tags.length, 5, `expected 5 row-action buttons, found ${tags.length}`);
+        for (const cls of ['act-coins', 'act-clear', 'act-enable', 'act-disable', 'act-daily-del']) {
             const tag = tags.find(t => t.includes(cls));
             assert.truthy(tag, cls + ' button not found');
             assert.truthy(tag.includes('aria-label='),
@@ -314,10 +314,9 @@ suite('admin on a phone: still a table at 393px', () => {
     });
 
     test('only the redundant columns give way', () => {
-        // Status is dropped on phones because the row already says it twice
-        // over: a disabled row is faded and struck through and offers Enable
-        // instead of Disable, and the bot state is the toggle's own colour.
-        // The numbers an admin compares must all survive.
+        // Status is dropped on phones because the row already says it: a
+        // disabled row is faded and struck through and offers Enable instead
+        // of Disable. The numbers an admin compares must all survive.
         assert.truthy(/th\.hide-xs, td\.hide-xs \{ display:none; \}/.test(phoneBlock));
         assert.truthy(adminHtml.includes('<th class="hide-xs">Trạng thái</th>'));
         for (const kept of ['data-sort="total_count"', 'data-sort="last_activity"', 'data-sort="username"']) {
@@ -415,30 +414,48 @@ suite('admin: the Daily task tab', () => {
         assert.falsy(adminHtml.includes("getElementById('dailyAdd')"), 'no dead event binding may remain');
     });
 
-    test('daily-task assignment copy is clear and offers Toán 4 Pre plus Mix', () => {
+    test('daily-task assignment copy is clear and offers every Book unit plus Mix', () => {
         const catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
-        const math4 = catalog.entries('math4');
-        assert.deepEqual(math4.map(e => e.key).sort(), [
-          'math4:cc', 'math4:ccd', 'math4:ccd2345', 'math4:ccd67', 'math4:ccd89',
-          'math4:ccx', 'math4:ccx2345', 'math4:ccx67', 'math4:ccx89',
-          'math4:mix', 'math4:pre',
-        ]);
-        assert.truthy(math4.find(e => e.key === 'math4:pre').label.includes('Chọn 1 trong 4 đáp án'));
-        assert.truthy(math4.find(e => e.key === 'math4:mix').label.includes('Nhập đáp án'));
-        // The three "bất kỳ" tasks match on a g4set PREFIX, which is the only
-        // reason the six codes were shaped cc / ccx / ccd in the first place.
-        assert.deepEqual(catalog.get('math4:cc').match, { detail: { field: 'g4set', prefix: 'cc' } });
-        assert.deepEqual(catalog.get('math4:ccx').match, { detail: { field: 'g4set', prefix: 'ccx' } });
-        assert.deepEqual(catalog.get('math4:ccd').match, { detail: { field: 'g4set', prefix: 'ccd' } });
-        assert.deepEqual(catalog.get('math4:ccx67').match, { detail: { field: 'g4set', value: 'ccx67' } });
-        assert.deepEqual(catalog.get('math4:ccd89').go, {
-          screen: 'mathHubScreen',
-          calls: [['openMathSection', 'cuuchuong'], ['startMathTables', 'd', '89']],
+        // Three Books, 15 units and a Mix each: 48 assignable tasks, all of
+        // them 'lesson' activities matched on the exact title js/auth.js
+        // uploads for a finished unit practice.
+        assert.deepEqual(catalog.groups().map(g => g.id), ['word-pr1', 'word-pr2', 'word-pr3']);
+        for (const set of ['pr1', 'pr2', 'pr3']) {
+            const book = catalog.entries('word-' + set);
+            assert.equal(book.length, 16, set + ' should offer 15 units + Mix');
+            assert.deepEqual(book.map(e => e.key),
+                [...Array(15).keys()].map(i => `word:${set}-${i + 1}`).concat([`word:${set}-mix`]),
+                set + ': units in order, Mix last');
+            for (const e of book) {
+                assert.equal(e.activityType, 'lesson', e.key);
+                assert.deepEqual(e.match, { titleExact: 'Unit ' + e.key.slice(5) + ' words practice' }, e.key);
+                assert.equal(e.go.screen, 'wordScreen', e.key);
+            }
+        }
+        assert.truthy(catalog.get('word:pr2-7').label.includes('Entertainment and Sports'),
+            'unit titles come from the Book, so a parent can tell Unit 7 of Book 2 from Unit 7 of Book 1');
+        assert.deepEqual(catalog.get('word:pr3-mix').go, {
+            screen: 'wordScreen', calls: [['switchUnitSet', 'pr3'], ['startUnitPractice', 'pr3-mix']],
         });
         for (const copy of ['Nhiệm vụ hằng ngày', 'Bài học viên sẽ làm',
-            'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ']) {
+            'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ', 'Cây Book 1 / 2 / 3']) {
             assert.truthy(adminHtml.includes(copy), 'admin assignment copy is missing: ' + copy);
         }
+    });
+
+    test('the settings page keeps nothing switchable — only the API version', () => {
+        // Every app-wide switch (Đấu Toán, Bảng cửu chương's clock) and the
+        // Cướp Đêm rulebook went with the features they tuned. A control left
+        // behind would POST to an endpoint that no longer exists.
+        for (const gone of ['admin/app-flags', 'admin/night-raid-config', 'mathFightFlag', 'ccSeconds',
+                            'RAID_FIELDS', 'tabRaid', 'raidPanel', 'bot-toggle', 'chuyen-toggle',
+                            'allow_bot', 'allow_chuyen', 'allowBot', 'allowChuyen', 'khiên']) {
+            assert.falsy(adminHtml.includes(gone), 'admin.html still carries ' + gone);
+        }
+        assert.truthy(adminHtml.includes('id="apiVersion"'), 'the settings page shows the API build');
+        assert.truthy(/api\('version'\)/.test(adminHtml), 'read from the same endpoint deploy.sh polls');
+        assert.truthy(/đã thưởng 200 xu/.test(adminHtml) && !/200 xu \+/.test(adminHtml),
+            'the daily reward is 200 xu, no shield');
     });
 });
 

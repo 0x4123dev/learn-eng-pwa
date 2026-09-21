@@ -9,26 +9,21 @@ const path = require('path');
 
 const read = f => fs.readFileSync(path.join(__dirname, '..', 'js', f), 'utf8');
 
-// Every module with a practice-completion handler.
-const PRACTICE_MODULES = [
-    'lessons.js', 'units.js', 'grammar-ui.js', 'phrases.js', 'collocation.js',
-    'wordform.js', 'rewrite.js', 'verbs.js', 'math.js', 'exam.js',
-];
+// Every module with a practice-completion handler. Since the 2026-09 cut the
+// Book practice (js/units.js) is the only exercise in the app.
+const PRACTICE_MODULES = ['units.js'];
 
 suite('feature sync: shared systems coverage', () => {
     test('every practice module records the daily streak (recordStudy)', () => {
-        for (const f of [...PRACTICE_MODULES, 'daily-challenge.js']) {
+        for (const f of PRACTICE_MODULES) {
             assert.truthy(read(f).includes('recordStudy()'), `${f} never calls recordStudy()`);
         }
     });
 
     test('every practice module triggers a server sync on completion', () => {
-        // exam.js posts through the dedicated attempts endpoint; the rest
-        // upload their history via the generic syncNow backfill.
         for (const f of PRACTICE_MODULES) {
             const src = read(f);
-            assert.truthy(src.includes('EngAuth.syncNow') || src.includes('EngAuth.postAttempt'),
-                `${f} never syncs to the server`);
+            assert.truthy(src.includes('EngAuth.syncNow'), `${f} never syncs to the server`);
         }
     });
 
@@ -45,25 +40,10 @@ suite('feature sync: shared systems coverage', () => {
         // which is what maths did until v4.11.8.
         for (const f of PRACTICE_MODULES) {
             const src = read(f);
-            if (!/petCheerAnswer\(/.test(src)) continue;
+            assert.truthy(/petCheerAnswer\(/.test(src), `${f} does not cheer answers`);
             assert.truthy(/petComboBonus\(\)/.test(src),
                 `${f} cheers combos but never banks them — the bonus leaks to another tab`);
         }
-    });
-
-    test('maths pays half the English rate, from one named constant', () => {
-        const src = read('math.js');
-        const m = /const MATH_COINS_PER_CORRECT = (\d+)/.exec(src);
-        assert.truthy(m, 'math.js should name its coin rate rather than inlining it');
-        assert.equal(Number(m[1]), 2);
-        assert.truthy(/score \* MATH_COINS_PER_CORRECT/.test(src), 'the rate must actually be used');
-        // The pet card turns "coins still needed" into "questions still to
-        // answer". Quoting the English rate on the maths screen halves it.
-        assert.truthy(/petRewardCardHTML\(score, total, coinsEarned, MATH_COINS_PER_CORRECT\)/.test(src),
-            'the maths reward card must be told the maths rate');
-        const pet = read('petcheer.js');
-        assert.truthy(/Math\.ceil\(left \/ rate\)/.test(pet),
-            'petcheer.js still hardcodes the questions-remaining rate');
     });
 
     test('profile derives accuracy and session count from all skills, not legacy counters', () => {
@@ -73,10 +53,16 @@ suite('feature sync: shared systems coverage', () => {
     });
 
     test('admin sync payload covers every history the app records', () => {
+        // The set of histories is read out of the app itself, so a new
+        // `appState.fooHistory` writer that auth.js does not upload fails here.
+        const histories = new Set();
+        for (const f of fs.readdirSync(path.join(__dirname, '..', 'js')).filter(f => f.endsWith('.js'))) {
+            for (const m of read(f).matchAll(/appState\.(\w+History)\b/g)) histories.add(m[1]);
+        }
+        assert.deepEqual([...histories].sort(), ['unitsHistory'], 'the Book practice history is the only one left');
         const src = read('auth.js');
-        for (const h of ['lessonHistory', 'grammarHistory', 'phrasesHistory', 'collocHistory',
-            'wordformHistory', 'rewriteHistory', 'unitsHistory', 'mathHistory', 'speedChallenge']) {
-            assert.truthy(src.includes(h), `auth.js sync payload misses ${h}`);
+        for (const h of histories) {
+            assert.truthy(src.includes('appState.' + h), `auth.js sync payload misses ${h}`);
         }
     });
 
@@ -91,7 +77,10 @@ suite('feature sync: shared systems coverage', () => {
         const m = /const TYPES = \[([^\]]*)\]/.exec(server);
         assert.truthy(m, 'functions/api/activity.js no longer declares a TYPES whitelist');
         const accepted = [...m[1].matchAll(/'([a-z]+)'/g)].map(x => x[1]);
-        assert.truthy(client.length >= 8, `only found ${client.length} client types — the scan broke`);
+        // Since the 2026-09 cut the client uploads ONE type ('lesson', the
+        // Book units); the guard only has to prove the scan found it.
+        assert.truthy(client.length >= 1, `found no client types — the scan broke`);
+        assert.truthy(client.includes('lesson'), 'the Book units upload as lesson');
         const rejected = client.filter(t => !accepted.includes(t));
         assert.deepEqual(rejected, [],
             `these would be dropped on the server: ${rejected.join(', ')}`);

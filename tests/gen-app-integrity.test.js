@@ -2,9 +2,9 @@
 // parses the sw.js ASSETS array literal and asserts every cached js/css asset
 // exists on disk (one test per asset), checks CACHE_NAME shape, verifies every
 // <script src> in index.html resolves to a real file and that data files load
-// BEFORE their consumers (phrases-data < phrases, wordform-data < wordform,
-// exam < ptnk, auth < app), validates manifest.json PWA fields + icon
-// files, and locks APP_VERSION <-> package.json consistency.
+// BEFORE their consumers (auth < app; the word bank is lazy and its tab waits
+// for it), validates manifest.json PWA fields + icon files, and locks
+// APP_VERSION <-> package.json consistency.
 // Complements tests/extra-coverage.test.js (aggregate js/-dir <-> ASSETS sync);
 // this file goes per-asset and adds index.html + manifest coverage.
 const { suite, test, assert } = require('./harness');
@@ -109,14 +109,14 @@ suite('gen: sw.js js/css assets exist on disk', () => {
     // catch a broken install, and they scale by themselves. All that is worth
     // asserting up here is that each kind of asset is represented at all.
     test('every kind of asset the app needs is present in the manifest', () => {
-        assert.truthy(JS_ASSETS.length > 30, 'scripts missing from the offline cache');
-        // The startup sheet plus the three lazily loaded feature sheets
+        assert.truthy(JS_ASSETS.length > 20, 'scripts missing from the offline cache');
+        // The startup sheet plus the two lazily loaded feature sheets
         // (js/lazy-data.js SCREEN_FILES; tests/css-split.test.js).
-        assert.deepEqual(CSS_ASSETS, ['/css/styles.css', '/css/night-raid.css', '/css/arena.css', '/css/math.css'],
-            'the startup stylesheet and the three feature stylesheets, all precached');
+        assert.deepEqual(CSS_ASSETS, ['/css/styles.css', '/css/night-raid.css'],
+            'the startup stylesheet and the farm stylesheet, both precached');
         assert.truthy(IMG_ASSETS.length > 10, 'images missing from the offline cache');
-        // Ảnh chụp trang đề thi từng nằm ở đây. Mọi hình nay đều được vẽ lại
-        // bằng js/math-figures.js, nên precache chúng chỉ tốn 1,9 MB của máy bé.
+        // Ảnh chụp trang đề thi từng nằm ở đây (Toán đã bị cắt); precache
+        // chúng chỉ tốn 1,9 MB của máy bé.
         assert.equal(MATH_EXAM_ASSETS.length, 0, 'no question renders a page scan any more');
     });
 
@@ -138,27 +138,23 @@ suite('gen: sw.js img assets exist on disk', () => {
         });
     }
 
-    test('image cache has no obsolete pet PNGs and includes the premium castle atlases', () => {
+    test('image cache has no obsolete pet PNGs and nothing from the cut features', () => {
         const svgs = IMG_ASSETS.filter(a => /^\/img\/[^/]+\.svg$/.test(a));
         const pets = IMG_ASSETS.filter(a => /^\/img\/pets\/[^/]+\.png$/.test(a));
-        const teammates = IMG_ASSETS.filter(a => /^\/img\/battle-teammates\/[^/]+\.jpg$/.test(a));
-        const castles = IMG_ASSETS.filter(a => /^\/img\/castle-skins\/castles-atlas-[ab]\.webp$/.test(a));
-        const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
         const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|jpe?g)$/.test(a));
-        const ghostOffering = IMG_ASSETS.filter(a => /^\/img\/ghost-offering\/.+\.webp$/.test(a));
         // The farm's pictures are counted from the manifest, never a literal:
         // js/farm-art-manifest.js is the one list, so this can never go stale.
         const farmArt = require(path.join(ROOT, 'js', 'farm-art-manifest.js'));
         const farm = IMG_ASSETS.filter(a => /^\/img\/farm\/[^/]+\.webp$/.test(a));
         assert.equal(svgs.length, 3, `root svg count: ${svgs.join(', ')}`);
         assert.equal(pets.length, 0, `obsolete pet png count: ${pets.join(', ')}`);
-        assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
-        assert.equal(castles.length, 2, `castle atlas count: ${castles.join(', ')}`);
-        assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
-        assert.equal(nightRaid.length, 23, `night raid art count: ${nightRaid.join(', ')}`);
-        assert.equal(ghostOffering.length, 5, `Mid-Autumn gift art count: ${ghostOffering.join(', ')}`);
+        assert.equal(nightRaid.length, 22, `night raid art count: ${nightRaid.join(', ')}`);
         assert.equal(farm.length, farmArt.FILES.length, `farm art count: every manifest entry is precached, nothing else`);
-        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length + farm.length, IMG_ASSETS.length);
+        // Nothing from the Arena, the castle skins or the Mid-Autumn gift hunt
+        // is downloaded onto a child's device any more.
+        const cut = IMG_ASSETS.filter(a => /^\/img\/(?:battle-teammates|battle-scenes|castle-skins|ghost-offering)\//.test(a));
+        assert.deepEqual(cut, [], `art for a removed feature is still precached: ${cut.join(', ')}`);
+        assert.equal(svgs.length + pets.length + nightRaid.length + farm.length, IMG_ASSETS.length);
     });
 
     // The sprite sheets and atlases used to be 15 PNGs totalling 16.8 MB of
@@ -166,9 +162,9 @@ suite('gen: sw.js img assets exist on disk', () => {
     // alpha so frame geometry and atlas coordinates never move) they are
     // 11.9 MB. A PNG creeping back into these folders undoes that on every
     // child's first install and every CACHE_NAME re-download.
-    const SPRITE_KEYS = IMG_ASSETS.filter(a => /^\/img\/(?:night-raid|castle-skins|ghost-offering)\//.test(a));
-    test('night-raid, castle-skins and ghost-offering keys are never PNG', () => {
-        assert.truthy(SPRITE_KEYS.length >= 29, `sprite key count: ${SPRITE_KEYS.length}`);
+    const SPRITE_KEYS = IMG_ASSETS.filter(a => /^\/img\/night-raid\//.test(a));
+    test('night-raid keys are never PNG', () => {
+        assert.truthy(SPRITE_KEYS.length >= 22, `sprite key count: ${SPRITE_KEYS.length}`);
         const pngs = SPRITE_KEYS.filter(a => /\.png$/i.test(a));
         assert.equal(pngs.length, 0, `PNG sprite keys in sw.js: ${pngs.join(', ')} — convert with cwebp -lossless -z 9`);
     });
@@ -319,7 +315,7 @@ suite('gen: fonts are self-hosted', () => {
 // ============================================================================
 suite('gen: index.html script tags', () => {
     test('every script tag is unique and lives under js/', () => {
-        assert.truthy(SCRIPT_SRCS.length > 30, 'the app shell looks truncated');
+        assert.truthy(SCRIPT_SRCS.length >= 17, 'the app shell looks truncated');
         const seen = new Set(), dupes = [];
         for (const s of SCRIPT_SRCS) { if (seen.has(s)) dupes.push(s); seen.add(s); }
         assert.deepEqual(dupes, [], 'a script is loaded twice: ' + dupes.join(', '));
@@ -352,32 +348,6 @@ suite('gen: index.html script tags', () => {
             `scripts loaded by index.html but missing from sw.js ASSETS: ${uncached.join(', ')}`);
     });
 
-    test('the phrases bank is deferred, and its tab waits for it', () => {
-        // phrases-data.js (370 KB) no longer blocks the first paint; the ordering
-        // rule it used to satisfy is replaced by a stronger one — switchScreen
-        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
-        assert.equal(SCRIPT_SRCS.indexOf('js/phrases-data.js'), -1, 'js/phrases-data.js must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/phrases.js') !== -1, 'the tab code still ships eagerly');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        const block = lazy.slice(lazy.indexOf('phrasesScreen:'));
-        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/phrases-data.js'),
-            'js/phrases-data.js must be listed under phrasesScreen in the loader');
-        assert.contains(ASSETS, '/js/phrases-data.js', 'and must stay cached for offline use');
-    });
-
-    test('the word form bank is deferred, and its tab waits for it', () => {
-        // wordform-data.js (349 KB) no longer blocks the first paint; the ordering
-        // rule it used to satisfy is replaced by a stronger one — switchScreen
-        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
-        assert.equal(SCRIPT_SRCS.indexOf('js/wordform-data.js'), -1, 'js/wordform-data.js must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/wordform.js') !== -1, 'the tab code still ships eagerly');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        const block = lazy.slice(lazy.indexOf('wordformScreen:'));
-        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/wordform-data.js'),
-            'js/wordform-data.js must be listed under wordformScreen in the loader');
-        assert.contains(ASSETS, '/js/wordform-data.js', 'and must stay cached for offline use');
-    });
-
     test('the word bank is deferred, and the Word tab waits for it', () => {
         // word-data.js does not block the first paint. The ordering rule a
         // data file used to satisfy is replaced by a stronger one:
@@ -392,17 +362,6 @@ suite('gen: index.html script tags', () => {
         assert.contains(ASSETS, '/js/word-data.js', 'and must stay cached for offline use');
     });
 
-    test('the PTNK bank is deferred, and the timed-paper engine ships eagerly', () => {
-        assert.equal(SCRIPT_SRCS.indexOf('js/ptnk-data.js'), -1,
-            'the PTNK bank must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/exam.js') !== -1, 'the engine still ships eagerly');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/ptnk.js') > SCRIPT_SRCS.indexOf('js/exam.js'),
-            'ptnk.js registers EXAM_SETS.ptnk, so the engine must load first');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        assert.truthy(/ptnkScreen:\s*\[[^\]]*js\/ptnk-data\.js/.test(lazy),
-            'ptnk-data.js must be listed under ptnkScreen in the loader');
-    });
-
     test('ordering: auth.js loads before app.js', () => {
         const a = SCRIPT_SRCS.indexOf('js/auth.js');
         const b = SCRIPT_SRCS.indexOf('js/app.js');
@@ -410,51 +369,6 @@ suite('gen: index.html script tags', () => {
         assert.truthy(a < b, `auth.js (idx ${a}) must precede app.js (idx ${b})`);
     });
 
-    test('the rewrite bank is deferred, and its tab waits for it', () => {
-        // rewrite-data.js (189 KB) no longer blocks the first paint; the ordering
-        // rule it used to satisfy is replaced by a stronger one — switchScreen
-        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
-        assert.equal(SCRIPT_SRCS.indexOf('js/rewrite-data.js'), -1, 'js/rewrite-data.js must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/rewrite.js') !== -1, 'the tab code still ships eagerly');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        const block = lazy.slice(lazy.indexOf('rewriteScreen:'));
-        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/rewrite-data.js'),
-            'js/rewrite-data.js must be listed under rewriteScreen in the loader');
-        assert.contains(ASSETS, '/js/rewrite-data.js', 'and must stay cached for offline use');
-    });
-
-    test('the phrase meanings bank is deferred, and its tab waits for it', () => {
-        // phrases-meanings.js (102 KB) no longer blocks the first paint; the ordering
-        // rule it used to satisfy is replaced by a stronger one — switchScreen
-        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
-        assert.equal(SCRIPT_SRCS.indexOf('js/phrases-meanings.js'), -1, 'js/phrases-meanings.js must not be an eager script');
-        assert.truthy(SCRIPT_SRCS.indexOf('js/phrases.js') !== -1, 'the tab code still ships eagerly');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        const block = lazy.slice(lazy.indexOf('phrasesScreen:'));
-        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/phrases-meanings.js'),
-            'js/phrases-meanings.js must be listed under phrasesScreen in the loader');
-        assert.contains(ASSETS, '/js/phrases-meanings.js', 'and must stay cached for offline use');
-    });
-
-    test('the grammar bank is deferred, and the Grammar tab waits for it', () => {
-        // grammar-units.js alone is 2.9 MB — the heaviest file in the app and
-        // the biggest single cause of a slow, memory-hungry start on an old
-        // iPad. It now loads on demand (and warms in the background).
-        const ui = SCRIPT_SRCS.indexOf('js/grammar-ui.js');
-        assert.equal(SCRIPT_SRCS.indexOf('js/grammar-units.js'), -1,
-            'the 2.9 MB grammar bank must not be an eager script');
-        assert.truthy(ui !== -1, 'the tab code still ships eagerly');
-        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
-        for (const f of ['js/grammar-units.js', 'js/grammar-lessons.js']) {
-            assert.truthy(new RegExp('grammarScreen:\\s*\\[[^\\]]*' + f.replace(/[./]/g, '\\$&')).test(lazy),
-                f + ' must be listed under grammarScreen in the loader');
-        }
-    });
-
-    test('topic-vocab.js is cached by sw.js but has NO index.html script tag (loaded elsewhere)', () => {
-        assert.contains(ASSETS, '/js/topic-vocab.js');
-        assert.notContains(SCRIPT_SRCS, 'js/topic-vocab.js');
-    });
 });
 
 // ============================================================================

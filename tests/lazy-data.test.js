@@ -3,9 +3,9 @@
 // data for two tabs the child had not opened. On an older iPad that is seconds
 // of parsing on EVERY app open, plus the memory to hold it all.
 //
-// The heaviest banks now load on demand (and warm in the background right
-// after the first paint). These tests pin the contract so a future "just add
-// one more script tag" cannot quietly put the weight back.
+// The banks now load on demand (and the last-used tab warms in the background
+// right after the first paint). These tests pin the contract so a future
+// "just add one more script tag" cannot quietly put the weight back.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
@@ -16,22 +16,19 @@ const html = read('index.html');
 const eagerScripts = (html.match(/src="js\/[^"]+"/g) || []).map(s => s.slice(5, -1));
 
 suite('startup weight: the biggest banks are not in the first paint', () => {
-  test('the two giant question banks are no longer eager scripts', () => {
-    for (const f of ['js/grammar-units.js', 'js/ptnk-data.js', 'js/word-data.js', 'js/collocation-data.js',
-      'js/phrases-data.js', 'js/wordform-data.js', 'js/wordform-followups.js',
-      'js/collocation-followups.js', 'js/math-exams.js', 'js/math-data.js',
-      'js/rewrite-data.js', 'js/dictionary-data.js']) {
+  test('the word bank and the dictionary are no longer eager scripts', () => {
+    for (const f of ['js/word-data.js', 'js/dictionary-data.js']) {
       assert.falsy(eagerScripts.includes(f),
         f + ' (' + sizeKB(f) + ' KB) must not block the first paint');
     }
   });
 
-  test('startup JavaScript stays under 2.5 MB', () => {
+  test('startup JavaScript stays under 600 KB', () => {
     const total = eagerScripts.reduce((n, f) => {
       try { return n + fs.statSync(path.join(root, f)).size; } catch (e) { return n; }
     }, 0);
-    const mb = total / 1048576;
-    assert.truthy(mb < 2.5, 'eager JS is ' + mb.toFixed(1) + ' MB across ' + eagerScripts.length + ' files');
+    const kb = total / 1024;
+    assert.truthy(kb < 600, 'eager JS is ' + kb.toFixed(0) + ' KB across ' + eagerScripts.length + ' files');
   });
 
   test('every deferred bank is still cached for offline use', () => {
@@ -76,13 +73,13 @@ suite('lazy data loader: loads once, on demand, and survives failure', () => {
 
   test('opening a lazy screen injects its scripts exactly once', () => {
     const m = mount();
-    const p1 = m.ctx.LazyData.ensure('grammarScreen');
+    const p1 = m.ctx.LazyData.ensure('wordScreen');
     const firstCount = m.injected.length;
     assert.truthy(firstCount >= 1, 'the bank is fetched on first open');
     m.finish(true);
     return p1.then(() => {
-      assert.truthy(m.ctx.LazyData.ready('grammarScreen'), 'it is ready once loaded');
-      return m.ctx.LazyData.ensure('grammarScreen').then(() => {
+      assert.truthy(m.ctx.LazyData.ready('wordScreen'), 'it is ready once loaded');
+      return m.ctx.LazyData.ensure('wordScreen').then(() => {
         assert.equal(m.injected.length, firstCount, 'a second visit must not re-download');
       });
     });
@@ -99,13 +96,9 @@ suite('lazy data loader: loads once, on demand, and survives failure', () => {
     const app = read('js/app.js'), lazy = read('js/lazy-data.js');
     const screens = Object.keys(JSON.parse(JSON.stringify(
       (function () { const m = {}; for (const s of lazy.match(/([a-zA-Z]+Screen):\s*\[/g) || []) m[s.split(':')[0]] = 1; return m; })())));
-    assert.truthy(screens.length >= 2, 'at least the two giants are deferred');
-    // Kho Khiên & Kiếm builds its own #armoryScreen at runtime (js/armory.js)
-    // rather than shipping an empty <div> in index.html.
-    const runtimeScreens = { armoryScreen: read('js/armory.js') };
+    assert.truthy(screens.length >= 2, 'at least the Word screen and the farm are deferred');
     for (const s of screens) {
-      const made = html.includes('id="' + s + '"') || (runtimeScreens[s] || '').includes("'" + s + "'");
-      assert.truthy(made, s + ' is not a real screen');
+      assert.truthy(html.includes('id="' + s + '"'), s + ' is not a real screen');
       assert.truthy(app.includes(s), s + ' must be known to switchScreen / the bottom nav');
     }
   });
@@ -120,19 +113,21 @@ suite('startup weight: switchScreen waits for a tab\'s data', () => {
     assert.truthy(/LazyData\.ensure\([^)]*\)\s*\.then/.test(app),
       'the tab render must be deferred until the data lands');
   });
-  test('grammar is entered through switchScreen, not a bare inline render', () => {
-    // index.html used to call renderGrammarHome() inline right after
-    // switchScreen, which would paint an empty bank before the data arrived.
-    assert.falsy(/switchScreen\('grammarScreen'\);\s*renderGrammarHome\(\)/.test(html),
+  test('the Word screen is entered through switchScreen, not a bare inline render', () => {
+    // index.html used to call render*Home() inline right after switchScreen,
+    // which would paint an empty bank before the data arrived.
+    assert.falsy(/switchScreen\('wordScreen'\);\s*renderWordHome\(\)/.test(html),
       'the inline render bypasses the loader');
-    assert.truthy(read('js/app.js').includes('grammarScreen'), 'switchScreen owns the grammar render');
+    assert.falsy(/openBook\([^)]*\);\s*renderWordHome\(\)/.test(html),
+      'the inline render bypasses the loader');
+    assert.truthy(read('js/app.js').includes('wordScreen'), 'switchScreen owns the Word render');
   });
 });
 
 suite('startup weight: a half-finished lesson still comes back', () => {
   // restoreStudyCheckpoint reopens the exact question the child was on when
-  // the app was last closed. For a Grammar or PTNK exam checkpoint that needs the
-  // deferred bank — restoring before it lands would reopen an empty question.
+  // the app was last closed. A Book practice checkpoint needs the deferred
+  // word bank — restoring before it lands would reopen an empty question.
   const { loadAppCode } = require('./setup');
 
   function withCheckpoint(kind, lazyReady) {
@@ -140,49 +135,40 @@ suite('startup weight: a half-finished lesson still comes back', () => {
     let resolveLoad;
     const app = loadAppCode({ extraGlobals: {
       LazyData: {
-        filesFor: s => (s === 'grammarScreen' || s === 'ptnkScreen') ? ['x.js'] : [],
+        filesFor: s => (s === 'wordScreen') ? ['x.js'] : [],
         ready: () => lazyReady,
         ensure: s => { ensured.push(s); return new Promise(r => { resolveLoad = r; }); },
         warmSoon() {}, warmAll() { return Promise.resolve(); },
       },
-      renderGrammarQuestion() { rendered.push('grammar'); },
-      renderExamQuestion() { rendered.push('exam'); },
+      renderUnitQuestion() { rendered.push('units'); },
       activateCheckpointScreen() {},
     } });
     const rendered = [];
     app.__setCurrentUser('Kid');
     app.localStorage.setItem('flashlingo-study-checkpoint-v1', JSON.stringify({
-      user: 'Kid', savedAt: Date.now(), kind, screen: kind + 'Screen', state: { idx: 0, answers: [] },
+      user: 'Kid', savedAt: Date.now(), kind, screen: 'wordScreen', state: { unit: 'pr1-1', idx: 0, answers: [] },
     }));
     return { app, ensured, rendered, finishLoad: () => resolveLoad && resolveLoad() };
   }
 
-  test('a Grammar checkpoint waits for its bank instead of reopening an empty question', () => {
-    const t = withCheckpoint('grammar', false);
+  test('a Book practice checkpoint waits for its bank instead of reopening an empty question', () => {
+    const t = withCheckpoint('units', false);
     try { t.app.restoreStudyCheckpoint(); } catch (e) { /* render stubs may be partial */ }
-    assert.contains(t.ensured, 'grammarScreen',
-      'the restore must ask the loader for the grammar bank first');
+    assert.contains(t.ensured, 'wordScreen',
+      'the restore must ask the loader for the word bank first');
   });
 
   test('with the bank already in, the restore happens immediately', () => {
-    const t = withCheckpoint('grammar', true);
+    const t = withCheckpoint('units', true);
     try { t.app.restoreStudyCheckpoint(); } catch (e) {}
     assert.deepEqual(t.ensured, [], 'a warm bank needs no waiting');
   });
 });
 
-if (require.main === module) {
-  require('./harness').runAll().then(code => process.exit(code));
-}
-
-suite('startup weight: phase two — every tab bank is deferred', () => {
+suite('startup weight: every tab bank is deferred', () => {
   const lazy = read('js/lazy-data.js');
   const SCREENS = {
-    phrasesScreen: ['js/phrases-data.js', 'js/phrases-meanings.js',
-                    'js/collocation-data.js', 'js/collocation-followups.js'],
-    wordformScreen: ['js/wordform-data.js', 'js/wordform-followups.js', 'js/wordform-lessons.js'],
-    rewriteScreen: ['js/rewrite-data.js', 'js/rewrite-lessons.js'],
-    mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js'],
+    wordScreen: ['js/word-data.js'],
   };
   for (const [screen, files] of Object.entries(SCREENS)) {
     test(screen + ' owns its banks in the loader', () => {
@@ -196,10 +182,9 @@ suite('startup weight: phase two — every tab bank is deferred', () => {
   }
 
   test('no tab is entered by an inline render that skips the loader', () => {
-    // index.html used to call renderPhrasesHome() / renderWordformHome() /
-    // renderRewriteHome() inline right after switchScreen — which would paint
-    // an empty bank before the data arrived.
-    for (const fn of ['renderPhrasesHome', 'renderWordformHome', 'renderRewriteHome', 'renderGrammarHome']) {
+    // index.html used to call render*Home() inline right after switchScreen —
+    // which would paint an empty bank before the data arrived.
+    for (const fn of ['renderWordHome', 'renderUnitsBar']) {
       assert.falsy(new RegExp('switchScreen\\([^)]*\\);\\s*' + fn + '\\(\\)').test(html),
         fn + '() inline bypasses the lazy loader');
     }
@@ -207,18 +192,16 @@ suite('startup weight: phase two — every tab bank is deferred', () => {
 
   test('switchScreen can paint every deferred tab once its bank lands', () => {
     const app = read('js/app.js');
-    for (const r of ['renderPhrasesHome', 'renderWordformHome', 'renderRewriteHome',
-                     'renderMathHome', 'renderGrammarHome', 'renderPtnkHome', 'renderWordHome']) {
+    for (const r of ['renderWordHome']) {
       assert.truthy(app.includes(r), 'switchScreen must be able to render ' + r);
     }
   });
 
-  test('a half-finished practice in ANY deferred tab waits for its bank', () => {
+  test('a half-finished practice waits for its bank', () => {
     const app = read('js/app.js');
-    const map = app.slice(app.indexOf('const needsBank'), app.indexOf('const needsBank') + 400);
-    for (const kind of ['grammar', 'exam', 'phrases', 'collocation', 'wordform', 'rewrite', 'math']) {
-      assert.truthy(map.includes(kind + ':'), 'checkpoint kind "' + kind + '" must name its screen');
-    }
+    const fn = app.slice(app.indexOf('function restoreStudyCheckpoint'), app.indexOf('function restoreStudyCheckpoint') + 2500);
+    assert.truthy(fn.includes("checkpoint.kind !== 'units'"), 'checkpoint kind "units" must be the one restored');
+    assert.truthy(fn.includes("LazyData.ready('wordScreen')"), 'the restore must wait for the Word screen\'s bank');
   });
 
   test('the offline dictionary loads on the first tapped word, not at startup', () => {
@@ -255,14 +238,15 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
   }
 
   test('warm-up loads ONLY the tab the child used last', () => {
-    const m = mountLoader('mathHubScreen');
+    const m = mountLoader('wordScreen');
     return m.ctx.LazyData.warmAll().then(() => {
       // A bank is a <script src>, the tab's stylesheet a <link href>.
       const files = m.injected.map(n => n.src || n.href);
       assert.truthy(files.length > 0, 'the remembered tab is warmed');
-      assert.truthy(files.every(f => f.indexOf('math') !== -1),
-        'only the maths banks may be warmed, got: ' + files.join(', '));
-      assert.falsy(files.some(f => f.indexOf('grammar-units') !== -1),
+      const wanted = m.ctx.LazyData.filesFor('wordScreen');
+      assert.truthy(files.every(f => wanted.includes(f)),
+        'only the Word screen\'s files may be warmed, got: ' + files.join(', '));
+      assert.falsy(files.some(f => f.indexOf('night-raid') !== -1),
         'a tab the child never opens must not be parsed at all');
     });
   });
@@ -276,8 +260,8 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
 
   test('opening a tab remembers it for next time', () => {
     const m = mountLoader(null);
-    return m.ctx.LazyData.ensure('rewriteScreen').then(() => {
-      assert.equal(m.store['flashlingo-last-tab'], 'rewriteScreen');
+    return m.ctx.LazyData.ensure('wordScreen').then(() => {
+      assert.equal(m.store['flashlingo-last-tab'], 'wordScreen');
     });
   });
 
@@ -295,3 +279,7 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
     assert.truthy(/event\.waitUntil\(precache\(\)/.test(sw), 'and install must wait for it');
   });
 });
+
+if (require.main === module) {
+  require('./harness').runAll().then(code => process.exit(code));
+}

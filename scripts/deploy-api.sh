@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 # deploy-api.sh — ship the API for the GitHub Pages app to ITS OWN Cloudflare
-# projects: Pages `learn-eng-pwa-api` (functions/, on the learn_eng_pwa_db
-# database) and the Worker `learn-eng-pwa-battle` (battle-worker/, the
-# realtime rooms, on the same database). The Worker is not addressed by its
-# workers.dev name anywhere in the app: the API project binds it as a
-# service (api-project/wrangler.toml) and functions/ws/[[path]].js forwards
-# the WebSocket upgrade, so the account subdomain stays private.
+# Pages project, `learn-eng-pwa-api` (functions/, on the learn_eng_pwa_db
+# database).
 #
-#   scripts/deploy-api.sh              both
-#   scripts/deploy-api.sh --no-worker  the Pages Functions only
+#   scripts/deploy-api.sh
 #
-# NEVER the `eng-pwa` app, eng_pwa_db or the eng-pwa-battle Worker (those
-# belong to the eng-math-app repo): the project names are fixed below and
-# guarded, and nothing here reads the repo-root wrangler.toml. Run after any change to
-# functions/ or battle-worker/ that the GitHub Pages app should see; the
-# static app itself ships with scripts/deploy-pages.sh.
+# NEVER the `eng-pwa` app or eng_pwa_db (those belong to the eng-math-app
+# repo): the project name is fixed below and guarded, and nothing here reads
+# the repo-root wrangler.toml. Run after any change to functions/ that the
+# GitHub Pages app should see; the static app itself ships with
+# scripts/deploy-pages.sh.
+#
+# (The learn-eng-pwa-battle Worker used to deploy from here too. It went with
+# the 2026-09 cut — battle-worker/ is gone and api-project/wrangler.toml no
+# longer binds it.)
 #
 # First-time database: scripts/api-db-init.sh (schema + migrations + auth
 # secret). New migrations: apply them to learn_eng_pwa_db by hand, the way
@@ -22,20 +21,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PROJECT="learn-eng-pwa-api"
-WORKER_CFG="wrangler.toml"
 LIVE="https://learn-eng-pwa-api.pages.dev"
 STAGE=".api-dist"
-WORKER=1
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --no-worker) WORKER=0; shift ;;
-    *) echo "unknown option: $1" >&2; exit 2 ;;
-  esac
-done
+[ $# -eq 0 ] || { echo "unknown option: $1" >&2; exit 2; }
 case "$PROJECT" in eng-pwa|eng-pwa-audio) echo "✗ refusing: $PROJECT is the Cloudflare app" >&2; exit 1 ;; esac
 grep -q 'name = "learn-eng-pwa-api"' api-project/wrangler.toml || { echo "✗ api-project/wrangler.toml does not name learn-eng-pwa-api" >&2; exit 1; }
 grep -q 'database_name = "learn_eng_pwa_db"' api-project/wrangler.toml || { echo "✗ api-project/wrangler.toml must bind learn_eng_pwa_db" >&2; exit 1; }
-grep -q 'name = "learn-eng-pwa-battle"' "battle-worker/$WORKER_CFG" || { echo "✗ $WORKER_CFG does not name learn-eng-pwa-battle" >&2; exit 1; }
+! grep -q '^\[\[services\]\]' api-project/wrangler.toml || { echo "✗ api-project/wrangler.toml still binds a Worker service — the battle Worker is gone" >&2; exit 1; }
 
 TOKEN_FILE="$HOME/.config/eng-pwa/cloudflare.env"
 if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] && [ -f "$TOKEN_FILE" ]; then set -a; . "$TOKEN_FILE"; set +a; fi
@@ -53,8 +45,8 @@ rm -rf "$STAGE"; mkdir -p "$STAGE/dist"
 cp api-project/wrangler.toml "$STAGE/wrangler.toml"
 cp api-project/dist-index.html "$STAGE/dist/index.html"
 cp -R functions "$STAGE/functions"
-# The Functions import the shared rule modules (../../js/battlecalc.js,
-# night-raid-rules.js, …) and wrangler bundles them from disk, so js/ is
+# The Functions import the shared rule modules (../../js/night-raid-rules.js,
+# daily-task-catalog.js, …) and wrangler bundles them from disk, so js/ is
 # staged beside functions/ — beside, not under dist/, so none of it is
 # served as a static file by the API project.
 cp -R js "$STAGE/js"
@@ -64,12 +56,6 @@ echo "▸ staged $(find "$STAGE/functions" -name '*.js' | wc -l | tr -d ' ') fun
 echo "▸ deploying ${PROJECT}…"
 (cd "$STAGE" && npx --yes wrangler@3 pages deploy dist --project-name "$PROJECT" \
   --branch main --commit-dirty=true 2>&1 | tail -3)
-
-# ---- deploy the battle Worker ----------------------------------------------
-if [ "$WORKER" = "1" ]; then
-  echo "▸ deploying learn-eng-pwa-battle…"
-  (cd battle-worker && npx --yes wrangler@3 deploy --config "$WORKER_CFG" 2>&1 | tail -3)
-fi
 
 # ---- confirm ---------------------------------------------------------------
 echo "▸ confirming ${LIVE}/api/version says ${VER}…"

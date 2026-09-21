@@ -1,8 +1,8 @@
 // device-account-limit.test.js — one device, two accounts, no more.
 //
-// This is the supply side of the same hole tests/friend-battle-delay.test.js
-// covers the demand side of. That file makes a throwaway opponent useless for
-// 3 days; this one makes throwaway opponents hard to mint at all.
+// Throwaway accounts were once a way to mint battle opponents; battles are
+// gone (2026-09) but the cap stays, because it is also what keeps a shared
+// class iPad from filling the users table with abandoned profiles.
 //
 // What "device" means here, and what it deliberately does NOT mean:
 //   * it is an opaque random string the client stores in localStorage
@@ -23,7 +23,6 @@ const libSrc = read('functions/api/_lib.js');
 const registerSrc = read('functions/api/register.js');
 const flagsSrc = read('functions/api/admin/user-flags.js');
 const authSrc = read('js/auth.js');
-const friendsSrc = read('js/friends.js');
 const migrationSrc = read('db/004-device-limit.sql');
 const schemaSrc = read('db/schema.sql');
 
@@ -186,18 +185,17 @@ suite('device limit: a real household is not locked out', () => {
         assert.falsy(/DELETE FROM users/.test(flagsSrc), 'clearing a device must not delete the account');
     });
 
-    test('clearing a device still works when no flag is being changed', () => {
-        // The endpoint used to reject any body without allowBot. If that guard
-        // survived, clearDevice on its own would 400.
-        assert.falsy(/if \(typeof body\.allowBot === 'undefined'\) return err\('Nothing to change'\)/.test(flagsSrc),
-            'the old allowBot-only guard would reject a clearDevice-only request');
-        // Written as "none of the intents were requested" so adding another
-        // action does not silently reintroduce the old allowBot-only guard.
-        // Order-agnostic on purpose: what matters is that every intent is in
-        // the conjunction, not which one an author happened to list second.
-        assert.truthy(/if \(!wantsBot(?: && !\w+)+\) return err\('Nothing to change'\)/.test(flagsSrc),
+    test('clearing a device still works when nothing else is being changed', () => {
+        // The endpoint once rejected any body without allowBot. That switch is
+        // gone (2026-09), and the guard must stay written as "none of the
+        // intents were requested" so that adding another action can never
+        // reintroduce a single-intent guard that 400s a clearDevice-only body.
+        const code = flagsSrc.split('\n').filter(l => !/^\s*\/\//.test(l)).join('\n');
+        assert.falsy(/allowBot|allow_bot|allowChuyen|allow_chuyen/.test(code),
+            'the cut per-user switches must not linger in the endpoint');
+        assert.truthy(/if \(!wantsClear(?: && !\w+)+\) return err\('Nothing to change'\)/.test(flagsSrc),
             'the guard must require that NO action was asked for, not just one');
-        for (const intent of ['wantsBot', 'wantsClear', 'wantsDisable'])
+        for (const intent of ['wantsClear', 'wantsDisable'])
             assert.truthy(new RegExp('!' + intent + '\\b').test(flagsSrc), intent + ' must be part of the guard');
     });
 });
@@ -208,26 +206,15 @@ suite('device limit: what the child is told', () => {
     });
 
     test('a used-up device gets its own reason, not "update the app"', () => {
+        // The message itself used to be drawn by js/friends.js (gone with the
+        // friends list). The reason and the server's own sentence still come
+        // back through EngAuth.linkStatus() for whatever screen reports the
+        // link next; what must not happen is the limit collapsing into the
+        // generic 'rejected'.
         assert.truthy(authSrc.includes("code === 'device_limit' ? 'device-limit'"),
             'the limit must be distinguishable from a generic rejection');
-        assert.truthy(friendsSrc.includes("'device-limit':"), 'and it needs its own message');
-    });
-
-    test('that message carries no second copy of the number 2', () => {
-        // The count is the server's to state. A hardcoded "2" here would be
-        // wrong the day MAX_ACCOUNTS_PER_DEVICE changes.
-        const msg = friendsSrc.slice(friendsSrc.indexOf("'device-limit':"), friendsSrc.indexOf('rejected:'));
-        assert.falsy(/<b>2 tài khoản<\/b>/.test(msg), 'the client hardcoded the limit');
-        assert.truthy(msg.includes('st.detail'), 'it must quote the server sentence');
-        assert.truthy(msg.includes('frEsc('), 'and escape it — that string is rendered as HTML');
-    });
-
-    test('it offers no passcode box and no futile retry', () => {
-        // Both were actively misleading: a passcode cannot create a third
-        // account, and "Thử lại" just fails again.
-        assert.falsy(/needsCode = [^;]*device-limit/.test(friendsSrc), 'a passcode cannot fix a full device');
-        assert.truthy(friendsSrc.includes("const canRetry = reason !== 'device-limit'"));
-        assert.truthy(/canRetry \?/.test(friendsSrc), 'the retry button must be conditional on that');
+        assert.truthy(/return \(_lastLinkStatus = \{ ok: false, reason, status: r\.status, detail \}\)/.test(authSrc),
+            'the server sentence travels with the reason, so no client ever hardcodes the number 2');
     });
 });
 

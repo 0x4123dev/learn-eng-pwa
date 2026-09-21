@@ -162,77 +162,6 @@
             <!-- Daily Task screen — rendered by DailyTask.renderScreen() -->
             <div class="screen daily-task-screen" id="dailyTaskScreen"></div>
 
-            <!-- Lesson Screen -->
-            <div class="screen lesson-screen" id="lessonScreen">
-                <div class="lesson-header">
-                    <button class="close-btn" onclick="quitLesson()">×</button>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="lessonProgress" style="width: 0%"></div>
-                    </div>
-                    <div class="lesson-points">
-                        <span id="lessonPointsDisplay">0</span>
-                    </div>
-                </div>
-
-                <div class="lesson-content">
-                    <h2 class="lesson-instruction">Tap the matching pairs</h2>
-                    <div class="matching-grid">
-                        <div class="matching-column" id="leftColumn"></div>
-                        <div class="matching-column" id="rightColumn"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Speed Challenge Screen -->
-            <div class="screen speed-challenge-screen" id="speedChallengeScreen">
-                <div class="speed-header">
-                    <h1 class="speed-title">📝 Irregular Verbs</h1>
-                    <p class="speed-subtitle">Practice V1, V2, V3</p>
-                </div>
-
-                <div class="speed-leaderboard">
-                    <h3 class="leaderboard-title">🏆 Your Best</h3>
-                    <div class="leaderboard-stats">
-                        <div class="leaderboard-stat">
-                            <span class="leaderboard-value" id="bestScore">0</span>
-                            <span class="leaderboard-label">Best Score</span>
-                        </div>
-                        <div class="leaderboard-stat">
-                            <span class="leaderboard-value" id="bestStreak">0</span>
-                            <span class="leaderboard-label">Best Streak</span>
-                        </div>
-                        <div class="leaderboard-stat">
-                            <span class="leaderboard-value" id="totalPlayed">0</span>
-                            <span class="leaderboard-label">Games</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="text-align:center;margin:16px 0">
-                    <button class="primary-btn" onclick="startSpeedChallenge(0)" style="font-size:16px;padding:14px 48px">
-                        ⚡ Start Challenge<br><span style="font-size:11px;opacity:0.8" id="speedAllVerbsCount">All verbs</span>
-                    </button>
-                </div>
-
-                <div class="speed-history-section">
-                    <h3 class="section-title">Game History</h3>
-                    <div class="speed-history-list" id="speedHistoryList">
-                        <div class="empty-history">No games played yet</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PTNK Screen: the real Phổ thông Năng khiếu entrance papers,
-                 drawn by the timed-paper engine (js/exam.js, set "ptnk") -->
-            <div class="screen exam-screen" id="ptnkScreen"></div>
-
-            <!-- PTNK-format practice: three menus on the same engine (js/practice-sets.js) -->
-            <div class="screen exam-screen" id="readingScreen"></div>
-            <div class="screen exam-screen" id="clozeScreen"></div>
-            <div class="screen exam-screen" id="errorsScreen"></div>
-            <div class="screen exam-screen" id="grammarVocabScreen"></div>
-            <div class="screen exam-screen" id="phoneticsScreen"></div>
-
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
                 <button class="profile-back-btn" onclick="navigateFromProfile()">← Back</button>
@@ -272,18 +201,9 @@
                 <h2 class="section-title">Themes</h2>
                 <div class="theme-picker" id="themePicker"></div>
 
-                <h2 class="section-title">🏆 Tủ cúp</h2>
-                <div class="cup-cabinet" id="cupCabinet"></div>
-
                 <h2 class="section-title">Sticker Book</h2>
                 <div class="sticker-counter" id="stickerCounter"></div>
                 <div class="sticker-grid" id="stickerGrid"></div>
-
-                <h2 class="section-title">My Sentences</h2>
-                <div class="sentences-list" id="sentencesList"></div>
-
-                <h2 class="section-title">👥 Bạn bè</h2>
-                <div class="friends-section" id="friendsSection"></div>
 
                 <h2 class="section-title">Achievements</h2>
                 <div class="achievements-grid" id="achievementsGrid"></div>
@@ -293,144 +213,17 @@
                 </button>
             </div>
 
-            <!-- Pet Battle (⚔️ from the pet habitat) -->
-            <div class="screen pet-battle-screen" id="petBattleScreen"></div>
+            <!-- Nông trại: the learner's own home and farm (js/night-raid.js, lazy group `farm`) -->
             <div class="screen night-raid-screen" id="nightRaidScreen"></div>
 
-            <!-- Navigation hubs keep the bottom bar focused on five user goals. -->
-            <div class="screen nav-hub-screen" id="learnHubScreen">
-                <header class="nav-hub-header">
-                    <span class="nav-hub-kicker">ENGLISH</span>
-                    <h1>What do you want to practise?</h1>
-                    <p>Learn, review and practise in one place. Your progress stays with every activity.</p>
-                </header>
-                <div class="nav-hub-feature learn-review">
-                    <div>
-                        <span class="nav-hub-feature-label">SMART REVIEW</span>
-                        <strong>Words due today</strong>
-                        <small id="learnDueText" aria-live="polite">Checking your review queue…</small>
-                    </div>
-                    <button type="button" onclick="startReviewSession()">Review now</button>
-                </div>
-                <div class="nav-hub-grid learn-grid" aria-label="Learning activities">
-                    <button class="nav-hub-card topics" type="button"
-                            onclick="switchScreen('topicsScreen'); renderTopicsHome()">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Topics</strong><small>Vocabulary by topic</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card grade4" type="button"
-                            onclick="switchScreen('gradeFourScreen'); renderGrade4Home()">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/><path d="M8 7h1M15 7h1M8 11h1M15 11h1"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Grade 4</strong><small>Pre · Post · HK1 · HK2</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card grammar" type="button"
-                            onclick="switchScreen('grammarScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="M7 9.2V14c0 1.8 2.2 3 5 3s5-1.2 5-3V9.2"/><path d="M21 7v6"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Grammar</strong><small>Rules, lessons and quizzes</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card ptnk" type="button" onclick="switchScreen('ptnkScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/><path d="M8 12h8M8 16h5"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>PTNK Exams</strong><small>Real grade-10 entrance papers</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card reading" type="button" onclick="switchScreen('readingScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Reading</strong><small>Passages with comprehension questions</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card cloze" type="button" onclick="switchScreen('clozeScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h5M13 12h7M4 17h16"/><path d="M9 10v4M13 10v4"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Cloze</strong><small>Fill ten blanks, multiple choice or typed</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card errors" type="button" onclick="switchScreen('errorsScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8.5 8.5l5 5M13.5 8.5l-5 5"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Error Correction</strong><small>Spot the wrong segment in a sentence</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card grammarvocab" type="button" onclick="switchScreen('grammarVocabScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h7M15 12h5M4 18h16"/><rect x="11" y="10" width="4" height="4" rx="1"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Grammar &amp; Vocabulary</strong><small>Fill the blank: tenses, idioms, phrasal verbs, word choice</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card phonetics" type="button" onclick="switchScreen('phoneticsScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Phonetics &amp; Stress</strong><small>Rules with IPA, then odd-one-out drills with audio</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card verbs" type="button" onclick="switchScreen('speedChallengeScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12l1-9Z"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Irregular Verbs</strong><small>Train V1, V2 and V3 quickly</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card phrases" type="button"
-                            onclick="switchScreen('phrasesScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Phrases</strong><small>Prepositions and collocations</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card wordform" type="button"
-                            onclick="switchScreen('wordformScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="m6 16 5-12 5 12"/><path d="M8 12h6"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Word Form</strong><small>Build the correct form from a root</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                    <button class="nav-hub-card rewrite" type="button"
-                            onclick="switchScreen('rewriteScreen')">
-                        <span class="nav-hub-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5Z"/><path d="m14 6 3 3"/></svg>
-                        </span>
-                        <span class="nav-hub-copy"><strong>Rewrite</strong><small>Transform sentences without changing meaning</small></span>
-                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Grade 4 is a first-class Learn destination, not nested in Topics. -->
-            <div class="screen topics-screen grade4-screen" id="gradeFourScreen">
-                <div class="topics-header">
-                    <h1 class="topics-title">📗 Grade 4</h1>
-                    <p class="topics-subtitle">Pre · Post · HK1 · HK2</p>
-                </div>
-                <div class="grammar-subtabs topics-subtabs" id="grade4SubTabs"></div>
-                <div class="units-bar" id="unitsBar"></div>
-                <div class="units-history" id="grade4History" style="display:none"></div>
-                <div class="topics-detail" id="grade4Detail"></div>
-            </div>
-
-            <!-- Word tab: the same picture-dictionary engine as Grade 4, on the
-                 Career Paths: Public Relations word bank (lazy-loaded). -->
+            <!-- The three Book tabs share this screen: the picture-dictionary
+                 engine (js/units.js) on the Career Paths: Public Relations word
+                 bank (js/word-data.js, lazy). The nav button picks the book;
+                 the header says which one is open. -->
             <div class="screen topics-screen grade4-screen word-screen" id="wordScreen">
                 <div class="topics-header">
-                    <h1 class="topics-title">🔤 Word</h1>
-                    <p class="topics-subtitle">Career Paths · Public Relations · Book 1 · 2 · 3</p>
+                    <h1 class="topics-title" id="wordTitle">📘 Book 1</h1>
+                    <p class="topics-subtitle" id="wordSubtitle">Career Paths · Public Relations 1</p>
                 </div>
                 <div class="grammar-subtabs topics-subtabs" id="wordSubTabs"></div>
                 <div class="units-bar" id="wordUnitsBar"></div>
@@ -438,26 +231,6 @@
                 <div class="topics-detail" id="wordDetail"></div>
             </div>
 
-            <div class="screen nav-hub-screen math-hub-screen" id="mathHubScreen"></div>
-            <div class="math-board-overlay hidden" id="mathBoardOverlay"></div>
-
-            <!-- Grammar Screen -->
-            <div class="screen grammar-screen" id="grammarScreen"></div>
-            <div class="screen phrases-screen" id="phrasesScreen"></div>
-            <div class="screen wordform-screen" id="wordformScreen"></div>
-            <div class="screen rewrite-screen" id="rewriteScreen"></div>
-
-            <!-- Topics Screen -->
-            <div class="screen topics-screen" id="topicsScreen">
-                <div class="topics-header">
-                    <h1 class="topics-title">📚 Vocabulary</h1>
-                    <p class="topics-subtitle">Vocabulary by topic</p>
-                </div>
-                <div class="topics-sr-banner-slot" id="topicsSrBanner"></div>
-                <div class="topics-review-card" id="topicsReviewCard"></div>
-                <div class="topics-grid" id="topicsGrid"></div>
-                <div class="topics-detail" id="topicsDetail"></div>
-            </div>
         </div>
 
         <!-- Bottom Navigation -->
@@ -467,141 +240,23 @@
                 <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
                 <span>Home</span>
             </button>
-            <button class="nav-item" data-nav-key="learn" type="button" onclick="switchScreen('learnHubScreen')">
-                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg></span>
-                <span>Eng</span>
+            <button class="nav-item" data-nav-key="book1" type="button" onclick="openBook('pr1')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4Z"/><path d="M5 17h14"/><path d="M11 9h4"/></svg></span>
+                <span>Book 1</span>
             </button>
-            <button class="nav-item nav-arena" data-nav-key="arena" type="button" onclick="openPetBattle()">
-                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4v3M17 4v3M4 7h16v13H4V7Z"/><path d="M4 11h16M8 7V4h3v3M13 7V4h3v3"/><path d="M9 20v-5h6v5"/></svg></span>
-                <span>Arena</span>
+            <button class="nav-item" data-nav-key="book2" type="button" onclick="openBook('pr2')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4Z"/><path d="M5 17h14"/><path d="M10 8h5M10 11h5"/></svg></span>
+                <span>Book 2</span>
             </button>
-            <button class="nav-item" data-nav-key="math" type="button" onclick="switchScreen('mathHubScreen')">
-                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h1M12 11h1M16 11h1M8 15h1M12 15h1M16 15h1M8 18h1M12 18h5"/></svg></span>
-                <span>Math</span>
+            <button class="nav-item" data-nav-key="book3" type="button" onclick="openBook('pr3')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4Z"/><path d="M5 17h14"/><path d="M10 7h5M10 10h5M10 13h5"/></svg></span>
+                <span>Book 3</span>
             </button>
-            <button class="nav-item" data-nav-key="word" type="button" onclick="switchScreen('wordScreen')">
-                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15V9l2.5 3L12 9v6"/><path d="M15 9h3a1.5 1.5 0 0 1 0 3h-3m0 0h3.5a1.5 1.5 0 0 1 0 3H15V9"/></svg></span>
-                <span>Word</span>
+            <button class="nav-item nav-farm" data-nav-key="farm" type="button" onclick="openNightRaid()">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V10l7-6 7 6v11"/><path d="M9 21v-6h6v6"/><path d="M12 4v3"/></svg></span>
+                <span>Nông trại</span>
             </button>
         </nav>
-    </div>
-
-    <!-- Word of the Day Overlay -->
-    <div class="wotd-overlay" id="wotdOverlay"></div>
-
-    <!-- Treasure Chest Overlay -->
-    <div class="treasure-overlay" id="treasureOverlay"></div>
-
-    <!-- Sentence Builder Overlay -->
-    <div class="sentence-builder-overlay" id="sentenceBuilderOverlay"></div>
-
-    <!-- Battle Setup Overlay -->
-    <div class="battle-setup-overlay" id="battleSetupOverlay"></div>
-
-    <!-- Battle Game Overlay -->
-    <div class="battle-game-overlay" id="battleGameOverlay"></div>
-
-    <!-- Word Hunt Overlay -->
-    <div class="word-hunt-overlay" id="wordHuntOverlay"></div>
-
-    <!-- Lesson Complete -->
-    <div class="lesson-complete" id="lessonComplete">
-        <div class="complete-icon">🎉</div>
-        <h2 class="complete-title">Lesson Complete!</h2>
-        <p class="complete-subtitle" id="completeSubtitle">Great job!</p>
-        <div class="complete-coins" id="completeCoins" style="display:none">+0 🪙</div>
-        <div class="complete-streak-bonus" id="completeStreakBonus" style="display:none"></div>
-        <div class="complete-stats">
-            <div class="complete-stat">
-                <div class="complete-stat-value" id="completePoints">+0</div>
-                <div class="complete-stat-label">Points</div>
-            </div>
-            <div class="complete-stat">
-                <div class="complete-stat-value" id="completeAccuracy">0%</div>
-                <div class="complete-stat-label">Accuracy</div>
-            </div>
-        </div>
-        <button class="primary-btn complete-btn" onclick="closeLessonComplete()">Continue</button>
-    </div>
-
-    <!-- Speed Game Overlay -->
-    <div class="speed-game-overlay" id="speedGameOverlay">
-        <div class="speed-game-header">
-            <button class="speed-exit-btn" onclick="exitSpeedGame()">✕</button>
-            <div class="speed-game-stats">
-                <div class="speed-score">
-                    <span class="score-icon">⭐</span>
-                    <span id="speedScore">0</span>
-                </div>
-                <div class="speed-streak-display">
-                    <span class="streak-icon">🔥</span>
-                    <span id="speedStreak">0</span>
-                </div>
-            </div>
-            <div class="speed-progress">
-                <span id="speedProgress">1/10</span>
-            </div>
-        </div>
-
-        <div class="speed-timer-container">
-            <div class="speed-timer-clock" id="speedTimerClock">45</div>
-            <div class="speed-timer-bar">
-                <div class="speed-timer-fill" id="speedTimerFill"></div>
-            </div>
-        </div>
-
-        <div class="speed-game-content">
-            <div class="speed-verb-display">
-                <div class="verb-label">V1 (Base Form)</div>
-                <div class="verb-word" id="verbV1">go</div>
-                <div class="verb-meaning" id="verbMeaning">đi</div>
-                <div class="verb-example" id="verbExample"></div>
-            </div>
-
-            <div class="speed-inputs">
-                <div class="speed-input-group">
-                    <label>V2 (Past)</label>
-                    <input type="text" id="inputV2" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other" onkeydown="if(event.key==='Enter'){document.getElementById('inputV3').focus();event.preventDefault()}">
-                </div>
-                <div class="speed-input-group">
-                    <label>V3 (Past Participle)</label>
-                    <input type="text" id="inputV3" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other" onkeydown="if(event.key==='Enter'){submitSpeedAnswer();event.preventDefault()}">
-                </div>
-            </div>
-
-            <button class="speed-submit-btn" id="speedSubmitBtn">
-                ✓ Check &amp; 🔊
-            </button>
-
-            <div class="speed-feedback" id="speedFeedback"></div>
-        </div>
-    </div>
-
-    <!-- Speed Game Complete -->
-    <div class="speed-complete-overlay" id="speedCompleteOverlay">
-        <div class="speed-complete-content">
-            <div class="speed-complete-icon">🏆</div>
-            <h2 class="speed-complete-title">Challenge Complete!</h2>
-            <div class="speed-complete-stats">
-                <div class="speed-complete-stat">
-                    <div class="stat-value" id="finalScore">0</div>
-                    <div class="stat-label">Score</div>
-                </div>
-                <div class="speed-complete-stat">
-                    <div class="stat-value" id="finalCorrect">0</div>
-                    <div class="stat-label">Correct</div>
-                </div>
-                <div class="speed-complete-stat">
-                    <div class="stat-value" id="finalBestStreak">0</div>
-                    <div class="stat-label">Best Streak</div>
-                </div>
-            </div>
-            <div class="speed-complete-coins" id="finalCoins" style="display: none;"></div>
-            <div class="speed-new-record" id="newRecordBadge" style="display: none;">
-                🎉 NEW RECORD!
-            </div>
-            <button class="primary-btn" onclick="closeSpeedComplete()">Continue</button>
-        </div>
     </div>
 
     <!-- Delete User Modal -->
@@ -649,12 +304,8 @@
     <!-- Confetti -->
     <div class="confetti-container" id="confettiContainer"></div>
 
-    <!-- Data -->
-    <script src="js/vocabulary.js"></script>
-    <script src="js/units-data.js"></script>
-    <script src="js/units-hk1-data.js"></script>
-    <script src="js/units-hk2-data.js"></script>
-    <script src="js/units-posthk-data.js"></script>
+    <!-- Data + shared engines. Every bank of questions is lazy (js/lazy-data.js);
+         these are the small shared rule modules and the engines every tab uses. -->
     <!-- Must load before any tab: each registers its drill config on load. -->
     <script src="js/retrydrill.js"></script>
     <!-- The silent "what you missed comes back" draw every practice tab uses. -->
@@ -662,44 +313,23 @@
     <script src="js/hot-words.js"></script>
     <script src="js/answer-audio.js"></script>
     <script src="js/units.js"></script>
-    <script src="js/topics.js"></script>
-    <script src="js/grammar-ui.js"></script>
-    <script src="js/phrases.js"></script>
-    <script src="js/collocation.js"></script>
     <script src="js/tapwords.js"></script>
     <script src="js/petart.js"></script>
     <script src="js/petcheer.js"></script>
-    <!-- The Arena (pet battles, Cướp Đêm, Cúng Cô Hồn) and the Math tab load
-         their code on first open: js/lazy-data.js GROUP_FILES arena / math.
-         What stays here is what Home, Daily Task and the Armoury draw from:
-         the pet rig, the cheer, the farm and raid rules, the trophy cabinet. -->
+    <!-- The farm's rules are shared with the server (functions/api/_farm.js,
+         _daily-task.js import them), so they load eagerly; the farm screen's
+         own code (js/night-raid.js) is the lazy group `farm`. -->
     <script src="js/farm-rules.js"></script>
     <script src="js/night-raid-rules.js"></script>
-    <script src="js/friends.js"></script>
-    <script src="js/cups.js"></script>
-    <script src="js/wordform.js"></script>
-    <script src="js/rewrite.js"></script>
     <!-- Core -->
     <script src="js/hosting.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/lazy-data.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/srs.js"></script>
     <!-- Features -->
     <script src="js/home.js"></script>
     <script src="js/daily-task-catalog.js"></script>
     <script src="js/daily-task.js"></script>
-    <script src="js/armory.js"></script>
-    <script src="js/lessons.js"></script>
-    <script src="js/verbs.js"></script>
-    <script src="js/exam.js"></script>
-    <script src="js/ptnk.js"></script>
-    <script src="js/practice-sets.js"></script>
     <script src="js/profile.js"></script>
-    <!-- New Features -->
-    <script src="js/daily-challenge.js"></script>
-    <script src="js/sentence-builder.js"></script>
-    <script src="js/battle.js"></script>
-    <script src="js/word-hunt.js"></script>
 </body>
 </html>

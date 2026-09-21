@@ -4,6 +4,9 @@ const { loadAppCode } = require('./setup');
 
 function loadWithAppState(initialAppState) {
     const env = loadAppCode();
+    // js/profile.js's real unlockAchievement runs on a milestone; a real
+    // profile always carries the achievements list.
+    if (!initialAppState.achievements) initialAppState.achievements = [];
     env.__setAppState(initialAppState);
     return env;
 }
@@ -92,7 +95,7 @@ suite('updateStreak: missed day with shield', () => {
 
 suite('recordStudy: streak increment', () => {
     test('first study sets streak to 1', () => {
-        const appState = { streak: 0, lastStudyDate: null, lessonHistory: [] };
+        const appState = { streak: 0, lastStudyDate: null, unitsHistory: [] };
         const env = loadWithAppState(appState);
         env.recordStudy();
         assert.equal(appState.streak, 1);
@@ -100,43 +103,42 @@ suite('recordStudy: streak increment', () => {
     });
 
     test('second consecutive day increments streak', () => {
-        const appState = { streak: 1, lastStudyDate: yesterday(), lessonHistory: [] };
+        const appState = { streak: 1, lastStudyDate: yesterday(), unitsHistory: [] };
         const env = loadWithAppState(appState);
         env.recordStudy();
         assert.equal(appState.streak, 2);
     });
 
     test('does not increment if already studied today', () => {
-        const appState = { streak: 5, lastStudyDate: today(), lessonHistory: [] };
+        const appState = { streak: 5, lastStudyDate: today(), unitsHistory: [] };
         const env = loadWithAppState(appState);
         env.recordStudy();
         assert.equal(appState.streak, 5);
     });
 
     test('updates bestStreak if new record', () => {
-        const appState = { streak: 4, lastStudyDate: yesterday(), bestStreak: 4, lessonHistory: [] };
+        const appState = { streak: 4, lastStudyDate: yesterday(), bestStreak: 4, unitsHistory: [] };
         const env = loadWithAppState(appState);
         env.recordStudy();
         assert.equal(appState.bestStreak, 5);
     });
 
     test('does NOT decrement bestStreak when current streak is lower', () => {
-        const appState = { streak: 3, lastStudyDate: yesterday(), bestStreak: 14, lessonHistory: [] };
+        const appState = { streak: 3, lastStudyDate: yesterday(), bestStreak: 14, unitsHistory: [] };
         const env = loadWithAppState(appState);
         env.recordStudy();
         assert.equal(appState.bestStreak, 14);
     });
 
-    test('awards shield after 3+ lessons in a day', () => {
-        const date = today();
+    test('awards shield after 3+ Book practices in a day', () => {
         const appState = {
             streak: 1,
             lastStudyDate: yesterday(), // yesterday — streak will become 2 today
             streakShields: 0,
-            lessonHistory: [
-                { lessonNum: 1, date: Date.now() },
-                { lessonNum: 2, date: Date.now() },
-                { lessonNum: 3, date: Date.now() }
+            unitsHistory: [
+                { unit: 'pr1-1', score: 5, total: 5, date: Date.now(), wrong: [] },
+                { unit: 'pr1-2', score: 4, total: 5, date: Date.now(), wrong: [] },
+                { unit: 'pr2-mix', score: 3, total: 5, date: Date.now(), wrong: [] }
             ]
         };
         const env = loadWithAppState(appState);
@@ -148,9 +150,9 @@ suite('recordStudy: streak increment', () => {
         const appState = {
             streak: 1, lastStudyDate: yesterday(),
             streakShields: 3,
-            lessonHistory: [
-                { lessonNum: 1, date: Date.now() }, { lessonNum: 2, date: Date.now() },
-                { lessonNum: 3, date: Date.now() }, { lessonNum: 4, date: Date.now() }
+            unitsHistory: [
+                { unit: 'pr1-1', score: 5, total: 5, date: Date.now() }, { unit: 'pr1-2', score: 5, total: 5, date: Date.now() },
+                { unit: 'pr1-3', score: 5, total: 5, date: Date.now() }, { unit: 'pr1-4', score: 5, total: 5, date: Date.now() }
             ]
         };
         const env = loadWithAppState(appState);

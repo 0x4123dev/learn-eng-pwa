@@ -64,7 +64,7 @@ suite('streak modal: rendering', () => {
     }
 
     test('showDailyStreakModal renders the modal overlay with the streak number', () => {
-        const env = setupModal({ streak: 7, bestStreak: 7, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 7, bestStreak: 7, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const overlay = env.document.getElementById('streakModalOverlay');
         assert.truthy(overlay, 'overlay element should exist');
@@ -74,7 +74,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('showDailyStreakModal shows the "Days" unit label and best-streak line', () => {
-        const env = setupModal({ streak: 14, bestStreak: 30, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 14, bestStreak: 30, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
         assert.truthy(/DAYS/.test(html), 'should show DAYS label');
@@ -83,7 +83,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('shows next-milestone progress bar when streak < 100', () => {
-        const env = setupModal({ streak: 5, bestStreak: 5, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 5, bestStreak: 5, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
         // 5 days → next milestone is 7 → "2 days to 7-day milestone"
@@ -92,7 +92,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('shows CTA "Learn today\'s words" when user has NOT studied today', () => {
-        const env = setupModal({ streak: 3, bestStreak: 3, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 3, bestStreak: 3, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
         assert.truthy(/Learn today/i.test(html),
@@ -101,10 +101,10 @@ suite('streak modal: rendering', () => {
             'should NOT show "Already studied" when not studied today');
     });
 
-    test('shows "Already studied today" when lessonHistory has a today entry', () => {
+    test('shows "Already studied today" when unitsHistory has a today entry', () => {
         const env = setupModal({
             streak: 5, bestStreak: 5, coins: 0,
-            lessonHistory: [{ lessonNum: 0, date: Date.now(), score: 5, mistakes: 0 }]
+            unitsHistory: [{ unit: 'pr1-1', date: Date.now(), score: 5, total: 5, wrong: [] }]
         });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
@@ -113,7 +113,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('after showDailyStreakModal, subsequent same-day calls become no-ops', () => {
-        const env = setupModal({ streak: 5, bestStreak: 5, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 5, bestStreak: 5, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         // Clear the overlay (mimics user dismissing)
         env.dismissStreakModal();
@@ -127,7 +127,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('force=true bypasses the once-per-day gate', () => {
-        const env = setupModal({ streak: 5, bestStreak: 5, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 5, bestStreak: 5, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         env.dismissStreakModal();
         // Now call with force=true
@@ -137,7 +137,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('renders 7-day calendar with today highlighted', () => {
-        const env = setupModal({ streak: 1, bestStreak: 1, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 1, bestStreak: 1, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
         // 7 day tiles
@@ -148,7 +148,7 @@ suite('streak modal: rendering', () => {
     });
 
     test('zero streak shows "Start your streak today!" greeting', () => {
-        const env = setupModal({ streak: 0, bestStreak: 0, lessonHistory: [], coins: 0 });
+        const env = setupModal({ streak: 0, bestStreak: 0, unitsHistory: [], coins: 0 });
         env.showDailyStreakModal();
         const html = env.document.getElementById('streakModalOverlay').innerHTML;
         assert.truthy(/Start your streak today/.test(html),

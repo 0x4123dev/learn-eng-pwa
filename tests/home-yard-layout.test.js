@@ -1,4 +1,4 @@
-// home-yard-layout.test.js — Home owns the close-up pet HUD; Arena owns the yard.
+// home-yard-layout.test.js — Home owns the close-up pet HUD; the farm tab owns the yard.
 //
 // Once the castle garden moved out of Home, the compact pet bar could return to
 // its original place at the top of the pet hero. Safe-area padding keeps it
@@ -21,11 +21,9 @@ const { createDocument } = require('./domshim');
 // function would return.
 function mountFreshGarden(seed) {
     const doc = createDocument('<div id="yard"></div>');
-    // The garden paints the castle skin onto a canvas. The shim has no canvas,
-    // and the exception took the whole mount down before the walk ever started
-    // — which is exactly the sort of thing that makes a test quietly measure
-    // nothing. A permissive stub is enough: the app already falls back to the
-    // webp when the canvas gives it nothing.
+    // The shim has no canvas; a permissive stub keeps any decorative painting
+    // from taking the whole mount down before the walk ever started — which is
+    // exactly the sort of thing that makes a test quietly measure nothing.
     const noop = new Proxy(function () {}, { get: () => noop, apply: () => noop });
     const createElement = doc.createElement.bind(doc);
     doc.createElement = tag => {
@@ -66,8 +64,6 @@ function mountFreshGarden(seed) {
     vm.createContext(ctx);
     vm.runInContext(read('js/night-raid-rules.js'), ctx);
     vm.runInContext('var NightRaidRules = module.exports; module.exports = {};', ctx);
-    vm.runInContext(read('js/night-raid-art.js'), ctx);
-    vm.runInContext(read('js/castle-skins.js'), ctx);
     vm.runInContext(read('js/night-raid.js'), ctx);
     ctx.NightRaid.mountYardScene(doc.getElementById('yard'), { skipRefresh: true });
     // Swallowing a mount failure here once made the hungry-dog tests pass for
@@ -105,71 +101,63 @@ suite('home: the pet bar is back inside the close-up dog habitat', () => {
     });
 });
 
-suite('home: the garden shipped, the game did not', () => {
+suite('home: the garden is scenery; the farm tab is where it is built', () => {
     // Released on 2026-08-25: every account sees the garden, the castle and the
-    // dog walking about. Night Raid — raiding other children's homes, the build
-    // screen, the shop that spends coins on cannons — is still behind the
-    // admin's bot flag. The risk this suite guards is that widening one quietly
-    // widens the other.
+    // dog walking about. Since September 2026 the Arena that hosted the yard is
+    // gone: the same scene is mountable anywhere (mountYardScene), and the farm
+    // tab (Nông trại) is the one place it can be edited.
     const home = read('js/home.js');
-    const arena = read('js/petbattle.js');
 
-    test('Home keeps the evolving dog close-up and Arena owns the garden', () => {
+    test('Home keeps the evolving dog close-up and the farm tab owns the garden', () => {
         assert.falsy(home.includes('NightRaid.mountYardScene'), 'Home must not mount the castle garden');
         assert.truthy(home.includes("stage_el.classList.remove('yard-mode')"), 'Home must leave full-yard layout mode');
         assert.truthy(home.includes('<div class="pet-wrapper">') && home.includes('${petArtHTML}'),
             'Home must render the live dog art so level accessories remain visible');
-        assert.truthy(arena.includes('id="pbArenaYard"') && arena.includes('NightRaid.mountYardScene(host'),
-            'Arena must mount the account castle garden in its header');
-        assert.truthy(arena.includes('onclick="pbShowDogInfo()"') && arena.includes('aria-modal="true"'),
-            'Arena must expose dog power through an accessible info dialog');
-        assert.truthy(arena.includes('class="pb-arena-home"') && arena.includes('onclick="openNightRaid()"'),
-            'Arena must place the home entry directly over its yard');
+        assert.truthy(/data-nav-key="farm"[^>]*onclick="openNightRaid\(\)"|onclick="openNightRaid\(\)"[^>]*data-nav-key="farm"/.test(html),
+            'the Nông trại nav button opens the farm');
+        assert.falsy(fs.existsSync(path.join(ROOT, 'js/petbattle.js')), 'the Arena is gone');
     });
 
-    test('Night Raid is visible to every child', () => {
-        assert.truthy(arena.includes('_pbArenaPetHeader()'),
-            'the Night Raid home button must not depend on a QA flag');
-        assert.falsy(arena.includes('_pbArenaPetHeader(st.allowBot)'),
-            'allowBot must not hide the Night Raid entry');
-        const lobby = arena.slice(arena.indexOf('screen.innerHTML = _pbShell(`'), arena.indexOf('// ---- battle history ----'));
-        assert.falsy(lobby.includes('_pbNightRaidCard()') || lobby.includes('_pbRandomArenaCard()'),
-            'the two removed promotional boxes must not return to the Arena lobby');
-    });
-
-    test('the garden carries no way into the game', () => {
+    test('the garden carries no way out of itself', () => {
         // It is scenery. The only thing a finger can do to it is play with the
-        // dog; anything else here would hand every child the raid.
+        // dog; navigation belongs to whoever mounted it.
         const scene = ui.slice(ui.indexOf('function mountYardScene(host,opts)'),
                                ui.indexOf('function unmountYardScene'));
         assert.truthy(scene.length > 200, 'mountYardScene could not be sliced out');
         assert.deepEqual(scene.match(/onclick="[^"]*"/g) || [], [],
-            'the garden must not carry a link into Night Raid');
-        for (const way of ['renderBuilder', 'showLiveTargets', 'startRaid', 'nrShowBuilder']) {
+            'the garden must not carry a link anywhere');
+        for (const way of ['renderBuilder', 'switchScreen', 'nrShowBuilder', 'openNightRaid']) {
             assert.falsy(scene.includes(way), `the garden calls ${way}`);
         }
     });
 
     test('a brand-new account gets a bare lawn, not somebody else\'s fort', () => {
         // This ran against normalizeLayout(undefined) and passed happily while
-        // the app was handing every new account trainingTarget(4) — a BOT's
-        // base: eleven walls, traps and pebble pups nobody bought, and 457 DEF
-        // nobody earned. The seeding happens in ensure(), so the test has to go
-        // through the door the app goes through.
+        // the app was handing every new account the level-4 training home — a
+        // BOT's base: eleven walls, traps and pebble pups nobody bought. The
+        // seeding happens in ensure(), so the test has to go through the door
+        // the app goes through.
         const state = mountFreshGarden();
         const owned = state.appState.nightRaidLayout.cells;
         assert.deepEqual(owned.map(c => c.type), [],
             'a new account must own nothing — these were never bought');
         assert.truthy(state.appState.nightRaidLayout.castleCell,
             'but it must still have a castle to stand on the lawn');
-        assert.falsy(/trainingTarget\(\d+\)\.layout/.test(ui.slice(ui.indexOf('function ensure()'), ui.indexOf('function ensure()') + 900)),
+        const ensureSrc = ui.slice(ui.indexOf('function ensure()'), ui.indexOf('function ensure()') + 900);
+        assert.falsy(/trainingTarget|DEFENSES\.map|cells:\[\{/.test(ensureSrc),
             'ensure() must not seed a bot base as the player\'s own home');
     });
 
     test('a fort already seeded onto an account is cleared, a real base is not', () => {
+        // The seed was trainingTarget(4). That function left with the battle
+        // rules, so this is its layout, rebuilt cell for cell: three pebble
+        // pups, four spike traps, two stone walls, two wooden fences, all tier 1.
         const R = require(path.join(ROOT, 'js', 'night-raid-rules.js'));
-        const seeded = R.normalizeLayout(R.trainingTarget(4).layout);
-        assert.truthy(seeded.cells.length >= 8, 'the seed we are matching against still has buildings');
+        const cells = [];
+        const add = (type, n) => { for (let i = 0; i < n; i++) cells.push({ type, gx: (cells.length % 6) * 2, gy: 6 + Math.floor(cells.length / 6) * 2, tier: 1 }); };
+        add('pebble-pup', 3); add('spike-trap', 4); add('stone-wall', 2); add('wood-fence', 2);
+        const seeded = R.normalizeLayout({ cells });
+        assert.equal(seeded.cells.length, 11, 'the seed we are matching against still has its eleven buildings');
 
         // Accounts made between the garden shipping and the fix carry that fort.
         const cleaned = mountFreshGarden({ nightRaidLayout: { cells: seeded.cells } });

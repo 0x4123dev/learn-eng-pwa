@@ -27,11 +27,19 @@ suite('session continuity: a reload is not a logout', () => {
     assert.truthy(body.includes('rememberActiveUser(null)'));
   });
 
-  test('unfinished work checkpoints every practice family', () => {
-    for (const kind of ['grammar','phrases','wordform','rewrite','collocation','units','math','mathwars','exam','verbs','lesson']) {
-      assert.truthy(app.includes("kind:'" + kind + "'"), 'checkpoint missing ' + kind);
-      assert.truthy(app.includes("checkpoint.kind === '" + kind + "'"), 'restore missing ' + kind);
-    }
+  test('unfinished work checkpoints the one practice family left, and drops any other kind', () => {
+    // The Book practice (js/units.js) on the Word screen is the only exercise
+    // the app has; a checkpoint of anything else (an older build's grammar
+    // quiz, a maths round) is dropped rather than restored onto a screen that
+    // no longer exists.
+    const build = app.slice(app.indexOf('function buildStudyCheckpoint()'), app.indexOf('function saveStudyCheckpoint()'));
+    assert.deepEqual([...build.matchAll(/kind:\s*'(\w+)'/g)].map(m => m[1]), ['units'], 'the kinds the checkpoint builds');
+    const restore = app.slice(app.indexOf('function restoreStudyCheckpoint()'), app.indexOf('function startStudyCheckpointing()'));
+    assert.truthy(restore.includes("if (checkpoint.kind !== 'units' || checkpoint.screen !== 'wordScreen') {"), 'restore accepts only the Book practice');
+    const dropAt = restore.indexOf("checkpoint.kind !== 'units'");
+    assert.truthy(restore.slice(dropAt, dropAt + 400).includes('clearStudyCheckpoint();'), 'any other kind is cleared, not kept');
+    assert.truthy(restore.includes("LazyData.ready('wordScreen')"), 'it waits for the lazy word bank before redrawing');
+    assert.truthy(restore.includes('renderUnitQuestion();'), 'and redraws the question');
     // Saved on change, not on a clock: tests/study-checkpoint-on-change.test.js
     // executes the answer, typing, hidden and end-of-round paths.
     assert.falsy(/setInterval\(\s*saveStudyCheckpoint/.test(app), 'the once-a-second saver must not come back');
@@ -42,10 +50,9 @@ suite('session continuity: a reload is not a logout', () => {
     assert.truthy(app.includes("document.addEventListener('visibilitychange'"));
   });
 
-  test('typed but unsubmitted answers and matched pairs survive', () => {
+  test('typed but unsubmitted answers survive', () => {
     assert.truthy(app.includes("active.querySelectorAll('input[id],textarea[id]')"));
     assert.truthy(app.includes("restoreDraftInputs(checkpoint.drafts)"));
-    assert.truthy(app.includes(".match-card:not(.matched)"));
   });
 
   test('a service-worker update reloads automatically only from the safe idle path', () => {

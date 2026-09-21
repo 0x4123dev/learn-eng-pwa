@@ -14,10 +14,9 @@ import { requireAuth, json, err, randomHex } from './_lib.js';
 // (deployed before this protocol, sends no body) keeps claim-equals-confirm —
 // its rows are confirmed on the spot, so it can never be re-offered/double-paid.
 //
-// It also carries the app's feature flags home. This call already runs on
-// every account sync, and a flag that gates a MENU CARD has to arrive through
-// a call the app makes anyway: a child cannot open the tab to learn that the
-// tab is now open to them.
+// (Until the 2026-09 cut this reply also carried the app's feature flags —
+// mathFight / bot / chuyen / cuuchuongSeconds. Every feature they gated is
+// gone, and so are the flags; the client reads nothing but the grant.)
 const RECLAIM_AFTER = '-10 minutes';
 // …and the backstop, for ANY device. Scoping the re-offer to the claiming
 // device closed a double-pay, but on its own it also made a loss permanent:
@@ -48,32 +47,7 @@ export async function onRequestPost({ request, env }) {
     ).bind(auth.uid, rcpt).run();
   }
 
-  // Both app-wide settings in ONE round trip. They were two separate SELECTs
-  // against the same two-row table, on an endpoint every finished practice
-  // calls — a wasted query per sync for nothing.
-  const appRows = await env.DB.prepare(
-    "SELECT key, value FROM app_flags WHERE key IN ('math_fight', 'cuuchuong_seconds')").all();
-  const app = new Map(((appRows && appRows.results) || []).map(r => [r.key, r.value]));
-  const me = await env.DB.prepare('SELECT allow_bot, allow_chuyen FROM users WHERE id = ?').bind(auth.uid).first();
-  // Bảng cửu chương's round length rides home with the switches: it is one
-  // number for the whole app, an adult changes it while watching a child use
-  // it, and this call already runs often enough that the change lands within
-  // a session. Clamped and defaulted HERE as well as in the admin endpoint,
-  // because a row written before the range existed must still hand a device a
-  // length it can actually run a round on.
-  const rawSeconds = Math.trunc(Number(app.get('cuuchuong_seconds')));
-  const cuuchuongSeconds = Number.isFinite(rawSeconds) && rawSeconds > 0
-    ? Math.max(15, Math.min(180, rawSeconds))
-    : 60;
-  const flags = {
-    mathFight: !!app.get('math_fight'),
-    bot: !!(me && me.allow_bot),
-    // Chuyên tier in Word Form / Rewrite (db/031): its own switch.
-    chuyen: !!(me && me.allow_chuyen),
-    cuuchuongSeconds: cuuchuongSeconds,
-  };
-
-  if (body.ackOnly === true) return json({ granted: 0, receipt: null, flags });
+  if (body.ackOnly === true) return json({ granted: 0, receipt: null });
 
   // Claim and read in ONE statement. The old SELECT-then-UPDATE sequence let
   // two devices read the same pending rows before either stamped them, paying
@@ -85,9 +59,9 @@ export async function onRequestPost({ request, env }) {
   // rather than having its gift stranded. Un-scoped, it repaid a grant to ANY device of the same
   // account ten minutes later — the second phone has no `pendingCoinReceipts`
   // of its own, so it never acked, and its re-claim overwrote `receipt`, which
-  // in turn made the first phone's ack match nothing. That is now a
-  // double-DEBIT risk as well as a double-credit one: since Cướp Đêm settles
-  // the sleeping side through this table, a grant can be negative.
+  // in turn made the first phone's ack match nothing. A grant can be
+  // negative (an admin correction), so that is a double-DEBIT risk as well
+  // as a double-credit one.
   const device = DEVICE_RE.test(String(body.device || '')) ? String(body.device) : null;
   let claimed, receipt = null;
   if (body.proto === 2) {
@@ -132,7 +106,7 @@ export async function onRequestPost({ request, env }) {
       : total, 0);
   // Keep each adjustment's reason. The client used to receive only the net
   // total, so every non-Daily-Task reward was incorrectly announced as an
-  // admin gift — including the 100 xu earned by defending a home. `note` is
+  // admin gift. `note` is
   // already bounded when manual grants are created, and the client renders it
   // as text (never HTML).
   const adjustments = rows.map(row => ({
@@ -141,10 +115,10 @@ export async function onRequestPost({ request, env }) {
     manual: Number(row.granted_by || 0) > 0,
   }));
   // The receipt goes back whenever ROWS were claimed, not when the total is
-  // positive. A batch that nets to zero — or to a negative, now that a raid
-  // debits the sleeping defender through this table — used to come back with
-  // `receipt: null`, so the device could never ack it, and the server offered
-  // the very same debit again on every sync after the reclaim window.
+  // positive. A batch that nets to zero — or to a negative correction — used
+  // to come back with `receipt: null`, so the device could never ack it, and
+  // the server offered the very same debit again on every sync after the
+  // reclaim window.
   return json({ granted, dailyTaskGranted, adjustments,
-    receipt: rows.length > 0 ? receipt : null, flags });
+    receipt: rows.length > 0 ? receipt : null });
 }

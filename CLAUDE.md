@@ -41,16 +41,24 @@ kept apart on purpose (decided 2026-09-21).**
 |---|---|---|
 | app | https://0x4123dev.github.io/learn-eng-pwa/ (GitHub Pages) | https://eng-pwa.pages.dev/ (Cloudflare Pages `eng-pwa`) |
 | API / DB | `learn-eng-pwa-api.pages.dev` / D1 `learn_eng_pwa_db` | same origin / D1 `eng_pwa_db` |
-| battle rooms | Worker `learn-eng-pwa-battle`, only via `wss://learn-eng-pwa-api.pages.dev/ws/…` | Worker `eng-pwa-battle` |
 | word audio | `audio/words/` in this repo, served by Pages | Cloudflare `eng-pwa-audio` |
-| 5th tab | Word (Career Paths: Public Relations) | Exam |
+| bottom bar | Home · Book 1 · Book 2 · Book 3 · Nông trại (adults learning PR English) | Home · Eng · Arena · Math · Exam (children) |
 | versions | 5.x | 4.17.x |
+
+**What this app is (since the cut of 2026-09-21):** Home (the pet dog, coins,
+streak, daily tasks) · three Book tabs (Career Paths: Public Relations, the
+picture-dictionary engine `js/units.js` on `js/word-data.js`) · Nông trại
+(the learner's own home and farm, `js/night-raid.js` — build with coins,
+plant the seeds that daily tasks earn, harvest; nobody raids anybody) ·
+Profile. Everything else the ancestor had (Arena, battles, Cúng Cô Hồn,
+Trung Thu, armory, raiding, Math, the Eng hub with topics/grammar/PTNK/…,
+friends) is gone — do not resurrect a piece of it to "fix" a reference.
 
 Never merge, pull or "sync" one into the other. `scripts/deploy.sh` and
 `scripts/deploy-audio.sh` are the OTHER product's rituals and refuse to run
 in this checkout; `wrangler.toml` files here name only this product's
-resources. `js/hosting.js` still carries the Cloudflare app's URLs for the
-same code running on that host — that is deliberate and unchanged.
+resources. `js/hosting.js` still resolves `/api/` to the same origin on any
+non-GitHub host — that is deliberate.
 
 ⚠️ **Do not bump version numbers by hand.** `scripts/deploy-pages.sh` rewrites
 all four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,
@@ -695,7 +703,7 @@ FLASHLINGO_TEST_TIMEOUT_MS=60000 npm test   # loosen the per-test timeout
 scripts/deploy-pages.sh -m "fix(x): …"   # bump + test + commit + push origin + wait for the Pages build
 scripts/deploy-pages.sh --no-bump        # already bumped and committed
 scripts/deploy-pages.sh --version 5.1.0 -m "…"
-scripts/deploy-api.sh                    # functions/ → learn-eng-pwa-api, battle-worker/ → learn-eng-pwa-battle
+scripts/deploy-api.sh                    # functions/ → Cloudflare Pages project learn-eng-pwa-api
 # (scripts/deploy.sh / deploy-audio.sh belong to the other product and refuse to run here)
 
 # Database (hand-applied, newest file last) — THIS product's database
@@ -704,26 +712,10 @@ npx wrangler@3 d1 execute learn_eng_pwa_db --remote --command "PRAGMA table_info
 scripts/api-db-init.sh                   # a fresh database from schema + migrations
 
 # Generated files — regenerate, never hand-edit the output
-node scripts/build-math-data.js data/math     # js/math-data.js, js/math-lessons.js
-node scripts/build-math4-data.js              # js/math4-data.js (Toán 4, 5 dạng × 100 câu)
-node scripts/gen-math4-t3.js                  # rebuilds ONE dạng under data/math4/
-node scripts/build-math-fight-bank.js         # js/math-fight-bank.js
-node scripts/build-hot-words.js               # js/hot-words.js
-node scripts/build-ptnk-data.js               # js/ptnk-data.js from data/ptnk/*.json (real PTNK papers)
-node scripts/validate-ptnk.js data/ptnk/*.json  # the contract in data/ptnk/SCHEMA.md, executable
-node scripts/build-practice-data.js           # js/reading-data.js, js/cloze-data.js, js/errors-data.js
-node scripts/validate-practice.js reading data/reading/*.json   # (also: cloze, errors)
-node scripts/balance-practice-keys.js         # spread MCQ keys across A–D (engine never shuffles); run after authoring
-node scripts/build-math-hk2-data.js           # js/math-data-hk2.js from data/math-hk2/base.json + ch<N>-add-<NN>.json
-node scripts/validate-math-hk2.js data/math-hk2/ch6-add-*.json   # one addition file
-node scripts/build-tier-data.js               # js/wordform-data.js, js/rewrite-data.js from data/{wordform,rewrite}/base.json + ch-add-NN.json
-node scripts/validate-tier.js wordform data/wordform/ch-add-*.json   # (also: rewrite)
-node scripts/build-grammar-vocab-data.js      # js/grammar-vocab-data.js from data/grammar-vocab/gv-NN.json
-node scripts/validate-grammar-vocab.js data/grammar-vocab/gv-*.json
-node scripts/build-phonetics-data.js          # js/phonetics-data.js + js/phonetics-lessons.js from data/phonetics/
-node scripts/validate-phonetics.js data/phonetics/ph-*.json   # (--lesson for data/phonetics/lessons/)
-node scripts/build-word-data.js               # js/word-data.js (Word tab) from data/career-paths/pr<b>-u<NN>.json (3 books × 15 units)
+node scripts/build-word-data.js               # js/word-data.js (the three Books) from data/career-paths/pr<b>-u<NN>.json
 node scripts/validate-word-data.js data/career-paths/pr1-u*.json   # the contract in data/career-paths/SCHEMA.md
+node scripts/build-hot-words.js               # js/hot-words.js (from the Books' words and example sentences)
+node scripts/generate-word-audio.js --tappable   # MP3s for every word + every word in an example sentence (ElevenLabs key in .env)
 node scripts/build-dist.js --out /tmp/dist        # the minified bundle deploy.sh ships (size table)
 node scripts/build-sw-manifest.js --check         # are sw.js's precache hashes current for this tree?
 ```
@@ -739,9 +731,9 @@ node scripts/build-sw-manifest.js --check         # are sw.js's precache hashes 
 | A test file "passes" but prints nothing | It lost its `runAll().then(code => process.exit(code))` tail. Only trust `npm test`. |
 | `no such column: …` from an API test | The mock schema is built from the files listed in `tests/pages-harness.js` `SQL_FILES`. Add the migration there. |
 | A tab renders empty with no error | Its bank is lazy-loaded (`js/lazy-data.js` `SCREEN_FILES`) and the download failed. Every render path must guard the global. |
-| `ReferenceError: openPetBattle / renderMathHome / NightRaid is not defined` | The Arena and Math tab CODE is lazy too (`js/lazy-data.js` `GROUP_FILES` `arena` / `math`, mapped to screens by `SCREEN_GROUPS`). Startup code must `typeof`-guard those names or go through `LazyData.ensure(screenId)`; `openPetBattle`/`openNightRaid` are `lazyEntry` placeholders in `js/app.js` until the group lands. Guard test: `tests/lazy-code-groups.test.js`. |
-| Arena / Night Raid / Toán opens unstyled, or a new rule for them has no effect | Their CSS is lazy too: `css/arena.css`, `css/night-raid.css`, `css/math.css`, listed as `.css` entries in `js/lazy-data.js` `SCREEN_FILES` and appended as `<link>` on first open (`switchScreen` hides the screen behind `.lazy-css-pending` until then). A rule for those screens belongs in the feature file — `tests/css-split.test.js` caps `css/styles.css` and keeps the four files' selectors disjoint. Tests that ask "is X styled?" read `tests/css-all.js`, not `css/styles.css`. |
-| `tests/leave-guard-contract.test.js` is red after adding a feature | Every exercise/game must obey the leave rule (any way out confirms; Cancel stays put; OK leaves clean). A new `isFooActive`, `EXAM_SETS` set, retry-drill key, `<div class="screen">` or `startFoo()` that draws an answer control must be registered in that file's `ACTIVITIES` with a start recipe (the test then drives it out every route for real), or allowlisted there with a one-line reason. |
+| `ReferenceError: NightRaid is not defined` | The farm's CODE is lazy (`js/lazy-data.js` `GROUP_FILES.farm`, mapped to `nightRaidScreen` by `SCREEN_GROUPS`). Startup code must `typeof`-guard those names or go through `LazyData.ensure(screenId)`; `openNightRaid` is a `lazyEntry` placeholder in `js/app.js` until the group lands. Guard test: `tests/lazy-code-groups.test.js`. |
+| Nông trại opens unstyled, or a new rule for it has no effect | Its CSS is lazy too: `css/night-raid.css`, listed as a `.css` entry in `js/lazy-data.js` `SCREEN_FILES` and appended as `<link>` on first open (`switchScreen` hides the screen behind `.lazy-css-pending` until then). A rule for that screen belongs in the feature file — `tests/css-split.test.js` caps `css/styles.css` and keeps the two files' selectors disjoint. Tests that ask "is X styled?" read `tests/css-all.js`, not `css/styles.css`. |
+| `tests/leave-guard-contract.test.js` is red after adding a feature | Every exercise must obey the leave rule (any way out confirms; Cancel stays put; OK leaves clean). A new `isFooActive`, retry-drill key, `<div class="screen">` or `startFoo()` that draws an answer control must be registered in that file's `ACTIVITIES` with a start recipe (the test then drives it out every route for real), or allowlisted there with a one-line reason. |
 | A generated file keeps reverting | It is built by a `scripts/build-*.js`; edit the source under `data/` instead. |
 | Deploy refuses to run | Uncommitted changes would ship without being committed. Commit explicit paths first. |
 

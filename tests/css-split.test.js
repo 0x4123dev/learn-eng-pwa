@@ -1,12 +1,12 @@
 // tests/css-split.test.js — the stylesheet split.
 //
 // css/styles.css was one 664 kB render-blocking file, and ~38% of it styled
-// screens Home never shows. Those rules now live in css/night-raid.css,
-// css/arena.css and css/math.css, appended as <link rel="stylesheet"> by
-// js/lazy-data.js when the screen that needs them is opened. This file guards
-// the four things that would let that quietly rot:
+// screens Home never shows. The farm's rules now live in css/night-raid.css,
+// appended as <link rel="stylesheet"> by js/lazy-data.js when its screen is
+// opened. This file
+// guards the four things that would let that quietly rot:
 //
-//   • the three feature files exist, are precached by sw.js, and are listed in
+//   • the two feature files exist, are precached by sw.js, and are listed in
 //     LazyData.SCREEN_FILES for the screens that render their classes;
 //   • LazyData.loadFile really appends a <link> for a .css entry and resolves
 //     on load AND on error (a stylesheet that 404s must not hang the tab);
@@ -23,7 +23,7 @@ const ROOT = path.join(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
 const CORE = 'css/styles.css';
-const FEATURE_FILES = ['css/night-raid.css', 'css/arena.css', 'css/math.css'];
+const FEATURE_FILES = ['css/night-raid.css'];
 const ALL = [CORE].concat(FEATURE_FILES);
 
 // Raise this ONLY with a reason: it is the whole point of the split.
@@ -97,7 +97,7 @@ suite('css split: the feature stylesheets exist and are real', () => {
     const size = fs.statSync(path.join(ROOT, CORE)).size;
     assert.truthy(size <= STYLES_CSS_MAX_BYTES,
       `css/styles.css is ${size} bytes, ceiling ${STYLES_CSS_MAX_BYTES}. Rules that only a lazily styled screen ` +
-      'needs belong in css/night-raid.css, css/arena.css or css/math.css; raise the ceiling only for core UI.');
+      'needs belong in css/night-raid.css; raise the ceiling only for core UI.');
   });
 
   test('every stylesheet parses (balanced braces)', () => {
@@ -128,18 +128,13 @@ suite('css split: precached and wired into LazyData', () => {
 
   for (const f of FEATURE_FILES) {
     test(`sw.js precaches /${f}`, () => {
-      assert.contains(precached, '/' + f, 'offline Arena / Night Raid / Toán would open unstyled');
+      assert.contains(precached, '/' + f, 'offline Nông trại / Book would open unstyled');
     });
   }
 
   const LazyData = require(path.join(ROOT, 'js', 'lazy-data.js'));
   const wants = {
     nightRaidScreen: ['css/night-raid.css'],
-    // The Arena lobby mounts the Night Raid yard (NightRaid.mountYardScene).
-    petBattleScreen: ['css/arena.css', 'css/night-raid.css'],
-    armoryScreen: ['css/arena.css'],
-    mathHubScreen: ['css/math.css'],
-    gradeFourScreen: ['css/math.css'],
   };
   for (const [screen, files] of Object.entries(wants)) {
     for (const f of files) {
@@ -149,16 +144,16 @@ suite('css split: precached and wired into LazyData', () => {
     }
   }
 
-  test('every .css in SCREEN_FILES is one of the three feature files, and each is used', () => {
+  test('every .css in SCREEN_FILES is a known feature file, and each is used', () => {
     const listed = new Set();
     for (const files of Object.values(LazyData.SCREEN_FILES)) for (const f of files) if (/\.css$/.test(f)) listed.add(f);
     for (const f of listed) assert.contains(FEATURE_FILES, f, `${f} is lazily loaded but not a known feature sheet`);
     for (const f of FEATURE_FILES) assert.truthy(listed.has(f), `${f} is never loaded by any screen`);
   });
 
-  test('the stylesheet is listed before the banks, so it is requested first', () => {
-    const files = LazyData.SCREEN_FILES.mathHubScreen;
-    assert.equal(files[0], 'css/math.css');
+  test('the stylesheet is listed first in its screen, so it is requested first', () => {
+    const files = LazyData.SCREEN_FILES.nightRaidScreen;
+    assert.equal(files[0], 'css/night-raid.css');
   });
 });
 
@@ -191,7 +186,7 @@ suite('css split: LazyData.loadFile appends a <link> for a .css entry', () => {
     assert.equal(link.rel, 'stylesheet');
     assert.equal(link.href, 'css/night-raid.css');
     assert.falsy(appended.some(el => el.tagName === 'SCRIPT' && /\.css$/.test(el.src || '')), 'a .css must never be appended as a <script>');
-    // The screen's code group (GROUP_FILES.arena) rides in the same ensure();
+    // The screen's code group (GROUP_FILES.farm) rides in the same ensure();
     // let every script land first, so only the stylesheet holds the promise.
     for (const el of appended) if (el.tagName === 'SCRIPT') el.onload();
     await new Promise(r => setImmediate(r));
@@ -204,21 +199,22 @@ suite('css split: LazyData.loadFile appends a <link> for a .css entry', () => {
 
   test('a stylesheet that fails to load still resolves, and is retried next time', async () => {
     const { LazyData, appended } = bootLazyData();
-    const p = LazyData.ensure('armoryScreen');
+    const p = LazyData.ensure('nightRaidScreen');
     const link = appended.find(el => el.tagName === 'LINK');
     for (const el of appended) if (el.tagName === 'SCRIPT') el.onload();
     link.onerror();
     await p;
-    assert.falsy(LazyData.ready('armoryScreen'), 'a failed sheet must not count as loaded');
-    LazyData.ensure('armoryScreen');
+    assert.falsy(LazyData.ready('nightRaidScreen'), 'a failed sheet must not count as loaded');
+    LazyData.ensure('nightRaidScreen');
     assert.equal(appended.filter(el => el.tagName === 'LINK').length, 2, 'the failed sheet was not requested again');
   });
 
   test('scripts still load as <script> with async=false', async () => {
     const { LazyData, appended } = bootLazyData();
-    LazyData.ensure('ptnkScreen');
+    LazyData.ensure('wordScreen');
     const scripts = appended.filter(el => el.tagName === 'SCRIPT');
-    assert.equal(scripts.length, LazyData.SCREEN_FILES.ptnkScreen.length);
+    assert.equal(scripts.length, LazyData.SCREEN_FILES.wordScreen.filter(f => /\.js$/.test(f)).length);
+    assert.truthy(scripts.length > 0, 'wordScreen has no bank to load');
     for (const s of scripts) assert.equal(s.async, false);
   });
 });
@@ -245,7 +241,7 @@ suite('css split: a screen never paints unstyled', () => {
 suite('css split: no selector is defined in more than one stylesheet', () => {
   const rulesByFile = Object.fromEntries(ALL.map(f => [f, readRules(read(f))]));
 
-  test('selectors are disjoint across the four files', () => {
+  test('selectors are disjoint across the three files', () => {
     const owner = new Map(); // selector -> file
     const clashes = [];
     for (const f of ALL) {
@@ -259,7 +255,7 @@ suite('css split: no selector is defined in more than one stylesheet', () => {
     assert.deepEqual(clashes, [], 'a selector in two files is decided by load order, which changes per session:\n' + clashes.join('\n'));
   });
 
-  test('@keyframes names are disjoint across the four files', () => {
+  test('@keyframes names are disjoint across the three files', () => {
     const owner = new Map();
     const clashes = [];
     for (const f of ALL) {
@@ -296,16 +292,14 @@ suite('css split: no selector is defined in more than one stylesheet', () => {
   test('a feature file only styles what its own modules render — no core-only class as the whole selector', () => {
     // The class every rule in a feature file hangs on must be mentioned by
     // that feature's JS (or its screen element in index.html). A rule like
-    // `.home-card { … }` landing in css/arena.css would style Home only after
-    // the Arena had been opened.
+    // `.home-card { … }` landing in css/night-raid.css would style Home only
+    // after the farm had been opened.
     const modules = {
       'css/night-raid.css': /^js\/(night-raid[\w-]*|farm-rules|farm-art-manifest)\.js$/,
-      'css/arena.css': /^js\/(petbattle|petbattlegame|battle-camera|battle-scenes|battle-teammates|battlecalc|battlelink|armory|ghost-offering-[a-z]+|castle-skins)\.js$/,
-      'css/math.css': /^js\/(math[\w-]*|mathwars[\w-]*)\.js$/,
     };
     const jsFiles = fs.readdirSync(path.join(ROOT, 'js')).map(f => 'js/' + f);
     const screenTags = {
-      'css/night-raid.css': 'night-raid-screen', 'css/arena.css': 'pet-battle-screen', 'css/math.css': 'math-hub-screen',
+      'css/night-raid.css': 'night-raid-screen',
     };
     const bad = [];
     for (const f of FEATURE_FILES) {

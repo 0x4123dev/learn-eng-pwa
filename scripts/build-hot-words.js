@@ -24,13 +24,13 @@ const DEFAULT_COUNT = 100;
 
 const { wordAudioSlug } = require('./generate-word-audio.js');
 
-// Every bank whose text renders through tapwordsWrap().
+// Every bank whose text renders through tapwordsWrap(): the three Books
+// (their `en` is wrapped on the answer card; the example sentence `ex` is
+// shown filled-in after answering).
 const BANKS = [
-    { file: 'js/grammar-units.js', global: 'GRAMMAR_UNITS' },
-    { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
-    { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
-    { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },
-    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS' }
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR1' },
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR2' },
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR3' },
 ];
 
 // The tappable rule from js/tapwords.js: pure-ASCII letter runs (an optional
@@ -70,7 +70,7 @@ function loadBank(bank) {
 // notes, which are rendered escaped and never tappable) and metadata like
 // `type: 'mcq'` — so the list warmed megabytes of audio for words no student
 // can reach. These field names mirror TAPPABLE_FIELDS in generate-word-audio.js.
-const COUNTED_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame'];
+const COUNTED_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame', 'en', 'ex'];
 const COUNTED_ARRAYS = ['options', 'parts'];
 
 function countWords(node, freq, depth) {

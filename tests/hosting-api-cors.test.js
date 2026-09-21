@@ -1,12 +1,12 @@
 // hosting-api-cors.test.js — the app on GitHub Pages reaches its own API.
 //
 // Two halves that must agree. js/hosting.js decides, from the page's host,
-// where /api/ and the battle rooms are: same origin on Cloudflare Pages, the
-// learn-eng-pwa-api project (own database) and the learn-eng-pwa-battle
-// Worker on GitHub Pages. functions/api/_middleware.js grants CORS to exactly
-// that GitHub origin so the browser lets those calls through. Both are run
-// here: the hosting rules with real hostnames, the middleware with real
-// Requests through the same loader the API tests use.
+// where /api/ is: same origin on Cloudflare Pages, the learn-eng-pwa-api
+// project (own database) on GitHub Pages. functions/api/_middleware.js
+// grants CORS to exactly that GitHub origin so the browser lets those calls
+// through. Both are run here: the hosting rules with real hostnames, the
+// middleware with real Requests through the same loader the API tests use.
+// (The battle Worker and its /ws/ forwarder went with the 2026-09 cut.)
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -17,55 +17,57 @@ const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const Hosting = require(path.join(ROOT, 'js', 'hosting.js'));
 const R = Hosting._rules;
 
-suite('hosting: where the API and the battle rooms are, per host', () => {
-    test('GitHub Pages → the learn-eng-pwa-api project and the learn-eng-pwa-battle Worker', () => {
+suite('hosting: where the API is, per host', () => {
+    test('GitHub Pages → the learn-eng-pwa-api project', () => {
         assert.equal(R.apiBase('0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev');
-        assert.equal(R.apiUrl('me/wins', '0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev/api/me/wins');
+        assert.equal(R.apiUrl('me/daily-tasks', '0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev/api/me/daily-tasks');
         assert.equal(R.apiUrl('/api/login', '0x4123dev.github.io'), 'https://learn-eng-pwa-api.pages.dev/api/login', 'a path that already says /api/ is not doubled');
-        assert.equal(R.battleWsBase('0x4123dev.github.io'), 'wss://learn-eng-pwa-api.pages.dev/ws');
-        // The account's workers.dev subdomain is the owner's name: the GitHub
-        // app must never carry it.
-        assert.falsy(/workers\.dev/.test(R.GITHUB_BATTLE_WS), 'no workers.dev address in the GitHub app');
-        assert.truthy(/\[\[services\]\][\s\S]*binding = "BATTLE"[\s\S]*service = "learn-eng-pwa-battle"/.test(read('api-project/wrangler.toml')), 'the API project binds the Worker');
-        assert.truthy(read('functions/ws/[[path]].js').includes('env.BATTLE.fetch('), 'and /ws/ forwards to it');
     });
-    test('Cloudflare Pages (and anywhere else) → same origin and the eng-pwa-battle Worker, untouched', () => {
+    test('Cloudflare Pages (and anywhere else) → same origin, untouched', () => {
         for (const h of ['eng-pwa.pages.dev', 'localhost', '']) {
             assert.equal(R.apiBase(h), '', h + ': same origin');
-            assert.equal(R.apiUrl('me/wins', h), '/api/me/wins', h);
-            assert.equal(R.battleWsBase(h), 'wss://eng-pwa-battle.minhdoanh.workers.dev', h);
+            assert.equal(R.apiUrl('me/daily-tasks', h), '/api/me/daily-tasks', h);
         }
         assert.equal(R.apiBase('github.io.example.com'), '', 'a lookalike host is not GitHub');
     });
     test('the GitHub app never shares the Cloudflare app\'s server halves', () => {
         assert.truthy(R.GITHUB_API !== 'https://eng-pwa.pages.dev');
-        assert.truthy(R.GITHUB_BATTLE_WS !== R.CLOUDFLARE_BATTLE_WS);
         // And its database is a different one: the API project's wrangler config
         // names learn_eng_pwa_db, never eng_pwa_db.
         const cfg = read('api-project/wrangler.toml');
         assert.truthy(/database_name = "learn_eng_pwa_db"/.test(cfg), 'api-project binds learn_eng_pwa_db');
         assert.falsy(/eng_pwa_db"/.test(cfg.replace(/learn_eng_pwa_db/g, '')), 'and never eng_pwa_db');
-        // The whole repo: no config names the Cloudflare app's project, database or Worker.
-        for (const f of ['wrangler.toml', 'battle-worker/wrangler.toml', 'api-project/wrangler.toml']) {
+        // The whole repo: no config names the Cloudflare app's project or database.
+        for (const f of ['wrangler.toml', 'api-project/wrangler.toml']) {
             // Comments may explain what is NOT here; the settings themselves may not.
             const t = read(f).split('\n').filter(l => !/^\s*#/.test(l)).join('\n').replace(/learn[-_]eng[-_]pwa[-_a-z]*/g, '');
-            assert.falsy(/eng-pwa|eng_pwa_db/.test(t), f + ' must not name eng-pwa / eng_pwa_db / eng-pwa-battle in a setting');
+            assert.falsy(/eng-pwa|eng_pwa_db/.test(t), f + ' must not name eng-pwa / eng_pwa_db in a setting');
         }
         for (const f of ['scripts/deploy.sh', 'scripts/deploy-audio.sh']) {
             assert.truthy(read(f).includes("grep -q 'learn-eng-pwa'"), f + ' refuses to run in this checkout');
         }
         assert.truthy(/name = "learn-eng-pwa-api"/.test(cfg), 'and is the learn-eng-pwa-api project');
-        const bw = read('battle-worker/wrangler.toml');
-        assert.truthy(/name = "learn-eng-pwa-battle"/.test(bw) && /database_name = "learn_eng_pwa_db"/.test(bw), 'the battle Worker likewise');
+    });
+    test('the battle Worker is gone: no service binding, no Worker deploy, no /ws/ forwarder', () => {
+        // The Worker was reached only through a [[services]] binding on the
+        // API project and a functions/ws/ forwarder. A binding left behind
+        // would make every Pages deploy fail against a Worker that no longer
+        // exists; a forwarder left behind would 500 on env.BATTLE.
+        assert.falsy(/\[\[services\]\]|BATTLE/.test(read('api-project/wrangler.toml')), 'api-project still binds a Worker');
+        assert.falsy(fs.existsSync(path.join(ROOT, 'functions', 'ws')), 'functions/ws/ must be gone');
+        assert.falsy(fs.existsSync(path.join(ROOT, 'battle-worker', 'wrangler.toml')), 'battle-worker/wrangler.toml must be gone');
+        const deploy = read('scripts/deploy-api.sh').split('\n').filter(l => !/^\s*#/.test(l)).join('\n');
+        assert.falsy(/wrangler@3 deploy|battle-worker|--no-worker/.test(deploy), 'deploy-api.sh still deploys the Worker');
+        assert.truthy(/pages deploy dist --project-name "\$PROJECT"/.test(deploy), 'and still deploys the Pages Functions');
+        assert.truthy(/preflight from https:\/\/0x4123dev\.github\.io/.test(deploy), 'and still confirms the CORS grant');
+        assert.truthy(/grep -q '\^\\\[\\\[services\\\]\\\]' api-project\/wrangler\.toml \|\|/.test(deploy),
+            'deploy-api.sh refuses a config that still binds a service');
     });
     test('every caller goes through Hosting: no bare /api/ fetch is left in the client', () => {
         for (const f of ['js/auth.js', 'admin.html']) {
             const src = read(f);
             assert.falsy(/fetch\(\s*['"`]\/api\//.test(src), f + ' still fetches a bare /api/ path');
             assert.truthy(src.includes('Hosting.apiUrl('), f + ' uses Hosting.apiUrl');
-        }
-        for (const f of ['js/battlelink.js', 'js/ghost-offering-link.js']) {
-            assert.truthy(read(f).includes('Hosting.battleWsBase()'), f + ' asks Hosting for the Worker');
         }
         const html = read('index.html');
         assert.truthy(html.indexOf('js/hosting.js') < html.indexOf('js/auth.js'), 'hosting.js loads before auth.js');
@@ -117,33 +119,6 @@ suite('API CORS middleware: the GitHub origin is let in, nothing else is', () =>
         assert.deepEqual(mw.ALLOWED_ORIGINS.slice(), [GH, 'http://localhost:8000', 'http://127.0.0.1:8000']);
         assert.equal(mw.corsHeadersFor(undefined), null);
         assert.equal(mw.corsHeadersFor('*'), null);
-    });
-});
-
-suite('the battle rooms behind the API domain: /ws/* forwards over the service binding', () => {
-    const route = loadModule('functions/ws/[[path]].js');
-    test('an upgrade to /ws/room/<id>?token=… reaches the Worker as /room/<id>?token=…, headers intact', async () => {
-        const seen = [];
-        const env = { BATTLE: { fetch: async (req) => { seen.push(req); return new Response(null, { status: 200 }); } } };
-        const request = new Request('https://learn-eng-pwa-api.pages.dev/ws/room/42?token=abc', { headers: { Upgrade: 'websocket', Origin: 'https://0x4123dev.github.io' } });
-        const res = await route.onRequest({ request, env, params: { path: ['room', '42'] } });
-        assert.equal(res.status, 200, 'the Worker\'s answer is returned as-is (a real 101 in production)');
-        assert.equal(seen.length, 1, 'forwarded exactly once');
-        const u = new URL(seen[0].url);
-        assert.equal(u.pathname, '/room/42', 'the /ws prefix is stripped — the Worker routes on /room/');
-        assert.equal(u.search, '?token=abc', 'the token reaches the Worker, which verifies and strips it');
-        assert.equal(seen[0].headers.get('Upgrade'), 'websocket', 'the upgrade header travels');
-        assert.falsy(/workers\.dev/.test(seen[0].url), 'no public workers.dev address is involved');
-    });
-    test('the offering room forwards the same way', async () => {
-        const seen = [];
-        const env = { BATTLE: { fetch: async (req) => { seen.push(req); return new Response(null, { status: 200 }); } } };
-        await route.onRequest({ request: new Request('https://learn-eng-pwa-api.pages.dev/ws/offering/daily?token=t&bot=1', { headers: { Upgrade: 'websocket' } }), env, params: { path: ['offering', 'daily'] } });
-        assert.equal(new URL(seen[0].url).pathname + new URL(seen[0].url).search, '/offering/daily?token=t&bot=1');
-    });
-    test('without the binding (a deployment that is not the API project) the route is a plain 404', async () => {
-        const res = await route.onRequest({ request: new Request('https://eng-pwa.pages.dev/ws/room/1'), env: {}, params: { path: ['room', '1'] } });
-        assert.equal(res.status, 404);
     });
 });
 

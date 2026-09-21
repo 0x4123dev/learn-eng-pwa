@@ -177,15 +177,6 @@
   .pill.user { background:#fafafa; border-color:var(--border); color:var(--text-2); }
   .pill.kind-exam { background:var(--primary-bg); border-color:var(--primary-border); color:var(--primary-active); }
   .pill.kind-lesson { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
-  .pill.kind-review { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning-text); }
-  .pill.kind-grammar { background:#f9f0ff; border-color:#d3adf7; color:#531dab; }
-  .pill.kind-phrases { background:#e6fffb; border-color:#87e8de; color:#08979c; }
-  .pill.kind-wordform { background:#fff7e6; border-color:#ffd591; color:#d46b08; }
-  .pill.kind-rewrite { background:#f0f5ff; border-color:#adc6ff; color:#1d39c4; }
-  .pill.kind-collocation { background:#e6f4ff; border-color:#91caff; color:#0958d9; }
-  .pill.kind-verbs { background:#fff0f6; border-color:#ffadd2; color:#c41d7f; }
-  .pill.kind-math { background:#fffbe6; border-color:#ffe58f; color:#d48806; }
-  .pill.kind-battle { background:#fafafa; border-color:var(--border); color:var(--text-2); }
   /* A "Làm lại" of the same paper: never counts toward a daily task, so the
      parent can see why a 100% left the counter where it was. */
   .pill.retake { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning-text); margin-left:6px; }
@@ -362,42 +353,7 @@
   .setting-row label, .setting-row .lbl-main { font-weight:500; display:block; }
   .setting-row p { margin:4px 0 0; color:var(--text-2); font-size:13px; max-width:64ch; }
   .setting-ctl { display:flex; align-items:center; gap:8px; }
-  .setting-ctl input[type=number] { width:88px; text-align:right; }
-  /* Ant Switch */
-  .switch { width:44px; height:22px; border-radius:100px; border:0; background:rgba(0,0,0,.25); position:relative;
-            cursor:pointer; transition: background .2s; padding:0; }
-  .switch::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
-                   background:#fff; transition: left .2s; box-shadow:0 2px 4px rgba(0,35,11,.2); }
-  .switch[aria-pressed="true"] { background:var(--primary); }
-  .switch[aria-pressed="true"]::after { left:24px; }
-  .switch:disabled { opacity:.5; cursor:not-allowed; }
-
-  /* ---- Cướp Đêm rulebook (kept) -------------------------------------- */
-  .raid-example { margin:24px 24px 0; padding:12px 16px; border:1px solid var(--primary-border);
-                  border-radius:var(--r-lg); background:var(--primary-bg); color:var(--text); font-size:14px; line-height:1.6; }
-  .raid-example b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
-  .raid-example-title { display:block; margin-bottom:4px; font-size:14px; font-weight:600; color:var(--text); }
-  .raid-group { margin:16px 24px 0; padding:0 20px 8px; border:1px solid var(--split); border-radius:var(--r-lg); background:#fff; }
-  .raid-group:last-child { margin-bottom:24px; }
-  .raid-group-title { margin:0 -20px 4px; padding:12px 20px; font-size:14px; color:var(--text); font-weight:600;
-                      background:var(--table-head); border-bottom:1px solid var(--split); }
-  .raid-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px; align-items:start; padding:16px 0; border-top:1px solid var(--split); }
-  .raid-row:first-of-type { border-top:0; }
-  .raid-copy { grid-column:1; grid-row:1 / span 2; min-width:0; }
-  .raid-copy label { display:block; font-size:14px; font-weight:500; color:var(--text); }
-  .raid-help { margin:4px 0 0; max-width:64ch; color:var(--text-2); font-size:14px; line-height:1.5715; }
-  .raid-edit { grid-column:2; grid-row:1; display:flex; align-items:center; gap:8px; }
-  .raid-edit input { width:112px; min-height:32px; padding:4px 11px; font-size:14px; text-align:right; font-variant-numeric:tabular-nums; }
-  .raid-unit { font-size:14px; color:var(--text-2); }
-  .raid-save { min-height:32px; }
-  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:12px; color:var(--text-3); font-variant-numeric:tabular-nums; }
-  .raid-note { grid-column:1 / -1; grid-row:3; margin-top:2px; font-size:14px; }
-  .raid-note:empty { display:none; }
-  .raid-note.ok { color:var(--success-text); }
-  .raid-note.bad { color:var(--error-text); }
-  .raid-row.changed .raid-edit input { border-color:var(--warning); box-shadow:0 0 0 2px rgba(250,173,20,.16); }
-  .raid-dirty { color:var(--warning-text); font-weight:500; font-size:12px; }
-  .raid-dirty:empty { display:none; }
+  .setting-ctl code { font-size:14px; padding:2px 8px; border-radius:4px; background:var(--fill-2); color:var(--text); font-variant-numeric:tabular-nums; }
 
   /* ---- Accounts table (kept from the previous console) ---------------- */
   .tools { display:flex; align-items:center; gap:12px; padding:12px 24px; flex-wrap:wrap; border-bottom:1px solid var(--split); }
@@ -510,13 +466,6 @@
     .skill-score { grid-column:2; grid-row:1; }
     .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .setting-row { grid-template-columns:minmax(0,1fr); }
-    .raid-example, .raid-group { margin-inline:14px; }
-    .raid-group { padding-inline:15px; }
-    .raid-group-title { margin-inline:-15px; padding-inline:15px; }
-    .raid-row { grid-template-columns:minmax(0,1fr); gap:8px; padding:14px 0; }
-    .raid-copy, .raid-edit, .raid-foot, .raid-note { grid-column:1; grid-row:auto; }
-    .raid-edit input { flex:1 1 auto; width:auto; min-width:0; }
-    .raid-foot { text-align:left; }
     header.bar h1 { font-size:16px; }
     header.bar .bar-actions .btn { padding:4px 10px; font-size:12.5px; }
 
@@ -639,8 +588,9 @@
       </nav>
 
       <!-- Nhiệm vụ hằng ngày: what the child owes today, then a picker to
-           hand out more. The picker is a search over all 185 tasks, with a
-           browsable tree beside it for when you do not know what to type. -->
+           hand out more. The picker is a search over every task in the
+           catalog (the three Books, unit by unit), with a browsable tree
+           beside it for when you do not know what to type. -->
       <div class="admin-panel" id="tasksPanel" role="tabpanel" aria-labelledby="tabTasks">
         <div class="card">
           <div class="card-head"><h2>Nhiệm vụ hằng ngày</h2><span class="sub" id="dailyDate"></span></div>
@@ -656,7 +606,7 @@
           <div class="picker-top">
             <div class="field">
               <label for="taskSearch">Bài học viên sẽ làm</label>
-              <input id="taskSearch" type="search" autocomplete="off" spellcheck="false" placeholder="ví dụ: đề thi hk2, grammar unit 12, bảng nhân…">
+              <input id="taskSearch" type="search" autocomplete="off" spellcheck="false" placeholder="ví dụ: book 2 unit 7, mix, marketing…">
             </div>
             <div class="field field-num">
               <label for="dailyTarget">Số lần phải đạt 100% mỗi ngày</label>
@@ -666,7 +616,7 @@
           <div class="picker-modes">
             <div class="seg" id="pickMode" role="group">
               <button type="button" data-mode="search" aria-pressed="true">Kết quả tìm</button>
-              <button type="button" data-mode="tree" aria-pressed="false">Cây Eng / Math</button>
+              <button type="button" data-mode="tree" aria-pressed="false">Cây Book 1 / 2 / 3</button>
             </div>
             <span class="note" id="assignNote" aria-live="polite"></span>
           </div>
@@ -688,11 +638,7 @@
           <div class="learning-filters">
             <label>Menu
               <select id="skillMenu">
-                <option value="">Tất cả menu</option><option value="math7">Toán 7</option>
-                <option value="mathwars">Math Wars</option><option value="grade4">Grade 4</option>
-                <option value="grammar">Grammar</option><option value="phrases">Phrases</option>
-                <option value="verbs">Verbs</option><option value="wordform">Word Form</option>
-                <option value="rewrite">Rewrite</option><option value="collocation">Collocation</option>
+                <option value="">Tất cả menu</option><option value="grade4">Book 1 / 2 / 3</option>
               </select>
             </label>
             <label>Thời gian
@@ -706,36 +652,19 @@
       </div>
     </section>
 
-    <!-- ═══ Cài đặt app ═══ -->
+    <!-- ═══ Cài đặt app ═══
+         Nothing is switchable any more: the app-wide switches (Đấu Toán,
+         Bảng cửu chương's clock) and the Cướp Đêm rulebook went with the
+         features they tuned (2026-09). What is left is the one fact an
+         admin still asks this page for — which build the API is running. -->
     <section class="page" id="settingsPage" hidden>
-      <nav class="tabs" role="tablist" aria-label="Cài đặt">
-        <button class="admin-tab" id="tabFlags" role="tab" aria-controls="flagsPanel" aria-selected="true" data-tab="flags">🎛 Chung</button>
-        <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
-      </nav>
-      <div class="admin-panel" id="flagsPanel" role="tabpanel" aria-labelledby="tabFlags">
-        <div class="card">
-          <div class="card-head"><h2>Cài đặt chung</h2></div>
-          <div class="setting-row">
-            <div><span class="lbl-main">🥊 Đấu Toán</span></div>
-            <div class="setting-ctl"><span class="dim" id="mathFightLabel">…</span>
-              <button class="switch" id="mathFightFlag" type="button" role="switch" aria-pressed="false" aria-label="Bật Đấu Toán"></button></div>
-          </div>
-          <div class="setting-row">
-            <div><label for="ccSeconds">🔢 Bảng cửu chương — giây mỗi lượt</label></div>
-            <div class="setting-ctl"><input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric"><span class="dim">giây</span></div>
-          </div>
+      <div class="card">
+        <div class="card-head"><h2>Ứng dụng</h2></div>
+        <div class="setting-row">
+          <div><span class="lbl-main">Phiên bản API</span><p>Bản Functions đang chạy trên máy chủ (/api/version).</p></div>
+          <div class="setting-ctl"><code id="apiVersion">…</code></div>
         </div>
       </div>
-      <!-- The Cướp Đêm economy. Every number here used to be a literal in the
-           raid handlers; they now live in one table this card writes to, and
-           the game reads on the very next raid. The rows are BUILT from
-           RAID_FIELDS below (tests/admin-night-raid-config.test.js pins that). -->
-      <section class="card admin-panel" id="raidPanel" role="tabpanel" aria-labelledby="tabRaid" hidden>
-        <div class="card-head"><h2>Cướp Đêm — luật &amp; tiền</h2></div>
-        <div id="raidStatus" class="status-line" aria-live="polite"></div>
-        <div id="raidExample" class="raid-example"></div>
-        <div id="raidGroups"></div>
-      </section>
     </section>
 
     <!-- ═══ Tài khoản ═══ -->
@@ -963,10 +892,10 @@ function cellClass(c){
 
 // The task picker's search: every word typed must appear somewhere in the
 // task's path or label, accents ignored. Results keep the catalog's order
-// and come back grouped by path, so "hk2" reads as
-//   Math › Toán 7 › Học kì 2 › Đề thi
-//     Đề thi HK2 bất kỳ · Đề thi HK2 Exam 1 · …
-// rather than as 41 rows that all start with "Toán 7 · Đề thi HK2".
+// and come back grouped by path, so "book 2" reads as
+//   Book 2
+//     Book 2 · Unit 1 · Skills of a PR Professional · Unit 2 · …
+// rather than as 16 rows that each repeat the Book's name.
 function searchTasks(query, entries, assignedKeys, limit){
   const words = fold(query).split(/\s+/).filter(Boolean);
   const assigned = new Set(assignedKeys || []);
@@ -1035,12 +964,15 @@ function logout(){
 }
 
 // ── state ─────────────────────────────────────────────────────────────────
-const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', math:'🔢 Toán', battle:'⚔️ Battle' };
-const SKILL_MENU_LABEL = {
-  math7:'Toán 7', mathwars:'Math Wars', grade4:'Grade 4', grammar:'Grammar',
-  phrases:'Phrases', verbs:'Verbs', wordform:'Word Form', rewrite:'Rewrite', collocation:'Collocation'
-};
-const SKILL_MENU_ICON = { math7:'📐', mathwars:'⚡', grade4:'📚', grammar:'🎓', phrases:'🔗', verbs:'🏃', wordform:'🔤', rewrite:'✍️', collocation:'🧩' };
+// One label per activity type the server accepts (functions/api/activity.js
+// TYPES) plus 'exam', which admin/activity still reads out of the old
+// exam_attempts table. A kind with no label renders as its bare word — rows
+// of the cut practices linger for up to 30 days and then purge themselves.
+const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson' };
+// The skill page files the Book units under the menu name js/auth.js has
+// always uploaded them as ('grade4'); the label is what a parent reads.
+const SKILL_MENU_LABEL = { grade4:'Book 1 / 2 / 3' };
+const SKILL_MENU_ICON = { grade4:'📚' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
 let _users = [];                 // every account, from admin/users
@@ -1059,21 +991,21 @@ function todayTasks(uid){ return _tasksByUser[String(uid)] || null; }
 function taskProgress(uid){
   const t = todayTasks(uid);
   if (!t || !t.tasks || !t.tasks.length) return null;
-  return { done: t.tasks.filter(x=>x.done).length, total: t.tasks.length, rewarded: !!t.rewardedToday, shields: (t.shields && t.shields.count) || 0 };
+  return { done: t.tasks.filter(x=>x.done).length, total: t.tasks.length, rewarded: !!t.rewardedToday };
 }
 
 // ── routing ──────────────────────────────────────────────────────────────
 // Hash routes so the back button and a reload land where the parent was:
 //   #/                      overview
 //   #/be/12  #/be/12/lich-su  #/be/12/nang-luc
-//   #/cai-dat  #/cai-dat/cuop-dem
+//   #/cai-dat
 //   #/tai-khoan
 const CHILD_TABS = { '':'tasks', 'nhiem-vu':'tasks', 'lich-su':'history', 'nang-luc':'skills' };
 const CHILD_SLUG = { tasks:'', history:'lich-su', skills:'nang-luc' };
 function parseRoute(hash){
   const parts = String(hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
   if (parts[0] === 'be' && /^\d+$/.test(parts[1] || '')) return { view:'child', uid: parts[1], tab: CHILD_TABS[parts[2] || ''] || 'tasks' };
-  if (parts[0] === 'cai-dat') return { view:'settings', uid:null, tab: parts[1] === 'cuop-dem' ? 'raid' : 'flags' };
+  if (parts[0] === 'cai-dat') return { view:'settings', uid:null, tab:null };
   if (parts[0] === 'tai-khoan') return { view:'accounts', uid:null, tab:null };
   return { view:'overview', uid:null, tab:null };
 }
@@ -1099,27 +1031,22 @@ function render(){
     title.innerHTML = '<span class="crumb">Học viên › </span>' + esc(u ? u.username : '#' + uid);
     renderChild(uid, tab);
   }
-  else if (view === 'settings') { title.textContent = 'Cài đặt app'; switchAdminTab(tab); }
+  else if (view === 'settings') { title.textContent = 'Cài đặt app'; loadAppVersion().catch(()=>{}); }
   else if (view === 'accounts') { title.textContent = 'Tài khoản'; renderUsers(); }
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', render);
 
-// One function for both tab strips (the child's and the settings'): it
-// only touches the buttons in the strip that owns `tab`, and the panel of
-// that name. Landing on a tab is what triggers its load.
-const TAB_GROUPS = { child:['tasks','history','skills'], settings:['flags','raid'] };
+// The child page's tab strip. Landing on a tab is what triggers its load.
+const CHILD_TAB_NAMES = ['tasks','history','skills'];
 function switchAdminTab(tab){
-  const group = TAB_GROUPS.child.indexOf(tab) >= 0 ? 'child' : 'settings';
-  const names = TAB_GROUPS[group];
-  document.querySelectorAll('.admin-tab').forEach(btn=>{ if (names.indexOf(btn.dataset.tab) >= 0) btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)); });
-  document.querySelectorAll('.admin-panel').forEach(panel=>{ const n = panel.id.replace(/Panel$/, ''); if (names.indexOf(n) >= 0) panel.hidden = n !== tab; });
-  if (group === 'child' && _route.view === 'child' && _route.tab !== tab) { location.hash = childHref(_route.uid, tab); return; }
-  if (group === 'settings' && _route.view === 'settings' && _route.tab !== tab) { location.hash = tab === 'raid' ? '#/cai-dat/cuop-dem' : '#/cai-dat'; return; }
+  if (CHILD_TAB_NAMES.indexOf(tab) < 0) tab = 'tasks';
+  document.querySelectorAll('.admin-tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)));
+  document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id.replace(/Panel$/, '') !== tab; });
+  if (_route.view === 'child' && _route.tab !== tab) { location.hash = childHref(_route.uid, tab); return; }
   if (tab === 'tasks') loadDailyTasks().catch(()=>{});
   if (tab === 'history') loadChildHistory().catch(()=>{});
   if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
-  if (tab === 'raid') loadRaidConfig().catch(()=>{});
 }
 
 // ── sider ────────────────────────────────────────────────────────────────
@@ -1203,7 +1130,7 @@ function renderGrid(){
     }).join('');
     const p = taskProgress(u.id);
     const tasks = p
-      ? `<span class="pill ${p.done >= p.total ? 'on' : 'off'}">${p.done >= p.total ? '✓' : '○'} ${p.done}/${p.total}</span>${p.rewarded ? ' <span class="dim" title="đã thưởng 200 xu + 1 khiên">🎁</span>' : ''}${p.shields ? ` <span class="dim" title="khiên đêm">🛡️${p.shields}</span>` : ''}`
+      ? `<span class="pill ${p.done >= p.total ? 'on' : 'off'}">${p.done >= p.total ? '✓' : '○'} ${p.done}/${p.total}</span>${p.rewarded ? ' <span class="dim" title="đã thưởng 200 xu">🎁</span>' : ''}`
       : '<span class="dim">chưa giao</span>';
     const total = daysWithTasks ? `<b>${daysDone}</b><span class="dim">/${daysWithTasks}</span>` : '<span class="dim">—</span>';
     return `<tr${!_gridAll && idx >= GRID_ROWS_SHOWN ? ' class="more" hidden' : ''}><td><button type="button" class="kid" data-uid="${u.id}"><span class="avatar">${esc(initials(u.username))}</span><span class="kid-name">${esc(u.username)}<span class="kid-tasks">${tasks}</span></span></button></td>${cells}<td class="num col-total" title="${daysDone} ngày xong hết nhiệm vụ / ${daysWithTasks} ngày có nhiệm vụ">${total}</td><td class="tasks col-tasks">${tasks}</td></tr>`;
@@ -1310,12 +1237,10 @@ function renderChildHead(uid){
         <span>Nhiệm vụ hôm nay: <b>${p ? p.done + '/' + p.total : 'chưa giao'}</b></span>
         <span>Lượt học gần đây: <b>${n30}</b></span>
         <span>Học gần nhất: <b title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</b></span>
-        ${u.allow_chuyen ? '<span class="pill on">🎓 Chuyên</span>' : ''}${u.allow_bot ? '<span class="pill on">🌱 Chơi trước</span>' : ''}
       </div></div>`;
 }
 
 // ── Nhiệm vụ hằng ngày ───────────────────────────────────────────────────
-function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
 function assignedKeys(uid){ const t = todayTasks(uid); return t && t.tasks ? t.tasks.map(x => x.kind) : []; }
 
 async function loadDailyTasks(){
@@ -1344,12 +1269,10 @@ function renderTaskList(r){
   const uid = _route.uid;
   const body = document.getElementById('dailyBody');
   const status = document.getElementById('dailyStatus');
-  const shield = r.shields || {count:0,activeUntil:0};
   const done = r.tasks.filter(t=>t.done).length;
   document.getElementById('dailyDate').textContent = 'hôm nay ' + r.date;
   status.innerHTML = `<span><b>${done}/${r.tasks.length}</b> nhiệm vụ xong</span>`
-    + `<span>${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}</span>`
-    + `<span>🛡️ <b>${shield.count}</b> khiên${shield.activeUntil>Date.now()?' · đang bật đến '+esc(fmtUntil(shield.activeUntil)):''}</span>`;
+    + `<span>${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu</span>':'<span class="pill off">chưa thưởng</span>'}</span>`;
   if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Chưa có nhiệm vụ.</td></tr>'; return; }
   body.innerHTML = r.tasks.map(t=>`<tr data-id="${t.id}">
       <td style="white-space:normal"><b>${esc(t.label)}</b><div class="task-kind">${esc((DailyTaskCatalog.get(t.kind) || {path:[]}).path.join(' › '))}</div></td>
@@ -1399,7 +1322,9 @@ function renderTaskList(r){
 }
 
 // The picker. Two views over the same catalog — search results, or the
-// Eng / Math tree — and one "Giao" per task. The number of times lives in
+// Book 1 / 2 / 3 tree (DailyTaskCatalog.tree(): three top nodes, each
+// holding its units and Mix directly, no deeper level) — and one "Giao"
+// per task. The number of times lives in
 // ONE box above both views, so it is set once, not per row.
 let _pickMode = 'search';
 function renderPicker(){
@@ -1615,16 +1540,10 @@ function renderUsers(){
       <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
       <td class="hide-xs">${u.disabled
             ? '<span class="pill dead">Đã khoá</span>'
-            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🌱 Chơi trước':'Đang dùng'}</span>`}${coinDrop
+            : '<span class="pill on">Đang dùng</span>'}${coinDrop
             ? `<span class="pill dead" title="Ví tụt: còn ${u.coin_latest} xu so với đỉnh ${u.coin_peak7} xu trong tuần — có thể thiết bị bị xoá dữ liệu. Nút Xu điền sẵn ${coinDrop} xu để bù.">▼ ${coinDrop} xu</span>` : ''}</td>
       <td>
         <div class="row-actions">
-          <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
-                  aria-label="Chơi trước cho ${esc(u.username)}: đang ${u.allow_bot?'bật':'tắt'}"
-                  title="Chơi trước cho học viên này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'Bật':'Tắt'}</span></button>
-          <button class="mini chuyen-toggle ${u.allow_chuyen?'on':''}" data-uid="${u.id}"
-                  aria-label="Bài Chuyên cho ${esc(u.username)}: đang ${u.allow_chuyen?'bật':'tắt'}"
-                  title="Bài Chuyên cho học viên này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
           <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
                   aria-label="Tặng xu cho ${esc(u.username)}"
                   title="${coinDrop?`Bù xu — điền sẵn ${coinDrop} xu ví này đã mất so với đỉnh tuần`:'Tặng xu — app của học viên nhận khi đồng bộ lần tới'}">💰<span class="lbl"> ${coinDrop?'Bù xu':'Xu'}</span></button>
@@ -1650,11 +1569,6 @@ function renderUsers(){
       catch (err) { alert('Không làm được: ' + (err && err.message ? err.message : err)); btn.disabled = false; }
     };
   });
-  act('.bot-toggle', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
-  // The Chuyên tier — its own switch, nothing to do with 🌱 Chơi trước.
-  act('.chuyen-toggle', b => api('admin/user-flags', { method:'POST',
-        body:{ userId: Number(b.dataset.uid), allowChuyen: !b.classList.contains('on') } }));
   act('.act-clear', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
   act('.act-coins', b => {
@@ -1691,248 +1605,20 @@ function renderUsers(){
   });
 }
 
-// ---- Cướp Đêm: the raid rulebook -----------------------------------------
-// One row per tunable number, and the rows are the ONLY place the key list is
-// written on this page. RAID_FIELDS must name exactly the keys the server's
-// RAID_CONFIG_DEFAULTS has — a rule added to the game with no row here would
-// be untunable and invisible, which is the failure this list is arranged to
-// make impossible to ship (tests/admin-night-raid-config.test.js compares the
-// two sets). `unit` is only the word after the box; the range and the default
-// both come from the server, so this page can never claim a limit the
-// endpoint does not enforce.
-const RAID_GROUPS = [
-  { id:'money', title:'💰 Tiền thắng / thua' },
-  { id:'time',  title:'⏳ Thời gian chờ' },
-];
-const RAID_FIELDS = [
-  { key:'win_cap', group:'money', unit:'xu', label:'Trần xu mỗi trận thắng',
-    help:'Trần tổng xu nhận được trong MỘT trận thắng, gồm xu lấy từ kho và thưởng chiến thắng.' },
-  { key:'win_floor', group:'money', unit:'xu', label:'Thưởng tối thiểu khi thắng',
-    help:'Người chơi thắng được ít nhất bấy nhiêu xu cho phí hành quân và chiến thắng, kể cả khi kho nhà địch trống.' },
-  { key:'win_pct', group:'money', unit:'%', label:'Cướp bao nhiêu phần trăm kho xu',
-    help:'Người chơi lấy bấy nhiêu phần trăm kho xu của nhà bị cướp; hệ thống bù thưởng nếu số này thấp hơn mức tối thiểu.' },
-  { key:'loss', group:'money', unit:'xu', label:'Thua trận mất bao nhiêu xu',
-    help:'Thua trận thì bên tấn công mất bấy nhiêu xu (chỉ mất tối đa số xu đang có). Số xu này bị mất hẳn, KHÔNG chuyển sang bên thủ — bên thủ nhận thưởng giữ thành riêng bên dưới.' },
-  { key:'shield_loss', group:'money', unit:'xu', label:'Đâm vào Khiên Đêm mất bao nhiêu xu',
-    help:'Đâm vào nhà đang bật Khiên Đêm thì bên tấn công mất bấy nhiêu xu (cũng chỉ mất tối đa số đang có, và cũng mất hẳn).' },
-  { key:'defense_reward', group:'money', unit:'xu', label:'Thưởng giữ thành khi đẩy lui kẻ cướp',
-    help:'Mỗi lần nhà người chơi đẩy lui được một đội cướp (kể cả nhờ Khiên Đêm), hệ thống thưởng chủ nhà bấy nhiêu xu — không phụ thuộc kẻ cướp có bao nhiêu xu.' },
-  { key:'defense_daily_cap', group:'money', unit:'xu', label:'Trần thưởng giữ thành cả ngày',
-    help:'Trần tổng xu thưởng giữ thành một người nhận được trong một ngày, để nhà bị cướp suốt đêm không thành máy in xu.' },
-  { key:'daily_reward_cap', group:'money', unit:'xu', label:'Trần xu cướp được cả ngày',
-    help:'Trần tổng xu cướp được trong một ngày.' },
-  { key:'seal_hours', group:'time', unit:'giờ', label:'Nhà bị cướp tan hoang bao lâu',
-    help:'Nhà bị cướp THÀNH CÔNG thì tan hoang bấy nhiêu giờ, không ai cướp được nữa.' },
-  { key:'retry_hours', group:'time', unit:'giờ', label:'Chờ bao lâu mới đánh lại đúng nhà đó',
-    help:'Cùng một người phải chờ bấy nhiêu giờ mới được đánh lại đúng nhà đó (thắng, thua hay tới nơi thấy nhà tan hoang cũng vậy).' },
-];
-// A pile round enough to do the percentage in your head while you read it.
-const RAID_EXAMPLE_PILE = 3000;
-
-let _raidCfg = null, _raidDefaults = {}, _raidRanges = {};
-
-function fmtXu(n){ return Number(n || 0).toLocaleString('vi-VN'); }
-
-// What the rule would be if this box were saved right now — so the worked
-// example moves while the parent is still typing, which is the only way to
-// see what a number DOES before committing to it. A value the server would
-// refuse is NOT previewed: the example is a promise about the game, and it
-// must never illustrate a rule that cannot be saved.
-function raidLiveValue(key){
-  const input = document.getElementById('raid_' + key);
-  const range = _raidRanges[key];
-  if (input) {
-    const n = Number(String(input.value).trim());
-    if (Number.isInteger(n) && (!range || (n >= range[0] && n <= range[1]))) return n;
-  }
-  return Number((_raidCfg && _raidCfg[key]) || 0);
-}
-
-function paintRaidExample(){
-  const el = document.getElementById('raidExample');
-  if (!el || !_raidCfg) return;
-  const cap = raidLiveValue('win_cap');
-  const floor = raidLiveValue('win_floor');
-  const pct = raidLiveValue('win_pct');
-  const dayCap = raidLiveValue('daily_reward_cap');
-  const loss = raidLiveValue('loss');
-  const defReward = raidLiveValue('defense_reward');
-  const defCap = raidLiveValue('defense_daily_cap');
-  const defRaids = defReward > 0 ? Math.floor(defCap / defReward) : 0;
-  const share = Math.floor(RAID_EXAMPLE_PILE * pct / 100);
-  const loot = Math.min(cap, share);
-  const won = Math.min(cap, Math.max(floor, loot));
-  const raids = won > 0 ? Math.floor(dayCap / won) : 0;
-  el.innerHTML = '<span class="raid-example-title">Thử một trận</span>'
-    + 'Nhà địch đang giữ <b>' + fmtXu(RAID_EXAMPLE_PILE) + ' xu</b>. Người chơi đánh thắng: '
-    + '<b>' + fmtXu(pct) + '%</b> × ' + fmtXu(RAID_EXAMPLE_PILE) + ' = <b>' + fmtXu(share) + ' xu</b>, '
-    + 'thưởng tối thiểu <b>' + fmtXu(floor) + ' xu</b>, trần một trận <b>' + fmtXu(cap) + ' xu</b> '
-    + '⇒ người chơi mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
-    + 'Nếu kho địch trống, người chơi vẫn nhận <b>' + fmtXu(Math.min(cap, floor)) + ' xu</b> cho phí hành quân và chiến thắng.<br>'
-    + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.<br>'
-    + 'Người chơi đánh thua: mất <b>' + fmtXu(loss) + ' xu</b> (mất hẳn, tối đa số đang có). '
-    + 'Nhà người chơi đẩy lui kẻ cướp: hệ thống thưởng <b>' + fmtXu(defReward) + ' xu</b>, cả ngày tối đa <b>' + fmtXu(defCap) + ' xu</b>'
-    + ' — khoảng <b>' + fmtXu(defRaids) + '</b> lần giữ thành.';
-}
-
-function paintRaidStatus(){
-  const status = document.getElementById('raidStatus');
-  if (!status || !_raidCfg) return;
-  const changed = RAID_FIELDS.filter(f => Number(_raidCfg[f.key]) !== Number(_raidDefaults[f.key]));
-  status.innerHTML = '<span><b>' + RAID_FIELDS.length + '</b> luật đang chạy</span>'
-    + (changed.length ? '<span class="pill on">' + changed.length + ' luật đã chỉnh tay</span>'
-                      : '<span class="pill off">tất cả đang để mặc định</span>');
-}
-
-// An edited box is not a rule yet. Until Lưu comes back the row says so, and
-// the button is the only way to make it true.
-function syncRaidRow(row){
-  const input = row.querySelector('input');
-  const saved = String(Number(_raidCfg[row.getAttribute('data-key')]));
-  const dirty = String(input.value).trim() !== saved;
-  row.classList.toggle('changed', dirty);
-  row.querySelector('.raid-save').disabled = !dirty;
-  row.querySelector('.raid-dirty').textContent = dirty ? '· chưa lưu' : '';
-}
-
-function renderRaidConfig(){
-  const wrap = document.getElementById('raidGroups');
-  wrap.innerHTML = RAID_GROUPS.map(g => {
-    const rows = RAID_FIELDS.filter(f => f.group === g.id).map(f => {
-      const range = _raidRanges[f.key] || [0, 100000];
-      const id = 'raid_' + f.key;
-      return `<div class="raid-row" data-key="${esc(f.key)}">
-        <div class="raid-copy">
-          <label for="${id}">${esc(f.label)}</label>
-          <p class="raid-help">${esc(f.help)}</p>
-        </div>
-        <div class="raid-edit">
-          <input id="${id}" type="number" inputmode="numeric" step="1" min="${range[0]}" max="${range[1]}"
-                 value="${Number(_raidCfg[f.key])}" aria-describedby="${id}_foot">
-          <span class="raid-unit">${esc(f.unit)}</span>
-          <button class="btn btn-ghost raid-save" type="button" disabled>💾 Lưu</button>
-        </div>
-        <div class="raid-foot" id="${id}_foot">Mặc định ${fmtXu(_raidDefaults[f.key])} ${esc(f.unit)} · nhập ${fmtXu(range[0])}–${fmtXu(range[1])}
-          <span class="raid-dirty"></span></div>
-        <div class="raid-note" aria-live="polite"></div>
-      </div>`;
-    }).join('');
-    return `<div class="raid-group"><h3 class="raid-group-title">${esc(g.title)}</h3>${rows}</div>`;
-  }).join('');
-  wrap.querySelectorAll('.raid-row').forEach(row => {
-    row.querySelector('input').addEventListener('input', ()=>{ syncRaidRow(row); paintRaidExample(); });
-    row.querySelector('.raid-save').onclick = ()=>saveRaidKey(row).catch(()=>{});
-    syncRaidRow(row);
-  });
-  paintRaidStatus();
-  paintRaidExample();
-}
-
-async function loadRaidConfig(){
-  const status = document.getElementById('raidStatus');
-  const wrap = document.getElementById('raidGroups');
-  let r;
-  // A failed reload must not leave the previous numbers on screen looking like
-  // the rules in force, so the groups are cleared and the error rethrown.
-  try { r = await api('admin/night-raid-config'); }
-  catch(e){
-    _raidCfg = null;
-    status.textContent = 'Không tải được luật Cướp Đêm (' + e.message + ')';
-    wrap.innerHTML = '<div class="learning-empty">Không tải được luật Cướp Đêm.</div>';
-    throw e;
-  }
-  _raidCfg = r.config || {};
-  _raidDefaults = r.defaults || {};
-  _raidRanges = r.ranges || {};
-  renderRaidConfig();
-}
-
-// One key per save, and the server's own refusal is what the row reports —
-// never a guess made here. The endpoint refuses an out-of-range number rather
-// than clamping it, so "đã lưu" always means the number on screen is the
-// number the game is playing by.
-async function saveRaidKey(row){
-  const key = row.getAttribute('data-key');
-  const input = row.querySelector('input');
-  const note = row.querySelector('.raid-note');
-  const btn = row.querySelector('.raid-save');
-  btn.disabled = true;
-  note.className = 'raid-note';
-  note.textContent = 'Đang lưu…';
-  try {
-    const r = await api('admin/night-raid-config', { method:'POST', body:{ key, value: String(input.value).trim() } });
-    _raidCfg = r.config || _raidCfg;
-    input.value = String(Number(_raidCfg[key]));
-    const field = RAID_FIELDS.filter(f => f.key === key)[0] || {};
-    note.className = 'raid-note ok';
-    note.textContent = '✓ Đã lưu — từ giờ là ' + fmtXu(_raidCfg[key]) + ' ' + (field.unit || '');
-  } catch(e){
-    // A logged-out admin was already bounced to the login screen by api().
-    if (e.message === 'unauth') return;
-    note.className = 'raid-note bad';
-    note.textContent = '✗ ' + e.message;
-  }
-  document.querySelectorAll('#raidGroups .raid-row').forEach(syncRaidRow);
-  paintRaidStatus();
-  paintRaidExample();
-}
-
-// ── app-wide switches ────────────────────────────────────────────────────
-// One switch for the whole app, not per child: a duel needs two children, so
-// a per-child switch would mostly produce friend lists with nobody to fight.
-let _appFlags = {};
-function paintAppFlags(){
-  const btn = document.getElementById('mathFightFlag');
-  if (!btn) return;
-  const on = !!_appFlags.math_fight;
-  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  document.getElementById('mathFightLabel').textContent = on ? 'đang BẬT' : 'đang tắt';
-}
-// Bảng cửu chương's round length. One number for all six drills and for every
-// child — how long a ten-question round runs. The server clamps it too; this
-// only keeps an adult from watching their typo be silently corrected.
-let _appSettings = {};
-function paintAppSettings(){
-  const el = document.getElementById('ccSeconds');
+// ── Cài đặt app ──────────────────────────────────────────────────────────
+// The only fact left on the settings page: which Functions build the API
+// is running. /api/version is public and is the same endpoint deploy.sh
+// polls to call a release live, so this reads what a child's device reads.
+async function loadAppVersion(){
+  const el = document.getElementById('apiVersion');
   if (!el) return;
-  if (document.activeElement !== el) el.value = _appSettings.cuuchuong_seconds || 60;
-}
-async function loadAppFlags(){
-  const r = await api('admin/app-flags');
-  _appFlags = (r && r.flags) || {};
-  _appSettings = (r && r.settings) || {};
-  paintAppFlags();
-  paintAppSettings();
-}
-async function saveCcSeconds(){
-  const el = document.getElementById('ccSeconds');
-  const next = Math.trunc(Number(el.value));
-  const now = _appSettings.cuuchuong_seconds || 60;
-  // Nothing typed, or nothing changed: put the real value back and say nothing.
-  if (!Number.isFinite(next) || next === now) { paintAppSettings(); return; }
-  if (!confirm('Đổi thời gian mỗi lượt Bảng cửu chương thành ' + next + ' giây cho TẤT CẢ học viên?')) {
-    paintAppSettings(); return;
+  try {
+    const r = await api('version');
+    el.textContent = (r && r.version) ? 'v' + r.version : '—';
+  } catch (e) {
+    if (e.message === 'unauth') return;
+    el.textContent = 'không tải được';
   }
-  el.disabled = true;
-  try {
-    const r = await api('admin/app-flags', { method:'POST', body:{ key:'cuuchuong_seconds', value: next } });
-    _appSettings = (r && r.settings) || _appSettings;
-  } catch (e) { alert('Không làm được: ' + (e && e.message ? e.message : e)); }
-  el.disabled = false;
-  paintAppSettings();
-}
-async function toggleMathFight(){
-  const btn = document.getElementById('mathFightFlag');
-  const next = !_appFlags.math_fight;
-  if (next && !confirm('Bật Đấu Toán cho TẤT CẢ người học?')) return;
-  if (!next && !confirm('Tắt Đấu Toán cho TẤT CẢ người học?')) return;
-  btn.disabled = true;
-  try {
-    const r = await api('admin/app-flags', { method:'POST', body:{ key:'math_fight', value: next } });
-    _appFlags = (r && r.flags) || _appFlags;
-    paintAppFlags();
-  } catch (e) { alert('Không làm được: ' + (e && e.message ? e.message : e)); }
-  btn.disabled = false;
 }
 
 // ── boot ──────────────────────────────────────────────────────────────────
@@ -1945,31 +1631,20 @@ async function showDash(){
   render();
   loadActivityAll().catch(()=>{});
   loadAllTasks().catch(()=>{});
-  loadAppFlags().catch(()=>{});
 }
 function refreshAll(){
   loadUsers().catch(()=>{});
   loadActivityAll().catch(()=>{});
   loadAllTasks().catch(()=>{});
-  loadAppFlags().catch(()=>{});
   _activityChild = { uid:null, rows:[] };
   if (_route.view === 'child') renderChild(_route.uid, _route.tab);
-  // Only if the card has been opened once: an admin who never went near the
-  // raid rules should not have their unsaved edits — or a fetch — appear out
-  // of a Refresh they pressed for the users table.
-  if (_raidCfg && _route.view === 'settings') loadRaidConfig().catch(()=>{});
+  if (_route.view === 'settings') loadAppVersion().catch(()=>{});
 }
 
 document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
 document.getElementById('refreshBtn').onclick = refreshAll;
-document.getElementById('mathFightFlag').onclick = toggleMathFight;
-// Commit on blur and on Enter, not on every keystroke: typing "120" would
-// otherwise POST 1, then 12, then 120 — and briefly give every child a
-// one-second round.
-document.getElementById('ccSeconds').onchange = saveCcSeconds;
-document.getElementById('ccSeconds').onkeydown = (e) => { if (e.key === 'Enter') e.target.blur(); };
 document.querySelectorAll('#rangeSeg button').forEach(b => b.onclick = () => {
   _range = Number(b.dataset.days);
   document.querySelectorAll('#rangeSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));

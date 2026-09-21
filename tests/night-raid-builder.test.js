@@ -141,12 +141,12 @@ suite('night raid builder: the board opens small enough to see', () => {
     });
 
     test('zoom and scroll are remembered per screen', () => {
-        // The raid stage has its own bucket: pinching the enemy board must
-        // never change the zoom the child's own island comes back at.
-        assert.truthy(ui.includes('builderZoomByView={home:1,builder:BUILDER_START_ZOOM,scout:1}'));
-        assert.truthy(ui.includes('builderScrollByView={home:null,builder:null,scout:null}'));
-        assert.truthy(/viewKey=v=>\(v==='builder'\?'builder':\(v==='scout'\|\|v==='battle'\|\|v==='result'\)\?'scout':'home'\)/.test(ui),
-            'scout, battle and result share the raid bucket');
+        // Two buckets now that the raid stage is gone: the home yard and the
+        // builder. Neither may borrow the other's camera.
+        assert.truthy(ui.includes('builderZoomByView={home:1,builder:BUILDER_START_ZOOM}'));
+        assert.truthy(ui.includes('builderScrollByView={home:null,builder:null}'));
+        assert.truthy(/viewKey=v=>\(v==='builder'\?'builder':'home'\)/.test(ui), 'only home and builder buckets remain');
+        assert.falsy(/nr-scout-map|'scout'|'battle'/.test(ui), 'no raid camera bucket survives in the builder');
         assert.truthy(ui.includes('applyViewZoom(view)'), 'each render must pick up its own screen\'s zoom');
     });
 

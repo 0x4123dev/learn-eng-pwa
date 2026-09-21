@@ -84,7 +84,7 @@ const EngAuth = (function () {
 
   // THE username rule, mirrored from functions/api/register.js. Checked when
   // the profile is CREATED, so the app can never make a name the server will
-  // refuse. That failure used to surface much later, in the Friends tab, long
+  // refuse. That failure used to surface much later, on another screen, long
   // after the name was baked into a profile full of progress.
   const USERNAME_RE = /^[\p{L}\p{M}\p{N} ._\-]+$/u;
   function validUsername(name) {
@@ -117,7 +117,7 @@ const EngAuth = (function () {
   let _lastLinkStatus = { reason: 'unknown' };
   function linkStatus() { return _lastLinkStatus; }
   // SILENT teardown for a profile change. This is not a private diagnostic:
-  // js/friends.js _frLinkHelpHTML() turns it into a sentence the child reads —
+  // it used to be turned into a sentence the learner reads —
   // "Tên này đã có tài khoản trên máy chủ với mật mã khác", "Máy này đã tạo đủ
   // số tài khoản cho phép". Left standing, the NEXT child was shown the reason
   // the PREVIOUS child's link failed, about a name that is not theirs, for as
@@ -128,7 +128,7 @@ const EngAuth = (function () {
   // Establish/refresh a server account for a local profile using its passcode,
   // then sync any unsynced local history. Called on every login.
   // Returns { ok, reason } — failures used to be swallowed, which left the
-  // Friends tab telling a signed-in child to sign in.
+  // a screen telling a signed-in learner to sign in.
   async function syncAccount(username, passcode) {
     if (!username) return (_lastLinkStatus = { ok: false, reason: 'no-user' });
     if (!passcode) return (_lastLinkStatus = { ok: false, reason: 'no-passcode' });
@@ -162,16 +162,6 @@ const EngAuth = (function () {
     // Rebuild the trophy cabinet from the server's battle record. Fire and
     // forget: a fresh install should already show its cups by the time the
     // child opens Profile.
-    if (typeof reconcileCupsFromServer === 'function') {
-      try { reconcileCupsFromServer(); } catch (e) {}
-    }
-    // Battles this profile finished on another phone — or, on a shared
-    // phone, never watched finish (the other child was signed in). The arena
-    // code is a lazy group, so this only runs when it has already landed;
-    // openPetBattle asks again the moment the lobby opens.
-    if (typeof pbReconcileHistory === 'function') {
-      try { pbReconcileHistory(); } catch (e) {}
-    }
     claimCoinGrants(username);
     syncAssets(username);
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
@@ -279,37 +269,6 @@ const EngAuth = (function () {
       const receipt = (r.ok && r.data && typeof r.data.receipt === 'string' && r.data.receipt) || null;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
-      // The same reply carries the per-user feature flags. Cache them BEFORE
-      // the early return below: a child with no coins waiting still needs to
-      // learn that an admin has opened a tab for them.
-      if (r.ok && r.data && r.data.flags) {
-        const before = !!appState.allowMathFight + '|' + !!appState.allowBot + '|' + !!appState.allowChuyen
-          + '|' + (appState.cuuchuongSeconds || 0);
-        appState.allowMathFight = !!r.data.flags.mathFight;
-        appState.allowBot = !!r.data.flags.bot;
-        // The Chuyên tier of Word Form / Rewrite. Cached like the others so the
-        // draw is decided offline; the server is the source of truth.
-        appState.allowChuyen = !!r.data.flags.chuyen;
-        // Bảng cửu chương's round length. Only a sane number is stored: a
-        // missing or junk value must leave the cached one alone rather than
-        // hand a child a zero-second round.
-        const secs = Math.trunc(+r.data.flags.cuuchuongSeconds);
-        if (Number.isFinite(secs) && secs > 0) appState.cuuchuongSeconds = secs;
-        const after = !!appState.allowMathFight + '|' + !!appState.allowBot + '|' + !!appState.allowChuyen
-          + '|' + (appState.cuuchuongSeconds || 0);
-        if (before !== after) {
-          if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
-          // A tab that appeared while the child was already looking at the
-          // screen that lists it must actually show up, not wait for the next
-          // navigation.
-          try {
-            if (typeof _mathView !== 'undefined' && typeof renderMathHome === 'function'
-                && document.getElementById('mathHubScreen')?.classList.contains('active')) renderMathHome();
-            if (typeof renderHome === 'function'
-                && document.getElementById('homeScreen')?.classList.contains('active')) renderHome();
-          } catch (e) { /* a repaint failure must not lose the flag we just stored */ }
-        }
-      }
       // A receipt means ROWS were claimed, which is not the same as a non-zero
       // total: a batch of +100 and -100 nets to zero and still has to be
       // acked, or the server keeps re-offering it forever. So the receipt is
@@ -369,7 +328,6 @@ const EngAuth = (function () {
       const num = v => typeof v === 'number' && Number.isFinite(v);
       const body = {
         accessories: Array.isArray(appState.petAccessories) ? appState.petAccessories : [],
-        castleSkins: Array.isArray(appState.petBattleCastleSkins) ? appState.petBattleCastleSkins : [],
         stickers: Array.isArray(appState.stickers) ? appState.stickers : [],
       };
       if (num(appState.dogGrowthXP)) body.dogGrowthXP = appState.dogGrowthXP;
@@ -387,7 +345,6 @@ const EngAuth = (function () {
         }
       };
       addAll('petAccessories', merged.accessories);
-      addAll('petBattleCastleSkins', merged.castleSkins);
       addAll('stickers', merged.stickers);
       if (num(merged.dogGrowthXP) && merged.dogGrowthXP > (+appState.dogGrowthXP || 0)) {
         appState.dogGrowthXP = merged.dogGrowthXP;
@@ -407,8 +364,8 @@ const EngAuth = (function () {
     } catch (e) { /* offline — the next sync carries the backup */ }
   }
 
-  // Explicit re-link with a passcode the user typed (used by the Friends tab
-  // when the local passcode no longer matches the server account).
+  // Explicit re-link with a passcode the user typed (when the local passcode
+  // no longer matches the server account).
   async function relinkAccount(username, passcode) {
     clearAccount(username);
     return syncAccount(username, passcode);
@@ -419,14 +376,6 @@ const EngAuth = (function () {
     const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
     const items = [];
     const add = (o) => { if (o && Number.isFinite(+o.at) && +o.at >= cutoff) items.push(o); };
-    // A paper re-done through a results card's "Làm lại" (js/exam.js
-    // retakeExam) is stored with `retake: true`, and that mark rides up as
-    // detail.retake so the server's daily-task counter can leave it out: a
-    // task is completed only by a fresh attempt started from the menu. The
-    // key is OMITTED on a fresh attempt, never sent as false — the server
-    // treats "no key" as "counts", which is also what every row written
-    // before this flag existed must mean.
-    const retakeDetail = (h) => (h && h.retake === true) ? { retake: true } : {};
     // How long it took, in seconds — the exam engine's own timer where there
     // is one (timeSpentSec), the ActivityClock everywhere else (sec). Absent
     // on rows written before either existed; the admin shows those as "—".
@@ -437,105 +386,12 @@ const EngAuth = (function () {
     const withDetail = (d) => Object.keys(d).length ? { detail: d } : {};
     if (typeof appState === 'undefined' || !appState) return items;
 
-    (appState.lessonHistory || []).forEach(h => add({
-      type: 'lesson', title: 'Vocabulary lesson #' + ((h.lessonNum || 0) + 1),
-      score: Math.round((h.accuracy || 0) / 100 * 5), total: 5,
-      at: h.date, detail: Object.assign({ accuracy: h.accuracy }, secDetail(h)),
-    }));
-    (appState.grammarHistory || []).forEach(h => {
-      let name = h.unitId;
-      try { const u = getGrammarUnit(h.unitId); if (u && u.name) name = u.name; } catch (e) {}
-      add({ type: 'grammar', title: 'Grammar: ' + name, score: h.score, total: h.total, at: h.date,
-        // unitQs pairs the unit with the LENGTH the child chose, so a task
-        // can name one button ('Unit 12 · 10 câu'). Grammar has no follow-up
-        // screens, so its total IS the question count. unitId stays for the
-        // size-agnostic tasks and for anything already assigned.
-        detail: Object.assign({ unitId: h.unitId, unitQs: h.unitId + ':' + (h.total || 0) }, secDetail(h)) });
-    });
-    (appState.phrasesHistory || []).forEach(h => add({
-      type: 'phrases', title: 'Phrases practice (' + (h.total || 0) + ' Qs)',
-      score: h.score, total: h.total, at: h.date,
-      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
-    }));
-    (appState.wordformHistory || []).forEach(h => add({
-      type: 'wordform', title: 'Word form practice (' + (h.total || 0) + ' Qs)',
-      score: h.score, total: h.total, at: h.date,
-      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
-    }));
-    (appState.rewriteHistory || []).forEach(h => add({
-      type: 'rewrite', title: 'Rewrite practice (' + (h.total || 0) + ' Qs)',
-      score: h.score, total: h.total, at: h.date,
-      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
-    }));
-    (appState.collocHistory || []).forEach(h => add({
-      type: 'collocation', title: 'Collocation practice (' + (h.total || 0) + ' Qs)',
-      score: h.score, total: h.total, at: h.date,
-      ...withDetail(Object.assign(h.qs == null ? {} : { qs: h.qs }, secDetail(h))),
-    }));
     (appState.unitsHistory || []).forEach(h => add({
       type: 'lesson',
-      title: (h.unit === 'mix' ? 'Mix 12 units' : 'Unit ' + h.unit) + ' words practice',
+      // The title IS the identity the daily-task catalog matches on
+      // (js/daily-task-catalog.js titleExact): 'Unit pr2-7 words practice'.
+      title: 'Unit ' + h.unit + ' words practice',
       score: h.score, total: h.total, at: h.date, ...withDetail(secDetail(h)),
-    }));
-    (appState.mathHistory || []).forEach(h => add({
-      // A mock exam and a chapter drill are different things to a parent
-      // reading the timeline, and the session records which it was. So is a
-      // Toán 4 paper: it rides the same 'math' type (the server drops types it
-      // does not know) but carries `g4set`, which is what a daily task for it
-      // matches on — `chapter` there is a string and can never collide with a
-      // Toán 7 chapter number.
-      type: 'math',
-      title: h.grade === 4
-        ? (h.label || 'Toán 4 · Đề ôn')
-        : 'Toán 7 · ' + (h.examId ? 'Đề thi: ' : '') + (h.label || 'công thức'),
-      score: h.score, total: h.total, at: h.date,
-      detail: Object.assign(
-        h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
-          : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
-        retakeDetail(h), secDetail(h)),
-    }));
-    // PTNK papers. Their history lives on appState (not the Exam tab's
-    // localStorage key) precisely so it reaches this list: an admin assigns
-    // "làm đề PTNK 2022 Chuyên" as a daily task, and the task matcher reads
-    // activities, never exam_attempts. detail.examId is what it matches on.
-    // The other exam-engine sets (js/practice-sets.js) keep history the same
-    // way, for the same reason. detail.examId is what a daily task matches:
-    // 'rd-kc-…' for a reading passage, 'cl-ch-…' for a cloze text,
-    // 'er-round-kc:…' for an error round — the level sits in the prefix.
-    // Each one named literally, not through a loop over a list: the drift
-    // guard (tests/cross-boundary-drift.test.js) greps this file for
-    // `appState.<name>History` to prove every history the app writes is
-    // uploaded. A loop over strings would pass nothing and fail nothing.
-    const examSet = (set) => (h) => add({
-      type: 'exam',
-      title: h.title || (set + ' ' + (h.examId || '')),
-      score: h.score, total: h.total, at: h.ts,
-      detail: Object.assign({ examId: h.examId, set: set }, retakeDetail(h), secDetail(h)),
-    });
-    (appState.ptnkHistory || []).forEach(examSet('ptnk'));
-    (appState.readingHistory || []).forEach(examSet('reading'));
-    (appState.clozeHistory || []).forEach(examSet('cloze'));
-    (appState.errorsHistory || []).forEach(examSet('errors'));
-    (appState.grammarVocabHistory || []).forEach(examSet('grammarvocab'));
-    (appState.phoneticsHistory || []).forEach(examSet('phonetics'));
-    (appState.warsHistory || []).forEach(h => add({
-      // Math Wars rides the 'math' type: it IS maths practice, and a type the
-      // server does not know is dropped in silence (see functions/api/activity.js).
-      type: 'math',
-      title: 'Math Wars · ' + (h.correct || 0) + '/' + (h.total || 0) + ' câu',
-      score: h.correct, total: h.total, at: h.date,
-      // level = the hidden difficulty bậc the round was played at (1 = đáp án
-      // dưới 20). The child never sees it; a parent reading the timeline can.
-      detail: Object.assign({ meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut, level: h.level, max: h.max }, secDetail(h)),
-    }));
-    (appState.nightRaidHistory || []).forEach(h => add({
-      type: 'battle', title: 'Castle Night Raid · ' + (h.won ? 'thắng' : 'thua'),
-      score: h.won ? (h.stars || 1) : 0, total: 3, at: h.at,
-      detail: { targetId: h.targetId, reward: h.reward || 0, mode: h.kind || 'training' },
-    }));
-    ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
-      type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
-      score: h.correct, total: h.total, at: h.date, detail: Object.assign({ score: h.score }, secDetail(h)),
     }));
     return items;
   }
@@ -559,20 +415,10 @@ const EngAuth = (function () {
         });
       });
     };
-    // Toán 4 rides the same history array as Toán 7 but is a different môn:
-    // filed under 'math7' its sheets would be averaged into Toán 7's numbers
-    // on the admin skill page, where nobody could tell them apart again.
-    (appState.mathHistory || []).forEach(h => h && h.grade === 4
-      ? addSession('math4', 'm4', h)
-      : addSession('math7', 'm7', h));
-    (appState.warsHistory || []).forEach(h => addSession('mathwars', 'mw', h));
+    // The Book practices file under the menu the server's skill page has
+    // always known this engine by ('grade4'); the skill keys inside say
+    // 'word.unit.pr2.7…'.
     (appState.unitsHistory || []).forEach(h => addSession('grade4', 'g4', h));
-    (appState.wordformHistory || []).forEach(h => addSession('wordform', 'wf', h));
-    (appState.grammarHistory || []).forEach(h => addSession('grammar', 'gr', h));
-    (appState.phrasesHistory || []).forEach(h => addSession('phrases', 'ph', h));
-    (((appState.speedChallenge || {}).history) || []).forEach(h => addSession('verbs', 'vb', h));
-    (appState.rewriteHistory || []).forEach(h => addSession('rewrite', 'rw', h));
-    (appState.collocHistory || []).forEach(h => addSession('collocation', 'co', h));
     return items;
   }
 
@@ -746,15 +592,7 @@ const ActivityClock = {
     return Math.max(0, Math.min(this.CAP_SEC, s));
   },
   ENTRY: Object.freeze([
-    'startLesson', 'startNextLesson', 'startReviewLesson', 'startReviewSession', 'startTopicReviewSession',
-    'startTopicLesson', 'startTopicLessonChunk', 'startTopicPractice', 'startUnitPractice', 'startUnitRetry',
-    'startGrammarQuiz', 'startCustomQuiz', 'startMistakesQuiz', 'startPhrasesQuiz', 'startPhrasesReviewQuiz',
-    'startCollocPractice', 'startWordformQuiz', 'startRewriteQuiz', 'startRewriteReviewQuiz',
-    'startSpeedChallenge', 'startExam', 'startPtnkExam', 'startReadingPassage', 'startClozePassage',
-    'startErrorsRound', 'startGrammarVocabRound', 'startPhoneticsRound', 'startRetryDrill',
-    'startMathExam', 'startMathQuiz', 'startMathQuizForLesson', 'startMathLtQuiz', 'startMathRetry',
-    'startMathWrongPractice', 'startMath4Pre', 'startMath4Mix', 'startMathTables', 'startWarsRound',
-    'startDailyChallenge',
+    'startUnitPractice', 'startUnitRetry', 'startRetryDrill',
   ]),
   // Wrap every entry function that exists right now. Top-level function
   // declarations are properties of the global object, so reassigning the

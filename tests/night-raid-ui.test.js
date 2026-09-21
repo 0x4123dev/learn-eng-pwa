@@ -2,74 +2,56 @@ const { suite, test, assert } = require('./harness');
 const fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),css=require('./css-all').readAllCss(),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),phaser=read('js/night-raid-phaser.js'),sw=read('sw.js');
+const html=read('index.html'),css=require('./css-all').readAllCss(),ui=read('js/night-raid.js'),sw=read('sw.js');
 
-suite('night raid: app integration',()=>{
-  test('one dedicated screen; the rules ship in the app shell and the four game scripts ride the Arena lazy group, in order',()=>{
+// js/night-raid.js is the Nông trại tab: the learner's own home and farm.
+// The raid — scouting, battles, reports, shields, swords, the armory, the
+// Arena that hosted it — was cut in September 2026. These tests cover what
+// stayed: the yard, the pet, the parade, the builder, the shop, the farm.
+suite('farm: app integration',()=>{
+  test('one dedicated screen; the rules ship in the app shell and the farm code rides the farm lazy group',()=>{
     assert.truthy(html.includes('id="nightRaidScreen"'));
-    // Daily Task and the Armoury read NightRaidRules on Home, so the rules
-    // stay eager. The rest is Arena code (js/lazy-data.js GROUP_FILES.arena).
+    // Daily Task reads NightRaidRules on Home, so the rules stay eager. The
+    // screen's own code is the `farm` group (js/lazy-data.js GROUP_FILES).
     assert.truthy(html.includes('js/night-raid-rules.js'));
-    const arena=require('../js/lazy-data.js').GROUP_FILES.arena;
-    const order=['js/night-raid-art.js','js/night-raid-game.js','js/night-raid-phaser.js','js/night-raid.js'].map(x=>arena.indexOf(x));
-    assert.truthy(order.every(n=>n>=0));
-    assert.truthy(order.every((n,i)=>i===0||order[i-1]<n));
-    for(const f of order.map(i=>arena[i]))assert.falsy(html.includes(f),f+' must not also be an eager script');
+    const lazy=require('../js/lazy-data.js');
+    const farm=lazy.GROUP_FILES.farm;
+    assert.truthy(Array.isArray(farm)&&farm.includes('js/night-raid.js'),'js/night-raid.js is farm-group code');
+    assert.truthy(farm.includes('js/farm-art-manifest.js'),'the farm art manifest lands with it');
+    assert.equal(lazy.SCREEN_GROUPS.nightRaidScreen,'farm');
+    for(const f of farm)assert.falsy(html.includes('src="'+f+'"'),f+' must not also be an eager script');
+    assert.equal(lazy.GROUP_FILES.arena,undefined,'the Arena group is gone');
   });
-  test('all Night Raid scripts work offline',()=>{
-    for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));
+  test('the farm works offline',()=>{
+    for(const file of ['night-raid-rules.js','night-raid.js','farm-art-manifest.js'])assert.truthy(sw.includes("'/js/"+file+"'"),file);
+    for(const file of ['night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','armory.js','petbattle.js'])assert.falsy(sw.includes("'/js/"+file+"'"),file+' was cut and must not be precached');
   });
-  test('Arena exposes the game to every child through the home button over the map',()=>{
-    const arena=read('js/petbattle.js');
-    assert.truthy(arena.includes('_pbArenaPetHeader()'));
-    assert.falsy(arena.includes('_pbArenaPetHeader(st.allowBot)'));
-    assert.truthy(arena.includes('class="pb-arena-home"'));
-    assert.truthy(arena.includes('onclick="openNightRaid()"'));
+  test('the farm is a bottom-nav tab that goes back to Home',()=>{
+    assert.truthy(/data-nav-key="farm"[^>]*onclick="openNightRaid\(\)"|onclick="openNightRaid\(\)"[^>]*data-nav-key="farm"/.test(html),'index.html has the Nông trại nav button');
+    assert.truthy(read('js/app.js').includes("nightRaidScreen: 'farm'"),'the screen belongs to the farm nav group');
+    assert.truthy(ui.includes("switchScreen('homeScreen')"),'close() lands on Home');
+    assert.falsy(ui.includes('petBattleScreen')||ui.includes('renderPetBattle'),'the Arena is not a destination any more');
+    assert.falsy(ui.includes('setNav(')||ui.includes('bottomNav'),'a tab never hides the bottom bar');
   });
-  test('Night Raid remains inside the Arena navigation group',()=>{
-    assert.truthy(read('js/app.js').includes("nightRaidScreen: 'arena'"));
-  });
-  test('win/loss ends as a popup over the live battlefield, not a page swap',()=>{
-    // The final frame (breach or retreat) stays as the backdrop; a game-style
-    // banner popup drops in over it. The old full page survives only as the
-    // fallback for paths where the battle DOM is already gone.
-    assert.truthy(ui.includes("document.querySelector('#nrBattleRoot .nr-canvas-wrap')"));
-    assert.truthy(ui.includes('nr-result-pop'));
-    assert.truthy(ui.includes('nr-pop-banner'));
-    assert.truthy(ui.includes('renderResultPage'),'fallback page renderer must survive');
-    for(const token of ['nr-result-pop','nr-pop-scrim','nr-pop-card','nr-pop-body','nrBannerDrop','nrStarPop','nr-auto-command.hidden'])assert.truthy(css.includes(token),token);
-    // The banner hangs above the card edge, so the card itself must never
-    // scroll-clip — the overflow belongs to .nr-pop-body.
-    assert.truthy(ui.includes('nr-pop-body'));
-    const cardRule=css.slice(css.indexOf('.nr-pop-card{'),css.indexOf('}',css.indexOf('.nr-pop-card{')));
-    assert.falsy(/overflow/.test(cardRule),'.nr-pop-card must not clip its own banner');
-    const bodyRule=css.slice(css.indexOf('.nr-pop-body{'),css.indexOf('}',css.indexOf('.nr-pop-body{')));
-    assert.truthy(/overflow-y:auto/.test(bodyRule),'long content scrolls inside the body instead');
-  });
-  test('a sealed castle shows a live countdown everywhere it can be met',()=>{
-    // The child must never meet a castle that silently refuses to be attacked:
-    // wherever a sealed home appears, the same chip says when to come back.
-    for(const token of ['nr-lock-chip','data-nr-lock-until','data-nr-lock-time'])assert.truthy(ui.includes(token),token);
-    assert.truthy(ui.includes('function lockChip('),'one shared countdown-chip renderer');
-    assert.truthy(ui.includes('updateLockTimers()'),'the chips tick on the existing one-second beat');
-    assert.truthy(ui.includes("lockChip(homeLockedUntil"),'my own home shows how long it stays protected');
-    // Friend rows use their own text timer; the removed random-house cards
-    // must not bring their lock chips back.
-    assert.truthy(ui.includes('data-nr-friend-until'),'friend rows carry the child\'s own retry clock');
-    const liveList=ui.slice(ui.indexOf('async function showLiveTargets'),ui.indexOf('function scoutLive'));
-    assert.falsy(liveList.includes("lockChip(retryAt,"),'random-house cards stay removed');
-    assert.truthy(ui.includes("lockChip(target.lockedUntil"),'a stale sealed target is redirected with its clock');
-    assert.falsy(ui.includes('id="nrStartRaid"'),'there is no intermediate charge button');
-    // A server-side seal is reported, not swallowed — but through the shape the
-    // server actually sends. start.js answers 409 {error, retryAt}; the old
-    // check looked for a `locked` key no handler has ever produced, so that
-    // branch was dead code and every refusal (429 out of tickets included) fell
-    // through to one generic toast with the button left disabled.
-    assert.truthy(ui.includes('const retryAt=retryAtOf(data)||data.lockedUntil'),'the 409 retryAt is read back');
-    assert.truthy(ui.includes('if(direct)return showLiveTargets()'),'a refusal returns to the target list');
-    // When the clock runs out the castle is handed back without a reload.
-    assert.truthy(ui.includes("fab.disabled=false;fab.hidden=false"),'expiry re-arms the charge button');
-    for(const rule of ['.nr-lock-chip','.nr-target-card.locked'])assert.truthy(css.includes(rule),rule);
+  test('the raid is gone from the farm module',()=>{
+    for(const token of ['NightRaidGame','NightRaidArt','NightRaidRuins','NightRaidPhaser','Phaser','Armory','CastleSkins','GhostOffering','petbattle',
+      "api('start'","api('finish'","api('friends'","api('targets'","api('reports'","api('shield'",
+      'isRaiding','abandonRaid','confirmLeaveRaid','retryPendingFinish','claimVerified','showLiveTargets','showReports','replayReport','lockChip','combatPower','trainingTarget',
+      'nightRaidPending','nightRaidClaimed','nightRaidTicketCount','nightRaidRewardToday','nightRaidRouteLevel','nightRaidStars','nightRaidHistory'])
+      assert.falsy(ui.includes(token),'raid code survived: '+token);
+    for(const copy of ['Cướp Đêm','CƯỚP ĐÊM','cướp','TIẾN QUÂN','TẤN CÔNG','NHẬT KÝ','VŨ KHÍ','KHIÊN ĐÊM','CASTLE NIGHT RAID'])
+      assert.falsy(ui.includes(copy),'raid copy survived: '+copy);
+    assert.truthy(ui.includes("title:'Nhà của bạn'")&&ui.includes("kicker:'NÔNG TRẠI'"),'the screen is named for what it is');
+    for(const kept of ['function openNightRaid()','function closeNightRaid()','forgetProfile,mountYardScene,unmountYardScene','refreshHome,syncHome','function adoptServerCoins(','appState.nightRaidWalletSynced'])
+      assert.truthy(ui.includes(kept),'kept: '+kept);
+    const globals=(ui.match(/^function (nr[A-Z][A-Za-z]*)\(/gm)||[]).map(x=>x.replace(/^function |\($/g,''));
+    for(const g of globals){
+      const handler=g.replace(/^nr/,'');
+      const called=new RegExp('nr'+handler+'\\(').test(ui.slice(0,ui.indexOf('function openNightRaid')));
+      // Compatibility shims for older cached markup, the verify layer
+      // (nrShowBuilder) and the castle pad (wired with addEventListener).
+      assert.truthy(called||['nrShowBuilder','nrSelectZone','nrBuildCell','nrSetDogLane','nrCleanYard','nrBeginCastleDrag'].includes(g),g+' is exported but nothing in the markup calls it');
+    }
   });
   test('the yard pet atlas survives being handed to CSS as a variable',()=>{
     // A RELATIVE url() inside a CSS custom property is resolved against the
@@ -225,8 +207,13 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-home-soldier::after{'),'a separate contact shadow seats each raised soldier on the grass');
     assert.truthy(css.includes('drop-shadow(0 .48cqw .28cqw'),'the sprite body has a deeper layered shadow for readable 3D separation');
     assert.truthy(ui.includes("%6"),'the six authored gait frames all play');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v3.webp'"),'the homepage parade remains visible offline');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v4.webp'"),'the walk cycle remains visible offline');
+    // The parade is decorative now, but a parade whose atlases were deleted
+    // with the battle draws ten empty shadows. The two sheets it reads must
+    // ship and be precached like every other yard asset.
+    for(const atlas of ['raider-actions-v3.webp','raider-walk-v4.webp']){
+      assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',atlas)),'img/night-raid/animation/'+atlas+' is missing — the parade CSS reads it');
+      assert.truthy(sw.includes("'/img/night-raid/animation/"+atlas+"'"),atlas+' must be precached for the offline parade');
+    }
     assert.truthy(css.includes('.nr-yard-army[data-mode="attention"]'),'attention has a visually distinct pose');
     assert.truthy(css.includes('.nr-yard-army[data-mode="rest"]'),'rest has a visually distinct pose');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'the squad can stand still for reduced-motion users');
@@ -241,49 +228,33 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('@keyframes nr-army-dust-puff'),'dust expands and fades in place');
     assert.truthy(css.includes('.nr-army-print,.nr-army-dust{display:none}'),'reduced motion removes decorative trails');
   });
-  test('the compact home HUD keeps soldier count between defense and coins',()=>{
-    assert.truthy(/nr-builder-power damage[\s\S]*nr-builder-power defense[\s\S]*nr-builder-power soldiers[\s\S]*nr-builder-power coins/.test(ui));
+  test('the compact home HUD shows the soldier count and the coins, and no combat score',()=>{
+    assert.truthy(/nr-builder-power soldiers[\s\S]*nr-builder-power coins/.test(ui));
+    assert.falsy(ui.includes('nr-builder-power damage')||ui.includes('nr-builder-power defense'),'DAM/DEF went with the battle');
     assert.falsy(css.includes('.nr-builder-power.soldiers{display:none}'),'phones must not hide the real soldier count');
   });
-  test('Home shows the evolving dog; the castle yard moves to the Arena header',()=>{
+  test('Home shows the evolving dog; the castle yard is a scene any host can mount',()=>{
     const home=read('js/home.js');
-    const arena=read('js/petbattle.js');
     assert.falsy(home.includes('NightRaid.mountYardScene'),'Home must never replace the close-up dog with a castle yard');
     assert.truthy(home.includes("stage_el.classList.remove('yard-mode')"),'the old full-yard stage mode must be removed');
     assert.truthy(home.includes('<div class="pet-wrapper">')&&home.includes('${petArtHTML}'),
       'Home must render the live SVG dog and its level accessories');
-    assert.truthy(arena.includes('id="pbArenaYard"')&&arena.includes('NightRaid.mountYardScene(host'),
-      'the same living castle yard belongs in the Arena header');
-    assert.truthy(arena.includes('onclick="pbShowDogInfo()"')&&arena.includes('aria-modal="true"'),
-      'Arena info opens the accessible dog power dialog');
-    assert.falsy(arena.includes('class="pb-arena-pet-id"'),'the redundant dog name/level box must not cover the garden');
-    assert.falsy(arena.includes('pbArenaZoom')||arena.includes('_pbBindArenaYardZoom'),'Arena keeps one stable camera without pinch or button zoom');
     assert.truthy(ui.includes('function mountYardScene(host,opts)'),'one walk, mounted where it is asked for');
-    assert.truthy(ui.includes('isometric-home-board-unified-gate-v3.webp'),'Arena uses the rectangular yard, not the old square board');
-    assert.truthy(ui.includes("paintEquippedCastle('nrMiniCastle')"),'Arena paints the equipped castle skin');
-    assert.truthy(ui.includes('style="${mapStyle}"'),'castle uses the saved map anchor in Arena too');
-    assert.truthy(ui.includes('function yardBuildingsHtml()'),'Arena paints the real bought-building layout');
+    assert.truthy(ui.includes('isometric-home-board-unified-gate-v3.webp'),'the mini yard uses the rectangular yard, not the old square board');
+    assert.truthy(ui.includes("paintEquippedCastle('nrMiniCastle')"),'the mini yard paints the castle');
+    assert.truthy(ui.includes('style="${mapStyle}"'),'castle uses the saved map anchor in the mini yard too');
+    assert.truthy(ui.includes('function yardBuildingsHtml()'),'the mini yard paints the real bought-building layout');
     assert.truthy(ui.includes('+yardBuildingsHtml()+yardPetHtml'),'farms, barracks and defenses mount under the living actors');
-    assert.truthy(ui.includes("res.data?.home?.layout"),'homepage refreshes the authoritative server home');
+    assert.truthy(ui.includes("res.data?.home?.layout"),'the yard refreshes the authoritative server home');
     assert.truthy(ui.includes("skipRefresh:true"),'the server refresh remounts once without a request loop');
-    assert.truthy(css.includes('.nr-mini-map .nr-home-layout{pointer-events:none}'),'visible buildings do not steal header gestures');
-    assert.truthy(css.includes('.nr-mini-map .nr-home-layout em{display:none}'),'Arena header hides construction-tier bubbles');
-    assert.truthy(css.includes('.nr-mini-map .nr-yard-pet{width:clamp(34px,10cqw,64px)}'),'Arena pet stays proportional to farms and defenses');
+    assert.truthy(css.includes('.nr-mini-map .nr-home-layout{pointer-events:none}'),'visible buildings do not steal host gestures');
+    assert.truthy(css.includes('.nr-mini-map .nr-home-layout em{display:none}'),'the mini yard hides construction-tier bubbles');
+    assert.truthy(css.includes('.nr-mini-map .nr-yard-pet{width:clamp(34px,10cqw,64px)}'),'the mini-yard pet stays proportional to farms and defenses');
     assert.truthy(ui.includes('function startPetPatrol(map)')&&ui.includes('startPetPatrol(activeMap)'),'the patrol is explicitly attached to the newly rendered visible map');
     assert.truthy(ui.includes("document.querySelector('.screen.active .nr-builder-map')"),'visibility resume may only discover a map inside the active screen');
-    assert.falsy(ui.includes("petPatrolRoot||document.querySelector('.nr-builder-map')"),'a stale hidden Arena dog must never steal the Night Raid timer');
-    assert.truthy(css.includes('.pb-arena-pet-hero'),'Arena gives the moved yard a bounded header card');
-    assert.truthy(css.includes('.pb-arena-info'),'the dog information target is visually explicit');
-    assert.falsy(css.includes('.pb-arena-zoom')||css.includes('--pb-yard-zoom'),'removed Arena zoom leaves no stale controls or transform variables');
-    assert.truthy(css.includes("url('../img/night-raid/castle-grounds-river-mountains-v2.webp')"),'Arena continues into a matching river-and-mountain landscape outside the estate');
-    assert.truthy(css.includes('.pb-arena-yard .nr-mini-map>.nr-board-art{clip-path:polygon('),'Arena masks the cream studio backdrop around the garden art');
-    assert.truthy(css.includes('mix-blend-mode:darken'),'remaining pale source pixels blend into the endless meadow instead of showing as white seams');
-    assert.truthy(arena.includes('class="pb-arena-info"')&&arena.includes('<svg viewBox="0 0 24 24" aria-hidden="true">'),'Arena uses a polished vector information icon instead of a plain text glyph');
+    assert.falsy(ui.includes("petPatrolRoot||document.querySelector('.nr-builder-map')"),'a stale hidden dog must never steal the farm timer');
     assert.truthy(css.includes('aspect-ratio:4/3'),'the yard must preserve the source art ratio');
     assert.truthy(css.includes('.nr-mini-map>.nr-equipped-castle{left:calc(var(--nr-castle-x,50)*1%)'),'castle feet follow the same coordinate system as the paving');
-    // Pinning that whole declaration verbatim meant any change to the castle —
-    // its size, its stacking — failed here for no reason. These are the parts
-    // that carry meaning.
     // Several rules target the keep; the one that positions it is the one that
     // reads the paving coordinates.
     const castleRule=(css.match(/\.nr-builder-map>\.nr-equipped-castle\{[^}]*--nr-castle-x[^}]*\}/)||[''])[0];
@@ -296,13 +267,10 @@ suite('night raid: app integration',()=>{
     const gridZ=zOf((css.match(/\.nr-free-grid\{[^}]*\}/)||[''])[0]);
     assert.truthy(zOf(castleRule)>gridZ,`castle z-index ${zOf(castleRule)} must beat the grid's ${gridZ}`);
     assert.truthy(css.includes('.nr-builder-map.castle-dragging>.nr-equipped-castle{cursor:grabbing;opacity:.84;filter:none!important}'),'dragging must not bring the black shadow back');
-    assert.truthy(ui.includes('yardPetHtml({showName:false})'),'homepage omits the moving dog name from markup');
+    assert.truthy(ui.includes('yardPetHtml({showName:false})'),'the yard omits the moving dog name from markup');
     assert.truthy(ui.includes('preloadPetAtlases(sprite)'),'idle sprites load before the first stop');
     assert.truthy(ui.includes("pet.dataset.atlas=walking||!actionsReady?'walk':'actions'"),'the walk frame remains visible while the action atlas is loading');
     assert.truthy(css.includes('.nr-yard-pet-sprite::before,.nr-yard-pet-sprite::after'),'walk and idle atlases remain mounted together');
-    // The flag has to arrive through a call the app already makes.
-    assert.truthy(read('functions/api/coins.js').includes('bot: !!(me && me.allow_bot)'));
-    assert.truthy(read('js/auth.js').includes('appState.allowBot = !!r.data.flags.bot'));
   });
   test('the six icon controls form one compact vertical rail in portrait and fake landscape',()=>{
     // The rail's overrides live in css/night-raid.css, right before the farm docks.
@@ -338,26 +306,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-builder-edit{top:calc(384px + env(safe-area-inset-top))}'),
       'the tablet rail closes the space left by the removed rotate control');
   });
-  test('Phase 2 includes defense reports and deterministic replay UI',()=>{
-    assert.truthy(ui.includes("api('reports'"));
-    assert.truthy(ui.includes('nrShowReports()'));
-    assert.truthy(ui.includes('nrReplayReport('));
-    assert.truthy(game.includes('playReplay(commands,speed=1)'));
-  });
-  test('replay keeps transparent canvas edges over the same green meadow',()=>{
-    const ui=read('js/night-raid.js'),css=require('./css-all').readAllCss();
-    assert.truthy(ui.includes("nr-auto-replay"),'modern square replay receives its own aspect class');
-    assert.truthy(css.includes(".nr-replay-stage.nr-auto-replay canvas{aspect-ratio:1/1}"));
-    assert.truthy(css.includes("url('../img/night-raid/endless-meadow-tile-v2.jpg')"));
-    assert.falsy(css.includes('.nr-replay-stage canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;background:#071326}'),
-      'the old black replay canvas must not return');
-  });
-  test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
-    for(const token of ['isometric-home-board-frame-v4.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
+  test('builder shows one castle asset, coin upgrades and the soldier count',()=>{
+    for(const token of ['isometric-home-board-frame-v4.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power soldiers','nr-builder-power coins'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
     assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
-    assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
+    assert.truthy(ui.includes("src=\"img/night-raid/home-castle.webp\""),'the one castle asset is the image itself');
+    assert.falsy(ui.includes("canvas.toDataURL")||ui.includes('trimmedCanvasUrl'),'no castle-skin rasteriser survives: the skins went with the Arena');
     assert.falsy(ui.includes('<canvas id="nrEquippedCastle"'),'visible builder canvas causes black GPU bands on Safari');
+    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/home-castle.webp'))&&sw.includes("'/img/night-raid/home-castle.webp'"),'the castle ships and is precached');
   });
   test('builder is a pannable full-screen home with shop drag and free placement',()=>{
     for(const token of ['nr-builder-world','nr-builder-map','nr-builder-shop-fab','nr-free-grid','nr-build-grid-cell'])assert.truthy(ui.includes(token)||css.includes(token),token);
@@ -372,8 +328,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes("plane.className='nr-world-plane'")&&ui.includes('plane.appendChild(map)'),'the meadow and estate must stay inside one real camera plane while zooming and panning');
     assert.truthy(ui.includes('setBuilderZoom(builderZoom)'),'persisted zoom must be re-clamped on open and rotation');
     assert.truthy(ui.includes("pointerdown=\"nrBeginPlacedDrag"));
-    assert.truthy(css.includes('.nr-builder-hud{position:absolute')&&css.includes('top:10px'),'the app owns the safe area once; the battle HUD stays at the top of its screen');
-    assert.truthy(css.includes('.nr-home-stage>.nr-home-fabs')&&css.includes('top:66px;display:flex'),'home actions form a compact top row instead of a middle-screen rail');
+    assert.truthy(css.includes('.nr-builder-hud{position:absolute')&&css.includes('top:10px'),'the app owns the safe area once; the HUD stays at the top of its screen');
   });
 
   test('the equipped castle drags only in edit mode and the real pet patrols it',()=>{
@@ -381,7 +336,6 @@ suite('night raid: app integration',()=>{
     for(const asset of ['pet-walk-small-v1.webp','pet-walk-large-v1.webp'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
     assert.truthy(css.includes('.nr-builder.editing .nr-builder-map>.nr-equipped-castle'),'castle drag must require SỬA');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'pet patrol must respect reduced motion');
-    for(const token of ['devicePixelRatio','ctx.setTransform','imageSmoothingQuality=\'high\''])assert.truthy(ui.includes(token),token);
   });
 
   test('shop can swipe horizontally and confirms coin purchases before placement',()=>{
@@ -443,7 +397,7 @@ suite('night raid: app integration',()=>{
     // There is only one Night Raid home now: the builder. Keeping the legacy
     // function as an alias prevents old callers from reviving the overlapping
     // four-button read-only screen.
-    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// The target list goes straight'));
+    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('function totalPaid('));
     assert.truthy(home.includes('return renderBuilder()'));
     assert.falsy(home.includes('nr-home-stage'));
     assert.falsy(home.includes('nr-home-fabs'));
@@ -451,271 +405,31 @@ suite('night raid: app integration',()=>{
   test('the builder offers a landscape rotate that never breaks panning',()=>{
     // iOS cannot lock orientation from a web app, so NGANG rotates the whole
     // builder 90deg in CSS; pan deltas are remapped so dragging still follows
-    // the finger. Night Raid now keeps the app nav hidden in every orientation.
+    // the finger. The bottom bar is the app's, and the farm leaves it alone.
     assert.truthy(ui.includes('nrRotateBuilder'));
     assert.truthy(ui.includes('builderRotated'));
     assert.truthy(css.includes('.nr-builder.rotated'));
     assert.truthy(css.includes('rotate(90deg) translateY(-100%)'));
     assert.truthy(ui.includes('viewport.scrollLeft=builderGesture.left-dy'),'rotated pan must swap axes');
-    assert.truthy(ui.includes('setNav(true)'),'the nav would cover the Night Raid stage');
-  });
-  test('one TẤN CÔNG on the list goes straight into the fight',()=>{
-    assert.truthy(ui.includes('nr-scout-stage'));
-    assert.truthy(ui.includes('onclick="nrAttackLive(${index})"'));
-    assert.falsy(ui.includes('id="nrStartRaid"'));
-    assert.falsy(ui.includes('nrChargeButton'),'the battle screen must not ask again');
-    assert.truthy(ui.includes("if(view==='battle'&&game&&game.charge)chargeArmy()"),'battle auto-charges');
-    // The fight happens in place on the stage created by the list tap.
-    const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
-    assert.falsy(raidBlock.includes('r.innerHTML'),'startRaid must not rebuild the screen');
-    assert.truthy(raidBlock.includes("getElementById('nrScoutCanvas')"),'the scout canvas anchors the in-place swap');
-    assert.truthy(raidBlock.includes('canvas.replaceWith(phaserHost)'),'only the battle renderer is replaced');
-    assert.truthy(raidBlock.includes('new NightRaidPhaser.AutoBattle'),'TIEN QUAN uses the Phaser renderer');
-    assert.truthy(ui.includes('data-nr-pop-host'),'the result popup needs a fixed host over the pannable world');
-    assert.truthy(game.includes('class AutoBattle'));
-    assert.truthy(game.includes('drawClashSpark'));
-    assert.truthy(game.includes('Choreo.build(this.result,target,this.soldierCount'));
-    assert.truthy(game.includes('target.attackerSoldiers'));
-    assert.falsy(game.includes('for(let i=0;i<18;i++)'));
-    assert.falsy(ui.includes('nr-unit-tray'));
-  });
-  test('battle reuses the rectangular castle estate on the shared meadow',()=>{
-    assert.truthy(game.includes("loadAsset('board','img/night-raid/isometric-home-board-frame-v4.webp')"),'Canvas uses the builder estate frame');
-    assert.truthy(game.includes("ctx.drawImage(this.assets.board,0,S*.125,S,S*.75)"),'Canvas preserves the 4:3 estate ratio');
-    assert.truthy(phaser.includes("board:'img/night-raid/isometric-home-board-frame-v4.webp'"),'Phaser uses the same estate frame');
-    assert.truthy(phaser.includes("setDisplaySize(800,600)"),'Phaser preserves the 4:3 estate ratio');
-    assert.truthy(phaser.includes('transparent:true'),'the Phaser surface reveals the shared meadow');
-    assert.falsy(phaser.includes("backgroundColor:'#dcefc8'"),'a second square background must not return');
-    assert.falsy(phaser.includes('scene.add.rectangle(400,400,800,800,0x172044'),'a full-canvas tint would reveal the square edge');
-    assert.falsy(game.includes("ctx.fillStyle='#dff2c9';ctx.fillRect(0,0,S,S)"),'Canvas fallback must not paint a second board');
-    for(const rule of ['.nr-scout-map{background:transparent}', '.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:transparent'])assert.truthy(css.includes(rule),rule);
-    assert.truthy(css.includes("background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg')"),'the world owns the only ground layer');
-  });
-  test('Phaser units walk and attack with real animation frames, planted footprints and battle audio',()=>{
-    // Production atlases now supply distinct paw/leg, weapon, hit and fallen
-    // poses; the old deformation of one still image must not come back.
-    assert.truthy(phaser.includes("raider-actions-v3.webp"),'ten-row raider action atlas');
-    assert.truthy(phaser.includes("raider-walk-v4.webp"),'ten-row, six-frame raider walk atlas');
-    assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
-    assert.truthy(phaser.includes("actor.sprite.setTexture(p.texture,p.prefix+p.frame)"),'runtime swaps between walk and action frames');
-    assert.truthy(phaser.includes("texture='nr-squad-walk'"),'moving soldiers use the dedicated walk cycle');
-    assert.truthy(phaser.includes('squadWalkAnchors'),'walk frames share a stable torso anchor instead of teleporting sideways');
-    assert.truthy(phaser.includes('squadActionAnchors'),'the march-to-attack texture swap preserves the same anchor');
-    assert.truthy(phaser.includes('actor.height*1.32'),'walk and attack keep one display width');
-    assert.truthy(phaser.includes("pose.state==='engage'"),'attack frames follow combat state');
-    assert.truthy(phaser.includes("pose.state==='fallen'"),'fallen frame follows casualty state');
-    assert.falsy(phaser.includes('setCrop'),'no split-body fake stride');
-    assert.falsy(phaser.includes('x=pose.x+stride'),'no side-to-side wobble slide');
-    assert.truthy(phaser.includes('paintTrail'),'planted footprints pass');
-    assert.truthy(/Math\.floor\(T\/STEP\)\*STEP/.test(phaser),'prints quantised to the step grid, not sliding with the sprite');
-    assert.truthy(phaser.includes("u.kind==='pet'"),'pet leaves paw prints, soldiers boot prints');
-    // Sound is synthesized (no assets), created only after the TIEN QUAN gesture.
-    assert.truthy(phaser.includes('AudioContext'),'synthesized battle sound');
-    for(const cue of ['warCry','launch(kind)','impactShot','demolish','breach','retreat','step()'])assert.truthy(phaser.includes(cue),cue);
-    assert.truthy(phaser.includes('this.reduce?null:new RaidAudio'),'reduced effects stay silent');
-    // Buildings break for real using authored damaged/ruined silhouettes.
-    assert.truthy(phaser.includes('tw.fallAt'),'towers topple on the choreo schedule');
-    assert.truthy(phaser.includes('defense-damage-v2.webp'));
-    assert.truthy(phaser.includes('economy-damage-v2.webp'));
-    assert.truthy(phaser.includes('d.sprite.setFrame(d.prefix+stage)'));
-    assert.truthy(phaser.includes('castle-damage-a-v2.webp'));
-    assert.truthy(phaser.includes('castle-damage-b-v2.webp'));
-    assert.truthy(phaser.includes('this.castle.setFrame(this.castleFrames.prefix+stage)'));
-    assert.truthy(phaser.includes("event.type==='demolish'"),'collapse bursts rubble and smoke');
-    // One shared depth space so units walk behind far buildings.
-    assert.truthy(phaser.includes('setDepth(tower.y)')||phaser.includes('setDepth(tw.y)'),'towers depth-sort by ground y');
-    // Choreo places towers from the defender's real 12x12 grid, matching the builder.
-    const choreo=read('js/night-raid-choreo.js');
-    assert.truthy(choreo.includes('cellAnchor'),'towers project from home grid cells');
-    assert.truthy(choreo.includes('left:144, top:200, size:512, cells:12'),'projection matches .nr-free-grid (18%/25%/64% of 800)');
-  });
-  test('generated battle-only atlases stay lazy while the home parade remains offline',()=>{
-    const files=['pet-actions-small-v2.webp','pet-actions-large-v2.webp','defense-damage-v2.webp','economy-damage-v2.webp','castle-damage-a-v2.webp','castle-damage-b-v2.webp'];
-    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-actions-v3.webp')));
-    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v4.webp')),'the dedicated ten-row walk atlas ships with the app');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v3.webp'"),'the atlas now used on Home is part of the offline shell');
-    for(const file of files){
-      assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',file)),file);
-      assert.falsy(sw.includes("'/img/night-raid/animation/"+file+"'"),file+' must not bloat app install; runtime fetch cache owns it');
-    }
-  });
-  test('Phaser is lazy, renderer-only and falls back without changing battle rules',()=>{
-    assert.falsy(html.includes('src="js/phaser.min.js"'),'the 1 MB engine must not block initial app load');
-    assert.truthy(phaser.includes("script.src='js/phaser.min.js'"));
-    assert.truthy(phaser.includes('NightRaidRules.resolveAutoBattle'));
-    assert.truthy(phaser.includes('NightRaidChoreo.build'));
-    assert.truthy(ui.includes("console.warn('Night Raid Phaser fallback'"));
-    assert.truthy(ui.includes('new NightRaidGame.AutoBattle(canvas,target,options)'),'Canvas fallback must remain');
-    assert.truthy(css.includes('.nr-phaser-battle'));
-  });
-  test('enemy DEF is absent from the list and appears only after start confirms',()=>{
-    const scoutBlock=ui.slice(ui.indexOf('function scout('),ui.indexOf('async function startRaid'));
-    assert.falsy(scoutBlock.includes('NHÀ ĐỊCH'),'scout screen must not name the enemy stat');
-    assert.falsy(scoutBlock.includes('target.defense'),'scout screen must not read the enemy DEF');
-    assert.falsy(scoutBlock.includes('target.defense'));
-    assert.truthy(ui.includes("Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}"),'friend list shows difficulty, not DEF');
-    const targetsApi=read('functions/api/night-raid/targets.js');
-    assert.falsy(/defense:full\.defense/.test(targetsApi),'targets payload must not carry the exact DEF');
-    const battleBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
-    assert.truthy(battleBlock.includes("def.hidden=false"),'attacking is how the child earns the number');
-  });
-  test('armored dog is a small canvas squad leader and marches with the formation',()=>{
-    assert.truthy(game.includes("'img/night-raid/pet-soldiers-'"));
-    for(const file of ['pet-soldiers-small-v2.webp','pet-soldiers-large-v2.webp'])assert.truthy(sw.includes("'/img/night-raid/"+file+"'"));
-    for(const token of ['raidPetDescriptor','drawPetLeader','actors.sort(','pet:raidPetDescriptor()'])assert.truthy(ui.includes(token)||game.includes(token),token);
-    assert.falsy(ui.includes('raidPetMarkup'));
-    assert.falsy(ui.includes("nr-raid-pet battle"));
-    for(const token of ['drawStepContact','drawStrideSprite','swap=moving&&phase<0','a.step,a.moving,motion',"this.reduce?.38:1","this.reduce?.009:.022"])assert.truthy(game.includes(token),token);
-    for(const token of ["loadAsset('squadWalk'","img=moving&&walk?walk:actions","(state==='engage'||state==='loot')?4+"])assert.truthy(game.includes(token),token);
-    for(const token of ['SQUAD_WALK_ANCHORS','SQUAD_ACTION_ANCHORS',"w=h*1.32","-w*(.5+anchor)"])assert.truthy(game.includes(token),token);
-    assert.truthy(css.includes('filter:none!important'),'iOS castle canvas must not use a GPU drop-shadow rectangle');
-  });
-  test('replay always renders the attacking dog, including old stored raids',()=>{
-    assert.truthy(ui.includes('attackerPet:raidPetDescriptor()'),'new raids send their dog appearance for the replay snapshot');
-    assert.truthy(ui.includes('report.snapshot.attackerPet||{level:1'),'old reports receive a visible Chihuahua fallback');
-    assert.truthy(ui.includes('new NightRaidGame.AutoBattle(canvas,report.snapshot,{pet,'),'the replay renderer receives that dog descriptor');
-    const start=read('functions/api/night-raid/start.js');
-    assert.truthy(start.includes('target.attackerPet=attackerPet'),'the immutable raid snapshot keeps the attacker appearance');
-  });
-  test('battle defenders use the same polished 3D assets as the home builder',()=>{
-    const art=read('js/night-raid-art.js');
-    for(const id of ['pebble-pup','wood-fence','stone-wall','spike-trap','water-cannon'])assert.truthy(art.includes("'"+id+"'"),id);
-    assert.truthy(art.includes('preloadDefenses'));
-    assert.truthy(art.includes("img/night-raid/'+id+'.webp"));
-    assert.truthy(game.includes('NightRaidArt.preloadDefenses'));
-  });
-  test('a shielded castle hides DEF everywhere the number would show',()=>{
-    const ui=read('js/night-raid.js');
-    assert.truthy(ui.includes("target.shielded?'🛡️ KHIÊN':target.defense"));
-    assert.equal((ui.match(/\(state\.shielded\|\|target\.shielded\)\?'🛡️ KHIÊN'/g)||[]).length,2);
-    assert.truthy(ui.includes("report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN'"));
-    assert.truthy(ui.includes("report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')"));
-    assert.truthy(ui.includes("lockChip(homeShieldUntil,'KHIÊN ĐÊM ĐANG BẬT"));
-    assert.truthy(ui.includes("homeShieldUntil>Date.now()?'':lockChip(homeLockedUntil"));
-    for(const f of ['js/night-raid-game.js','js/night-raid-phaser.js'])assert.truthy(read(f).includes("target.shielded?'Khiên Đêm':this.result.defense"),f);
+    assert.falsy(ui.includes('setNav('),'a tab must not hide the bottom bar in any orientation');
   });
 });
 
-suite('night raid: mobile UX and accessibility',()=>{
+suite('farm: mobile UX and accessibility',()=>{
   test('phone, iPad, landscape, safe area and dynamic viewport contracts exist',()=>{
-    for(const token of ['100dvh','safe-area-inset-top','max-aspect-ratio:1/1','min-width:768px','overscroll-behavior'])assert.truthy(css.includes(token),token);
+    for(const token of ['100dvh','safe-area-inset-top','min-width:768px','overscroll-behavior'])assert.truthy(css.includes(token),token);
   });
   test('controls are touch sized and keyboard focus is visible',()=>{
     assert.truthy(css.includes('min-height:48px')||css.includes('min-height:52px'));
     assert.truthy(css.includes(':focus-visible'));
-    assert.truthy(game.includes("event.key>='1'&&event.key<='5'"));
-    assert.truthy(game.includes("event.code==='Space'"));
   });
   test('reduced motion and hidden tabs reduce work',()=>{
     assert.truthy(css.includes('prefers-reduced-motion:reduce'));
-    assert.truthy(game.includes('!document.hidden'));
-    assert.truthy(game.includes('now-this.lastNotify>=200'));
+    assert.truthy(ui.includes('if(document.hidden'),'timers stop while the tab is hidden');
   });
-  test('canvas provides instructions and live status stays in DOM',()=>{
-    assert.truthy(game.includes("setAttribute('aria-label'"));
+  test('live status stays in DOM',()=>{
     assert.truthy(ui.includes('aria-live="polite"'));
     assert.truthy(ui.includes('role="status"'));
-  });
-});
-
-suite('night raid: only one combat loop, and only against real houses',()=>{
-  test('the UI reaches startRaid from the live list alone',()=>{
-    assert.truthy(ui.includes('startRaid(target,true,true)'),'the list tap must start an ONLINE raid directly');
-    assert.truthy(ui.includes('scout(t)'),'attackLive hands the chosen house to the battle stage');
-    assert.falsy(ui.includes('makeBotTarget'));
-    assert.falsy(ui.includes('nrScoutBot'));
-    assert.falsy(ui.includes('20 Nhà Huấn Luyện'));
-    assert.falsy(ui.includes('Nhà tiếp theo'));
-    assert.falsy(ui.includes('startSiege'));
-    assert.falsy(ui.includes('wavePlan'));
-  });
-  test('a raid fields exactly the soldiers the child produced — none are lent',()=>{
-    const scoutBlock=ui.slice(ui.indexOf('function scout('),ui.indexOf('function scoutFitZoom'));
-    assert.falsy(/attackerSoldiers\s*=\s*\d/.test(scoutBlock),'no fixed soldier count');
-    assert.equal((ui.match(/4\+Math\.max\(0,mine\.soldiers\)/g)||[]).length,0,'no soldier floor may come back');
-    assert.falsy(/\d\s*\+\s*Math\.max\(0,\s*(mine|army)\.soldiers\)/.test(ui),'no lending in any shape');
-    assert.truthy(ui.includes('target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)'),
-      'scout must fall back to the produced count when the target carries none');
-    assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui),'a raid must not consume soldiers');
-  });
-  test('the castle has structural stages, persistent crater and projectile trails',()=>{
-    const art=read('js/night-raid-art.js');
-    assert.truthy(art.includes('const damage=ratio<=0?4'));
-    assert.truthy(art.includes('Deep crater'));
-    assert.truthy(art.includes('drawProjectile'));
-  });
-  test('all castle renderers stay free of the artificial black ground shadow',()=>{
-    const art=read('js/night-raid-art.js');
-    const skins=read('js/castle-skins.js');
-    const arena=read('js/petbattlegame.js');
-    assert.falsy(art.includes("ctx.fillStyle='rgba(0,0,0,.32)';ctx.beginPath();ctx.ellipse(0,4,98,15"));
-    assert.falsy(skins.includes("ctx.fillStyle='rgba(15,23,42,.18)'; ctx.beginPath(); ctx.ellipse(w/2,h-12"));
-    assert.falsy(arena.includes("ctx.fillStyle = 'rgba(15,23,42,.34)'"));
-    assert.truthy(css.includes('.nr-equipped-castle{filter:none!important;box-shadow:none!important}'));
-  });
-});
-
-suite('night raid: the fight fills the viewport, the board keeps its shape, the feet do not slide',()=>{
-  const phaserSrc=read('js/night-raid-phaser.js'),choreo=read('js/night-raid-choreo.js');
-  test('the direct attack fits the whole estate and the Phaser camera frames the fight inside it',()=>{
-    // The board opens as a fitted overview; pinch remains available for a
-    // closer look, but a phone must not begin with half the estate off-screen.
-    assert.truthy(ui.includes('function scoutFitZoom(base)'));
-    assert.truthy(ui.includes('Math.min(w*.92,h*.82)'),'the square board fits inside portrait and landscape viewports');
-    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'attack opens at the overview zoom');
-    assert.truthy(ui.includes('function frameBattleWorld()'));
-    const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
-    assert.truthy(raidBlock.includes('frameBattleWorld();'),'the tap re-frames the board before Phaser loads');
-    assert.truthy(ui.includes("box=scoutMap?{left:20,top:23,width:60,height:60}:focusedFarm?"),'scout centres on the field before applying any home/farm focus');
-    // The real camera lives in Phaser: a pure frame function plus smoothing.
-    assert.truthy(phaserSrc.includes('function cameraFrame(ch,T)'));
-    assert.truthy(phaserSrc.includes('cam.setZoom(this.cam.zoom);cam.centerOn(this.cam.x,this.cam.y)'));
-    assert.truthy(phaserSrc.includes('scene.cameras.main.setBounds(0,0,SIZE,SIZE)'),'the view never leaves the board');
-    assert.truthy(phaserSrc.includes('1-Math.exp(-dtMs/CAMERA_TAU_MS)'),'frame-rate independent smoothing');
-    assert.falsy(phaserSrc.includes('zoomTo(1.065'),'the token zoom nudge is gone; the camera does the push-in');
-    const cameraZoom=phaserSrc.match(/FRAME_ZOOM_MIN=([.\d]+),FRAME_ZOOM_MAX=([.\d]+),BREACH_ZOOM=([.\d]+)/);
-    assert.truthy(cameraZoom,'camera zoom bounds must stay explicit');
-    assert.truthy(+cameraZoom[2]<=1.1,'normal combat must preserve a near-full-field overview');
-    assert.truthy(+cameraZoom[3]<=1.2,'the breach push-in must stay restrained');
-  });
-  test('the scout/battle board stays square across the tap, and the raid keeps its own zoom bucket',()=>{
-    assert.truthy(ui.includes("aspect=map.classList.contains('nr-scout-map')?1:.75"),'setBuilderZoom must not force the 4:3 estate height on the 800x800 board');
-    assert.truthy(ui.includes('map.style.height=Math.round(base*aspect*newZoom)'));
-    assert.truthy(ui.includes('builderZoomByView[viewKey(view)]=builderZoom'));
-    assert.truthy(css.includes('.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%'));
-  });
-  test('legs, dust and boot sounds follow ground covered; swings follow the blow schedule; death is a tween',()=>{
-    assert.truthy(choreo.includes('function odometer(unit, t)'));
-    assert.truthy(choreo.includes("ease = 'ramp'"),'every march segment ramps');
-    assert.truthy(phaserSrc.includes('C.odometer(u,T)/(actor.pet?STRIDE*1.15:STRIDE)'),'walk phase from distance, not wall time');
-    assert.truthy(phaserSrc.includes('frame=Math.floor(cycle*squadWalkCols)%squadWalkCols'));
-    assert.falsy(/Math\.floor\(\(T\+actor\.index\*91\)\/\(rushing\?82:112\)\)/.test(phaserSrc),'the wall-clock leg cycle must not return');
-    assert.truthy(phaserSrc.includes('const step=Math.floor(p.cycle*2);if(step!==actor.dustTick)'),'dust on foot-down only');
-    assert.truthy(phaserSrc.includes('if(since<120){frame=5;strike=1-since/120;}')&&phaserSrc.includes('else if(next<200){frame=4;'),'wind-up before the hit, contact after it');
-    assert.falsy(phaserSrc.includes('/190)%2'),'no 190 ms frame flip unrelated to the blows');
-    assert.truthy(phaserSrc.includes('const fp=clamp((T-u.fallAt)/300,0,1);')&&phaserSrc.includes('angle=(actor.index%2?1:-1)*16*fp'),'300 ms hop/tip/squash on death');
-    assert.falsy(phaserSrc.includes("if(pose.state==='fallen')y+=5;"),'no y+=5 teleport onto the fallen frame');
-    assert.truthy(phaserSrc.includes('function separate(points'),'a separation pass keeps the gate crowd apart');
-    assert.truthy(phaserSrc.includes('this.castleBack')&&phaserSrc.includes('castleStageAt(T)')&&phaserSrc.includes('castlePlace(stage)'),'the ruin crossfades and is placed by per-frame anchors');
-    assert.truthy(phaserSrc.includes("event.type==='gatehit'"),'blows on the door spark');
-  });
-  test('polish: status pill speaks Vietnamese, the popup coin is a stroke icon on one line, a lost /finish is retried',()=>{
-    assert.truthy(ui.includes("status.textContent='Đang dàn quân…'"));
-    assert.falsy(ui.includes('Phaser…'),'the engine name must not leak into the status pill');
-    assert.truthy(css.includes('.nr-result-pop .nr-reward svg,.nr-result-pop .nr-result-crest svg{fill:none;stroke:currentColor'));
-    assert.truthy(css.includes('.nr-result-pop .nr-reward svg{width:22px;height:22px;flex:0 0 auto}'));
-    assert.truthy(css.includes('.nr-result-pop .nr-reward{font-size:16px;padding:8px 14px;white-space:nowrap}'));
-    // /start wrote the row (the visit is spent); a failed /finish used to lose
-    // the result for good. The raidId is kept and asked about on the next open.
-    assert.truthy(ui.includes('rememberPendingRaid(target.raidId)'));
-    assert.truthy(ui.includes('async function retryPendingFinish()'));
-    // The sweep now waits for refreshHome's GET: it ends in claimVerified() ->
-    // syncHome(), a PUT that would otherwise push the device's stale wallet
-    // over coins the server credited the child while they were offline.
-    assert.truthy(ui.includes('.then(()=>retryPendingFinish())'),'open() retries, after the read');
-    const fin=ui.slice(ui.indexOf('async function finishOnline'),ui.indexOf('async function finishOnline')+900);
-    assert.truthy(fin.includes('clearPendingRaid(target.raidId);claimVerified(target.raidId,verified)'),'a verified finish clears the pending raid and claims exactly once');
-    assert.truthy(read('js/app.js').includes('appState.nightRaidPending'),'the field is part of the saved state');
   });
 });
 

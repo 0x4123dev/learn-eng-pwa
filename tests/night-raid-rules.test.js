@@ -1,17 +1,22 @@
 const { suite, test, assert } = require('./harness');
 const R = require('../js/night-raid-rules.js');
 
-suite('night raid: one deterministic combat mode', () => {
-  test('ships five core raiders and three night scenes', () => {
-    assert.equal(R.RAIDERS.length, 5);
-    assert.equal(R.SCENES.length, 3);
-    assert.equal(R.RULES_VERSION, 2);
+suite('home & farm rules: the layout grammar', () => {
+  test('the battle simulation is gone from the shared rulebook', () => {
+    // functions/api/_night-raid.js imports this file, so what is not here
+    // cannot be scored anywhere. The raid was cut in September 2026.
+    for (const gone of ['RAIDERS','SCENES','RULES_VERSION','combatPower','petPower','swordBonus','SWORD_DAMAGE','trainingTarget','resolveAutoBattle','createState','deploy','tick','simulate','normalizeCommands','trainingStars','makeRng','raiderById'])
+      assert.equal(R[gone], undefined, gone + ' must not survive the cut');
+    for (const kept of ['normalizeLayout','homeLevel','itemById','defenseById','footprintFor','rectsOverlap','armySlots','nearestFarmPlotDock'])
+      assert.equal(typeof R[kept], 'function', kept + ' is what the builder and the server still share');
+    assert.truthy(Object.isFrozen(R), 'a plain frozen UMD object — no import/export syntax, the server require()s it');
   });
 
-  test('every shop item is bought with coins and contributes power or production', () => {
+  test('every shop item is bought with coins and either decorates the yard or produces', () => {
     for (const defense of R.DEFENSES) {
       assert.truthy(defense.price >= 2000, defense.id + ' must cost at least 2000 coins — prices were doubled 2026-09-03 so a house is a real saving goal, not an afternoon');
       assert.truthy(defense.attack > 0 || defense.defense > 0 || defense.producer);
+      assert.truthy(defense.name && defense.name.vi, defense.id + ' needs a Vietnamese name for the shop card');
     }
   });
   test('castle defense prices rise above the 2000-xu Pebble Pup in requested 1000-xu steps', () => {
@@ -35,10 +40,11 @@ suite('night raid: one deterministic combat mode', () => {
     assert.equal(R.ARMY_DISPLAY_CAP,10);assert.equal(R.MAX_SOLDIERS,undefined);
   });
 
-  test('pet power is visible and every collected soldier adds exactly 20 DAM',()=>{
-    const pet=R.petPower(10),base=R.combatPower({cells:[],soldiers:0},10),army=R.combatPower({cells:[],soldiers:4},10);
-    assert.deepEqual(pet,{level:10,damage:40,defense:60});
-    assert.equal(army.damage-base.damage,80);assert.equal(army.soldierDamage,80);assert.equal(army.defense,base.defense);
+  test('soldiers are a stock the layout carries, bounded only by the sanity cap',()=>{
+    assert.equal(R.normalizeLayout({cells:[],soldiers:4}).soldiers,4);
+    assert.equal(R.normalizeLayout({cells:[],soldiers:-3}).soldiers,0);
+    assert.equal(R.normalizeLayout({cells:[],soldiers:'abc'}).soldiers,0);
+    assert.equal(R.normalizeLayout({cells:[],soldiers:1e12}).soldiers,R.SOLDIER_SANITY_CAP);
   });
 
   test('production metadata survives moves and owned limits are enforced',()=>{
@@ -75,30 +81,22 @@ suite('night raid: one deterministic combat mode', () => {
     assert.deepEqual(under.map(c=>c.type+'@'+c.gx+','+c.gy),[],'these are standing inside the castle');
   });
 
-  test('one-button battle follows the visible DAM greater than DEF rule', () => {
-    const target=R.trainingTarget(5);
-    assert.truthy(R.resolveAutoBattle(target,target.defense+1).won);
-    assert.falsy(R.resolveAutoBattle(target,target.defense).won);
-    assert.falsy(R.resolveAutoBattle(target,target.defense-1).won);
+  test('upgrading a building raises the home level; a bought tier is never lost', () => {
+    const base=R.homeLevel({dogLane:2,cells:[]},1);
+    const wall=R.homeLevel({dogLane:2,cells:[{type:'pebble-pup',gx:0,gy:0,tier:1}]},1);
+    const wall2=R.homeLevel({dogLane:2,cells:[{type:'pebble-pup',gx:0,gy:0,tier:2}]},1);
+    const wall3=R.homeLevel({dogLane:2,cells:[{type:'pebble-pup',gx:0,gy:0,tier:3}]},1);
+    assert.truthy(wall>base&&wall2>wall&&wall3>wall2,'each tier is worth more (below the level-50 cap)');
+    assert.equal(R.normalizeLayout({cells:[{type:'stone-wall',gx:0,gy:0,tier:3}]}).cells[0].tier,3);
+    assert.equal(R.normalizeLayout({cells:[{type:'stone-wall',gx:0,gy:0,tier:9}]}).cells[0].tier,3,'tiers stop at 3');
   });
 
-  test('upgrading a cannon raises DAM while upgrading a wall raises DEF', () => {
-    const base=R.combatPower({dogLane:2,cells:[]},1);
-    const cannon=R.combatPower({dogLane:2,cells:[{type:'water-cannon',lane:0,col:1,tier:2}]},1);
-    const wall=R.combatPower({dogLane:2,cells:[{type:'stone-wall',lane:0,col:1,tier:2}]},1);
-    assert.truthy(cannon.damage>base.damage);
-    assert.truthy(wall.defense>base.defense);
-  });
-
-  test('all twenty training homes use legal five-lane layouts', () => {
-    for (let level = 1; level <= 20; level++) {
-      const target = R.trainingTarget(level);
-      assert.equal(target.id, 'training-' + level);
-      for (const cell of target.layout.cells) {
-        assert.truthy(cell.lane >= 0 && cell.lane < R.LANES);
-        assert.truthy(cell.col >= 1 && cell.col <= R.COLS);
-        assert.truthy(R.defenseById(cell.type));
-      }
+  test('a legacy lane/col cell without gx/gy still lands on the free grid', () => {
+    const layout = R.normalizeLayout({ cells:[{type:'wood-fence',lane:4,col:8},{type:'pebble-pup',lane:0,col:1}] });
+    assert.equal(layout.cells.length, 2);
+    for (const cell of layout.cells) {
+      assert.truthy(cell.gx >= 0 && cell.gx < R.BUILD_GRID && cell.gy >= 0 && cell.gy < R.BUILD_GRID, 'mapped onto the 12x12 grid');
+      assert.truthy(cell.lane >= 0 && cell.lane < R.LANES && cell.col >= 1 && cell.col <= R.COLS, 'and keeps a legal lane/col pair for older readers');
     }
   });
 
@@ -141,46 +139,13 @@ suite('night raid: one deterministic combat mode', () => {
     for(const box of boxes)assert.falsy(R.rectsOverlap(box,{gx:5,gy:1,size:2}),'large buildings must not overlap the castle');
   });
 
-  test('deployment spends budget and rejects overspend', () => {
-    const state = R.createState(R.trainingTarget(1));
-    assert.truthy(R.deploy(state, 'bomb-rat', 2).ok);
-    assert.equal(state.budget, state.startBudget - 10);
-    state.budget = 0;
-    assert.equal(R.deploy(state, 'mouse', 0).reason, 'budget');
-  });
-
-  test('the same snapshot and commands replay identically', () => {
-    const target = R.trainingTarget(3);
-    const commands = [];
-    for (let i = 0; i < 8; i++) commands.push({at:i * 900,unitId:i % 2 ? 'goblin' : 'bomb-rat',lane:i % 5});
-    assert.deepEqual(R.simulate(target, commands), R.simulate(target, commands));
-  });
-
-  test('command normalization bounds time, lane, count and ids', () => {
-    const list = R.normalizeCommands([
-      {at:-10,unitId:'mouse',lane:-8},
-      {at:999999,unitId:'bat',lane:99},
-      {at:20,unitId:'dragon',lane:2},
-    ]);
-    assert.equal(list.length, 2);
-    assert.equal(list[0].at, 0);
-    assert.equal(list[0].lane, 0);
-    assert.equal(list[1].at, R.RAID_MS);
-    assert.equal(list[1].lane, 4);
-  });
-
-  test('castle skins cannot change home power', () => {
-    const target = R.trainingTarget(8);
-    const a = R.homeLevel(target.layout, target.dogLevel);
-    const b = R.homeLevel({...target.layout, castleSkin:'royal'}, target.dogLevel);
+  test('castle skins cannot change the home level', () => {
+    const layout = { cells:[{type:'stone-wall',gx:0,gy:0,tier:2},{type:'water-cannon',gx:2,gy:0,tier:1}] };
+    const a = R.homeLevel(layout, 12);
+    const b = R.homeLevel({...layout, castleSkin:'royal'}, 12);
     assert.equal(a, b);
   });
 
-  test('stars only reward a successful raid', () => {
-    assert.equal(R.trainingStars({status:'lost'}), 0);
-    assert.equal(R.trainingStars({status:'won',budget:25,timeMs:80000}), 3);
-    assert.equal(R.trainingStars({status:'won',budget:2,timeMs:100000}), 1);
-  });
 });
 
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

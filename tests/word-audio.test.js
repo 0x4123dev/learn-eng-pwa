@@ -364,18 +364,18 @@ suite('word audio: speakWord', () => {
 
 suite('word audio: unit practice uses the shared voice', () => {
     test('_unitSpeak delegates to speakWord when the app provides it', () => {
-        if (!global.UNIT_WORDS) {
-            global.UNIT_WORDS = require(path.join(root, 'js', 'units-data.js')).UNIT_WORDS;
+        if (!global.UNIT_WORDS_PR1) {
+            global.UNIT_WORDS_PR1 = require(path.join(root, 'js', 'word-data.js')).UNIT_WORDS_PR1;
         }
         const units = require(path.join(root, 'js', 'units.js'));
         const spoken = [];
         global.speakWord = (w) => spoken.push(w);
         try {
-            units._unitSpeak('doctor');
+            units._unitSpeak('advocate');
         } finally {
             delete global.speakWord;
         }
-        assert.deepEqual(spoken, ['doctor']);
+        assert.deepEqual(spoken, ['advocate']);
     });
 });
 
@@ -462,20 +462,6 @@ suite('word audio: screens prefetch what they show', () => {
             'renderUnitQuestion must warm the current word');
     });
 
-    test('topic vocab card grid preloads its words', () => {
-        const n = (read('js/topic-vocab.js').match(/preloadLessonAudio\(/g) || []).length;
-        assert.truthy(n >= 2, `expected the card grid AND practice to preload (found ${n} call sites)`);
-    });
-
-    test('topic detail + mistakes word lists preload their words', () => {
-        const n = (read('js/topics.js').match(/preloadLessonAudio\(/g) || []).length;
-        assert.truthy(n >= 4, `expected detail + mistakes lists to preload too (found ${n} call sites)`);
-    });
-
-    test('word-of-the-day prefetches before its Listen button is shown', () => {
-        assert.truthy(/prefetchAudio\(/.test(read('js/home.js')),
-            'the WOTD story panel must warm its word');
-    });
 });
 
 suite('word audio: deploy ships the recordings', () => {
@@ -659,11 +645,11 @@ suite('word audio: generation script', () => {
     test('collects every speakable word from the data files, deduped', () => {
         const gen = requireGen();
         const words = gen.collectWords();
-        // 1,957 vocabulary entries hold ~1,620 unique words (repeats across
-        // lessons), plus units + topic cards minus cross-file overlap ≈ 1,780.
-        assert.truthy(words.length >= 1700, `only ${words.length} words collected`);
-        assert.contains(words, 'apartment');   // js/vocabulary.js
-        assert.contains(words, 'doctor');      // js/units-data.js
+        // The three Books (js/word-data.js) hold ~520 unique `en` entries.
+        assert.deepEqual(gen.DATA_FILES, ['js/word-data.js'], 'the Books are the only flashcard bank');
+        assert.truthy(words.length >= 500, `only ${words.length} words collected`);
+        assert.contains(words, 'advocate');    // js/word-data.js, Book 1 Unit 1
+        assert.contains(words, 'public relations');
         assert.equal(new Set(words).size, words.length, 'duplicates survived dedup');
         assert.falsy(words.some(w => gen.wordAudioSlug(w) === ''), 'a word produced an empty slug');
     });
@@ -679,22 +665,23 @@ suite('word audio: generation script', () => {
         assert.truthy(all.length > base.length, 'dictionary added nothing');
         assert.contains(all, 'abilities');   // inflection: dictionary-only
         assert.equal(new Set(all).size, all.length, 'duplicates survived dedup');
-        assert.equal(all[0], 'doctor', 'unit-practice words must still lead');
+        assert.equal(all[0], 'advocate', 'unit-practice words must still lead');
         assert.deepEqual(all.slice(0, base.length), base, 'flashcard words keep their order');
     });
 
-    test('includeAnswers covers quiz answers, splitting pair answers on "/"', () => {
-        // Word form, Phrases, Collocation and Verbs speak the correct answer
-        // aloud after every question, so every answer needs a recording —
-        // including phrasal answers ("break up") and the two halves of a
-        // collocation pair ("conclusive/ resign"), which are two separate
-        // words to pronounce, not one.
+    test('includeAnswers adds nothing: the Books speak their `en`, which DATA_FILES already covers', () => {
+        // The tabs that spoke a separate correct answer (Word form, Phrases,
+        // Collocation, Verbs) are gone; the Book practice says the word
+        // itself. answerParts() still splits a "a/ b" pair, for when a bank
+        // with pair answers comes back.
         const gen = requireGen();
+        assert.deepEqual(gen.ANSWER_BANKS, []);
+        assert.deepEqual(gen.collectAnswerWords(), []);
+        const base = gen.collectWords({ includeDictionary: true });
         const all = gen.collectWords({ includeDictionary: true, includeAnswers: true });
-        assert.contains(all, 'conclusive');
-        assert.contains(all, 'resign');
+        assert.deepEqual(all, base, 'no answer bank, so nothing is added');
+        assert.deepEqual(gen.answerParts('conclusive/ resign'), ['conclusive', 'resign']);
         assert.falsy(all.some(w => w.includes('/')), 'a pair answer survived unsplit');
-        assert.contains(all, 'break up');       // phrasal verb answer
         assert.equal(new Set(all).size, all.length, 'duplicates survived dedup');
     });
 
@@ -708,11 +695,13 @@ suite('word audio: generation script', () => {
 
     test('includeTappable covers the words a student can tap in a question', () => {
         const gen = requireGen();
+        assert.deepEqual(gen.TAPPABLE_BANKS.map(b => b.global), ['UNIT_WORDS_PR1', 'UNIT_WORDS_PR2', 'UNIT_WORDS_PR3']);
+        for (const b of gen.TAPPABLE_BANKS) assert.deepEqual(b.fields, ['en', 'ex'], 'the answer card wraps the word and its example');
         const words = gen.collectTappableWords();
-        assert.truthy(words.length >= 8000, `only ${words.length} tappable words found`);
-        assert.contains(words, 'underlined');   // appears in question stems
-        assert.contains(words, "don't");        // contraction, tapped as one token
-        // Vietnamese lives in the explanations, which are never made tappable —
+        assert.truthy(words.length >= 1800, `only ${words.length} tappable words found`);
+        assert.contains(words, 'advocate');     // a Book word
+        assert.contains(words, 'publicist');    // from an example sentence
+        // Vietnamese lives in `vi` / `exVi`, which are never made tappable —
         // so it must not turn up here either (see the guard in answer-gate tests).
         for (const vn of ['danh', 'trong', 'sai', 'gian']) {
             assert.notContains(words, vn, `"${vn}" is Vietnamese from an explanation`);
@@ -741,10 +730,10 @@ suite('word audio: generation script', () => {
 
     test('collects in priority order: unit-practice words come first', () => {
         // Unit practice speaks on every answer, so under a character budget
-        // (free-tier quota) those words must win. units-data.js starts with
-        // "doctor" (unit 1) — it must lead the collection.
+        // (free-tier quota) those words must win. word-data.js starts with
+        // "advocate" (Book 1, unit 1) — it must lead the collection.
         const gen = requireGen();
-        assert.equal(gen.collectWords()[0], 'doctor');
+        assert.equal(gen.collectWords()[0], 'advocate');
     });
 
     test('cutToBudget keeps the priority prefix within the character budget', () => {

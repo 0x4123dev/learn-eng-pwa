@@ -97,17 +97,15 @@ function masteryEnv() {
     const ctx = {
         console, Math, Date, String, Array, Object, JSON, Number, RegExp,
         module: { exports: {} },
-        // The mastery rules are set-agnostic; these tests exercise them on the
-        // original 'pre' units, whose keys are bare numbers.
-        appState: { unitsRetry: [], unitWordLevels: {}, unitsHistory: [], coins: 0, unitsSet: 'pre' },
+        // The mastery rules are set-agnostic; these tests exercise them on
+        // Book 1 (js/word-data.js), whose keys are 'pr1-<n>'.
+        appState: { wordRetry: [], unitWordLevels: {}, unitsHistory: [], coins: 0, wordSet: 'pr1' },
         currentUser: 'tester', saveUserData() {},
         document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [] },
         showToast: (m) => { ctx.lastToast = m; }, renderTopicsHome() {}, createConfetti() {},
     };
     vm.createContext(ctx);
-    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-data.js'), 'utf8'), ctx);
-    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-hk1-data.js'), 'utf8'), ctx);
-    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-hk2-data.js'), 'utf8'), ctx);
+    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'word-data.js'), 'utf8'), ctx);
     vm.runInContext(unitsSrc + '\nthis.API = module.exports;\nthis.quiz = () => _unitQuiz;', ctx);
     return { ctx, api: ctx.API, el };
 }
@@ -115,9 +113,9 @@ function masteryEnv() {
 suite('unit mastery: the rule is enforced, not just displayed', () => {
     test('a mastered card is disabled in the markup', () => {
         const { ctx, api, el } = masteryEnv();
-        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
         api.renderUnitsBar();
-        const html = el('unitsBar').innerHTML;
+        const html = el('wordUnitsBar').innerHTML;
         const card = html.slice(Math.max(0, html.indexOf('Unit 5') - 400), html.indexOf('Unit 5'));
         assert.truthy(/disabled aria-disabled="true"/.test(card),
             'a retired unit must not be clickable, and must say so to a screen reader');
@@ -127,8 +125,8 @@ suite('unit mastery: the rule is enforced, not just displayed', () => {
     // tap could still fire the handler.
     test('starting a mastered unit is refused in code', () => {
         const { ctx, api } = masteryEnv();
-        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
-        api.startUnitPractice(5);
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
+        api.startUnitPractice('pr1-5');
         assert.falsy(ctx.quiz(), 'a mastered unit must not start');
         assert.truthy(/thành thạo/.test(ctx.lastToast || ''), 'and must say why');
     });
@@ -137,8 +135,8 @@ suite('unit mastery: the rule is enforced, not just displayed', () => {
         // The counterweight: it is easy to "fix" the guard into refusing
         // everything.
         const { ctx, api } = masteryEnv();
-        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
-        api.startUnitPractice(6);
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
+        api.startUnitPractice('pr1-6');
         assert.truthy(ctx.quiz(), 'unit 6 is not mastered and must open');
     });
 

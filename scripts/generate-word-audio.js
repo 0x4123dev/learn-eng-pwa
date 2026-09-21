@@ -46,56 +46,28 @@ const ROOT = path.join(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'audio', 'words');
 
 // Every data file whose `en:` entries feed a speakWord()/_unitSpeak() tap.
-// Order = generation priority under --budget: unit practice speaks on every
-// answer and topic cards on every tap, so they outrank the long lesson tail.
 const DATA_FILES = [
-    'js/units-data.js',      // Topics tab unit practice (Pre set)
-    'js/units-hk1-data.js',  // Topics tab unit practice (HK1 set)
-    'js/units-hk2-data.js',  // Topics tab unit practice (HK2 set)
-    'js/units-posthk-data.js', // Topics tab unit practice (Post-HK set)
-    'js/word-data.js',       // Word tab (Career Paths: Public Relations, generated)
-    'js/topic-vocab.js',     // topic picture cards
-    'js/vocabulary.js'       // lessons, home, word-of-the-day, word-hunt, topics
+    'js/word-data.js',       // the three Books (Career Paths: Public Relations, generated)
 ];
 
 // Tap-any-word-in-a-question vocabulary (js/tapwords.js). Opt-in: --dictionary.
 const DICTIONARY_FILE = 'js/dictionary-data.js';
 
-// Correct answers spoken aloud after every question in the gated tabs
-// (Word form, Phrases, Collocation, Verbs). Opt-in: --answers.
-const ANSWER_BANKS = [
-    { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS', pick: q => [q.answer] },
-    // q.phrase is the collocation actually being learned ("rise in"); the bare
-    // answer is only its preposition, which teaches nothing spoken alone.
-    { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS',
-      pick: q => [q.answer || (q.options && q.options[q.correct]), q.phrase] },
-    // Same idea as phrases: the lesson is "make an effort", not the "make"
-    // that filled the gap. Collocation has no phrase field — the English
-    // collocation is the head of the vi gloss, before the dash. Glosses that
-    // are pure Vietnamese have no head and contribute only their answer.
-    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS',
-      pick: q => {
-          const head = String(q.vi || '').split(/\s[—–-]\s/)[0].trim();
-          const usable = head && !/[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(head);
-          return usable ? [q.answer, head] : [q.answer];
-      } },
-    { file: 'js/vocabulary.js', global: 'irregularVerbs', pick: v => [v.v2, v.v3] }
-];
+// Correct answers spoken aloud after every question in a gated tab. The Books
+// speak their `en` (already in DATA_FILES), so nothing is listed. Opt-in:
+// --answers.
+const ANSWER_BANKS = [];
 
 // Question banks, and the fields whose text the tabs actually pass through
 // tapwordsWrap(). `explanation` and `vi` are deliberately absent: they are
 // Vietnamese teaching notes rendered escaped, never tappable — including them
 // would generate English recordings for Vietnamese words. Opt-in: --tappable.
 const TAPPABLE_BANKS = [
-    { file: 'js/grammar-units.js', global: 'GRAMMAR_UNITS' },
-    { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
-    { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
-    { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },
-    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS' },
-    // The four compared words, 🔊 after answering. Its options carry <u> marks
-    // inside the word (r<u>o</u>bbed) — stripping tags would split them — so the
-    // clean `words` array is the only field read.
-    { file: 'js/phonetics-data.js', global: 'PHONETICS_ITEMS', fields: [], arrays: ['words'] }
+    // The answer card wraps the word and, once answered, shows the example
+    // sentence — so `en` and `ex` are what a learner can tap.
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR1', fields: ['en', 'ex'], arrays: [] },
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR2', fields: ['en', 'ex'], arrays: [] },
+    { file: 'js/word-data.js', global: 'UNIT_WORDS_PR3', fields: ['en', 'ex'], arrays: [] },
 ];
 const TAPPABLE_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame'];
 const TAPPABLE_ARRAYS = ['options', 'parts'];

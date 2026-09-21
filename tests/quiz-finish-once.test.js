@@ -15,7 +15,7 @@ const root = path.join(__dirname, '..');
 // the browser does — index.html always loads it before them.
 Object.assign(global, require(path.join(root, 'js', 'answer-audio.js')));
 
-function el() { return { innerHTML: '', value: '', focus() {}, scrollTop: 0, classList: { add() {}, remove() {} } }; }
+function el() { return { innerHTML: '', value: '', style: {}, focus() {}, scrollTop: 0, classList: { add() {}, remove() {} } }; }
 
 // Mount one practice tab with a real bank and a controllable saveUserData.
 function setup(opts) {
@@ -38,53 +38,17 @@ function setup(opts) {
   } };
 }
 
-// Each tab: its module, screen id, how to play one question, and where its
-// history lands. Every practice tab in the app is represented — the bug was
-// structural, so the guarantee has to be too.
+// The one practice left in the app, the Book practice (js/units.js): its
+// module, its screen, how to play one question, and where its history lands.
+// The bug was structural, so the guarantee has to be too — a second practice
+// goes into this table.
 const TABS = [
-  { name: 'phrases', screen: 'phrasesScreen', history: 'phrasesHistory',
-    load: () => { const d = require(path.join(root, 'js', 'phrases-data.js'));
-      global.PREPOSITION_QUESTIONS = d.PREPOSITION_QUESTIONS || d;
-      try { const m = require(path.join(root, 'js', 'phrases-meanings.js')); global.PHRASE_MEANINGS = m.PHRASE_MEANINGS || m; } catch (e) {}
-      return require(path.join(root, 'js', 'phrases.js')); },
-    start: m => m.startPhrasesQuiz(5), answer: m => m.answerPhrQuestion(0), finish: m => m.finishPhrasesQuiz() },
-  { name: 'wordform', screen: 'wordformScreen', history: 'wordformHistory',
-    load: () => { const d = require(path.join(root, 'js', 'wordform-data.js'));
-      global.WORDFORM_QUESTIONS = d.WORDFORM_QUESTIONS || d;
-      try { const f = require(path.join(root, 'js', 'wordform-followups.js')); global.WORDFORM_FOLLOWUPS = f.WORDFORM_FOLLOWUPS || f; } catch (e) {}
-      return require(path.join(root, 'js', 'wordform.js')); },
-    start: m => m.startWordformQuiz(5), answer: m => m.answerWfQuestion(0), finish: m => m.finishWordformQuiz() },
-  { name: 'rewrite', screen: 'rewriteScreen', history: 'rewriteHistory',
-    load: () => { const d = require(path.join(root, 'js', 'rewrite-data.js'));
-      global.REWRITE_QUESTIONS = d.REWRITE_QUESTIONS || d;
-      return require(path.join(root, 'js', 'rewrite.js')); },
-    start: m => m.startRewriteQuiz(5), answer: () => {}, finish: m => m.finishRewriteQuiz() },
+  { name: 'book practice', screen: 'wordDetail', history: 'unitsHistory',
+    load: () => { const d = require(path.join(root, 'js', 'word-data.js'));
+      for (const k of ['UNIT_WORDS_PR1', 'UNIT_WORDS_PR2', 'UNIT_WORDS_PR3', 'UNIT_PR_TITLES']) global[k] = d[k];
+      return require(path.join(root, 'js', 'units.js')); },
+    start: m => m.startUnitPractice('pr1-1'), answer: m => m.submitUnitAnswer(), finish: m => m.finishUnitPractice() },
 ];
-
-suite('practice finish: the result screen survives every question kind', () => {
-  test('phrases: a wrong TYPED answer still renders the result', () => {
-    // ~1 in 10 Phrases questions is typed, and a typed question has `answer`,
-    // not `options`. The review list read `q.options[q.correct]` for every
-    // wrong answer, so ONE missed typed question threw a TypeError, the result
-    // screen never appeared, and the practice could never finish — the freeze
-    // the child hit right after tapping "see result".
-    const d = require(path.join(root, 'js', 'phrases-data.js'));
-    global.PREPOSITION_QUESTIONS = d.PREPOSITION_QUESTIONS || d;
-    const mod = require(path.join(root, 'js', 'phrases.js'));
-    const env = setup({ screens: ['phrasesScreen'], appState: { coins: 0, phrasesHistory: [] } });
-    try {
-      const base = (global.PREPOSITION_QUESTIONS || [])[0];
-      const typed = mod.phrasesById('pt-' + base.id);   // the typed variant of a real question
-      assert.truthy(typed && !typed.options && typed.answer,
-        'a typed question has an answer and no options');
-      mod.startPhrasesReviewQuiz([typed.id]);   // a practice of exactly that typed question
-      mod.finishPhrasesQuiz();                  // must not throw
-      const html = env.screens.phrasesScreen.innerHTML;
-      assert.truthy(html.includes('grammar-result-card'), 'the result screen must render');
-      assert.truthy(html.includes(typed.answer), 'and must show the correct typed answer');
-    } finally { env.restore(); }
-  });
-});
 
 suite('practice finish: one tap, one payout, one record', () => {
   for (const tab of TABS) {

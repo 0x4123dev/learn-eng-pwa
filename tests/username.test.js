@@ -1,6 +1,6 @@
 // username.test.js — the account-name rule. This is a Vietnamese app, so the
 // server MUST accept accented names; an ASCII-only \w rejected every one of
-// them with a 400 that surfaced as a vague "server busy" in the Friends tab.
+// them with a 400 that surfaced as a vague "server busy" when linking the account.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -108,25 +108,11 @@ suite('the client and the server share ONE username rule', () => {
 
 suite('link failures are reported honestly', () => {
     const authSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'auth.js'), 'utf8');
-    const friendsSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'friends.js'), 'utf8');
 
     test('a 4xx rejection keeps the server\'s own message', () => {
         assert.truthy(authSrc.includes("reason: 'rejected'") || authSrc.includes("'rejected' : 'server'"),
             'a client-side rejection must be distinguishable from a server outage');
         assert.truthy(authSrc.includes('r.data.error'), 'the server message must be kept');
-    });
-
-    test('the Friends tab shows that detail rather than a generic excuse', () => {
-        assert.truthy(friendsSrc.includes('rejected:'), 'rejected needs its own message');
-        assert.truthy(friendsSrc.includes('st.detail'), 'the detail must reach the UI');
-    });
-
-    // Typing a passcode cannot fix a name the server refused.
-    test('a rejected name does not get offered a passcode box', () => {
-        const m = friendsSrc.match(/const needsCode = ([^;]+);/);
-        assert.truthy(m, 'needsCode not found');
-        assert.falsy(/'rejected'/.test(m[1]),
-            "a name rejection must not ask for a passcode — that is what made 1111 'still error'");
     });
 });
 

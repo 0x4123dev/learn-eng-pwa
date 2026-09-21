@@ -1,12 +1,11 @@
 import { requireAuth, json, err } from '../_lib.js';
 
-const MENUS = [
-  'math7', 'mathwars', 'grade4', 'wordform',
-  'grammar', 'phrases', 'verbs', 'rewrite', 'collocation',
-];
+// Must match functions/api/skills.js MENUS: the Book units, filed as
+// 'grade4' (the name js/auth.js has always uploaded them under).
+const MENUS = ['grade4'];
 const DAYS = new Set(['1', '7', '30', '90', '365', 'all']);
 
-// GET /api/admin/skills?user_id=N&days=30&menu=math7
+// GET /api/admin/skills?user_id=N&days=30&menu=grade4
 // Aggregates session summaries on read so correcting a taxonomy label never
 // requires rewriting a second daily-rollup table.
 export async function onRequestGet({ request, env }) {

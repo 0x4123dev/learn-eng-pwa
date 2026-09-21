@@ -1,5 +1,11 @@
 // Daily task server paths — handlers are EXECUTED against a real SQLite DB
 // (tests/pages-harness.js), never substring-checked.
+//
+// Since the 2026-09 cut the catalog is the 48 Book tasks (word:prN-k /
+// word:prN-mix, activity type 'lesson', matched by the exact title js/auth.js
+// uploads) and the reward is 200 xu, nothing else — no shield, no sword, no
+// pick to make later. The daily_task_rewards row is still written: it is the
+// farm's day clock (functions/api/_farm.js counts them).
 const { suite, test, assert } = require('./harness');
 const { createWorld, loadModule } = require('./pages-harness');
 const fs = require('fs');
@@ -9,19 +15,13 @@ const { createD1 } = require('./d1-mock');
 const ROOT = path.join(__dirname, '..');
 
 suite('daily task: schema', () => {
-  test('a DB built from schema.sql has the daily task tables and users.night_shields', async () => {
+  test('a DB built from schema.sql has the daily task and farm seed tables', async () => {
     const world = createWorld();
-    const cols = world.db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
-    assert.contains(cols, 'night_shields');
     const tables = world.db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(t => t.name);
     assert.contains(tables, 'daily_tasks');
     assert.contains(tables, 'daily_task_rewards');
     assert.contains(tables, 'farm_seed_days');
     assert.contains(tables, 'farm_seed_inventory');
-    const u = await world.createUser();
-    assert.equal(
-      world.db.prepare('SELECT night_shields FROM users WHERE id=?').get(u.uid).night_shields,
-      0, 'a freshly created user starts with zero shields');
   });
 
   test('db/018 applies cleanly to a pre-018 database', () => {
@@ -29,16 +29,12 @@ suite('daily task: schema', () => {
     db.exec("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE);");
     db.prepare("INSERT INTO users (username) VALUES ('kid1')").run(); // id=1, satisfies the FK below
     db.exec(fs.readFileSync(path.join(ROOT, 'db/018-daily-tasks.sql'), 'utf8'));
-    const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
-    assert.contains(cols, 'night_shields');
-    assert.equal(db.prepare('SELECT night_shields FROM users WHERE id=1').get().night_shields, 0,
-      'an account that existed before 018 starts with zero shields');
     const objects = db.prepare("SELECT name FROM sqlite_master WHERE name LIKE 'daily_task%' OR name LIKE 'idx_daily%'")
       .all().map(r => r.name);
     assert.contains(objects, 'daily_tasks');
     assert.contains(objects, 'idx_daily_tasks_user');
-    db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (1, '2026-09-02', 200, 1)").run();
-    assert.throws(() => db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (1, '2026-09-02', 200, 1)").run(),
+    db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (1, '2026-09-02', 200, 0)").run();
+    assert.throws(() => db.prepare("INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (1, '2026-09-02', 200, 0)").run(),
       'one reward row per (user, day)');
   });
 
@@ -63,8 +59,13 @@ function core() { return loadModule('functions/api/_daily-task.js'); }
 // 2026-09-02 = 17:00 GMT+7 on 2026-09-02 as "now".
 const NOW = Date.UTC(2026, 8, 2, 10, 0, 0);
 
+// The title js/auth.js uploads for a finished Book unit — the catalog's
+// titleExact for word:<unitKey>.
+function unitTitle(unitKey) { return 'Unit ' + unitKey + ' words practice'; }
+
 function addTask(world, uid, kind, target) {
   const spec = core().taskSpec(kind);
+  assert.truthy(spec, kind + ' is not in the catalog');
   return Number(world.db.prepare(
     'INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)'
   ).run(uid, spec.kind, spec.label, target, spec.activityType, spec.matchJson).lastInsertRowid);
@@ -75,15 +76,18 @@ function addActivity(world, uid, o) {
   ).run(uid, o.type, o.title || '', o.score, o.total, o.detail ? JSON.stringify(o.detail) : null,
     o.at || '2026-09-02 09:00:00');
 }
+// A perfect Book unit session (the only thing a task can be completed by).
+function addUnit(world, uid, unitKey, at, score, total) {
+  addActivity(world, uid, { type: 'lesson', title: unitTitle(unitKey), score: score == null ? 10 : score, total: total == null ? 10 : total, at });
+}
 function rewards(world, uid) {
   return world.db.prepare('SELECT * FROM daily_task_rewards WHERE user_id=? ORDER BY task_date').all(uid);
-}
-function shields(world, uid) {
-  return world.db.prepare('SELECT night_shields FROM users WHERE id=?').get(uid).night_shields;
 }
 function grants(world, uid) {
   return world.db.prepare('SELECT amount, note, claimed_at FROM coin_grants WHERE user_id=?').all(uid);
 }
+function userCols(world) { return world.db.prepare('PRAGMA table_info(users)').all().map(c => c.name); }
+function userRow(world, uid) { return world.db.prepare('SELECT * FROM users WHERE id=?').get(uid); }
 
 suite('daily task core: day window and task spec', () => {
   test('dayWindowUtc covers one GMT+7 day', () => {
@@ -92,24 +96,35 @@ suite('daily task core: day window and task spec', () => {
     assert.equal(w.startUtc, '2026-09-01 17:00:00');
     assert.equal(w.endUtc, '2026-09-02 17:00:00');
   });
-  test('taskSpec comes from the catalog; unknown kind is null', () => {
-    const s = core().taskSpec('units:hk1-mix');
+  test('taskSpec comes from the catalog; unknown and pre-cut kinds are null', () => {
+    const s = core().taskSpec('word:pr1-mix');
     assert.equal(s.activityType, 'lesson');
-    assert.equal(s.label, 'Units HK1 · 🎲 Mix');
-    assert.deepEqual(JSON.parse(s.matchJson), { titleExact: 'Unit hk1-mix words practice' });
+    assert.equal(s.label, 'Book 1 · 🎲 Mix');
+    assert.deepEqual(JSON.parse(s.matchJson), { titleExact: 'Unit pr1-mix words practice' });
+    assert.equal(core().taskSpec('word:pr2-7').label, 'Book 2 · Unit 7 · Entertainment and Sports');
     assert.equal(core().taskSpec('bogus'), null);
+    for (const gone of ['phrases', 'collocation', 'units:hk1-mix', 'grammar:unit12', 'math-exam:any-hk1', 'ptnk:any', 'reading:any']) {
+      assert.equal(core().taskSpec(gone), null, gone + ' was cut with its menu');
+    }
+  });
+  test('the reward is 200 xu and nothing else', () => {
+    assert.deepEqual(core().DAILY_REWARD, { coins: 200 });
+    for (const gone of ['REWARD_KINDS', 'SHIELD_MS', 'SHIELD_RAID_LOSS', 'armoryReady', 'shieldStatus', 'swordCount',
+      'pendingRewards', 'recentRewards', 'armoryStatus', 'claimReward', 'claimAllRewards']) {
+      assert.equal(typeof core()[gone], 'undefined', gone + ' should be gone with the Armory');
+    }
   });
 });
 
 suite('daily task core: counting sessions at 100%', () => {
-  test('title prefix: 20/20 counts, 19/20 does not, total 0 does not, other type does not', async () => {
+  test('title exact: 10/10 counts, 9/10 does not, total 0 does not, other type does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'collocation', 2);
-    addActivity(world, kid.uid, { type: 'collocation', title: 'Collocation practice (20 Qs)', score: 20, total: 20 });
-    addActivity(world, kid.uid, { type: 'collocation', title: 'Collocation practice (20 Qs)', score: 19, total: 20, at: '2026-09-02 09:01:00' });
-    addActivity(world, kid.uid, { type: 'collocation', title: 'Collocation practice (0 Qs)', score: 0, total: 0, at: '2026-09-02 09:02:00' });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Collocation practice (20 Qs)', score: 20, total: 20, at: '2026-09-02 09:03:00' });
+    addTask(world, kid.uid, 'word:pr1-3', 2);
+    addUnit(world, kid.uid, 'pr1-3', '2026-09-02 09:00:00', 10, 10);
+    addUnit(world, kid.uid, 'pr1-3', '2026-09-02 09:01:00', 9, 10);
+    addUnit(world, kid.uid, 'pr1-3', '2026-09-02 09:02:00', 0, 0);
+    addActivity(world, kid.uid, { type: 'review', title: unitTitle('pr1-3'), score: 10, total: 10, at: '2026-09-02 09:03:00' });
     const p = await core().progress(world.env, kid.uid, NOW);
     assert.equal(p.tasks.length, 1);
     assert.equal(p.tasks[0].count, 1);
@@ -117,236 +132,46 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, false);
   });
 
-  test('a task set on one button is not satisfied by the other button', async () => {
-    // The screen count in the title cannot tell the buttons apart — a
-    // 10-question Phrases practice records "(20 Qs)" and a 20-question one
-    // "(40 Qs)", while Word form records 30, 31 or 32 for the SAME button. So
-    // the size travels as detail.qs and the match pins it.
+  test('title exact: pr1-mix does not count for pr1-3, a Book 2 unit does not count for Book 1, and vice versa', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases:20', 1);
-    // The child did the 10-question one, perfectly. It must not count.
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)',
-      score: 20, total: 20, detail: { qs: 10 } });
+    addTask(world, kid.uid, 'word:pr1-mix', 1);
+    addTask(world, kid.uid, 'word:pr1-3', 1);
+    addTask(world, kid.uid, 'word:pr2-3', 1);
+    addUnit(world, kid.uid, 'pr1-3', '2026-09-02 09:00:00');
     let p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0, 'a 10-question session satisfied a 20-question task');
-    // A session from before lengths were recorded carries no qs, so it cannot
-    // be claimed for either button.
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
-      score: 40, total: 40, at: '2026-09-02 09:01:00' });
-    p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0, 'an untagged old session must not count for a sized task');
-    // The real thing.
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
-      score: 40, total: 40, detail: { qs: 20 }, at: '2026-09-02 09:02:00' });
-    p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 1);
-    assert.equal(p.allDone, true);
-  });
-
-  test('the size-agnostic task still counts either button', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 2);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)',
-      score: 20, total: 20, detail: { qs: 10 } });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
-      score: 40, total: 40, detail: { qs: 20 }, at: '2026-09-02 09:01:00' });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 2);
-  });
-
-  test('title exact: hk1-mix does not count for hk1-3 and vice versa', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'units:hk1-mix', 1);
-    addActivity(world, kid.uid, { type: 'lesson', title: 'Unit hk1-3 words practice', score: 10, total: 10 });
-    let p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0);
-    addActivity(world, kid.uid, { type: 'lesson', title: 'Unit hk1-mix words practice', score: 10, total: 10, at: '2026-09-02 09:05:00' });
-    p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 1);
-    assert.equal(p.allDone, true);
-  });
-
-  test('detail equals: grammar unitId; detail prefix: any HK1 exam; chapter drill excludes exams', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'grammar:unit12', 1);
-    addTask(world, kid.uid, 'math-exam:any-hk1', 1);
-    addTask(world, kid.uid, 'math-chapter:2', 1);
-    addActivity(world, kid.uid, { type: 'grammar', title: 'Grammar: Unit 3: Places', score: 20, total: 20, detail: { unitId: 'unit3' } });
-    addActivity(world, kid.uid, { type: 'grammar', title: 'Grammar: Unit 12: Tenses', score: 20, total: 20, detail: { unitId: 'unit12' }, at: '2026-09-02 09:01:00' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Đề thi: HK1 3', score: 17, total: 17, detail: { examId: 'hk1-source-3', chapter: 0 }, at: '2026-09-02 09:02:00' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10, detail: { chapter: 2 }, at: '2026-09-02 09:03:00' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Đề thi: HK1 Exam 2', score: 25, total: 25, detail: { examId: 'hk1-exam2', chapter: 2 }, at: '2026-09-02 09:04:00' });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
-    assert.equal(byKind['grammar:unit12'], 1);
-    assert.equal(byKind['math-exam:any-hk1'], 2, 'both hk1-source-3 and hk1-exam2 are HK1 exams');
-    assert.equal(byKind['math-chapter:2'], 1, 'the exam with chapter 2 in detail is NOT a chapter drill');
-    assert.equal(p.allDone, true);
-  });
-
-  test('Toán 4 Pre and Mix count separately and never count as Toán 7', async () => {
-    // The two môn share the 'math' activity type and the same history array.
-    // What tells them apart in SQL is detail.g4set — and detail.chapter, which
-    // for a Toán 4 paper is the string 'g4-pre' and can equal no chapter
-    // number. Both directions are checked here: a Toán 4 paper must not pay
-    // off a Toán 7 task, and a Toán 7 round must not pay off the Toán 4 one.
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'math4:pre', 1);
-    addTask(world, kid.uid, 'math4:mix', 1);
-    addTask(world, kid.uid, 'math-chapter:2', 1);
-    addTask(world, kid.uid, 'math-exam:any-hk1', 1);
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Đề ôn Pre', score: 10, total: 10,
-      detail: { grade: 4, g4set: 'pre', chapter: 'g4-pre' }, at: '2026-09-02 09:01:00' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Mix', score: 10, total: 10,
-      detail: { grade: 4, g4set: 'mix', chapter: 'g4-mix' }, at: '2026-09-02 09:01:30' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10,
-      detail: { chapter: 2 }, at: '2026-09-02 09:02:00' });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
-    assert.equal(byKind['math4:pre'], 1, 'the Toán 4 paper did not count for its own task');
-    assert.equal(byKind['math4:mix'], 1, 'the Toán 4 Mix paper did not count for its own task');
-    assert.equal(byKind['math-chapter:2'], 1, 'only the Toán 7 round may count here');
-    assert.equal(byKind['math-exam:any-hk1'], 0, 'neither run is an HK1 exam');
-  });
-
-  test('an unfinished Toán 4 paper pays nothing — the task wants a clean sheet', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'math4:pre', 1);
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Đề ôn Pre', score: 9, total: 10,
-      detail: { grade: 4, g4set: 'pre', chapter: 'g4-pre' } });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0);
+    let byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.equal(byKind['word:pr1-3'], 1);
+    assert.equal(byKind['word:pr1-mix'], 0, 'a unit is not the Mix');
+    assert.equal(byKind['word:pr2-3'], 0, 'Unit 3 of Book 1 is not Unit 3 of Book 2');
     assert.equal(p.allDone, false);
+    addUnit(world, kid.uid, 'pr1-mix', '2026-09-02 09:05:00');
+    addUnit(world, kid.uid, 'pr2-3', '2026-09-02 09:06:00');
+    p = await core().progress(world.env, kid.uid, NOW);
+    byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.deepEqual(byKind, { 'word:pr1-mix': 1, 'word:pr1-3': 1, 'word:pr2-3': 1 });
+    assert.equal(p.allDone, true);
   });
 
-  test('a bảng cửu chương round pays its own task, its op task and the loose one', async () => {
-    // The design claim, checked against real SQL: 'cc' groups all six drills,
-    // 'ccx'/'ccd' group the operation, and an exact code names one drill. No
-    // API change and no migration were needed for any of it.
+  test('a title that merely starts or ends with the unit title does not count (exact, not LIKE)', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'math4:cc', 1);
-    addTask(world, kid.uid, 'math4:ccx', 1);
-    addTask(world, kid.uid, 'math4:ccd', 1);
-    addTask(world, kid.uid, 'math4:ccx67', 1);
-    addTask(world, kid.uid, 'math4:ccd67', 1);
-    addTask(world, kid.uid, 'math4:pre', 1);
-    addActivity(world, kid.uid, {
-      type: 'math', title: 'Toán 4 · Bảng nhân 6, 7', score: 10, total: 10,
-      detail: { grade: 4, g4set: 'ccx67', chapter: 'g4-ccx67' }, at: '2026-09-02 09:03:00' });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addActivity(world, kid.uid, { type: 'lesson', title: unitTitle('pr1-1') + ' (retry)', score: 10, total: 10 });
+    addActivity(world, kid.uid, { type: 'lesson', title: unitTitle('pr1-10'), score: 10, total: 10, at: '2026-09-02 09:01:00' });
+    addActivity(world, kid.uid, { type: 'lesson', title: unitTitle('pr1-11'), score: 10, total: 10, at: '2026-09-02 09:02:00' });
     const p = await core().progress(world.env, kid.uid, NOW);
-    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
-    assert.equal(byKind['math4:ccx67'], 1, 'the drill did not pay off its own task');
-    assert.equal(byKind['math4:ccx'], 1, 'a nhân round must satisfy "bất kỳ bảng nhân"');
-    assert.equal(byKind['math4:cc'], 1, 'and "bất kỳ bài cửu chương"');
-    assert.equal(byKind['math4:ccd'], 0, 'a nhân round is NOT a chia round');
-    assert.equal(byKind['math4:ccd67'], 0);
-    assert.equal(byKind['math4:pre'], 0, 'and it is not a Pre paper either');
-  });
-
-  test('a cửu chương round cut short by the clock pays nothing', async () => {
-    // The round always records total = 10, so four answered and the clock gone
-    // is 4/10 — not 4/4. That is the only reason "phải đúng 10/10" means
-    // anything for a timed drill.
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'math4:ccd89', 1);
-    addActivity(world, kid.uid, {
-      type: 'math', title: 'Toán 4 · Bảng chia 8, 9', score: 4, total: 10,
-      detail: { grade: 4, g4set: 'ccd89', chapter: 'g4-ccd89' } });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0);
-    assert.equal(p.allDone, false);
-  });
-
-  test('a PTNK paper at 100% pays its own task and "bất kỳ đề PTNK"; a Toán 7 đề thi pays neither', async () => {
-    // PTNK attempts arrive as type 'exam' carrying detail.examId. The Toán 7
-    // đề thi ALSO carry detail.examId, under type 'math' — progress() filters
-    // by type first, and this is the test that says so.
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'ptnk:ptnk-2022-chuyen', 1);
-    addTask(world, kid.uid, 'ptnk:any', 1);
-    addTask(world, kid.uid, 'ptnk:ptnk-2024-kc', 1);
-    addTask(world, kid.uid, 'math-exam:any-hk1', 1);
-    addActivity(world, kid.uid, { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 80, total: 80,
-      detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' }, at: '2026-09-02 09:04:00' });
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Đề thi: HK1 Exam 2', score: 10, total: 10,
-      detail: { examId: 'hk1-exam2', chapter: 0 }, at: '2026-09-02 09:05:00' });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
-    assert.equal(byKind['ptnk:ptnk-2022-chuyen'], 1, 'the paper did not pay off its own task');
-    assert.equal(byKind['ptnk:any'], 1, 'and must satisfy "bất kỳ đề PTNK"');
-    assert.equal(byKind['ptnk:ptnk-2024-kc'], 0, 'a different paper is a different task');
-    assert.equal(byKind['math-exam:any-hk1'], 1, 'the Toán 7 exam pays only its own');
-  });
-
-  test('a PTNK paper below 100% pays nothing — an entrance paper is all or nothing', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    addTask(world, kid.uid, 'ptnk:ptnk-2022-chuyen', 1);
-    addActivity(world, kid.uid, { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 79, total: 80,
-      detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' } });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    assert.equal(p.tasks[0].count, 0);
-  });
-
-  test('the server accepts an exam activity at all', async () => {
-    // A type the server does not know is dropped in SILENCE (activity.js).
-    // Before 'exam' joined TYPES, every PTNK paper would have uploaded fine
-    // and never existed.
-    const world = createWorld();
-    const kid = await world.createUser({});
-    const h = loadModule('functions/api/activity.js');
-    const r = await world.call(h.onRequestPost, { token: kid.token, body: { items: [
-      { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 80, total: 80,
-        at: Date.now(), detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' } },
-    ] } });
-    assert.equal(r.status, 200, JSON.stringify(r.data));
-    const row = world.db.prepare("SELECT type, json_extract(detail_json,'$.examId') AS ex FROM activities WHERE user_id = ?").get(kid.uid);
-    assert.truthy(row, 'the row was dropped');
-    assert.equal(row.type, 'exam');
-    assert.equal(row.ex, 'ptnk-2022-chuyen');
-  });
-
-  test('practice rounds pay their level task, the any-level task, and never another menu', async () => {
-    // Reading, cloze and error rounds ride the same 'exam' type as the PTNK
-    // papers; the LEVEL sits in the exam-id prefix, so "any reading" is
-    // prefix rd-, "Chuyên reading" is rd-ch-. An error round's id carries its
-    // item ids after a colon — the prefix match must not care.
-    const world = createWorld();
-    const kid = await world.createUser({});
-    for (const k of ['reading:any', 'reading:kc', 'reading:ch', 'cloze:any', 'cloze:ch', 'errors:kc', 'errors:ch', 'ptnk:any']) addTask(world, kid.uid, k, 1);
-    addActivity(world, kid.uid, { type: 'exam', title: 'Cities and Trees', score: 7, total: 7,
-      detail: { examId: 'rd-ch-06-2', set: 'reading' }, at: '2026-09-02 09:06:00' });
-    addActivity(world, kid.uid, { type: 'exam', title: 'Tìm lỗi sai · Không chuyên', score: 10, total: 10,
-      detail: { examId: 'er-round-kc:er-kc-01-3,er-kc-02-7,er-kc-05-1', set: 'errors' }, at: '2026-09-02 09:07:00' });
-    const p = await core().progress(world.env, kid.uid, NOW);
-    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
-    assert.equal(byKind['reading:any'], 1);
-    assert.equal(byKind['reading:ch'], 1, 'a Chuyên passage pays the Chuyên task');
-    assert.equal(byKind['reading:kc'], 0, 'and not the Không chuyên one');
-    assert.equal(byKind['errors:kc'], 1, 'the round id with a colon must still prefix-match');
-    assert.equal(byKind['errors:ch'], 0);
-    assert.equal(byKind['cloze:any'], 0, 'a reading passage is not a cloze text');
-    assert.equal(byKind['cloze:ch'], 0);
-    assert.equal(byKind['ptnk:any'], 0, 'practice never pays off a real-paper task');
+    assert.equal(p.tasks[0].count, 0, 'pr1-10 and pr1-11 must not pay off pr1-1');
   });
 
   test('GMT+7 day boundary: 23:59 counts, 00:01 next day does not, yesterday does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 3);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-02 16:59:00' });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-02 17:01:00' });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-01 16:59:00' });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-01 17:00:00' });
+    addTask(world, kid.uid, 'word:pr1-1', 3);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 16:59:00');
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 17:01:00');
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-01 16:59:00');
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-01 17:00:00');
     const p = await core().progress(world.env, kid.uid, NOW);
     assert.equal(p.tasks[0].count, 2, '16:59 UTC today and 17:00 UTC yesterday are both 2026-09-02 in GMT+7');
   });
@@ -360,6 +185,8 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(core().matchSql({ detail: { field: 'chapter' } }).sql, '0');
     assert.equal(core().matchSql({ detail: { field: '...', value: 1 } }).sql, '0');
     assert.equal(core().matchSql({ noField: '...' }).sql, '0');
+    assert.equal(core().matchSql({}).sql, '0');
+    assert.equal(core().matchSql(null).sql, '0');
   });
 
   test('a structurally odd match_json never throws; progress just counts zero', async () => {
@@ -367,11 +194,28 @@ suite('daily task core: counting sessions at 100%', () => {
     const kid = await world.createUser({});
     world.db.prepare(
       'INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)'
-    ).run(kid.uid, 'odd', 'Odd task', 1, 'math', '{"detail":{"field":"chapter"}}');
-    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10, detail: { chapter: 2 } });
+    ).run(kid.uid, 'odd', 'Odd task', 1, 'lesson', '{"detail":{"field":"chapter"}}');
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
     const p = await core().progress(world.env, kid.uid, NOW);
     assert.equal(p.tasks.length, 1);
     assert.equal(p.tasks[0].count, 0);
+  });
+
+  test('a task row left over from a cut menu still lists, counts zero, and never completes', async () => {
+    // Production still holds daily_tasks rows for kinds the catalog no longer
+    // knows (grammar, maths…). Their match rules are plain JSON, so they
+    // keep working as rules — they just match no row the app can upload now.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    world.db.prepare(
+      'INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)'
+    ).run(kid.uid, 'grammar:unit12', 'Grammar · Unit 12', 1, 'grammar', '{"detail":{"field":"unitId","value":"unit12"}}');
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks.length, 2);
+    assert.equal(p.tasks.find(t => t.kind === 'grammar:unit12').count, 0);
+    assert.equal(p.allDone, false, 'the stale task still blocks the day until the admin deletes it');
   });
 
   test('no tasks → empty list, never allDone; inactive tasks are ignored', async () => {
@@ -380,7 +224,7 @@ suite('daily task core: counting sessions at 100%', () => {
     let p = await core().progress(world.env, kid.uid, NOW);
     assert.deepEqual(p.tasks, []);
     assert.equal(p.allDone, false);
-    const id = addTask(world, kid.uid, 'phrases', 1);
+    const id = addTask(world, kid.uid, 'word:pr1-1', 1);
     world.db.prepare('UPDATE daily_tasks SET active=0 WHERE id=?').run(id);
     p = await core().progress(world.env, kid.uid, NOW);
     assert.deepEqual(p.tasks, []);
@@ -391,24 +235,25 @@ suite('daily task core: the once-a-day reward', () => {
   test('not all done → nothing granted', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
-    addTask(world, kid.uid, 'collocation', 1);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addTask(world, kid.uid, 'word:pr1-2', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
     const e = await core().evaluate(world.env, kid.uid, NOW);
     assert.equal(e.allDone, false);
     assert.equal(e.justRewarded, false);
     assert.equal(e.rewardedToday, false);
     assert.equal(rewards(world, kid.uid).length, 0);
-    assert.equal(shields(world, kid.uid), 0);
+    assert.equal(grants(world, kid.uid).length, 0);
   });
 
-  test('all done → one reward row (unclaimed), one 200-coin grant, NO shield yet; repeated calls stay at one', async () => {
+  test('all done → exactly one reward row and one 200-xu grant, no users column touched; repeated calls stay at one', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
-    addTask(world, kid.uid, 'collocation', 1);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
-    addActivity(world, kid.uid, { type: 'collocation', title: 'Collocation practice (20 Qs)', score: 20, total: 20, at: '2026-09-02 09:01:00' });
+    const before = userRow(world, kid.uid);
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addTask(world, kid.uid, 'word:pr1-2', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
+    addUnit(world, kid.uid, 'pr1-2', '2026-09-02 09:01:00');
     const first = await core().evaluate(world.env, kid.uid, NOW);
     assert.equal(first.allDone, true);
     assert.equal(first.justRewarded, true);
@@ -416,52 +261,62 @@ suite('daily task core: the once-a-day reward', () => {
     const second = await core().evaluate(world.env, kid.uid, NOW + 60000);
     assert.equal(second.justRewarded, false);
     assert.equal(second.rewardedToday, true);
-    assert.equal(rewards(world, kid.uid).length, 1);
-    assert.deepEqual(rewards(world, kid.uid).map(r => [r.task_date, r.coins, r.shields]), [['2026-09-02', 200, 1]]);
-    assert.equal(rewards(world, kid.uid)[0].claimed_kind, null, 'the pick waits for the child (db/019)');
+    const rows = rewards(world, kid.uid);
+    assert.equal(rows.length, 1, 'exactly one daily_task_rewards row — it is the farm\'s day tick');
+    assert.equal(rows[0].task_date, '2026-09-02');
+    assert.equal(rows[0].coins, 200);
+    assert.equal(rows[0].shields, 0, 'the db/018 column is written as 0: there is no pick any more');
+    assert.equal(rows[0].claimed_kind, null);
     const g = grants(world, kid.uid);
-    assert.equal(g.length, 1);
+    assert.equal(g.length, 1, 'exactly one coin grant');
     assert.equal(g[0].amount, 200);
     assert.equal(g[0].note, 'Daily task 2026-09-02');
     assert.equal(g[0].claimed_at, null, 'paid out by the normal /api/coins claim, not here');
-    assert.equal(shields(world, kid.uid), 0, 'the shield is no longer auto-granted: it is one of two things the child may claim');
-    assert.deepEqual(await core().pendingRewards(world.env, kid.uid), ['2026-09-02']);
+    // The whole users row is byte-for-byte what it was: the reward writes
+    // no inventory anywhere (night_shields / night_swords included, while
+    // the schema still carries them).
+    assert.deepEqual(userRow(world, kid.uid), before, 'evaluate() must not touch the users row');
+    for (const col of ['night_shields', 'night_swords']) {
+      if (userCols(world).includes(col)) assert.equal(Number(userRow(world, kid.uid)[col] || 0), 0, col + ' stays 0');
+    }
   });
 
   test('the next day starts from zero and can be rewarded again', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
     await core().evaluate(world.env, kid.uid, NOW);
     const tomorrow = NOW + 24 * 3600000;
     let e = await core().evaluate(world.env, kid.uid, tomorrow);
     assert.equal(e.tasks[0].count, 0);
     assert.equal(e.rewardedToday, false);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-03 09:00:00' });
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-03 09:00:00');
     e = await core().evaluate(world.env, kid.uid, tomorrow);
     assert.equal(e.justRewarded, true);
-    assert.equal(rewards(world, kid.uid).length, 2);
-    assert.equal(shields(world, kid.uid), 0);
-    assert.deepEqual(await core().pendingRewards(world.env, kid.uid), ['2026-09-02', '2026-09-03'], 'unclaimed days pile up, oldest first, and never expire');
+    assert.deepEqual(rewards(world, kid.uid).map(r => [r.task_date, r.coins, r.shields]), [['2026-09-02', 200, 0], ['2026-09-03', 200, 0]]);
+    assert.deepEqual(grants(world, kid.uid).map(g => g.note), ['Daily task 2026-09-02', 'Daily task 2026-09-03']);
+    assert.equal(e.seeds.justRewarded && e.seeds.justRewarded.id, 'lettuce', 'the second consecutive day earns the first seed');
   });
 
-  test('the child then claims the 200 coins through POST /api/coins', async () => {
+  test('the learner then claims the 200 coins through POST /api/coins', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
     await core().evaluate(world.env, kid.uid, NOW);
     const r = await world.call(loadModule('functions/api/coins.js').onRequestPost, { token: kid.token, body: { proto: 2 } });
     assert.equal(r.status, 200);
     assert.equal(r.data.granted, 200);
+    const again = await world.call(loadModule('functions/api/coins.js').onRequestPost, { token: kid.token, body: { proto: 2 } });
+    assert.equal(again.data.granted, 0, 'a second claim pays nothing more');
   });
 
   test('a replayed batch against a claimed day grants nothing', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
     await core().evaluate(world.env, kid.uid, NOW);
     const real = world.env.DB.prepare.bind(world.env.DB);
     const blind = Object.create(world.env.DB);
@@ -472,20 +327,20 @@ suite('daily task core: the once-a-day reward', () => {
     assert.equal(loser.justRewarded, false);
     assert.equal(rewards(world, kid.uid).length, 1);
     assert.equal(grants(world, kid.uid).length, 1);
-    assert.equal(shields(world, kid.uid), 0);
   });
 
-  test('shieldStatus reports inventory and an active shield only while it is active', async () => {
+  test('the reward rows are the farm\'s clock: dayCount and the wilt context follow them', async () => {
+    const farm = loadModule('functions/api/_farm.js');
     const world = createWorld();
     const kid = await world.createUser({});
-    let s = await core().shieldStatus(world.env, kid.uid, NOW);
-    assert.deepEqual(s, { count: 0, activeUntil: 0 });
-    world.db.prepare('UPDATE users SET night_shields=2 WHERE id=?').run(kid.uid);
-    world.db.prepare("INSERT INTO night_raid_homes (user_id, shield_until, updated_at) VALUES (?,?,?)").run(kid.uid, NOW + 1000, NOW);
-    s = await core().shieldStatus(world.env, kid.uid, NOW);
-    assert.deepEqual(s, { count: 2, activeUntil: NOW + 1000 });
-    s = await core().shieldStatus(world.env, kid.uid, NOW + 2000);
-    assert.deepEqual(s, { count: 2, activeUntil: 0 });
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    assert.equal(await farm.dayCount(world.env, kid.uid), 0);
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 09:00:00');
+    await core().evaluate(world.env, kid.uid, NOW);
+    assert.equal(await farm.dayCount(world.env, kid.uid), 1, 'one fully-done day = one tick');
+    const clock = await farm.farmClock(world.env, kid.uid, NOW);
+    assert.equal(clock.dayCount, 1);
+    assert.deepEqual(clock.ctx, { today: '2026-09-02', doneYesterday: false, doneToday: true });
   });
 });
 
@@ -493,7 +348,7 @@ function meHandler() { return loadModule('functions/api/me/daily-tasks.js'); }
 function activityHandler() { return loadModule('functions/api/activity.js'); }
 
 suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
-  test('needs a token; returns empty tasks for a child with nothing assigned', async () => {
+  test('needs a token; returns empty tasks for a learner with nothing assigned', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
     const anon = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET' });
@@ -502,39 +357,51 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     assert.equal(r.status, 200);
     assert.deepEqual(r.data.tasks, []);
     assert.equal(r.data.allDone, false);
-    assert.deepEqual(r.data.shields, { count: 0, activeUntil: 0 });
+    assert.equal(r.data.rewardedToday, false);
+    assert.equal(r.data.justRewarded, false);
+    assert.truthy(r.data.seeds && typeof r.data.seeds === 'object', 'the seed streak rides along');
+  });
+
+  test('the reply carries date, tasks, reward state, seeds and farm — and nothing of the Armory', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'word:pr1-1', 1);
+    const r = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
+    assert.equal(r.status, 200);
+    assert.deepEqual(Object.keys(r.data).sort(), ['allDone', 'date', 'farm', 'justRewarded', 'rewardedToday', 'seeds', 'tasks']);
+    for (const gone of ['shields', 'swords', 'pending', 'recent', 'armoryReady']) assert.falsy(gone in r.data, gone + ' must not be in the reply');
+    assert.deepEqual(Object.keys(r.data.tasks[0]).sort(), ['count', 'done', 'id', 'kind', 'label', 'target']);
+    assert.equal(r.data.tasks[0].kind, 'word:pr1-1');
   });
 
   test('a synced 100% session moves the counter and pays the reward inside the activity POST', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'collocation', 1);
+    addTask(world, kid.uid, 'word:pr2-7', 1);
     const at = Date.now();
     const r = await world.call(activityHandler().onRequestPost, {
       token: kid.token,
-      body: { items: [{ type: 'collocation', title: 'Collocation practice (20 Qs)', score: 20, total: 20, at }] },
+      body: { items: [{ type: 'lesson', title: unitTitle('pr2-7'), score: 10, total: 10, at }] },
     });
     assert.equal(r.status, 200);
     assert.equal(r.data.ok, true);
     assert.deepEqual(r.data.dailyTask, { allDone: true, justRewarded: true, rewardedToday: true });
     assert.equal(rewards(world, kid.uid).length, 1);
-    assert.equal(shields(world, kid.uid), 0, 'no shield until the child claims one');
+    assert.equal(grants(world, kid.uid).length, 1);
     const me = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
     assert.equal(me.data.tasks[0].count, 1);
     assert.equal(me.data.tasks[0].done, true);
     assert.equal(me.data.rewardedToday, true);
     assert.equal(me.data.justRewarded, false, 'already paid by the activity POST');
-    assert.equal(me.data.shields.count, 0);
-    assert.deepEqual(me.data.swords, { count: 0 });
-    assert.deepEqual(me.data.pending, [me.data.date], 'the day is offered to the child to claim');
+    assert.equal(rewards(world, kid.uid).length, 1, 'the GET pays nothing more');
   });
 
   test('the single-item activity POST also evaluates', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
+    addTask(world, kid.uid, 'word:pr1-1', 1);
     const r = await world.call(activityHandler().onRequestPost, {
-      token: kid.token, body: { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 },
+      token: kid.token, body: { type: 'lesson', title: unitTitle('pr1-1'), score: 10, total: 10 },
     });
     assert.equal(r.status, 200);
     assert.equal(r.data.dailyTask.justRewarded, true);
@@ -543,7 +410,7 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
   test('offline sync backfills each affected ICT day once, including the seed earned across two days', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    const spec = core().taskSpec('phrases');
+    const spec = core().taskSpec('word:pr1-1');
     const today = core().dayWindowUtc(Date.now()).date;
     const todayStart = Date.parse(today + 'T00:00:00Z') - 7 * 3600000;
     const firstAt = todayStart - 2 * 86400000 + 3600000;
@@ -553,8 +420,8 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
       (user_id,kind,label,target,activity_type,match_json,created_by,created_at,active)
       VALUES(?,?,?,?,?,?,1,?,1)`).run(kid.uid,spec.kind,spec.label,1,spec.activityType,spec.matchJson,assignedAt);
     const body={items:[
-      {type:'phrases',title:'Phrases practice (20 Qs)',score:20,total:20,at:firstAt},
-      {type:'phrases',title:'Phrases practice (20 Qs)',score:20,total:20,at:secondAt},
+      {type:'lesson',title:unitTitle('pr1-1'),score:10,total:10,at:firstAt},
+      {type:'lesson',title:unitTitle('pr1-1'),score:10,total:10,at:secondAt},
     ]};
     const first=await world.call(activityHandler().onRequestPost,{token:kid.token,body});
     assert.truthy(first.ok,JSON.stringify(first.data));
@@ -572,9 +439,9 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     const kid = await world.createUser({});
     world.db.prepare(
       "INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)"
-    ).run(kid.uid, 'x', 'x', 1, 'phrases', '{"detail":{"field":"a\\"b'  /* not JSON */);
+    ).run(kid.uid, 'x', 'x', 1, 'lesson', '{"detail":{"field":"a\\"b'  /* not JSON */);
     const r = await world.call(activityHandler().onRequestPost, {
-      token: kid.token, body: { items: [{ type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: Date.now() }] },
+      token: kid.token, body: { items: [{ type: 'lesson', title: unitTitle('pr1-1'), score: 10, total: 10, at: Date.now() }] },
     });
     assert.equal(r.status, 200, 'activity sync must succeed even if evaluation cannot');
     assert.equal(r.data.ok, true);
@@ -583,7 +450,7 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
   test('an evaluation that throws cannot fail the sync', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
+    addTask(world, kid.uid, 'word:pr1-1', 1);
     const real = world.env.DB;
     world.env.DB = {
       prepare: sql => { if (/FROM daily_tasks/.test(sql)) throw new Error('D1 down'); return real.prepare(sql); },
@@ -591,7 +458,7 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     };
     const r = await world.call(activityHandler().onRequestPost, {
       token: kid.token,
-      body: { items: [{ type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: Date.now() }] },
+      body: { items: [{ type: 'lesson', title: unitTitle('pr1-1'), score: 10, total: 10, at: Date.now() }] },
     });
     assert.equal(r.status, 200);
     assert.equal(r.data.ok, true);
@@ -602,7 +469,7 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
   test('a balance-only sync (items: []) skips evaluation but still snapshots the balance', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
-    addTask(world, kid.uid, 'phrases', 1);
+    addTask(world, kid.uid, 'word:pr1-1', 1);
     const r = await world.call(activityHandler().onRequestPost, {
       token: kid.token, body: { items: [], coinBalance: 4200 },
     });
@@ -615,328 +482,109 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
   });
 });
 
-function shieldHandler() { return loadModule('functions/api/night-raid/shield.js'); }
-function homeHandler() { return loadModule('functions/api/night-raid/home.js'); }
-const NR = loadModule('js/night-raid-rules.js');
-
-function farmLayout() {
-  return NR.normalizeLayout({ cells: [{ type: 'rice-field', lane: 0, col: 1, gx: 0, gy: 0, tier: 1, uid: 'p-testfarm01', readyAt: Date.now() + 3600000 }], soldiers: 2, dogLane: 2 });
-}
-// `coins` is unused by the shield tests below but kept: Task 6's raid tests
-// seed homes with specific coin/vault amounts (800 lootable, 50 vault) to
-// assert on what a raider can steal.
-async function seedHome(world, user, coins) {
-  const r = await world.call(homeHandler().onRequestPut, {
-    url: '/api/night-raid/home', method: 'PUT', token: user.token,
-    body: { layout: farmLayout(), dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
-  });
-  assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
-}
-function homeRow(world, uid) { return world.db.prepare('SELECT * FROM night_raid_homes WHERE user_id=?').get(uid); }
-
-suite('daily task: POST /api/night-raid/shield', () => {
-  test('no home yet → 404 no_home, inventory untouched', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({});
-    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 404);
-    assert.equal(r.data.code, 'no_home');
-    assert.equal(shields(world, kid.uid), 1);
-  });
-
-  test('no shields → 409 empty', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 409);
-    assert.equal(r.data.code, 'empty');
-  });
-
-  test('spends one shield and protects the home for 24 h; a second press is refused and costs nothing', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    world.db.prepare('UPDATE users SET night_shields=2 WHERE id=?').run(kid.uid);
-    const before = Date.now();
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 200);
-    assert.equal(r.data.ok, true);
-    assert.equal(r.data.shields.count, 1);
-    const until = homeRow(world, kid.uid).shield_until;
-    assert.inRange(until - before, 24 * 3600000 - 5000, 24 * 3600000 + 5000);
-    assert.equal(r.data.shields.activeUntil, until);
-    const again = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(again.status, 409);
-    assert.equal(again.data.code, 'active');
-    assert.equal(again.data.activeUntil, until);
-    assert.equal(shields(world, kid.uid), 1, 'a refused activation does not burn a shield');
-  });
-
-  test('an expired shield can be replaced', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() - 1000, kid.uid);
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 200);
-    assert.truthy(homeRow(world, kid.uid).shield_until > Date.now());
-  });
-
-  test('a child without allow_bot can still spend a shield on an existing home', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    world.db.prepare('UPDATE users SET night_shields=1, allow_bot=0 WHERE id=?').run(kid.uid);
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 200, 'the shield inventory is the child\'s; allow_bot only gates raiding');
-  });
-
-  test('a disabled account is refused before it can touch the inventory', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
-    world.db.prepare('UPDATE users SET disabled=1 WHERE id=?').run(kid.uid);
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 401);
-    assert.equal(shields(world, kid.uid), 1);
-  });
-
-  test('a race that beats the friendly pre-check is still caught by the batch guard', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    world.db.prepare('UPDATE users SET night_shields=2 WHERE id=?').run(kid.uid);
-    const now = Date.now();
-    const realUntil = now + 10 * 3600000;
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(realUntil, kid.uid);
-    // A DB proxy that lies to the friendly pre-check (says no shield is up)
-    // on the FIRST "SELECT shield_until" read only; every later read — inside
-    // the batch and inside the shieldStatus() call on the error path — sees
-    // the real, still-active row. batch() passes straight through to the
-    // real DB, since it is the batch's own EXISTS guard, not the pre-check,
-    // that must be the actual authority here.
-    const real = world.env.DB;
-    let shieldReads = 0;
-    world.env.DB = {
-      prepare: sql => {
-        if (/SELECT shield_until FROM night_raid_homes/.test(sql)) {
-          shieldReads++;
-          if (shieldReads === 1) return { bind: () => ({ first: async () => ({ shield_until: 0 }) }) };
-        }
-        return real.prepare(sql);
-      },
-      batch: s => real.batch(s),
-    };
-    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
-    assert.equal(r.status, 409);
-    assert.equal(r.data.code, 'active');
-    assert.equal(r.data.activeUntil, realUntil, 'the error reports the real timer, not the faked one');
-    assert.equal(shields(world, kid.uid), 2, 'the batch guard refused the spend; nothing was burned');
-    assert.equal(homeRow(world, kid.uid).shield_until, realUntil, 'the real timer was left untouched');
-  });
-});
-
-
-function startHandler() { return loadModule('functions/api/night-raid/start.js'); }
-function finishHandler() { return loadModule('functions/api/night-raid/finish.js'); }
-
-async function raid(world, attacker, defender) {
-  const s = await world.call(startHandler().onRequestPost, { token: attacker.token, body: { targetId: defender.uid } });
-  assert.truthy(s.ok && s.data && s.data.raid, 'start must create a raid: ' + JSON.stringify(s.data));
-  const f = await world.call(finishHandler().onRequestPost, { token: attacker.token, body: { raidId: s.data.raid.raidId } });
-  assert.truthy(f.ok && f.data && f.data.result, 'finish must resolve: ' + JSON.stringify(f.data));
-  return { start: s.data.raid, result: f.data.result };
-}
-
-suite('daily task: raiding a shielded castle', () => {
-  test('shielded target: the raid runs, the raider loses, pays 200, and the DEFENDER is paid by the system', async () => {
-    const world = createWorld();
-    const attacker = await world.createUser({ allowBot: true });
-    const defender = await world.createUser({ allowBot: true });
-    await seedHome(world, attacker, 800);
-    await seedHome(world, defender, 800);
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
-
-    const { start, result } = await raid(world, attacker, defender);
-    assert.equal(start.shielded, true);
-    assert.equal(start.defense, 100000);
-    assert.equal(result.won, false);
-    assert.equal(result.shielded, true);
-    assert.equal(result.loss, 200);
-    assert.equal(result.reward, 0);
-    assert.equal(result.defenderGain, 100, 'holding the wall pays the flat defence reward — db/032');
-    assert.equal(homeRow(world, attacker.uid).lootable_coins, 600, 'the 200 is burned');
-    assert.equal(homeRow(world, defender.uid).lootable_coins, 900, 'and the system pays the defender 100');
-    assert.equal(homeRow(world, defender.uid).ruined_until, null);
-    const daily = world.db.prepare('SELECT tickets_used FROM night_raid_daily WHERE user_id=?').get(attacker.uid);
-    assert.equal(daily.tickets_used, 1, 'the ticket is spent, not returned');
-  });
-
-  test('a raider with fewer than 200 coins is emptied, not driven negative', async () => {
-    const world = createWorld();
-    const attacker = await world.createUser({ allowBot: true });
-    const defender = await world.createUser({ allowBot: true });
-    await seedHome(world, attacker, 50);
-    await seedHome(world, defender, 800);
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
-    const { result } = await raid(world, attacker, defender);
-    // The fee is clamped to what the raider has; the defender's reward does
-    // not depend on it any more (db/032).
-    assert.equal(result.loss, 50, 'you can only lose what you have');
-    assert.equal(homeRow(world, attacker.uid).lootable_coins, 0);
-    assert.equal(homeRow(world, defender.uid).lootable_coins, 900, 'and the defender is still paid the full reward');
-  });
-
-  test('an unshielded (or expired-shield) target is raided by the normal rules', async () => {
-    const world = createWorld();
-    const attacker = await world.createUser({ allowBot: true });
-    const defender = await world.createUser({ allowBot: true });
-    await seedHome(world, attacker, 800);
-    await seedHome(world, defender, 800);
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() - 1000, defender.uid);
-    const { start, result } = await raid(world, attacker, defender);
-    assert.falsy(start.shielded);
-    assert.falsy(result.shielded);
-    // Since db/021 the ordinary marching fee is the flat `loss` (100), not the
-    // old 5%-of-the-wallet slice, and shield_loss (200) applies to shields only.
-    assert.equal(result.won ? result.loss : 100, result.loss,
-      'normal loss is 0 on a win or the flat 100 on a loss: ' + result.loss);
-    assert.equal(result.defenderGain, result.won ? 0 : 100, 'the defender is paid the flat reward on a loss, nothing on a win');
-  });
-
-  test('GET /api/night-raid/home reports the owner\'s own shieldUntil', async () => {
-    const world = createWorld();
-    const kid = await world.createUser({ allowBot: true });
-    await seedHome(world, kid);
-    const until = Date.now() + 3600000;
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(until, kid.uid);
-    const r = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
-    assert.equal(r.status, 200);
-    assert.equal(r.data.home.shieldUntil, until);
-  });
-
-  test('the rules cannot produce a win against a pinned defense of 100000', () => {
-    for (const dmg of [1, 100000, 999999]) {
-      const sim = NR.resolveAutoBattle({ defense: 100000, castleHp: 200, layout: { cells: [], dogLane: 2, soldiers: 0 }, dogLevel: 1, attackerDamage: dmg });
-      assert.equal(sim.won, false, 'damage ' + dmg);
-    }
-  });
-
-  test('raiding the same shielded home twice in one day is refused with 409', async () => {
-    const world = createWorld();
-    const attacker = await world.createUser({ allowBot: true });
-    const defender = await world.createUser({ allowBot: true });
-    await seedHome(world, attacker, 800);
-    await seedHome(world, defender, 800);
-    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
-    await raid(world, attacker, defender);
-    const again = await world.call(startHandler().onRequestPost, { token: attacker.token, body: { targetId: defender.uid } });
-    assert.equal(again.status, 409);
-  });
-});
-
 function adminHandler() { return loadModule('functions/api/admin/daily-tasks.js'); }
 
 suite('daily task: admin API', () => {
-  test('a child cannot use the admin endpoints', async () => {
+  test('a learner cannot use the admin endpoints', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
     const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: kid.token });
     assert.equal(g.status, 403);
-    const p = await world.call(adminHandler().onRequestPost, { token: kid.token, body: { userId: kid.uid, kind: 'phrases', target: 5 } });
+    const p = await world.call(adminHandler().onRequestPost, { token: kid.token, body: { userId: kid.uid, kind: 'word:pr1-1', target: 5 } });
     assert.equal(p.status, 403);
     const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=1', method: 'DELETE', token: kid.token });
     assert.equal(d.status, 403);
   });
 
-  test('create validates kind, target and user', async () => {
+  test('create validates kind, target and user; a cut kind is refused like an unknown one', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
     const post = body => world.call(adminHandler().onRequestPost, { token: admin.token, body });
     assert.equal((await post({ userId: kid.uid, kind: 'nope', target: 5 })).status, 400);
-    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 0 })).status, 400);
-    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 51 })).status, 400);
-    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 2.5 })).status, 400);
-    assert.equal((await post({ userId: 9999, kind: 'phrases', target: 5 })).status, 404);
-    assert.equal((await post({ userId: admin.uid, kind: 'phrases', target: 5 })).status, 400, 'admins are not learners');
-    const ok = await post({ userId: kid.uid, kind: 'units:hk1-mix', target: 5 });
+    for (const gone of ['phrases', 'units:hk1-mix', 'grammar:unit12', 'math-exam:any-hk1', 'ptnk:any']) {
+      assert.equal((await post({ userId: kid.uid, kind: gone, target: 5 })).status, 400, gone + ' is no longer assignable');
+    }
+    assert.equal((await post({ userId: kid.uid, kind: 'word:pr1-1', target: 0 })).status, 400);
+    assert.equal((await post({ userId: kid.uid, kind: 'word:pr1-1', target: 51 })).status, 400);
+    assert.equal((await post({ userId: kid.uid, kind: 'word:pr1-1', target: 2.5 })).status, 400);
+    assert.equal((await post({ userId: 9999, kind: 'word:pr1-1', target: 5 })).status, 404);
+    assert.equal((await post({ userId: admin.uid, kind: 'word:pr1-1', target: 5 })).status, 400, 'admins are not learners');
+    const ok = await post({ userId: kid.uid, kind: 'word:pr1-mix', target: 5 });
     assert.equal(ok.status, 200);
-    assert.equal(ok.data.task.kind, 'units:hk1-mix');
-    assert.equal(ok.data.task.label, 'Units HK1 · 🎲 Mix');
+    assert.equal(ok.data.task.kind, 'word:pr1-mix');
+    assert.equal(ok.data.task.label, 'Book 1 · 🎲 Mix');
     assert.equal(ok.data.task.target, 5);
     const row = world.db.prepare('SELECT * FROM daily_tasks WHERE id=?').get(ok.data.task.id);
     assert.equal(row.activity_type, 'lesson');
-    assert.deepEqual(JSON.parse(row.match_json), { titleExact: 'Unit hk1-mix words practice' });
+    assert.deepEqual(JSON.parse(row.match_json), { titleExact: 'Unit pr1-mix words practice' });
     assert.equal(row.created_by, admin.uid);
-    const dup = await post({ userId: kid.uid, kind: 'units:hk1-mix', target: 3 });
+    const dup = await post({ userId: kid.uid, kind: 'word:pr1-mix', target: 3 });
     assert.equal(dup.status, 409, 'same active kind twice');
   });
 
-  test('admin can assign Toán 4 Pre and Mix as two independent tasks', async () => {
+  test('every one of the 48 catalog keys is assignable', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
-    const kid = await world.createUser({});
-    const post = kind => world.call(adminHandler().onRequestPost, {
-      token: admin.token, body: { userId: kid.uid, kind, target: 1 },
-    });
-    const pre = await post('math4:pre');
-    const mix = await post('math4:mix');
-    assert.equal(pre.status, 200);
-    assert.equal(mix.status, 200);
-    assert.deepEqual(JSON.parse(world.db.prepare('SELECT match_json FROM daily_tasks WHERE id=?')
-      .get(pre.data.task.id).match_json), { detail: { field: 'g4set', value: 'pre' } });
-    assert.deepEqual(JSON.parse(world.db.prepare('SELECT match_json FROM daily_tasks WHERE id=?')
-      .get(mix.data.task.id).match_json), { detail: { field: 'g4set', value: 'mix' } });
+    const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
+    const keys = Catalog.all().map(e => e.key);
+    assert.equal(keys.length, 48);
+    // MAX_ACTIVE_TASKS caps one learner at 10, so spread them over learners.
+    let kid = null, n = 0;
+    for (const kind of keys) {
+      if (n % 10 === 0) kid = await world.createUser({});
+      n++;
+      const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind, target: 1 } });
+      assert.equal(r.status, 200, kind + ': ' + JSON.stringify(r.data));
+    }
   });
 
-  test('list shows today\'s progress, reward state and shields; delete deactivates', async () => {
+  test('list shows today\'s progress and reward state (no shields); delete deactivates', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
-    const a = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'phrases', target: 1 } });
-    const b = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'collocation', target: 2 } });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: new Date().toISOString().replace('T', ' ').slice(0, 19) });
+    const a = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-1', target: 1 } });
+    const b = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-2', target: 2 } });
+    addUnit(world, kid.uid, 'pr1-1', new Date().toISOString().replace('T', ' ').slice(0, 19));
     let g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: admin.token });
     assert.equal(g.status, 200);
+    assert.deepEqual(Object.keys(g.data).sort(), ['allDone', 'date', 'rewardedToday', 'tasks']);
     assert.equal(g.data.tasks.length, 2);
-    const phr = g.data.tasks.find(t => t.id === a.data.task.id);
-    assert.equal(phr.count, 1);
-    assert.equal(phr.done, true);
-    assert.truthy(phr.created_at);
+    const one = g.data.tasks.find(t => t.id === a.data.task.id);
+    assert.equal(one.count, 1);
+    assert.equal(one.done, true);
+    assert.truthy(one.created_at);
     assert.equal(g.data.allDone, false);
     assert.equal(g.data.rewardedToday, false, 'the admin list never pays out');
     assert.equal(rewards(world, kid.uid).length, 0);
-    assert.deepEqual(g.data.shields, { count: 0, activeUntil: 0 });
+    assert.falsy('shields' in g.data, 'no shield status in the admin view');
 
     const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + b.data.task.id, method: 'DELETE', token: admin.token });
     assert.equal(d.status, 200);
     g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: admin.token });
     assert.equal(g.data.tasks.length, 1);
     assert.equal(g.data.allDone, true);
+    assert.equal(g.data.rewardedToday, false, 'still never pays out');
+    assert.equal(rewards(world, kid.uid).length, 0);
     const gone = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + b.data.task.id, method: 'DELETE', token: admin.token });
     assert.equal(gone.status, 404);
-    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'collocation', target: 3 } });
+    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-2', target: 3 } });
     assert.equal(again.status, 200, 'a deleted kind can be assigned again');
   });
 
   test('days=N adds a per-day history: task in force that day, count that day, reward that day', async () => {
     // The admin's who-studied-who-skipped grid. Three GMT+7 days ending on
-    // "today" (2026-09-02, NOW): a phrases task assigned on the 1st (so the
-    // 31st of August must not count it), done on the 1st, missed on the 2nd.
+    // "today" (2026-09-02, NOW): a task assigned on the 1st (so the 31st of
+    // August must not count it), done on the 1st, missed on the 2nd.
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
-    const id = addTask(world, kid.uid, 'phrases', 1);
+    const id = addTask(world, kid.uid, 'word:pr1-1', 1);
     world.db.prepare("UPDATE daily_tasks SET created_at = '2026-09-01 01:00:00' WHERE id = ?").run(id);
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-09-01 05:00:00' });
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: '2026-08-31 16:30:00' }); // 23:30 VN on the 31st
-    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 19, total: 20, at: '2026-09-02 05:00:00' }); // not perfect
-    world.db.prepare('INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, 200, 1)').run(kid.uid, '2026-09-01');
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-01 05:00:00');
+    addUnit(world, kid.uid, 'pr1-1', '2026-08-31 16:30:00'); // 23:30 VN on the 31st
+    addUnit(world, kid.uid, 'pr1-1', '2026-09-02 05:00:00', 9, 10); // not perfect
+    world.db.prepare('INSERT INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, 200, 0)').run(kid.uid, '2026-09-01');
     const realNow = Date.now; Date.now = () => NOW;
     let g;
     try { g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid + '&days=3', method: 'GET', token: admin.token }); }
@@ -950,7 +598,7 @@ suite('daily task: admin API', () => {
     assert.equal(d1.tasks[0].count, 1);
     assert.equal(d1.allDone, true);
     assert.equal(d1.rewarded, true);
-    assert.equal(d2.tasks[0].count, 0, '19/20 is not a completed task');
+    assert.equal(d2.tasks[0].count, 0, '9/10 is not a completed task');
     assert.equal(d2.allDone, false);
     assert.equal(d2.rewarded, false);
     assert.equal(g.data.tasks.length, 1, 'today\'s list is still there beside the history');
@@ -973,23 +621,22 @@ suite('daily task: admin API', () => {
     assert.equal(g.status, 400);
   });
 
-  test('a child is capped at MAX_ACTIVE_TASKS active tasks', async () => {
+  test('a learner is capped at MAX_ACTIVE_TASKS active tasks', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
-    const kinds = ['phrases', 'collocation', 'wordform', 'rewrite', 'verbs', 'vocab',
-      'grammar:unit1', 'grammar:unit2', 'grammar:unit3', 'grammar:unit4'];
+    const kinds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(u => 'word:pr1-' + u);
     let lastId;
     for (const kind of kinds) {
       const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind, target: 5 } });
       assert.equal(r.status, 200, kind);
       lastId = r.data.task.id;
     }
-    const eleventh = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'grammar:unit5', target: 5 } });
+    const eleventh = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-11', target: 5 } });
     assert.equal(eleventh.status, 400);
     assert.equal(eleventh.data.code, 'too_many');
     await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + lastId, method: 'DELETE', token: admin.token });
-    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'grammar:unit5', target: 5 } });
+    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-11', target: 5 } });
     assert.equal(again.status, 200, 'freeing a slot lets the next create through');
   });
 
@@ -1016,7 +663,7 @@ suite('daily task: admin API', () => {
     const world = createWorld();
     const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=1', method: 'GET' });
     assert.equal(g.status, 401);
-    const p = await world.call(adminHandler().onRequestPost, { body: { userId: 1, kind: 'phrases', target: 5 } });
+    const p = await world.call(adminHandler().onRequestPost, { body: { userId: 1, kind: 'word:pr1-1', target: 5 } });
     assert.equal(p.status, 401);
     const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=1', method: 'DELETE' });
     assert.equal(d.status, 401);
@@ -1035,20 +682,20 @@ suite('daily task: admin API', () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid = await world.createUser({});
-    const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'phrases', target: '5' } });
+    const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'word:pr1-1', target: '5' } });
     assert.equal(r.status, 200);
     assert.equal(r.data.task.target, 5);
   });
 
-  test('an admin can delete a task belonging to a different child', async () => {
+  test('an admin can delete a task belonging to a different learner', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const kid1 = await world.createUser({});
     const kid2 = await world.createUser({});
-    await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid2.uid, kind: 'phrases', target: 1 } });
-    const t = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid1.uid, kind: 'phrases', target: 1 } });
+    await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid2.uid, kind: 'word:pr1-1', target: 1 } });
+    const t = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid1.uid, kind: 'word:pr1-1', target: 1 } });
     const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + t.data.task.id, method: 'DELETE', token: admin.token });
-    assert.equal(d.status, 200, 'no ownership check ties a task to whichever child was last queried');
+    assert.equal(d.status, 200, 'no ownership check ties a task to whichever learner was last queried');
   });
 });
 if (require.main === module) {

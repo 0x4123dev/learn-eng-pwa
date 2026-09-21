@@ -113,9 +113,9 @@ suite('build-dist: what is never minified', () => {
         }
     });
 
-    test('js/phaser.min.js is copied, not re-minified', () => {
-        assert.falsy(wantsMinify('js/phaser.min.js'));
-        assert.truthy(read(path.join(ROOT, 'js/phaser.min.js')).equals(read(path.join(OUT1, 'js/phaser.min.js'))));
+    test('a pre-minified *.min.js is copied, not re-minified', () => {
+        assert.falsy(wantsMinify('js/vendor.min.js'));
+        assert.falsy(wantsMinify('css/vendor.min.css'));
     });
 
     test('everything else under js/ and css/ is minified', () => {
@@ -228,8 +228,8 @@ suite('build-dist: deterministic', () => {
     test('the size table counts every js and css file', () => {
         const nJs = built.files.filter(r => r.startsWith('js/') && wantsMinify(r)).length;
         assert.equal(built.table.js.files, nJs);
-        // css/styles.css plus the three lazily loaded feature sheets (tests/css-split.test.js).
-        assert.equal(built.table.css.files, 4);
+        // css/styles.css plus the two lazily loaded feature sheets (tests/css-split.test.js).
+        assert.equal(built.table.css.files, 2);
         assert.truthy(built.table.js.min < built.table.js.raw);
         assert.truthy(built.table.js.minGz > 0 && built.table.js.minGz < built.table.js.min);
     });

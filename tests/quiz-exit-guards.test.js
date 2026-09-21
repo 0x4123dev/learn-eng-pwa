@@ -4,14 +4,11 @@
 // that followed. Two protections, and every practice screen needs both:
 //
 //   • the ✕ on the question card ASKS once there is work to lose. Five screens
-//     were binning the round on a single tap with nothing said — wordform,
-//     rewrite, phrases, collocation and the Grade 4 units practice.
+//     were once binning the round on a single tap with nothing said; the one
+//     practice left — the Book practice (js/units.js) — was among them.
 //   • switchScreen ASKS before the bottom bar carries the child out. Three of
 //     those five were missing from that guard entirely, so a mis-tap on Home
 //     ended the round with no question at all.
-//
-// A third protection — hiding the bottom bar outright — is for the two
-// sittings you cannot dip out of: an exam, and a round against a clock.
 //
 // The registry test below is the one that matters most. It fails when SOMEONE
 // ADDS A NEW SCREEN and forgets the guard, which is how every one of these
@@ -19,7 +16,6 @@
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -36,18 +32,15 @@ suite('leaving a screen: nothing that can be running is left unguarded', () => {
   // what to look at; a list you have to edit decides what is safe.
   const NOT_AN_ACTIVITY = {
     isAutoplayBlock: 'a browser capability probe',
-    isArrangementCorrect: 'grades one answer',
-    isQuestionBookmarked: 'reads a bookmark flag',
-    isWordStruggling: 'reads a word\'s SRS record',
-    isBonusTopicLesson: 'classifies a lesson',
     isUnitMastered: 'reads a mastery total',
-    isActive: 'GhostOfferingEvent — switchScreen guards it as GhostOfferingEvent.isActive()',
     isCrop: 'FarmRules — classifies one layout cell',
     isFarmBuilding: 'FarmRules — classifies one layout cell',
     isWilted: 'FarmRules — reads a planting date against the task-day context',
     isGitHubPages: 'Hosting — reads which host the page is served from',
   };
-  // Running activities that switchScreen may skip, each with what is NOT lost.
+  // Running activities that switchScreen may skip BY THIS NAME, each with what
+  // is NOT lost. (switchScreen does ask about the drill, through
+  // retryDrillKey() === 'word' — the check below is by function name.)
   const EXEMPT = {
     isRetryDrillActive:
       'the drill persists each item the moment it is fixed (retryClear in ' +
@@ -70,10 +63,28 @@ suite('leaving a screen: nothing that can be running is left unguarded', () => {
 
   test('the scan actually reads the codebase', () => {
     assert.truthy(guard.length > 500, 'switchScreen not found');
-    assert.truthy(found.length >= 15, `only found ${found.length} is…() functions — the scan is broken`);
-    for (const name of ['isMathQuizActive', 'isExamActive', 'isRaiding', 'isFighting']) {
+    assert.truthy(found.length >= 5, `only found ${found.length} is…() functions — the scan is broken`);
+    for (const name of ['isUnitPracticeActive', 'isRetryDrillActive']) {
       assert.truthy(found.some(f => f.name === name), `the scan missed ${name}`);
     }
+  });
+
+  test('the guard list in switchScreen is the Book practice and the word drill', () => {
+    // The two live activities, each guarded on its own screen: a practice
+    // belongs to unitPracticeScreen() (the Word screen), and the drill to
+    // wordScreen — so switching between the three Book buttons asks too.
+    assert.truthy(/isUnitPracticeActive\(\)/.test(guard), 'the Book practice is guarded');
+    assert.truthy(/unitPracticeScreen\(\)/.test(guard), 'on the screen the engine names');
+    assert.truthy(/retryDrillKey\(\) === 'word'/.test(guard), 'the word drill is guarded');
+    assert.truthy(/screenId !== 'wordScreen' &&\s*typeof retryDrillKey/.test(guard), 'on the Word screen');
+    assert.falsy(/isMathQuizActive|isExamActive|isRaiding|isFighting|GhostOfferingEvent/.test(guard),
+      'no guard for an activity that no longer exists');
+    const app = read('js/app.js');
+    const busy = /const _BUSY_CHECKS = \[([^\]]*)\]/.exec(app);
+    assert.truthy(busy, '_BUSY_CHECKS not found');
+    assert.deepEqual([...busy[1].matchAll(/'([A-Za-z]+)'/g)].map(m => m[1]),
+      ['isUnitPracticeActive', 'isRetryDrillActive'],
+      'an update that reloads must be as careful as the bottom bar');
   });
 
   test('switchScreen asks about every live activity in the app', () => {
@@ -104,13 +115,13 @@ suite('leaving a screen: nothing that can be running is left unguarded', () => {
 // the ✕ on the question card
 // ---------------------------------------------------------------------------
 //
-// Each tab is loaded the way the browser gives it to itself: its bank as a
-// global, then the module. They all keep the same quiz shape
-// ({questions, idx, answers}), so one table drives the lot.
-function bank(file, name) {
+// The tab is loaded the way the browser gives it to itself: its bank as
+// globals, then the module. The table shape is kept so a second practice can
+// be added to it.
+function bank(file, names) {
   const mod = require(path.join(ROOT, 'js', file));
-  global[name] = mod[name];
-  return mod[name];
+  for (const name of names) global[name] = mod[name];
+  return mod;
 }
 
 // No document stub here: withDom() installs one per test and takes it away
@@ -120,69 +131,17 @@ global.currentUser = global.currentUser || 'tester';
 global.saveUserData = global.saveUserData || (() => {});
 Object.assign(global, require(path.join(ROOT, 'js', 'answer-audio.js')));
 
-bank('wordform-data.js', 'WORDFORM_QUESTIONS');
-bank('rewrite-data.js', 'REWRITE_QUESTIONS');
-bank('phrases-data.js', 'PREPOSITION_QUESTIONS');
-bank('collocation-data.js', 'COLLOCATION_QUESTIONS');
-bank('units-data.js', 'UNIT_WORDS');
+bank('word-data.js', ['UNIT_WORDS_PR1', 'UNIT_WORDS_PR2', 'UNIT_WORDS_PR3', 'UNIT_PR_TITLES']);
 
 const TABS = [
   {
-    label: 'Word form',
-    mod: require(path.join(ROOT, 'js', 'wordform.js')),
-    file: 'js/wordform.js',
-    start: (m) => m.startWordformQuiz(10),
-    answer: (m) => { m.answerWfQuestion(0); m.submitWfText(); },
-    answered: (m) => m.wfAnsweredCount(),
-    active: (m) => m.isWordformQuizActive(),
-    quit: 'quitWordformQuiz',
-  },
-  {
-    label: 'Rewrite',
-    mod: require(path.join(ROOT, 'js', 'rewrite.js')),
-    file: 'js/rewrite.js',
-    start: (m) => m.startRewriteQuiz(10),
-    answer: (m) => m.submitRwText('anything at all'),
-    answered: (m) => m.rwAnsweredCount(),
-    active: (m) => m.isRewriteQuizActive(),
-    quit: 'quitRewriteQuiz',
-  },
-  {
-    label: 'Phrases',
-    mod: require(path.join(ROOT, 'js', 'phrases.js')),
-    file: 'js/phrases.js',
-    start: (m) => m.startPhrasesQuiz(10),
-    // Answer whatever is on screen. Roughly one question in ten is TYPED, and
-    // answerPhrQuestion refuses those, so tapping an option alone left the
-    // round with nothing answered whenever the draw put a typed question
-    // first — and then the ✕ had no work to protect and never asked. The test
-    // failed perhaps one run in eight, on the clock, for a reason that had
-    // nothing to do with the exit guard it was meant to check. Both are
-    // offered; exactly one lands, because each refuses the other's shape and
-    // the second sees the answer already recorded.
-    answer: (m) => { m.answerPhrQuestion(0); m.submitPhrTextAnswer(); },
-    answered: (m) => m.phrAnsweredCount(),
-    active: (m) => m.isPhrasesQuizActive(),
-    quit: 'quitPhrasesQuiz',
-  },
-  {
-    label: 'Collocation',
-    mod: require(path.join(ROOT, 'js', 'collocation.js')),
-    file: 'js/collocation.js',
-    start: (m) => m.startCollocPractice(10),
-    // Same as Phrases: answerCollocChoice refuses a question with no options,
-    // which is exactly what a typed one is.
-    answer: (m) => { m.answerCollocChoice(0); m.submitCollocText(); },
-    answered: (m) => m.colAnsweredCount(),
-    active: (m) => m.isCollocActive(),
-    quit: 'quitCollocPractice',
-  },
-  {
-    label: 'Grade 4 units',
+    label: 'Book practice',
     mod: require(path.join(ROOT, 'js', 'units.js')),
     file: 'js/units.js',
-    start: (m) => m.startUnitPractice(1),
-    answer: (m) => m.submitUnitAnswer('anything at all'),
+    start: (m) => m.startUnitPractice('pr1-1'),
+    // No input box in this DOM stub, so the answer lands as a blank — which
+    // is still an answer, and still work to lose.
+    answer: (m) => m.submitUnitAnswer(),
     answered: (m) => m.unitAnsweredCount(),
     active: (m) => m.isUnitPracticeActive(),
     quit: 'quitUnitPractice',
@@ -268,245 +227,6 @@ suite('the ✕ on a question card asks before it bins the round', () => {
         `${tab.label}: the ✕ calls "${x[1]}" — it must go through ${tab.quit}()`);
     });
   }
-});
-
-// ---------------------------------------------------------------------------
-// the lock: a sitting you cannot dip out of takes the bottom bar away
-// ---------------------------------------------------------------------------
-//
-// Both of these live in files with no module.exports, so they run in a vm the
-// way the browser runs them — the real source, not a copy of it.
-function vmModule(files, extra, after) {
-  const nav = { style: { display: 'flex' } };
-  const el = () => ({
-    innerHTML: '', scrollTop: 0, textContent: '', style: {}, value: '',
-    classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
-    focus() {}, querySelector: () => null, querySelectorAll: () => [],
-    addEventListener() {}, removeEventListener() {},
-  });
-  const ctx = vm.createContext(Object.assign({
-    console,
-    document: {
-      getElementById: (id) => id === 'bottomNav' ? nav : el(),
-      querySelector: () => el(), querySelectorAll: () => [], createElement: () => el(),
-      body: el(), addEventListener() {},
-    },
-    localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
-    window: { scrollTo() {} }, navigator: {},
-    setTimeout, clearTimeout, setInterval, clearInterval, Date, Math, JSON,
-    appState: { coins: 0 },
-    currentUser: 'tester',
-    saveUserData: () => {},
-    confirm: () => true,
-  }, extra || {}));
-  for (const file of [].concat(files)) vm.runInContext(read(file), ctx, { filename: file });
-  // A top-level `const` is lexically scoped to its own script, so a bank
-  // declared that way is invisible to the context until it is handed over.
-  if (after) vm.runInContext(after, ctx, { filename: 'epilogue.js' });
-  return { ctx, nav, hidden: () => nav.style.display === 'none' };
-}
-
-suite('the timed exam locks the screen for its whole hour', () => {
-  // 40 to 90 minutes with a clock running, and walking out saves nothing at
-  // all. The bottom bar had no business sitting under the thumb for that.
-  function examWorld() {
-    // js/exam.js is only the engine; a set (here PTNK, js/ptnk.js — loaded
-    // after the engine, as index.html does) brings the screen and the bank.
-    // ptnk-data.js declares PTNK_EXAMS as a plain top-level const, so it is
-    // loaded into the same context rather than required.
-    const w = vmModule(['js/ptnk-data.js', 'js/exam.js', 'js/ptnk.js'], { recordStudy: () => {} },
-      'globalThis.__EXAMS = PTNK_EXAMS;');
-    const timed = w.ctx.__EXAMS.find(e => e.durationMin && e.questions && e.questions.length);
-    assert.truthy(timed, 'no timed exam in the bank to test with');
-    w.ctx.examSelectSet('ptnk');
-    return { w, examId: timed.id };
-  }
-
-  test('starting a timed exam hides the bottom bar', () => {
-    const { w, examId } = examWorld();
-    assert.falsy(w.hidden(), 'the bar is there beforehand');
-    w.ctx.startExam(examId);
-    assert.truthy(w.ctx.isExamActive(), 'the exam did not start');
-    assert.truthy(w.hidden(), 'a mis-tap must not be one tap away during a timed exam');
-    w.ctx.abandonExam();
-  });
-
-  test('quitting through the ✕ gives the bar back', () => {
-    const { w, examId } = examWorld();
-    w.ctx.startExam(examId);
-    w.ctx.quitExam();                       // confirm() says yes in this world
-    assert.falsy(w.ctx.isExamActive());
-    assert.falsy(w.hidden(), 'the bar can never be left hidden');
-  });
-
-  test('abandoning gives the bar back', () => {
-    const { w, examId } = examWorld();
-    w.ctx.startExam(examId);
-    w.ctx.abandonExam();
-    assert.falsy(w.hidden());
-  });
-
-  test('running out of time gives the bar back', () => {
-    // The one exit nobody taps: the clock ends it for them.
-    const { w, examId } = examWorld();
-    w.ctx.startExam(examId);
-    w.ctx.finishExam(true);
-    assert.falsy(w.ctx.isExamActive());
-    assert.falsy(w.hidden(), 'a child left staring at a locked results screen');
-  });
-});
-
-suite('a Math Wars round locks the screen while its clock runs', () => {
-  function warsWorld() {
-    const MFR = require(path.join(ROOT, 'js', 'math-fight-rules.js'));
-    const { MATH_FIGHT_BANK } = require(path.join(ROOT, 'js', 'math-fight-bank.js'));
-    return vmModule('js/mathwars.js', {
-      MathFightRules: MFR, MATH_FIGHT_BANK,
-      renderMathHome: () => {}, recordStudy: () => {},
-    });
-  }
-
-  test('starting a round hides the bottom bar', () => {
-    const w = warsWorld();
-    w.ctx.startWarsRound();
-    assert.truthy(w.ctx.isWarsActive(), 'the round did not start');
-    assert.truthy(w.hidden(), 'the clock does not wait for a mis-tap to be undone');
-    w.ctx.abandonWars();
-  });
-
-  test('the ✕ gives the bar back', () => {
-    const w = warsWorld();
-    w.ctx.startWarsRound();
-    w.ctx.warsQuit();                       // confirm() says yes in this world
-    assert.falsy(w.ctx.isWarsActive());
-    assert.falsy(w.hidden());
-  });
-
-  test('the round ending gives the bar back', () => {
-    const w = warsWorld();
-    w.ctx.startWarsRound();
-    w.ctx.finishWars(true);
-    assert.falsy(w.hidden(), 'a finished round must not strand the child');
-  });
-});
-
-suite('the × on a lesson asks before it drops the lesson', () => {
-  // The lesson screen has always hidden the bottom bar, so it was never the
-  // mis-tap risk the practice tabs were. But its × had the same silent bin:
-  // half a lesson, one tap, nothing saved and nothing said.
-  //
-  // exitLesson() itself must stay silent — it is also how a FINISHED lesson
-  // closes (js/lessons.js and js/daily-challenge.js both call it), and asking
-  // there would question a child who has already earned their coins.
-  function lessonWorld(state) {
-    const w = vmModule('js/lessons.js', {
-      lessonState: state,
-      renderHome: () => {}, renderTopicsHome: () => {}, openTopicDetail: () => {},
-      openReviewDetail: () => {}, recordStudy: () => {},
-    });
-    w.nav.style.display = 'none';   // a lesson is running: the bar is already away
-    return w;
-  }
-  const halfDone = () => ({ correctInLesson: 3, wrongInLesson: 1, words: [] });
-
-  test('saying no keeps the child in the lesson', () => {
-    let asked = 0;
-    const w = lessonWorld(halfDone());
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.quitLesson();
-    assert.equal(asked, 1, 'it must ask before dropping the lesson');
-    assert.truthy(w.hidden(), 'saying no must leave the lesson exactly as it was');
-  });
-
-  test('saying yes leaves, and hands the bottom bar back', () => {
-    const w = lessonWorld(halfDone());
-    w.ctx.confirm = () => true;
-    w.ctx.quitLesson();
-    assert.falsy(w.hidden(), 'leaving a lesson must restore the bar');
-  });
-
-  test('a lesson with nothing answered yet closes without a question', () => {
-    let asked = 0;
-    const w = lessonWorld({ correctInLesson: 0, wrongInLesson: 0, words: [] });
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.quitLesson();
-    assert.equal(asked, 0, 'nothing at stake, nothing to ask');
-    assert.falsy(w.hidden());
-  });
-
-  test('a finished lesson closes without a question', () => {
-    let asked = 0;
-    const w = lessonWorld(Object.assign(halfDone(), { finished: true }));
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.quitLesson();
-    assert.equal(asked, 0, 'the coins are already banked — do not question that');
-    assert.falsy(w.hidden());
-  });
-
-  test('the internal exits stay silent', () => {
-    // js/lessons.js "Continue" and js/daily-challenge.js "Collect!" both call
-    // exitLesson() on a lesson that is over.
-    let asked = 0;
-    const w = lessonWorld(halfDone());
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.exitLesson();
-    assert.equal(asked, 0, 'exitLesson is the silent exit, by design');
-    assert.falsy(w.hidden());
-  });
-
-  test('the × in index.html goes through the asking exit', () => {
-    const html = read('index.html');
-    const x = /<button class="close-btn" onclick="([^"]+)">×<\/button>/.exec(html);
-    assert.truthy(x, 'no × found on the lesson header');
-    assert.equal(x[1], 'quitLesson()', `the × calls "${x[1]}"`);
-  });
-
-  test('completing a lesson marks it finished', () => {
-    const src = read('js/lessons.js');
-    const body = src.slice(src.indexOf('function completeLesson()'), src.indexOf('function completeLesson()') + 400);
-    assert.truthy(/lessonState\.finished = true/.test(body),
-      'completeLesson must say so, or the × will question a child who has finished');
-  });
-});
-
-suite('the ✕ on the Verbs speed game asks before it drops the run', () => {
-  // The last silent ✕ in the app. The speed game is timed and scored only when
-  // it ends, and its ✕ sits beside the answer box.
-  function speedWorld(state) {
-    const w = vmModule('js/verbs.js', {
-      speedState: state,
-      SPEED_TIME_LIMIT: 10000, SPEED_PENALTY_TIME: 2000, SPEED_QUESTIONS_PER_GAME: 10,
-      renderSpeedChallenge: () => {},
-    });
-    w.nav.style.display = 'none';   // a game is running: the bar is already away
-    return w;
-  }
-  const midGame = () => ({ timer: null, currentIndex: 4, verbResults: [1, 2, 3, 4], score: 40 });
-
-  test('saying no keeps the run alive', () => {
-    let asked = 0;
-    const w = speedWorld(midGame());
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.exitSpeedGame();
-    assert.equal(asked, 1, 'it must ask before dropping a timed run');
-    assert.truthy(w.hidden(), 'saying no must leave the game exactly as it was');
-  });
-
-  test('saying yes ends it and hands the bottom bar back', () => {
-    const w = speedWorld(midGame());
-    w.ctx.confirm = () => true;
-    w.ctx.exitSpeedGame();
-    assert.falsy(w.hidden(), 'leaving must restore the bar');
-  });
-
-  test('a run with nothing answered closes without a question', () => {
-    let asked = 0;
-    const w = speedWorld({ timer: null, currentIndex: 0, verbResults: [], score: 0 });
-    w.ctx.confirm = () => { asked++; return false; };
-    w.ctx.exitSpeedGame();
-    assert.equal(asked, 0, 'nothing at stake, nothing to ask');
-    assert.falsy(w.hidden());
-  });
 });
 
 if (require.main === module) {

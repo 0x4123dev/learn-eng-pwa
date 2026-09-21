@@ -1,246 +1,34 @@
-/* css/night-raid.css — Night Raid: the isometric home builder, farm, scouting
-   and the raid itself. Split out of css/styles.css so Home never pays to parse
-   it; js/lazy-data.js loads it (SCREEN_FILES) before nightRaidScreen and the
-   Arena lobby (which mounts the raid yard) paint. Every rule here uses a class
-   that only the Night Raid modules render, and tests/css-split.test.js keeps
-   the three feature files and styles.css disjoint. */
-.unit-reward-shop {
-            padding: 10px 18px; border-radius: 50px; border: none; cursor: pointer;
-            background: linear-gradient(135deg, #f59e0b, #f97316); color: #fff;
-            font-size: 14px; font-weight: 800; font-family: inherit;
-            box-shadow: 0 4px 14px rgba(249,115,22,0.35);
-        }
-.unit-reward-shop:active { transform: scale(0.96); }
-/* ==================== WORD PET ==================== */
-        .pet-container {
-            text-align: center;
-            padding: 12px 0;
-            position: relative;
-        }
-.pet-info-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.7);
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-.pet-info-btn:hover { background: rgba(255,255,255,0.95); }
-.pet-name {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-.pet-hero-level {
-            background: rgba(0,0,0,0.35);
-            color: #fff;
-            font-size: 13px;
-            font-weight: 800;
-            padding: 5px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
-        }
-.pet-hero-version {
-            color: rgba(255,255,255,0.5);
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-/* Accessories tray */
-        .pet-acc-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2px 8px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 4px;
-            color: var(--text-secondary);
-        }
-.pet-acc-tray {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            padding: 6px 4px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 10px;
-            margin-top: 4px;
-            max-width: 200px;
-        }
-/* Daily pet quest */
-        .pet-quest {
-            width: 100%;
-            background: rgba(255,255,255,0.75);
-            border-radius: 8px;
-            padding: 4px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            text-align: center;
-            margin-top: 4px;
-            color: #333;
-        }
-.pet-quest.completed { background: rgba(76,175,80,0.25); color: #2e7d32; }
-/* ==================== DOG PET — LEGACY COMPAT ==================== */
-        .pet-top-bar { display: none; }
-.pet-level-badge, .pet-title, .pet-xp-bar, .pet-coin-display, .pet-shop-label { display: none; }
-.pet-shop-btn { display: none; }
-/* Shop modal */
-        .pet-shop-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 300;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-.pet-shop-overlay {
-    background: rgba(36, 20, 64, .56);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-}
-/* ================================================================
-   CASTLE NIGHT RAID — storybook night UI, one combat mode
-   ================================================================ */
+/* css/night-raid.css — Nông trại: the isometric home builder, the farm, the
+   yard with the pet and the parade. Split out of css/styles.css so Home never
+   pays to parse it; js/lazy-data.js loads it (SCREEN_FILES) before
+   nightRaidScreen paints. Every rule here uses a class that only
+   js/night-raid.js renders, and tests/css-split.test.js keeps the feature
+   files and styles.css disjoint. The raid, scout, battle, friend-list, ruins,
+   journal and replay blocks were cut with the Arena in September 2026. */
 .night-raid-screen{background:#071326;color:#eef6ff;min-height:100dvh;padding-bottom:calc(84px + env(safe-area-inset-bottom));overflow-x:hidden}
 .nr-shell{min-height:100%;background:radial-gradient(circle at 85% 8%,rgba(82,118,193,.24),transparent 34%),linear-gradient(180deg,#09162c 0,#101d36 45%,#071326 100%)}
 .nr-topbar{min-height:72px;padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;position:relative;z-index:5}
 .nr-topbar h1{font-size:clamp(19px,4.5vw,28px);line-height:1.05;margin:2px 0 0;color:#fff;letter-spacing:-.025em}
 .nr-kicker,.nr-label{display:block;font-size:11px;font-weight:900;letter-spacing:.14em;color:#9fb4da}
-.nr-icon-btn,.nr-back,.nr-topbar button{border:1px solid rgba(190,218,255,.22);background:rgba(12,25,48,.78);color:#fff;min-width:48px;min-height:48px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
-.nr-icon-btn svg,.nr-back svg,.nr-wallet svg,.nr-primary svg,.nr-section-head svg,.nr-result svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nr-icon-btn,.nr-topbar button{border:1px solid rgba(190,218,255,.22);background:rgba(12,25,48,.78);color:#fff;min-width:48px;min-height:48px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.nr-icon-btn svg,.nr-wallet svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nr-wallet{height:44px;padding:0 13px;border:1px solid rgba(255,211,108,.3);border-radius:15px;background:rgba(42,30,15,.7);display:flex;align-items:center;gap:7px;color:#ffd36c}
 .nr-wallet svg{width:20px;height:20px}
 .nr-wallet strong{font-size:16px;color:#fff}
-.nr-builder,.nr-live-targets,.nr-result{width:min(1120px,100%);margin:0 auto;padding:8px max(16px,env(safe-area-inset-left)) 28px}
-.nr-primary,.nr-secondary{border:0;min-height:52px;border-radius:17px;padding:0 20px;font:800 16px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;touch-action:manipulation}
-.nr-primary{color:#17100b;background:linear-gradient(135deg,#ffd66f,#ff9e4d);box-shadow:0 12px 30px rgba(255,154,61,.28),inset 0 1px rgba(255,255,255,.65)}
-.nr-secondary{color:#edf6ff;background:#182b49;border:1px solid rgba(184,216,255,.24)}
-.nr-primary:active,.nr-secondary:active{transform:translateY(1px)}
-.nr-section-head{display:flex;align-items:center;gap:16px;margin:4px 0 22px}
-.nr-section-head.compact{margin-bottom:14px}
-.nr-back{flex:0 0 auto;padding:0 13px;gap:7px}
-.nr-back span{font-weight:800}
-.nr-section-head h2{margin:3px 0 4px;color:#fff;font-size:clamp(24px,5vw,34px)}
-.nr-section-head p{margin:0;color:#afc0da;line-height:1.4;font-size:14px}
-.nr-result-stars i{width:11px;height:11px;display:block;clip-path:polygon(50% 0,62% 35%,100% 38%,70% 61%,80% 100%,50% 76%,20% 100%,30% 61%,0 38%,38% 35%);background:#53627a}
-.nr-result-stars i.on{background:#ffd05b}
-.nr-canvas-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;background:#071326}
-.nr-canvas-wrap{min-height:0;display:grid;place-items:center;position:relative;background:#050e1d;overflow:hidden}
-.nr-canvas-wrap canvas{max-height:100%;object-fit:contain;touch-action:manipulation}
-.nr-unit-portrait.goblin i{background:#8fce66;width:29px;left:6px}
-.nr-unit-portrait.bomb-rat i{background:#ff7772}
-.nr-unit-portrait.bomb-rat b{position:absolute;width:13px;height:13px;border-radius:50%;background:#252a37;right:4px;top:8px}
-.nr-result{text-align:center;max-width:680px;padding-top:7dvh}
-.nr-result-crest{width:86px;height:86px;margin:0 auto 16px;border-radius:28px;display:grid;place-content:center;background:linear-gradient(145deg,#ffc85d,#ff7c50);color:#26170f;box-shadow:0 18px 50px rgba(255,131,69,.3)}
-.nr-result.lost .nr-result-crest{background:linear-gradient(145deg,#7c91b5,#45597a);color:#eaf1ff}
-.nr-result-crest svg{width:46px;height:46px}
-.nr-result h2{font-size:clamp(30px,7vw,48px);margin:8px 0;color:#fff}
-.nr-result>p{max-width:520px;margin:0 auto;color:#bdcce1;line-height:1.55}
-.nr-result-stars{display:flex;justify-content:center;gap:8px;margin:20px}
-.nr-result-stars i{width:34px;height:34px}
-.nr-reward{display:inline-flex;align-items:center;gap:8px;border-radius:16px;padding:10px 16px;background:rgba(255,202,83,.12);color:#ffd15f;font-size:20px;font-weight:900}
-.nr-result-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.nr-result-actions button{width:100%}
-/* Win/loss popup over the live battlefield — the final frame stays visible
-   behind a light scrim, the banner drops in and the stars pop one by one,
-   the way the big mobile games end a fight. */
-.nr-result-pop{position:absolute;inset:0;z-index:6;display:grid;place-items:center;padding:16px}
-.nr-pop-scrim{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,12,26,.16) 0%,rgba(5,12,26,.58) 100%);animation:nrPopFade .4s ease-out both}
-.nr-pop-card{position:relative;width:min(430px,94%);border-radius:26px;background:linear-gradient(180deg,rgba(19,42,76,.97),rgba(11,26,51,.97));border:1px solid rgba(180,212,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);text-align:center;color:#fff;animation:nrPopIn .5s cubic-bezier(.34,1.56,.64,1) .05s both}
-.nr-result-pop .nr-pop-banner{position:absolute;top:-2px;left:50%;transform:translateX(-50%) translateY(-38%);padding:11px 28px;border-radius:17px;font-size:clamp(21px,5vw,29px);font-weight:1000;letter-spacing:.04em;white-space:nowrap;animation:nrBannerDrop .55s cubic-bezier(.34,1.56,.64,1) .12s both}
-.nr-result-pop.won .nr-pop-banner{background:linear-gradient(135deg,#ffd76a,#ff9333);color:#4a2404;box-shadow:0 10px 30px rgba(255,160,50,.45)}
-.nr-result-pop.lost .nr-pop-banner{background:linear-gradient(135deg,#8ca3c7,#54688a);color:#0d1930;box-shadow:0 10px 26px rgba(20,35,64,.5)}
-.nr-result-pop .nr-result-crest{width:62px;height:62px;margin:8px auto 6px;border-radius:20px}
-.nr-result-pop .nr-result-crest svg{width:33px;height:33px}
-.nr-result-pop p{margin:6px auto;max-width:340px;color:#c3d2e8;font-size:13px;line-height:1.5}
-.nr-result-pop .nr-result-score{margin:10px auto;width:min(360px,100%)}
-.nr-result-pop .nr-result-score strong{font-size:clamp(21px,4.5vw,30px)}
-.nr-result-pop .nr-result-stars{margin:8px;gap:10px}
-.nr-result-pop .nr-result-stars i{width:30px;height:30px;animation:nrStarPop .45s cubic-bezier(.34,1.56,.64,1) both}
-.nr-result-pop .nr-reward{font-size:16px;padding:8px 14px;white-space:nowrap}
-/* The popup lives outside .nr-result, so the stroke-icon rule above never
-   reached it: the coin rendered as a 60px solid black disc and shoved
-   "+60 xu đã cướp" onto three lines. */
-.nr-result-pop .nr-reward svg,.nr-result-pop .nr-result-crest svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.nr-result-pop .nr-reward svg{width:22px;height:22px;flex:0 0 auto}
-.nr-result-pop .nr-loss{margin:8px auto;padding:10px;font-size:15px;width:min(320px,100%)}
-.nr-result-pop .nr-result-actions{margin-top:12px}
-.nr-auto-command.hidden{display:none}
-/* Scout stage: the whole island fills the screen like the home builder.
-   Only OUR army's numbers float over the board — the enemy DEF is a secret
-   the child learns by attacking. */
-.nr-scout-stage .nr-battle-hud{grid-template-columns:auto minmax(0,1fr) auto}
-@keyframes nrPopFade{from{opacity:0}to{opacity:1}}
-@keyframes nrPopIn{from{opacity:0;transform:translateY(46px) scale(.82)}to{opacity:1;transform:none}}
-@keyframes nrBannerDrop{from{opacity:0;transform:translateX(-50%) translateY(-160%) scale(1.25)}to{opacity:1;transform:translateX(-50%) translateY(-38%)}}
-@keyframes nrStarPop{from{opacity:0;transform:scale(.2) rotate(-40deg)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.nr-pop-scrim,.nr-pop-card,.nr-result-pop .nr-pop-banner,.nr-result-pop .nr-result-stars i{animation:none}}
+.nr-builder{width:min(1120px,100%);margin:0 auto;padding:8px max(16px,env(safe-area-inset-left)) 28px}
 .nr-build-tray{display:flex;gap:8px;overflow-x:auto;padding:3px 0 8px}
 .nr-build-item{flex:1 0 132px;max-width:180px;min-height:84px;border:2px solid transparent;border-radius:17px;background:#122642;color:#fff;padding:8px;display:grid;grid-template-columns:42px 1fr;align-items:center;text-align:left;gap:8px;cursor:pointer}
 .nr-build-item.selected{border-color:#ffd268}
 .nr-build-item strong,.nr-build-item small{display:block}
 .nr-build-item strong{font-size:12px}
 .nr-build-item small{color:#bdcbe0;font-size:11px;margin-top:3px}
-.nr-target-card{min-height:240px;border:1px solid rgba(187,217,255,.18);border-radius:22px;background:linear-gradient(165deg,#172d4d,#0f1f38);color:#fff;padding:14px;text-align:left;display:grid;grid-template-rows:1fr auto;position:relative;cursor:pointer;overflow:hidden}
-.nr-loading{min-height:280px;display:grid;place-content:center;text-align:center;color:#b8c9df}
-.nr-loading i{width:42px;height:42px;margin:0 auto 14px;border-radius:50%;border:4px solid rgba(255,255,255,.12);border-top-color:#ffbf5d;animation:nr-spin .8s linear infinite}
-.nr-wide{width:100%}
-.nr-empty{color:#b9cae0}
 .night-raid-screen :is(button,a):focus-visible{outline:3px solid #fff0a7;outline-offset:3px}
 @media (max-width:700px){
-.nr-builder,.nr-live-targets,.nr-result{padding-left:12px;padding-right:12px}
-.nr-section-head{align-items:flex-start}
-.nr-target-card{min-height:170px;grid-template-columns:150px 1fr;grid-template-rows:1fr;align-items:center}
-.nr-result{padding-top:5dvh}
+.nr-builder{padding-left:12px;padding-right:12px}
 }
-@media (max-width:600px) and (max-aspect-ratio:1/1){
-.nr-canvas-wrap canvas{width:auto;height:100%;max-width:none;min-width:760px;transform:none}
-.nr-canvas-wrap{overflow:hidden;place-items:center start}
-}
-@media (prefers-reduced-motion:reduce){
-.nr-loading i{animation:none}
-.nr-primary:active,.nr-secondary:active{transform:none}
-}
-.nr-reports,.nr-replay{width:min(960px,100%);margin:0 auto;padding:8px max(16px,env(safe-area-inset-left)) 36px}
-.nr-report-list{display:grid;gap:12px}
-.nr-report-card{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:14px;padding:15px;border:1px solid rgba(184,216,255,.17);border-radius:21px;background:linear-gradient(145deg,rgba(18,37,66,.95),rgba(11,25,47,.95));box-shadow:0 14px 30px rgba(0,0,0,.18)}
-.nr-report-card.new:before{content:"MỚI";position:absolute;top:-7px;left:16px;padding:3px 8px;border-radius:999px;background:#ffd065;color:#4b2b08;font-size:10px;font-weight:950;letter-spacing:.08em}
-.nr-report-crest{width:54px;height:54px;border-radius:17px;display:grid;place-content:center;background:rgba(90,214,148,.13);color:#73dfa7}
-.nr-report-card.breached .nr-report-crest{background:rgba(255,107,101,.13);color:#ff8f89}
-.nr-report-crest svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2}
-.nr-report-card h3{font-size:18px;color:#fff;margin:3px 0}
-.nr-report-card p{font-size:12px;color:#aebfd8;margin:0}
-.nr-report-card .nr-held-reward{color:#ffd065;font-weight:900;white-space:nowrap}
-.nr-report-state{font-size:10px;font-weight:950;letter-spacing:.11em;color:#76dda7}
-.nr-report-card.breached .nr-report-state{color:#ff9992}
-.nr-report-card .nr-secondary{min-width:118px;padding:0 14px}
-.nr-report-card .nr-secondary svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2}
-.nr-empty-state{min-height:250px;border:1px dashed rgba(183,216,255,.2);border-radius:24px;display:grid;place-content:center;text-align:center;padding:30px;color:#aebfd8}
-.nr-empty-state svg{width:52px;height:52px;margin:0 auto 10px;fill:none;stroke:#83c9ff;stroke-width:1.6}
-.nr-empty-state h3{font-size:21px;color:#fff;margin:0 0 6px}
-.nr-empty-state p{margin:0}
-.nr-replay-stage{position:relative;border-radius:25px;overflow:hidden;border:1px solid rgba(185,217,255,.2);box-shadow:0 22px 54px rgba(0,0,0,.36);background:#a3aa13 url('../img/night-raid/endless-meadow-tile-v2.jpg') center/420px auto repeat}
-.nr-replay-stage canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;background:transparent}
-.nr-replay-stage.nr-auto-replay canvas{aspect-ratio:1/1}
-.nr-replay-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
-.nr-replay-summary{margin-top:12px;border-radius:18px;padding:14px 17px;background:#112541;border:1px solid rgba(181,214,255,.16);display:flex;justify-content:space-between;gap:16px;color:#aebfd8}
-.nr-replay-summary strong{color:#fff}
-@media (max-width:600px){.nr-report-card{grid-template-columns:48px minmax(0,1fr);gap:11px;padding:14px}.nr-report-crest{width:46px;height:46px}.nr-report-card .nr-secondary{grid-column:1/-1;width:100%;min-height:48px}.nr-replay{padding-left:10px;padding-right:10px}.nr-replay .nr-section-head{padding:0 6px}}
 /* Isometric castle homestead builder */
 .nr-builder{width:min(1100px,calc(100% - 24px));margin:0 auto 32px;padding:18px;border-radius:30px;background:linear-gradient(180deg,#fffdf6 0,#f2f8df 100%);color:#29412f;box-shadow:0 24px 70px rgba(0,0,0,.28),inset 0 1px #fff}
 .nr-builder .nr-label{color:#738563}
-.nr-builder-head .nr-back{background:#fff;color:#3f6046;border-color:#d8e2ca;box-shadow:0 5px 14px rgba(58,84,48,.1)}
 .nr-board-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
 .nr-home-level{position:absolute;z-index:4;left:16px;top:16px;display:flex;align-items:center;gap:8px;padding:6px 11px 6px 6px;border:2px solid rgba(255,255,255,.92);border-radius:18px;background:rgba(255,251,238,.9);box-shadow:0 8px 20px rgba(74,63,37,.18);backdrop-filter:blur(8px)}
 .nr-home-level img{width:48px;height:48px;border-radius:13px;object-fit:cover}
@@ -273,7 +61,6 @@
 .nr-builder :is(button):focus-visible{outline:3px solid #6047e8;outline-offset:3px}
 @media (max-width:700px){
 .nr-builder{width:calc(100% - 12px);padding:10px;border-radius:23px}
-.nr-builder-head .nr-back span{display:none}
 .nr-home-level{left:8px;top:8px;padding:4px 8px 4px 4px}
 .nr-home-level img{width:38px;height:38px}
 .nr-home-level strong{font-size:18px}
@@ -285,14 +72,7 @@
 .nr-builder .nr-build-item{flex-basis:142px;min-height:104px;grid-template-columns:58px 1fr}
 .nr-build-art{width:58px;height:64px}
 }
-/* Night Raid v2 — one-tap army combat and coin-powered home stats */
-.nr-result-score{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
-.nr-result-score>div{min-width:0;padding:11px 13px;border-radius:16px}
-.nr-result-score>div:first-child{background:#fff0e5;color:#a94717}
-.nr-result-score>div:last-child{background:#e7f2ff;color:#1760a4}
-.nr-result-score span{display:block;font-size:10px;font-weight:950;letter-spacing:.08em}
-.nr-result-score strong{display:block;font-size:clamp(25px,5vw,38px);line-height:1;font-variant-numeric:tabular-nums}
-.nr-result-score>b{color:#ffd56d;font-size:12px;font-weight:950;text-align:center}
+/* Coin-powered home stats: the castle, the shop cards and their price chips */
 .nr-equipped-castle{position:absolute;z-index:2;left:3%;top:1%;width:43%;height:38%;object-fit:contain;filter:drop-shadow(0 12px 10px rgba(74,58,27,.25));pointer-events:none}
 .nr-home-level{align-items:center}
 .nr-home-level .nr-skin-name{max-width:126px;font-size:11px;font-weight:900;color:#725a31;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -302,14 +82,7 @@
 .nr-item-stats .defense{background:#e6f2ff;color:#1b64a5}
 .nr-coin-price{display:inline-flex;align-items:center;gap:3px;margin-top:6px;padding:4px 7px;border-radius:999px;background:#fff1ba;color:#6d4a09;font-size:10px;font-weight:950}
 .nr-coin-price svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
-.nr-battle-status{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:8px 14px;border-radius:999px;background:rgba(5,14,28,.78);color:#fff;font-size:12px;font-weight:900;white-space:nowrap;pointer-events:none}
-.nr-auto-command{padding:10px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:#071426;border-top:1px solid rgba(183,216,255,.16)}
-.nr-result-score{width:min(520px,100%);margin:16px auto}
-.nr-result-score>div{text-align:center}
-.nr-result-score>b{font-size:26px}
-.nr-loss{width:min(390px,100%);margin:14px auto;padding:15px;border-radius:18px;background:#ffebe8;border:1px solid #ffaca3;color:#a52c21;font-size:18px;font-weight:950;text-align:center}
 .nr-builder .nr-build-copy small span{background:transparent;padding:0}
-.nr-battle:has(.nr-auto-command){grid-template-rows:auto minmax(0,1fr) auto}
 @media(max-width:700px){
 .nr-equipped-castle{left:1%;top:0;width:46%;height:40%}
 .nr-home-level{max-width:46%}
@@ -453,15 +226,9 @@
 .nr-purchase-confirm{border:2px solid #ffe083;background:linear-gradient(145deg,#ffd15a,#f78a2e);color:#5b350c;box-shadow:0 5px 0 #bd6528}
 .nr-purchase-confirm:active{transform:translateY(3px);box-shadow:0 2px 0 #bd6528}
 .nr-builder :is(button):focus-visible{outline:4px solid #573de1;outline-offset:3px}
-@media(max-width:700px){.nr-builder-hud{gap:4px}.nr-builder-home{width:44px;min-height:44px;flex:0 0 44px}.nr-builder-power{min-width:0;min-height:44px;padding:4px 6px;flex:0 1 auto}.nr-builder-power:not(.coins){width:48px}.nr-scout-stage .nr-builder-power:not(.coins){width:auto;min-width:48px}.nr-scout-stage .nr-builder-power small{white-space:nowrap}.nr-builder-power small{font-size:10px;letter-spacing:.02em}.nr-builder-power strong{font-size:16px}.nr-builder-power.coins{min-width:60px}.nr-builder-tip{bottom:calc(20px + env(safe-area-inset-bottom));font-size:10px}.nr-builder-zoom{top:calc(146px + env(safe-area-inset-top));grid-template-columns:40px 44px 40px}.nr-builder-zoom button{width:40px}.nr-builder.shop-open .nr-builder-zoom{opacity:0;pointer-events:none}.nr-builder .nr-build-shop{z-index:45;top:calc(150px + env(safe-area-inset-top));bottom:auto;max-height:min(55dvh,460px);overflow:hidden;padding:12px 10px 10px;transform:translateY(-12px) scale(.98);transform-origin:top right}.nr-builder .nr-build-shop.open{transform:none}.nr-builder .nr-shop-heading{margin-right:4px}.nr-builder .nr-build-tray{max-height:calc(min(55dvh,460px) - 62px);overflow-x:auto;overflow-y:hidden}.nr-builder-shop-fab{z-index:50}.nr-purchase-backdrop{place-items:end center;padding:12px max(10px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}.nr-purchase-dialog{width:100%;padding:16px;border-radius:25px;grid-template-columns:82px minmax(0,1fr);gap:10px}.nr-purchase-dialog>img{width:82px;height:82px}.nr-purchase-copy h2{font-size:19px}.nr-purchase-balance span{padding:7px 4px}.nr-purchase-actions button{min-height:50px}}
+@media(max-width:700px){.nr-builder-hud{gap:4px}.nr-builder-home{width:44px;min-height:44px;flex:0 0 44px}.nr-builder-power{min-width:0;min-height:44px;padding:4px 6px;flex:0 1 auto}.nr-builder-power:not(.coins){width:48px}.nr-builder-power small{font-size:10px;letter-spacing:.02em}.nr-builder-power strong{font-size:16px}.nr-builder-power.coins{min-width:60px}.nr-builder-tip{bottom:calc(20px + env(safe-area-inset-bottom));font-size:10px}.nr-builder-zoom{top:calc(146px + env(safe-area-inset-top));grid-template-columns:40px 44px 40px}.nr-builder-zoom button{width:40px}.nr-builder.shop-open .nr-builder-zoom{opacity:0;pointer-events:none}.nr-builder .nr-build-shop{z-index:45;top:calc(150px + env(safe-area-inset-top));bottom:auto;max-height:min(55dvh,460px);overflow:hidden;padding:12px 10px 10px;transform:translateY(-12px) scale(.98);transform-origin:top right}.nr-builder .nr-build-shop.open{transform:none}.nr-builder .nr-shop-heading{margin-right:4px}.nr-builder .nr-build-tray{max-height:calc(min(55dvh,460px) - 62px);overflow-x:auto;overflow-y:hidden}.nr-builder-shop-fab{z-index:50}.nr-purchase-backdrop{place-items:end center;padding:12px max(10px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}.nr-purchase-dialog{width:100%;padding:16px;border-radius:25px;grid-template-columns:82px minmax(0,1fr);gap:10px}.nr-purchase-dialog>img{width:82px;height:82px}.nr-purchase-copy h2{font-size:19px}.nr-purchase-balance span{padding:7px 4px}.nr-purchase-actions button{min-height:50px}}
 @media(min-width:768px){.nr-builder-shop-fab{right:calc(22px + env(safe-area-inset-right))}.nr-builder-zoom{right:calc(22px + env(safe-area-inset-right))}.nr-builder .nr-build-shop{left:50%;right:auto;width:min(760px,calc(100% - 32px));transform:translate(-50%,calc(100% + 28px))}.nr-builder .nr-build-shop.open{transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){.nr-builder .nr-build-shop,.nr-build-grid-cell>i{transition:none}.nr-build-drag-ghost{filter:none}.nr-purchase-backdrop{animation:none}}
-@media(max-width:600px) and (max-aspect-ratio:1/1){.nr-battle:has(.nr-auto-command) .nr-canvas-wrap canvas{min-width:720px;transform:translateX(-145px)}.nr-auto-command{min-height:86px;display:grid;align-items:center}}
-/* Scouting shows the WHOLE island on phones too - never the cropped combat zoom. */
-@media(max-width:600px) and (max-aspect-ratio:1/1){.nr-battle.nr-scout-stage .nr-canvas-wrap canvas{min-width:0;transform:none;width:100%;height:auto}}
-.nr-canvas-wrap.nr-iso-fight{place-items:center;overflow:hidden;background:linear-gradient(#d9edc5,#bedca6)}
-.nr-canvas-wrap.nr-iso-fight canvas{width:min(100%,calc(100dvh - 168px));height:auto;max-width:800px;max-height:100%;min-width:0!important;transform:none!important}
-@media(max-width:600px){.nr-canvas-wrap.nr-iso-fight canvas{width:100%;max-height:100%}.nr-battle-status{bottom:8px}}
 @media (prefers-reduced-motion:reduce){
 .nr-build-shop{transition:none}
 }
@@ -498,35 +265,6 @@
 .nr-builder-edit{top:calc(326px + env(safe-area-inset-top))}
 .nr-builder-edit b{font-size:16px}
 @media(min-width:768px){.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{width:74px;height:68px;font-size:10.5px}.nr-builder-zoom{grid-template-columns:74px;width:74px}.nr-builder-zoom button{width:74px}.nr-builder-shop-fab svg{width:25px;height:25px}}
-/* Scout/battle stage: one meadow world, with an alpha-cut island and actors.
-   There is deliberately no background on the square map/canvas/Phaser host:
-   the shared world plane remains visible through all of them, so the preview
-   and active fight cannot look like a second picture pasted onto the page. */
-.nr-scout-map{background:transparent}
-.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:transparent}
-.nr-lock-chip{z-index:40;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:2px solid rgba(126,222,255,.5);border-radius:999px;background:rgba(6,22,42,.92);color:#dff2ff;box-shadow:0 8px 22px rgba(3,12,26,.4);white-space:nowrap;pointer-events:none}
-.nr-lock-chip svg{width:19px;height:19px;flex:0 0 auto;fill:none;stroke:#7fe2ff;stroke-width:2}
-.nr-lock-chip small{display:block;font-size:9px;font-weight:950;letter-spacing:.07em;color:#9dc4e2}
-.nr-lock-chip b{display:block;font-size:17px;font-weight:950;line-height:1.15;font-variant-numeric:tabular-nums;color:#fff}
-.nr-target-card .nr-lock-chip{position:absolute;z-index:5;left:14px;top:14px;padding:6px 11px;gap:6px}
-.nr-target-card .nr-lock-chip b{font-size:14px}
-.nr-target-card.locked{opacity:.72}
-.nr-target-card.locked .nr-target-art{filter:grayscale(.55)}
-.nr-target-card.locked .nr-target-go{color:#7f97b3}
-.nr-lock-chip.scout{position:static;padding:11px 18px}
-.nr-lock-chip.home{position:absolute;z-index:40;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100% - 24px)}
-@media(max-width:700px){.nr-lock-chip.home{bottom:calc(84px + env(safe-area-inset-bottom))}.nr-lock-chip b{font-size:15px}}
-.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:transparent;touch-action:none}
-.nr-phaser-battle canvas{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain;filter:none!important;transform:none!important}
-.nr-phaser-battle:focus-visible{outline:4px solid #fff0a7;outline-offset:-6px}
-.nr-scout-stage .nr-pop-host{position:absolute;inset:0;z-index:46;pointer-events:none;display:grid}
-.nr-scout-stage .nr-pop-host .nr-result-pop{pointer-events:auto;position:absolute;inset:0}
-.nr-scout-name-pill{position:absolute;z-index:30;left:50%;top:calc(150px + env(safe-area-inset-top));transform:translateX(-50%);max-width:calc(100% - 24px);display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:rgba(5,14,28,.78);color:#e7f1ff;font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
-.nr-scout-name-pill svg{width:15px;height:15px;flex:0 0 auto;fill:none;stroke:#7fd1ff;stroke-width:2}
-.nr-scout-stage .nr-scout-secret{position:absolute;z-index:30;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));top:auto;transform:translateX(-50%)}
-.nr-scout-stage .nr-battle-status{position:absolute;z-index:30;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%)}
-.nr-scout-stage .nr-battle-status[hidden]{display:none}
-.nr-builder-power[hidden]{display:none}
 /* Night Raid expanded rectangular homestead. The land art, castle and build
    zone use independent anchors so all ten cosmetic castle silhouettes align
    to the same plaza and future land expansion does not move saved buildings. */
@@ -558,12 +296,6 @@
 /* The pet uses real map coordinates. A low-frequency JS step updates only
    transform and sprite-frame position; wall collisions reverse its velocity. */
 .nr-pet-patrol{position:absolute;z-index:7;inset:0;container-type:size;pointer-events:none;overflow:hidden}
-.pet-yard-scene{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:linear-gradient(180deg,#f7f1e8 0 18%,#dce9c8 62%,#b9d899 100%)}
-/* Keep the 1600×1200 yard at its native 4:3 ratio. Stretching the old square
-   art to fill this short homepage card made the paving oval and detached the
-   castle from its base. Wide tablets get a softly extended backdrop while the
-   coordinate-accurate yard stays centred. */
-.pet-yard-scene:before{content:"";position:absolute;inset:-12px;background:url('../img/night-raid/isometric-home-board-unified-gate-v3.webp') center/cover no-repeat;filter:blur(10px) saturate(.78);opacity:.48;transform:scale(1.06)}
 .nr-mini-yard .nr-builder-map.nr-mini-map{position:absolute;inset:auto;left:50%;top:50%;height:100%;width:auto;aspect-ratio:4/3;transform:translate(-50%,-50%);box-shadow:0 9px 24px rgba(54,72,36,.18);border-radius:inherit}
 .nr-mini-map>.nr-board-art{object-fit:fill}
 .nr-mini-map>.nr-equipped-castle{left:calc(var(--nr-castle-x,50)*1%);top:calc(var(--nr-castle-y,41)*1%);width:44%;height:36%;transform:translate(-50%,-100%);object-position:center bottom;opacity:1}
@@ -682,11 +414,10 @@
 .nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:19%;height:27%;object-fit:contain;object-position:center bottom}
 .nr-castle-move-hint{top:calc(var(--nr-castle-y,23.3)*1% + 6px);font-size:10px;padding:4px 8px}
 .nr-builder-map.castle-invalid>.nr-equipped-castle{outline-color:#ff5a52!important;opacity:.66}
-.pet-yard-scene:before{background-image:url('../img/night-raid/isometric-home-board-unified-gate-v3.webp')}
 /* One camera, one world surface. The meadow texture is anchored and scaled by
    NightRaid with the estate, so pinch/pan never exposes a second static photo.
    Repetition makes the lawn effectively unbounded in either orientation. */
-.nr-builder:not(.nr-scout-stage)>.nr-builder-world{
+.nr-builder>.nr-builder-world{
   display:block;
   background:#a3aa13;
 }
@@ -713,100 +444,16 @@
   .nr-home-stage>.nr-home-fabs{top:64px;gap:5px}
   .nr-home-stage>.nr-home-fabs .nr-home-fab{flex-basis:58px;width:58px;height:52px}
 }
-/* Night Raid — NHÀ THẬT is the friends list with raid timers. One row per
-   friend (name, level, ONE answer: CƯỚP NGAY or how long to wait), the child's
-   own status on top, the three random target cards kept below in a compact
-   form. 375px phone first: rows are 68px tall, nothing scrolls sideways. */
-.nr-own-status{display:flex;align-items:center;gap:10px;min-height:52px;margin:0 0 16px;padding:10px 14px;border:1px solid rgba(187,217,255,.18);border-radius:16px;background:#0f203a;color:#dfe9f7;font-size:14px;line-height:1.35}
-.nr-own-status i{flex:0 0 auto;font-style:normal;font-size:22px;line-height:1}
-.nr-own-status b{color:#fff}
-.nr-own-status.safe{border-color:rgba(126,222,255,.45);background:rgba(9,36,60,.92)}
-.nr-own-status.open{border-color:rgba(255,190,90,.4);background:rgba(48,32,14,.78)}
-.nr-live-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 10px}
-.nr-live-head h3{margin:0;color:#fff;font-size:17px}
-.nr-live-head span{color:#9fb4da;font-size:12px;font-weight:800;text-align:right}
-.nr-friend-list{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:10px}
-.nr-friend-row{width:100%;min-height:68px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px;border:1px solid rgba(187,217,255,.18);border-radius:18px;background:linear-gradient(165deg,#172d4d,#0f1f38);color:#fff;text-align:left;cursor:pointer;touch-action:manipulation}
-.nr-friend-row:disabled{cursor:default}
-.nr-friend-row.wait{opacity:.82}
-.nr-friend-row.ready{border-color:rgba(127,240,162,.5);box-shadow:0 0 0 1px rgba(127,240,162,.18),0 10px 24px rgba(0,0,0,.25)}
-.nr-friend-row:focus-visible{outline:3px solid #ffd36a;outline-offset:2px}
-.nr-friend-crest{width:46px;height:46px;border-radius:14px;display:grid;place-content:center;background:radial-gradient(circle at 50% 55%,rgba(123,175,239,.3),transparent 55%),linear-gradient(180deg,#1c3f67,#152b42);color:#b8d9ff}
-.nr-friend-row.wait .nr-friend-crest{filter:grayscale(.55)}
-.nr-friend-crest svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
-.nr-friend-copy{min-width:0}
-.nr-friend-copy strong{display:block;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nr-friend-copy small{display:block;margin-top:3px;font-size:12px;color:#aebed5}
-.nr-friend-state{flex:0 0 auto;max-width:42vw;text-align:right}
-.nr-friend-state small{display:block;font-size:9px;font-weight:900;letter-spacing:.07em;color:#9dc4e2}
-.nr-friend-state b{display:block;font-size:14px;font-weight:950;line-height:1.2;font-variant-numeric:tabular-nums;color:#ffd36a;white-space:nowrap}
-/* The whole row is the button, but a child still needs to see WHERE to press.
-   The ready half is therefore drawn as a real green attack key — taller than
-   the 44px a fingertip needs — so the strip can never read as plain text.
-   (A nested <button> would be invalid markup inside the row button, hence a
-   <b> that is styled into one.) */
-.nr-friend-row.ready .nr-friend-state b{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 15px;border-radius:14px;border:2px solid #baffd2;background:linear-gradient(160deg,#45dc7a,#1d9a4e);color:#052517;font-size:15px;letter-spacing:.02em;box-shadow:0 4px 0 #157038,0 8px 18px rgba(18,122,62,.3)}
-.nr-friend-row.ready:active .nr-friend-state b{transform:translateY(3px);box-shadow:0 1px 0 #157038}
-.nr-friend-state em{display:block;margin-top:2px;font-style:normal;font-size:11px;color:#9fb4da}
-/* A random castle wears the same green key as a friend row, so the whole
-   screen asks the child for one gesture and not two. Empty on a card the
-   child is still waiting on, where the countdown chip does the talking. */
-.nr-target-card .nr-target-go:not(:empty){right:13px;bottom:13px;display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 13px;border-radius:13px;border:2px solid #baffd2;background:linear-gradient(160deg,#45dc7a,#1d9a4e);color:#052517;font-size:13px;font-weight:950;letter-spacing:.02em;white-space:nowrap;box-shadow:0 3px 0 #157038}
-.nr-target-card:active .nr-target-go:not(:empty){transform:translateY(2px);box-shadow:0 1px 0 #157038}
-.nr-live-random .nr-target-card{min-height:112px}
-.nr-live-empty{margin:0 0 22px;padding:16px;border:1px dashed rgba(187,217,255,.32);border-radius:18px;background:rgba(15,32,58,.72);color:#c9d8ee;font-size:14px;line-height:1.45}
-.nr-live-empty strong{display:block;margin-bottom:6px;color:#fff;font-size:16px}
-.nr-live-empty b{color:#fff}
-.nr-live-empty .nr-secondary{margin-top:12px}
-/* ---- "nhà đã tan hoang" ------------------------------------------------
-   The third ending. It is neither a win nor a loss, so it wears neither
-   palette: rubble-brown, and the two money cells say 0 in both directions
-   because a child who watched their army walk home must be TOLD, in words,
-   that the night cost them nothing. */
-.nr-result-pop.ruined .nr-pop-banner{background:linear-gradient(135deg,#c8a97e,#8a6a45);color:#2c1c0b;box-shadow:0 10px 26px rgba(76,54,28,.45)}
-.nr-result-pop.ruined .nr-result-crest,.nr-result.ruined .nr-result-crest{background:linear-gradient(145deg,#c2a680,#7d6242);color:#241708}
-.nr-result-pop.confirming .nr-pop-banner{background:linear-gradient(135deg,#fff1a8,#ffc654);color:#4a3208;box-shadow:0 10px 28px rgba(255,198,84,.35)}
-.nr-result.confirming .nr-result-crest,.nr-result-pop.confirming .nr-result-crest{background:rgba(255,255,255,.12);color:#ffd366}
-.nr-confirm-spinner{display:block;width:34px;height:34px;border:4px solid currentColor;border-right-color:transparent;border-radius:50%;animation:nr-spin .8s linear infinite}
-.nr-ruined-score{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
-.nr-ruined-score>div:first-child,.nr-ruined-score>div:last-child{background:#e9e3d8;color:#5d4a2e}
-.nr-ruined-score strong{font-size:clamp(19px,4vw,26px)}
-.nr-ruined-when{margin:6px auto 10px}
-.nr-ruined-when b{color:#ffd36a;white-space:nowrap}
-.nr-lock-chip.ruined{position:static;margin:0 auto 12px;border-color:rgba(226,197,150,.5)}
-.nr-lock-chip.ruined svg{stroke:#e6c48f}
-/* The defeat card now names where the coins went, so the red box grew a
-   second line. */
-.nr-loss small{display:block;margin-top:6px;font-size:12px;font-weight:800;color:#8c3a2c}
-/* ---- NHẬT KÝ: hai mục ---------------------------------------------------
-   "Con đi cướp" above "Nhà con bị cướp". An attack row has no replay button,
-   so its third column is the money instead. */
-.nr-log-section{margin:0 0 26px}
-.nr-log-section .nr-live-head{margin:0 0 10px}
-.nr-attack-card .nr-report-state{color:#8fe0b4}
-.nr-attack-card.lost .nr-report-state{color:#ff9992}
-.nr-attack-card.ruined .nr-report-state{color:#e2c08a}
-.nr-attack-card.lost .nr-report-crest{background:rgba(255,107,101,.13);color:#ff8f89}
-.nr-attack-card.ruined .nr-report-crest{background:rgba(212,175,122,.15);color:#e6c48f}
-.nr-attack-money{justify-self:end;padding:9px 13px;border-radius:14px;font-size:16px;font-weight:950;white-space:nowrap;font-variant-numeric:tabular-nums}
-.nr-attack-money.gain{background:rgba(90,214,148,.15);color:#7ff0a2}
-.nr-attack-money.loss{background:rgba(255,107,101,.14);color:#ff9992}
-.nr-attack-money.none{background:rgba(212,175,122,.14);color:#e2c08a}
-@media (max-width:600px){.nr-attack-card{grid-template-columns:48px minmax(0,1fr) auto}.nr-attack-money{font-size:15px;padding:8px 11px}}
-/* Night Raid home: the VŨ KHÍ fab and its "quà chờ mở" badge. Five fabs now
-   share the home-stage row (5 x 66 + 4 x 6 = 354px, exactly a 375px phone
-   minus its 10px gutters), so on anything narrower they may shrink a little
-   instead of sliding off the left edge. */
-.nr-home-stage > .nr-home-fabs .nr-home-fab { flex-shrink: 1; min-width: 0; }
+/* The gift badge on a rail button (the seed store shows how many seeds are
+   waiting to be planted). */
 .nr-fab-badge {
     position: absolute; top: -8px; right: -8px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px;
     background: #dc2626; color: #fff; font-size: 11px; font-weight: 900; font-style: normal;
     display: grid; place-items: center; border: 2px solid #fff8c9; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
-/* ── Night Raid daylight shell ─────────────────────────────────────────────
-   The garden, target picker, journal and result screens belong to one bright
-   game mode. Only the actual combat canvas remains nocturnal. App navigation
-   is controlled by night-raid.js and stays hidden until the player uses X. */
+/* ── Daylight shell ───────────────────────────────────────────────────────
+   The garden is one bright screen. The app's bottom bar stays visible: the
+   farm is a tab, and the ✕ in the topbar / HUD goes back to Home. */
 .night-raid-screen {
     min-height: 100dvh;
     padding-bottom: 0;
@@ -841,7 +488,6 @@
 .nr-kicker,
 .nr-label { color: #64805c; }
 .nr-icon-btn,
-.nr-back,
 .nr-topbar button {
     min-width: 48px;
     min-height: 48px;
@@ -857,164 +503,6 @@
     box-shadow: 0 4px 0 rgba(183, 126, 22, .16);
 }
 .nr-wallet strong { color: #684508; }
-.nr-live-targets, .nr-result, .nr-reports, .nr-replay { color: #26452f; }
-.nr-section-head h2,
-.nr-live-head h3,
-.nr-report-card h3,
-.nr-empty-state h3 { color: #24442e; }
-.nr-section-head p,
-.nr-live-head span,
-.nr-empty,
-.nr-loading,
-.nr-report-card p { color: #647a5d; }
-.nr-secondary {
-    color: #31543a;
-    background: rgba(255, 255, 247, .92);
-    border: 2px solid rgba(101, 145, 79, .24);
-    box-shadow: 0 4px 0 rgba(84, 123, 62, .14);
-}
-.nr-primary {
-    color: #53320d;
-    background: linear-gradient(145deg, #ffdc6d, #ff9a3d);
-    box-shadow: 0 6px 0 #c46826, 0 12px 24px rgba(154, 91, 28, .2);
-}
-/* Compact replacement for the duplicated "Quay lại / Chọn nhà" header. */
-.nr-raid-overview {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 78px;
-    margin: 8px 0 16px;
-    padding: 12px 15px;
-    border: 2px solid rgba(105, 154, 77, .24);
-    border-radius: 22px;
-    background: linear-gradient(145deg, rgba(255, 255, 244, .96), rgba(226, 244, 191, .96));
-    box-shadow: 0 8px 0 rgba(96, 135, 67, .12), 0 14px 28px rgba(59, 95, 42, .1);
-}
-.nr-raid-overview-icon {
-    width: 50px;
-    height: 50px;
-    flex: 0 0 50px;
-    display: grid;
-    place-items: center;
-    border-radius: 16px;
-    color: #fff8dc;
-    background: linear-gradient(145deg, #ffb94d, #ef6f32);
-    box-shadow: 0 5px 0 #b85125;
-}
-.nr-raid-overview-icon svg {
-    width: 28px;
-    height: 28px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-}
-.nr-raid-overview > span:last-child { min-width: 0; }
-.nr-raid-overview small,
-.nr-raid-overview strong,
-.nr-raid-overview em { display: block; }
-.nr-raid-overview small {
-    color: #b65c1e;
-    font-size: 10px;
-    font-weight: 950;
-    letter-spacing: .1em;
-}
-.nr-raid-overview strong {
-    margin-top: 2px;
-    color: #294b31;
-    font-size: 20px;
-}
-.nr-raid-overview em {
-    margin-top: 2px;
-    color: #6a805f;
-    font-size: 12px;
-    font-style: normal;
-}
-.nr-own-status {
-    color: #3d5d40;
-    background: rgba(255, 255, 245, .9);
-    border: 2px solid rgba(107, 151, 79, .2);
-    box-shadow: 0 7px 18px rgba(58, 92, 41, .08);
-}
-.nr-own-status b { color: #24452d; }
-.nr-own-status.safe {
-    color: #315a40;
-    background: #e8f7da;
-    border-color: #abd58f;
-}
-.nr-own-status.open {
-    color: #714817;
-    background: #fff3cf;
-    border-color: #edc76b;
-}
-.nr-friend-row,
-.nr-target-card {
-    color: #26472f;
-    background: linear-gradient(155deg, rgba(255, 255, 248, .98), rgba(226, 243, 198, .98));
-    border: 2px solid rgba(103, 149, 77, .22);
-    box-shadow: 0 7px 0 rgba(88, 128, 63, .1), 0 13px 25px rgba(57, 91, 41, .09);
-}
-.nr-friend-row.ready {
-    border-color: rgba(47, 169, 91, .48);
-    box-shadow: 0 7px 0 rgba(41, 137, 70, .13), 0 14px 26px rgba(49, 112, 56, .12);
-}
-.nr-friend-crest {
-    color: #4d8a4a;
-    background: radial-gradient(circle at 50% 50%, #fbffe9, #cceaa5);
-    border: 1px solid rgba(91, 143, 67, .16);
-}
-.nr-friend-copy small, .nr-friend-state em { color: #6e8067; }
-.nr-friend-state small { color: #6b8b63; }
-.nr-friend-state b { color: #a96812; }
-.nr-live-empty,
-.nr-empty-state {
-    color: #60775a;
-    background: rgba(250, 255, 237, .88);
-    border: 2px dashed rgba(101, 149, 74, .32);
-}
-.nr-live-empty strong,
-.nr-live-empty b { color: #284831; }
-.nr-loading i {
-    border-color: rgba(72, 125, 60, .16);
-    border-top-color: #ef8b34;
-}
-.nr-lock-chip {
-    color: #31583b;
-    background: rgba(248, 255, 232, .96);
-    border-color: rgba(89, 151, 75, .35);
-    box-shadow: 0 7px 18px rgba(45, 80, 38, .15);
-}
-.nr-lock-chip svg { stroke: #4c9b54; }
-.nr-lock-chip small { color: #67865f; }
-.nr-lock-chip b { color: #294d33; }
-.nr-replay-summary {
-    color: #294a32;
-    background: rgba(250, 255, 239, .92);
-    border-color: rgba(103, 149, 78, .22);
-}
-.nr-replay-summary strong { color: #27472f; }
-.nr-report-card {
-    background: linear-gradient(145deg, rgba(255, 255, 247, .98), rgba(226, 244, 198, .98));
-    border: 2px solid rgba(102, 148, 76, .22);
-    box-shadow: 0 9px 24px rgba(58, 91, 42, .1);
-}
-.nr-report-crest { background: #dcf3ca; color: #328955; }
-.nr-report-card.breached .nr-report-crest { background: #ffe3d7; color: #cf604e; }
-.nr-result { color: #294a32; }
-.nr-result h2 { color: #24442e; }
-.nr-result > p { color: #647b5e; }
-.nr-pop-scrim { background: rgba(52, 77, 43, .42); }
-.nr-pop-card {
-    color: #294a32;
-    background: linear-gradient(180deg, #fffef5, #e5f5cd);
-    border: 2px solid rgba(255, 255, 255, .92);
-    box-shadow: 0 26px 70px rgba(43, 71, 36, .34);
-}
-.nr-result-pop p { color: #5d7458; }
-.nr-result-pop .nr-result-score > div {
-    color: #294a32;
-    background: rgba(255, 255, 247, .82);
-}
 @media (max-width: 700px) {
     .nr-topbar {
         grid-template-columns: 48px minmax(0, 1fr) auto;
@@ -1025,8 +513,6 @@
     .nr-topbar h1 { font-size: 18px; }
     .nr-kicker { font-size: 9px; letter-spacing: .09em; }
     .nr-wallet { padding-inline: 10px; }
-    .nr-raid-overview { margin-top: 6px; }
-    .nr-friend-row { padding: 9px 10px; gap: 9px; }
 }
 /* Night Raid compact HUD: pinch remains available everywhere, while the
    permanent +/- rail and house-level plaque no longer cover the garden. */
@@ -1038,38 +524,6 @@
 .nr-builder-edit { top: calc(222px + env(safe-area-inset-top)); }
 .nr-builder.rotated .nr-builder-rotate { top: 88px; }
 .nr-builder.rotated .nr-builder-edit { top: 162px; }
-/* The scout and the running battle use a cover camera, not a fitted square.
-   The logical board keeps its proportions and one-finger panning exposes the
-   off-screen part in portrait or landscape. */
-.nr-scout-stage .nr-builder-map {
-    box-shadow: none;
-}
-.nr-scout-stage .nr-builder-world {
-    background-color: #a3aa13;
-    background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg');
-    background-repeat: repeat;
-    background-position: center;
-    background-size: 2048px 2048px;
-}
-.nr-scout-stage .nr-world-plane {
-    background-color: #a3aa13;
-    background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg');
-    background-repeat: repeat;
-    background-position: center;
-}
-/* Journal content begins directly below the shared topbar. It identifies its
-   two lists by their section labels, so a second title and paragraph only
-   consumed the first phone viewport. */
-.nr-reports {
-    padding-top: 10px;
-}
-.nr-reports > .nr-log-section:first-child {
-    margin-top: 0;
-}
-.nr-reports .nr-live-head {
-    min-height: 38px;
-    align-items: center;
-}
 .nr-build-grid-cell .nr-placed.farm-item.crop{width:150%;height:150%;bottom:4%}
 .nr-build-grid-cell .nr-placed.farm-item.farm.footprint-2{left:100%;bottom:-100%;width:205%;height:205%;z-index:4}
 .nr-builder.wilted .nr-builder-map{filter:saturate(.72) sepia(.18)}
@@ -1094,19 +548,15 @@
 @media (max-width:700px){
 .nr-task-bar{top:62px;font-size:11px}
 }
-/* The builder is now Night Raid's main screen. Navigation gets its own bottom
-   dock so it never shares the task bar's top row or covers task copy. */
+/* The builder is the farm's only screen. Its rail (the seed store) gets its
+   own dock so it never shares the task bar's top row or covers task copy. */
 .nr-builder-nav{position:absolute;z-index:42;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));width:min(286px,calc(100% - 20px));transform:translateX(-50%);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:6px;border:2px solid rgba(255,255,255,.78);border-radius:22px;background:rgba(255,251,238,.9);box-shadow:0 10px 28px rgba(45,63,35,.28);backdrop-filter:blur(12px)}
 .nr-builder-nav-btn{position:relative;min-width:0;min-height:54px;padding:5px 7px;border:0;border-radius:16px;background:linear-gradient(145deg,#ffd967,#f57f27);color:#5b350c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:1000;letter-spacing:.04em;line-height:1;white-space:nowrap;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 0 #b95b20}
 .nr-builder-nav-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.3}
-.nr-builder-nav-btn.raid{background:linear-gradient(135deg,#ff8b2e,#ef3f35);color:#fff;box-shadow:0 4px 0 #9e271f}
 .nr-builder-nav-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b95b20}
-.nr-builder-nav-btn.raid:active{box-shadow:0 2px 0 #9e271f}
 .nr-builder.shop-open .nr-builder-nav{opacity:0;pointer-events:none}
 .nr-builder:has(.nr-builder-nav) .nr-collect-all{bottom:calc(88px + env(safe-area-inset-bottom))}
 .nr-builder:has(.nr-builder-nav) .nr-replant{bottom:calc(150px + env(safe-area-inset-bottom))}
-.nr-builder:has(.nr-builder-nav):has(.nr-lock-chip.home) .nr-collect-all{bottom:calc(150px + env(safe-area-inset-bottom))}
-.nr-builder:has(.nr-builder-nav):has(.nr-lock-chip.home) .nr-replant{bottom:calc(212px + env(safe-area-inset-bottom))}
 .nr-builder:has(.nr-builder-nav) .nr-builder-tip{display:none}
 .nr-builder.rotated .nr-builder-nav{left:50%;right:auto;bottom:14px;width:min(286px,calc(100% - 190px));transform:translateX(-50%)}
 .nr-builder.rotated:has(.nr-builder-nav) .nr-collect-all{left:14px;bottom:88px}
@@ -1192,25 +642,3 @@
     .nr-builder-menu-toggle{top:calc(438px + env(safe-area-inset-top))}
 }
 @media(prefers-reduced-motion:reduce){.nr-builder-menu-toggle{transition:none}}
-/* Direct-attack stage: one rectangular castle estate and three non-overlap
-   HUD bands (stats, opponent, status). The result owns the whole overlay. */
-.nr-scout-stage .nr-builder-world{background:#a3aa13 url('../img/night-raid/endless-meadow-tile-v2.jpg') center/2048px repeat}
-.nr-scout-stage .nr-builder-map{background:transparent;box-shadow:none}
-.nr-scout-stage .nr-builder-hud{
-    left:max(10px,env(safe-area-inset-left));right:auto;top:max(10px,env(safe-area-inset-top));
-    width:auto;max-width:calc(100% - max(20px,env(safe-area-inset-right)));padding:0
-}
-.nr-scout-stage .nr-scout-name-pill{
-    top:calc(max(10px,env(safe-area-inset-top)) + 58px);bottom:auto;max-width:min(280px,calc(100% - 20px));
-    overflow:hidden;text-overflow:ellipsis
-}
-.nr-scout-stage .nr-battle-status{
-    left:50%;top:auto;bottom:calc(14px + env(safe-area-inset-bottom));max-width:calc(100% - 24px);
-    overflow:hidden;text-overflow:ellipsis;text-align:center
-}
-.nr-scout-stage .nr-lock-chip.scout{position:absolute;z-index:40;left:50%;top:50%;transform:translate(-50%,-50%)}
-@media(max-width:420px){
-    .nr-scout-stage .nr-builder-hud{gap:4px}
-    .nr-scout-stage .nr-builder-power{padding-inline:7px}
-    .nr-scout-stage .nr-scout-name-pill{top:calc(max(8px,env(safe-area-inset-top)) + 54px)}
-}

@@ -21,7 +21,7 @@ const lazy = require(path.join(ROOT, 'js', 'lazy-data.js'));
 const { mountApp, loginTestUser } = require('./verify/client.js');
 const settle = (n) => new Promise(r => setTimeout(r, n || 30));
 
-const JS = fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && !/-data|lessons|bank|phaser|dictionary|hot-words|vocabulary|grammar-units/.test(f));
+const JS = fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && !/-data|dictionary|hot-words/.test(f));
 const LOADING = /Đang tải|Sắp có|đang soạn|loading|Loading/;
 
 suite('lazy entry points: static', () => {
@@ -29,7 +29,7 @@ suite('lazy entry points: static', () => {
     const src = JS.map(f => read('js/' + f)).join('\n');
     for (const key of Object.keys(lazy.GROUP_FILES)) {
       const direct = new RegExp("LazyData\\.ensure\\('" + key + "'\\)").test(src);
-      // Screen-mapped groups (arena, math) are opened through switchScreen /
+      // A screen-mapped group (farm) is opened through switchScreen /
       // SCREEN_GROUPS rather than by name.
       const viaScreen = Object.values(lazy.SCREEN_GROUPS || {}).includes(key);
       assert.truthy(direct || viaScreen, 'no way in to lazy group ' + key);
@@ -62,53 +62,35 @@ suite('lazy entry points: executed with nothing lazy loaded', () => {
   const wired = (h, screenId, needle) => enabledButtons(h, screenId)
     .some(b => (b.getAttribute('onclick') || '').includes(needle));
 
-  test('the Learn hub offers every lazy English screen, enabled', async () => {
+  test('the bottom bar offers every lazy screen, enabled', async () => {
     const h = await boot();
-    h.sandbox.switchScreen('learnHubScreen'); await settle();
+    // Every deferred screen is a bottom-bar tab: the three Books share the
+    // Word screen (openBook), the farm has its own opener (openNightRaid).
+    const opener = { wordScreen: 'openBook(', nightRaidScreen: 'openNightRaid()' };
     for (const screenId of Object.keys(lazy.SCREEN_FILES)) {
-      if (!/Screen$/.test(screenId)) continue;
-      if (!h.el(screenId)) continue;
-      if (/petBattle|nightRaid|armory/.test(screenId)) continue;          // arena tab, below
-      if (screenId === 'mathHubScreen' || screenId === 'wordScreen') {   // bottom-bar tabs
-        assert.truthy(wired(h, 'bottomNav', "switchScreen('" + screenId + "')"), 'no enabled bottom-bar button opens ' + screenId);
-        continue;
-      }
-      assert.truthy(wired(h, 'learnHubScreen', "switchScreen('" + screenId + "')"), 'no enabled Learn card opens ' + screenId);
+      assert.truthy(h.el(screenId), screenId + ' is not in index.html');
+      assert.truthy(opener[screenId], 'no known bottom-bar opener for ' + screenId + ' — add it here');
+      assert.truthy(wired(h, 'bottomNav', opener[screenId]), 'no enabled bottom-bar button opens ' + screenId);
     }
   });
 
-  test('the Math tab: every section card is enabled before HK2 (or anything) has loaded', async () => {
+  test('the farm tab opens from the bottom bar before its code group has loaded', async () => {
     const h = await boot();
     const S = h.sandbox;
-    S.switchScreen('mathHubScreen'); await S.LazyData.ensure('mathHubScreen'); await settle();
-    assert.falsy(S.LazyData.ready('mathHk2'), 'HK2 stays lazy');
-    S.openMathSection('home');
-    for (const sec of ['toan7', 'toan4', 'wars']) assert.truthy(wired(h, 'mathHubScreen', "openMathSection('" + sec + "')"), 'home → ' + sec);
-    S.openMathSection('toan7');
-    for (const sec of ['hk1', 'hk2', 'history']) assert.truthy(wired(h, 'mathHubScreen', "openMathSection('" + sec + "')"), 'toan7 → ' + sec);
-    assert.falsy(LOADING.test(h.el('mathHubScreen').querySelectorAll('button.locked, button[disabled]').map(b => b.textContent).join(' ')), 'no card locked for loading');
-    S.openMathSection('toan4');
-    for (const fn of ['startMath4Mix()', 'startMath4Pre()', "openMathSection('cuuchuong')"]) assert.truthy(wired(h, 'mathHubScreen', fn), 'toan4 → ' + fn);
-    // And the lazy one really opens from its card.
-    h.run("openMathSection('hk2')"); await S.LazyData.ensure('mathHk2'); await settle();
-    assert.truthy(S.LazyData.ready('mathHk2') && h.peek('MATH_QUESTIONS_HK2').length > 0, 'HK2 loaded from its card');
+    assert.falsy(S.LazyData.ready('nightRaidScreen'), 'the farm stays lazy until tapped');
+    await S.openNightRaid(); await S.LazyData.ensure('nightRaidScreen'); await settle(50);
+    assert.truthy(S.LazyData.ready('nightRaidScreen'), 'the tap loaded the farm group');
+    assert.truthy(h.el('nightRaidScreen').classList.contains('active'), 'and the farm is on screen');
   });
 
-  test('the Arena tab opens from the bottom bar before its code group has loaded', async () => {
+  test('every Book offers its unit cards, enabled, once its bank has loaded', async () => {
     const h = await boot();
     const S = h.sandbox;
-    assert.falsy(S.LazyData.ready('petBattleScreen'), 'arena stays lazy until tapped');
-    await S.openPetBattle(); await S.LazyData.ensure('petBattleScreen'); await settle(50);
-    assert.truthy(S.LazyData.ready('petBattleScreen'), 'the tap loaded the arena group');
-    assert.truthy(h.el('petBattleScreen').classList.contains('active'), 'and the lobby is on screen');
-  });
-
-  test('every exam-engine practice home offers its Practice button before its bank is loaded', async () => {
-    const h = await boot();
-    const S = h.sandbox;
-    for (const [screenId, start] of [['readingScreen', 'startReadingPractice'], ['clozeScreen', 'startClozePractice'], ['errorsScreen', 'startErrorsPractice'], ['grammarVocabScreen', 'startGrammarVocabPractice'], ['phoneticsScreen', 'switchPhoneticsSubTab']]) {
-      S.switchScreen(screenId); await S.LazyData.ensure(screenId); await settle();
-      assert.truthy(wired(h, screenId, start), screenId + ' has no enabled ' + start);
+    for (const set of ['pr1', 'pr2', 'pr3']) {
+      S.openBook(set); await S.LazyData.ensure('wordScreen'); await settle();
+      assert.truthy(wired(h, 'wordScreen', "startUnitPractice('" + set + "-1')"), set + ' has no enabled Unit 1 card');
+      assert.truthy(wired(h, 'wordScreen', "startUnitPractice('" + set + "-mix')"), set + ' has no enabled Mix card');
+      assert.falsy(LOADING.test(h.el('wordScreen').querySelectorAll('button.locked, button[disabled]').map(b => b.textContent).join(' ')), 'no card locked for loading');
     }
   });
 });

@@ -20,13 +20,11 @@ suite('primary navigation: five clear destinations', () => {
     test('the bottom bar contains exactly five real buttons', () => {
         assert.equal((nav.match(/class="nav-item/g) || []).length, 5);
         const keys = [...nav.matchAll(/data-nav-key="([^"]+)"/g)].map(m => m[1]);
-        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'word']);
+        assert.deepEqual(keys, ['home', 'book1', 'book2', 'book3', 'farm']);
     });
 
     test('every destination has a visible label and a consistent SVG icon', () => {
-        // The English hub's tab reads "Eng"; its nav key stays 'learn', the
-        // internal id every screen's NAV_GROUP_BY_SCREEN entry points at.
-        for (const label of ['Home', 'Eng', 'Arena', 'Math', 'Word']) {
+        for (const label of ['Home', 'Book 1', 'Book 2', 'Book 3', 'Nông trại']) {
             assert.truthy(nav.includes('<span>' + label + '</span>'), label + ' label is missing');
         }
         assert.equal((nav.match(/<svg viewBox="0 0 24 24">/g) || []).length, 5);
@@ -41,56 +39,38 @@ suite('primary navigation: five clear destinations', () => {
     });
 });
 
-suite('navigation hubs: old modules remain easy to find', () => {
-    test('Learn owns knowledge, review, Word Form and Rewrite', () => {
-        const hub = blockBetween(html, 'id="learnHubScreen"', 'id="mathHubScreen"');
-        for (const screen of [
-            'topicsScreen', 'gradeFourScreen', 'grammarScreen', 'speedChallengeScreen', 'phrasesScreen',
-            'wordformScreen', 'rewriteScreen'
-        ]) {
-            assert.truthy(hub.includes(screen), screen + ' is missing from Learn');
+suite('navigation hubs: every screen is reachable from the bar', () => {
+    test('the three Book buttons open the shared Word screen on their own set', () => {
+        for (const set of ['pr1', 'pr2', 'pr3']) {
+            assert.truthy(html.includes(`onclick="openBook('${set}')"`), set + ' has no bottom-bar button');
         }
-        assert.truthy(hub.includes('startReviewSession()'), 'Smart Review is missing from Learn');
-        assert.truthy(hub.includes('id="learnDueText"'), 'Learn must show the live review count');
+        const fn = blockBetween(app, 'function openBook(set)', '\n}');
+        assert.truthy(fn.includes("switchUnitSet(set, { silent: true })"), 'the set is chosen before the switch');
+        assert.truthy(fn.includes("switchScreen('wordScreen')"), 'and then the Word screen opens');
     });
 
-    test('Math is now a real tab, rendered by js/math.js', () => {
-        // It shipped as an honest "coming soon" placeholder; the Toán 7 formula
-        // practice replaced it, so the screen is an empty container the tab
-        // renders into rather than static markup.
-        const hub = blockBetween(html, 'id="mathHubScreen"', '<!-- Grammar Screen -->');
-        assert.falsy(hub.includes('COMING SOON'), 'the placeholder outlived the real tab');
-        // The tab's code is a lazy group (js/lazy-data.js GROUP_FILES.math)
-        // that switchScreen('mathHubScreen') fetches on first open.
-        assert.falsy(html.includes('js/math.js'), 'js/math.js must not block the first paint');
-        assert.truthy(require('../js/lazy-data.js').GROUP_FILES.math.includes('js/math.js'), 'the Math tab code must ride the math group');
-        assert.truthy(/mathHubScreen'\s*&&\s*typeof renderMathHome/.test(app),
-            'opening the tab must render it');
+    test('the farm is a real tab, rendered by the lazy farm group', () => {
+        // The tab's code is a lazy group (js/lazy-data.js GROUP_FILES.farm)
+        // that openNightRaid() fetches on first open.
+        assert.falsy(html.includes('<script src="js/night-raid.js"'), 'js/night-raid.js must not block the first paint');
+        assert.truthy(require('../js/lazy-data.js').GROUP_FILES.farm.includes('js/night-raid.js'), 'the farm code must ride the farm group');
+        assert.truthy(app.includes("var openNightRaid = lazyEntry('farm', 'openNightRaid', 'nightRaidScreen');"),
+            'opening the tab must fetch and render it');
     });
 
     test('deep screens inherit their parent bottom-nav state', () => {
         for (const pair of [
-            ["topicsScreen: 'learn'", 'Topics'],
-            ["gradeFourScreen: 'learn'", 'Grade 4'],
-            ["grammarScreen: 'learn'", 'Grammar'],
-            ["speedChallengeScreen: 'learn'", 'Verbs'],
-            ["phrasesScreen: 'learn'", 'Phrases'],
-            ["petBattleScreen: 'arena'", 'Arena'],
-            ["wordformScreen: 'learn'", 'Word form'],
-            ["rewriteScreen: 'learn'", 'Rewrite'],
-            ["mathHubScreen: 'math'", 'Math'],
-            ["wordScreen: 'word'", 'Word'],
+            ["dailyTaskScreen: 'home'", 'Daily Task'],
+            ["profileScreen: 'home'", 'Profile'],
+            ["nightRaidScreen: 'farm'", 'Nông trại'],
         ]) {
             assert.truthy(app.includes(pair[0]), pair[1] + ' has no parent navigation state');
         }
+        // The Word screen belongs to whichever Book is open.
+        assert.truthy(app.includes("NAV_KEY_BY_BOOK = Object.freeze({ pr1: 'book1', pr2: 'book2', pr3: 'book3' })"),
+            'the Word screen must highlight the Book it is showing');
         assert.truthy(app.includes('setBottomNavActive(screenId)'),
             'screen changes must update navigation without relying on a global click event');
-    });
-
-    test('Learn expands to three columns on iPad without changing phone layout', () => {
-        assert.truthy(css.includes('@media (min-width: 700px)'));
-        assert.truthy(css.includes('.learn-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }'));
-        assert.truthy(css.includes('.nav-hub-header, .nav-hub-feature, .nav-hub-grid { max-width: 900px; }'));
     });
 });
 

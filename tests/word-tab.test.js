@@ -1,13 +1,13 @@
-// word-tab.test.js — the Word tab: Career Paths · Public Relations on the
-// Grade 4 picture-dictionary engine, on its own bottom-bar screen.
+// word-tab.test.js — the Word screen: Career Paths · Public Relations on the
+// picture-dictionary engine, shared by the three Book buttons of the bottom bar.
 //
 // Three promises. (1) The bank IS the book: three books, fifteen units each,
 // every unit file valid, and js/word-data.js exactly what the build script
 // makes of them — a hand edit to the generated file, or a unit file that never
-// made it into the build, shows up here. (2) The engine keeps its two hosts
-// apart: a Word practice draws on the Word screen, owes its words on the Word
-// queue, and lands in the Word history — never on Grade 4's, and vice versa.
-// (3) The tab is wired: nav button, screen pieces, lazy loader, precache.
+// made it into the build, shows up here. (2) The engine has exactly one host:
+// a Book practice draws on the Word screen, owes its words on the 'word'
+// queue, and lands in the Word history. (3) The screen is wired: three Book
+// buttons, screen pieces, lazy loader, precache.
 const { suite, test, assert, runAll } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -23,7 +23,7 @@ const { UNIT_PR_TITLES, UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3 } = wordD
 const DATA_DIR = path.join(ROOT, 'data', 'career-paths');
 const unitFiles = fs.readdirSync(DATA_DIR).filter(f => /^pr[123]-u\d\d\.json$/.test(f)).sort();
 
-// ---- an engine sandbox with both hosts' DOM pieces and a real retry engine ----
+// ---- an engine sandbox with the Word screen's DOM pieces and a real retry engine ----
 function loadEngine() {
     const sandbox = buildSandbox();
     sandbox.appState = { coins: 0, unitsHistory: [] };
@@ -31,12 +31,11 @@ function loadEngine() {
     sandbox.saveUserData = () => {};
     sandbox.showToast = () => {};
     const ctx = vm.createContext(sandbox);
-    const files = ['js/units-data.js', 'js/units-hk1-data.js', 'js/units-hk2-data.js', 'js/units-posthk-data.js',
-        'js/word-data.js', 'js/wrong-priority.js', 'js/retrydrill.js', 'js/answer-audio.js', 'js/units.js'];
+    const files = ['js/word-data.js', 'js/wrong-priority.js', 'js/retrydrill.js', 'js/answer-audio.js', 'js/units.js'];
     let src = files.map(f => `\n//===== ${f} =====\n` + read(f)).join('');
     src += `
 globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurrentHost, unitPracticeScreen,
-  currentUnitSet, switchUnitSet, renderGrade4Home, renderWordHome, renderUnitsBar, renderUnitSetTabsHTML,
+  currentUnitSet, switchUnitSet, renderWordHome, renderUnitsBar, renderUnitSetTabsHTML,
   startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice, quitUnitPractice, isUnitPracticeActive,
   unitsRetryCount, unitsRetryKey, unitsHostHistory, unitsList, unitsBank, _unitPool, _unitParse, _unitLabel,
   unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts,
@@ -121,13 +120,15 @@ suite('word tab: the bank is the book', () => {
     });
 });
 
-suite('word tab: two hosts, one engine', () => {
-    test('the seven sets split by host: four for Grade 4, three books for Word', () => {
+suite('word tab: one host, one engine', () => {
+    test('there is exactly one host, word, with the three Book sets', () => {
         const { x } = loadEngine();
-        assert.deepEqual(x.unitHostSets('grade4').map(s => s.id), ['pre', 'posthk', 'hk1', 'hk2']);
+        assert.deepEqual(Object.keys(x.UNIT_HOSTS), ['word']);
+        assert.deepEqual(x.UNIT_SETS.map(s => s.id), ['pr1', 'pr2', 'pr3']);
         assert.deepEqual(x.unitHostSets('word').map(s => s.id), ['pr1', 'pr2', 'pr3']);
         assert.equal(x.unitHostOfSet('pr2'), 'word');
-        assert.equal(x.unitHostOfSet('hk2'), 'grade4');
+        assert.equal(x.UNIT_HOSTS.word.screen, 'wordScreen');
+        assert.equal(x.UNIT_HOSTS.word.retryKey, 'word');
         for (const s of ['pr1', 'pr2', 'pr3']) {
             assert.equal(x.unitsList(s).length, 15, s + ' lists 15 units');
             assert.truthy(x.unitsBank(s).length > 100, s + ' bank loaded');
@@ -139,7 +140,7 @@ suite('word tab: two hosts, one engine', () => {
         const { x } = loadEngine();
         assert.deepEqual(x._unitParse('pr2-7'), { set: 'pr2', unit: 7 });
         assert.deepEqual(x._unitParse('pr3-mix'), { set: 'pr3', unit: 'mix' });
-        assert.deepEqual(x._unitParse('hk1-3'), { set: 'hk1', unit: 3 });
+        assert.equal(x._unitParse('hk1-3').set, null, 'a key from a set that no longer exists parses to no set');
         assert.equal(x._unitPool('pr2-7').length, UNIT_WORDS_PR2.filter(w => w.unit === 7).length);
         assert.equal(x._unitPool('pr3-mix').length, UNIT_WORDS_PR3.length);
         assert.equal(x._unitLabel('pr2-7'), 'Book 2 · Unit 7');
@@ -147,21 +148,20 @@ suite('word tab: two hosts, one engine', () => {
         assert.equal(x.unitTitle('pr1', 1), UNIT_PR_TITLES.pr1[1]);
     });
 
-    test('each host remembers its own set: Word defaults to Book 1, Grade 4 to HK1', () => {
+    test('the host remembers its set: Word defaults to Book 1, and a foreign id falls back', () => {
         const { x, sb } = loadEngine();
-        assert.equal(x.currentUnitSet('grade4'), 'hk1');
         assert.equal(x.currentUnitSet('word'), 'pr1');
         x.switchUnitSet('pr3');
-        assert.equal(sb.appState.wordSet, 'pr3', 'the Word choice is stored under its own key');
-        assert.equal(sb.appState.unitsSet, undefined, 'and does not touch Grade 4\'s');
+        assert.equal(sb.appState.wordSet, 'pr3', 'the choice is stored under the host\'s own key');
         assert.equal(x.currentUnitSet('word'), 'pr3');
-        assert.equal(x.currentUnitSet('grade4'), 'hk1');
-        // A Grade 4 key stored under the Word slot (or vice versa) is ignored.
+        // A set id from a bank that no longer exists is ignored.
         sb.appState.wordSet = 'hk2';
         assert.equal(x.currentUnitSet('word'), 'pr1', 'a foreign set id falls back to the host default');
+        x.switchUnitSet('hk2');
+        assert.equal(x.currentUnitSet('word'), 'pr1', 'and cannot be switched to');
     });
 
-    test('the Word home draws on the Word pieces, with only the three Book tabs', () => {
+    test('the Word home draws on the Word pieces, with no set strip', () => {
         const { x, html } = loadEngine();
         x.renderWordHome();
         assert.equal(x.unitCurrentHost(), 'word');
@@ -169,18 +169,17 @@ suite('word tab: two hosts, one engine', () => {
         assert.truthy(bar.includes('g4-grid'), 'unit cards drawn on #wordUnitsBar');
         assert.equal((bar.match(/startUnitPractice\('pr1-\d+'\)/g) || []).length, 15, 'fifteen unit cards for Book 1');
         assert.truthy(bar.includes("startUnitPractice('pr1-mix')"), 'and a Mix card');
-        assert.truthy(bar.includes("switchUnitSet('pr1')") && bar.includes("switchUnitSet('pr3')"), 'Book tabs');
-        assert.truthy(!bar.includes("switchUnitSet('hk1')"), 'no Grade 4 tab on the Word screen');
+        assert.equal(x.renderUnitSetTabsHTML(), '', 'the bottom bar chooses the book: no set strip');
+        assert.truthy(!bar.includes('switchUnitSet('), 'no set tab on the Word screen');
         assert.truthy(bar.includes(UNIT_PR_TITLES.pr1[1]), 'unit titles come from the bank');
         assert.truthy(html('wordSubTabs').includes("renderWordHome('history')"), 'the history sub-tab goes to the Word home');
-        assert.equal(html('unitsBar'), '', 'nothing drawn on the Grade 4 bar');
-        // And the other way round.
-        x.renderGrade4Home();
-        assert.equal(x.unitCurrentHost(), 'grade4');
-        assert.truthy(!html('unitsBar').includes("switchUnitSet('pr1')"), 'no Book tab on the Grade 4 screen');
+        // The header names the open book.
+        x.switchUnitSet('pr2');
+        x.renderWordHome();
+        assert.equal((html('wordUnitsBar').match(/startUnitPractice\('pr2-\d+'\)/g) || []).length, 15, 'fifteen unit cards for Book 2');
     });
 
-    test('a Word practice belongs to the Word screen and lands in the Word history', () => {
+    test('a Book practice belongs to the Word screen and lands in the Word history', () => {
         const { x, sb, html } = loadEngine();
         x.startUnitPractice('pr1-1');
         const st = x.quiz();
@@ -188,7 +187,6 @@ suite('word tab: two hosts, one engine', () => {
         assert.equal(x.unitCurrentHost(), 'word');
         assert.equal(x.unitPracticeScreen(), 'wordScreen', 'the leave guard is told the Word screen');
         assert.truthy(html('wordDetail').includes('unitTextInput'), 'the question is drawn in #wordDetail');
-        assert.equal(html('grade4Detail'), '', 'not in #grade4Detail');
         assert.truthy(html('wordDetail').includes('unit-ex-blank'), 'the example sentence is shown with the word blanked');
         assert.truthy(!html('wordDetail').includes('unit-q-exvi'), 'its translation is withheld until answered');
         assert.truthy(st.questions.every(q => q.w.set === 'pr1' && q.w.unit === 1), 'only Book 1 Unit 1 words');
@@ -210,15 +208,14 @@ suite('word tab: two hosts, one engine', () => {
         assert.equal(sb.appState.coins, 5, 'five coins for the one right answer');
         assert.truthy(row.skills.every(s => s.skillKey.startsWith('word.unit.pr1.1.')), 'skill keys are the Word tab\'s: ' + row.skills.map(s => s.skillKey));
         assert.equal(x.unitsHostHistory('word').length, 1, 'the row is the Word host\'s');
-        assert.equal(x.unitsHostHistory('grade4').length, 0, 'and not Grade 4\'s');
         assert.truthy(html('wordDetail').includes('renderWordHome()'), 'the results screen goes back to the Word home');
     });
 
-    test('missed Word words are owed on the Word queue and gate only the Word tab', () => {
+    test('missed words are owed on the word queue and gate the cards', () => {
         const { x, sb, html } = loadEngine();
-        assert.truthy(x.RETRY_DRILLS.units && x.RETRY_DRILLS.word, 'both hosts register a drill');
+        assert.deepEqual(Object.keys(x.RETRY_DRILLS), ['word'], 'the one host registers the one drill');
         assert.equal(x.RETRY_DRILLS.word.screenId, 'wordDetail');
-        assert.equal(x.RETRY_DRILLS.units.screenId, 'grade4Detail');
+        assert.equal(x.unitsRetryKey(), 'word');
         x.startUnitPractice('pr2-3');
         const st = x.quiz();
         for (let i = 0; i < st.questions.length; i++) {
@@ -227,39 +224,19 @@ suite('word tab: two hosts, one engine', () => {
             x.submitUnitAnswer();
         }
         x.finishUnitPractice();
-        assert.equal(x.unitsRetryCount('word'), st.questions.length, 'every miss owed on the Word queue');
-        assert.equal(x.unitsRetryCount('units'), 0, 'nothing owed on the Grade 4 queue');
+        assert.equal(x.unitsRetryCount('word'), st.questions.length, 'every miss owed on the word queue');
         assert.truthy(sb.appState.wordRetry.every(id => /^pr2\|/.test(id)), 'owed ids carry their set: ' + sb.appState.wordRetry[0]);
-        // The Word cards lock; Grade 4's do not.
+        // The cards lock.
         x.renderWordHome();
-        assert.truthy(html('wordUnitsBar').includes('locked'), 'Word cards are locked while words are owed');
-        x.renderGrade4Home();
-        assert.truthy(!html('unitsBar').includes('g4-card locked') && !html('unitsBar').includes('g4-card mastered locked'),
-            'Grade 4 cards stay open');
-        // Starting a new Word practice is refused and the drill opens instead.
+        assert.truthy(html('wordUnitsBar').includes('locked'), 'cards are locked while words are owed');
+        // Starting a new practice is refused and the drill opens instead.
         x.startUnitPractice('pr2-4');
         assert.equal(x.quiz(), null, 'no new practice while words are owed');
         assert.truthy(x.retryList('word').length > 0, 'the owed words resolve back to real words');
         assert.equal(x.retryList('word')[0].set, 'pr2', 'to the Book 2 word that was missed');
     });
 
-    test('a Grade 4 practice still draws on Grade 4 and owes on the Grade 4 queue', () => {
-        const { x, sb, html } = loadEngine();
-        x.startUnitPractice('hk1-1');
-        assert.equal(x.unitPracticeScreen(), 'gradeFourScreen');
-        assert.truthy(html('grade4Detail').includes('unitTextInput'));
-        assert.equal(html('wordDetail'), '');
-        const st = x.quiz();
-        sb.document.getElementById('unitTextInput').value = 'zzzz';
-        x.submitUnitAnswer();
-        st.idx = st.questions.length - 1; st.answers.fill({ value: 'zzzz', isCorrect: false });
-        x.finishUnitPractice();
-        assert.truthy(x.unitsRetryCount('units') > 0, 'owed on the Grade 4 queue');
-        assert.equal(x.unitsRetryCount('word'), 0, 'not on the Word queue');
-        assert.truthy(sb.appState.unitsHistory[0].skills[0].skillKey.startsWith('grade4.unit.'), 'Grade 4 skill keys unchanged');
-    });
-
-    test('a profile change forgets both hosts\' set choices', () => {
+    test('a profile change forgets the set choice', () => {
         const { x, sb } = loadEngine();
         x.switchUnitSet('pr2');
         sb.appState = null;   // no state: the fallback is what a fresh profile would see
@@ -270,16 +247,16 @@ suite('word tab: two hosts, one engine', () => {
 });
 
 suite('word tab: a practice interrupted and brought back', () => {
-    // The study checkpoint (js/app.js) used to write every units practice as
-    // gradeFourScreen. A Word practice restored that way came back on the
-    // Grade 4 screen and, on finish, was scored under Grade 4's skill keys and
-    // owed to Grade 4's queue. Run it for real: interrupt, "reload", restore.
+    // The study checkpoint (js/app.js) names the screen a practice belongs
+    // to; a restored one must come back on the Word screen and, on finish, be
+    // scored under the Word skill keys and owed to the 'word' queue. Run it
+    // for real: interrupt, "reload", restore.
     const { mountApp, loginTestUser } = require('./verify/client.js');
     const CHECKPOINT_KEY = 'flashlingo-study-checkpoint-v1';
     const tick = () => new Promise((r) => setImmediate(r));
     const settle = async (n) => { for (let i = 0; i < (n || 6); i++) await tick(); };
 
-    test('a Word practice restored from the checkpoint lands on the Word screen and scores as Word', async () => {
+    test('a Book practice restored from the checkpoint lands on the Word screen and scores as Word', async () => {
         const h = mountApp();
         assert.deepEqual(h.loadErrors, [], 'the app must boot cleanly');
         loginTestUser(h, { coins: 100 });
@@ -303,7 +280,7 @@ suite('word tab: a practice interrupted and brought back', () => {
         await settle(12);
         assert.truthy(h2.sandbox.isUnitPracticeActive(), 'the round came back');
         assert.truthy(h2.el('wordScreen').classList.contains('active'), 'on the Word screen');
-        assert.truthy(!h2.el('gradeFourScreen').classList.contains('active'), 'not on Grade 4');
+        assert.truthy(!h2.el('homeScreen').classList.contains('active'), 'not on Home');
         assert.equal(h2.sandbox.unitPracticeScreen(), 'wordScreen');
         assert.equal(h2.sandbox.unitCurrentHost(), 'word');
         assert.truthy(h2.el('wordDetail').querySelector('#unitTextInput'), 'the question is drawn in #wordDetail');
@@ -323,8 +300,7 @@ suite('word tab: a practice interrupted and brought back', () => {
         const app = h2.peek('appState');
         assert.equal(String(app.unitsHistory[0].unit), 'pr1-2');
         assert.truthy(app.unitsHistory[0].skills.every(k => k.skillKey.startsWith('word.unit.')), 'scored under the Word skill keys');
-        assert.truthy(h2.sandbox.unitsRetryCount('word') > 0, 'owed on the Word queue');
-        assert.equal(h2.sandbox.unitsRetryCount('units'), 0, 'not on the Grade 4 queue');
+        assert.truthy(h2.sandbox.unitsRetryCount('word') > 0, 'owed on the word queue');
         assert.equal(h2.store[CHECKPOINT_KEY], undefined, 'finished → the checkpoint is gone');
     });
 });
@@ -334,25 +310,30 @@ suite('word tab: wired into the app', () => {
     const lazy = read('js/lazy-data.js');
     const sw = read('sw.js');
 
-    test('the bottom bar has a Word button where Exam used to be, and no Exam', () => {
-        const keys = [...html.matchAll(/data-nav-key="([a-z]+)"/g)].map(m => m[1]);
-        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'word']);
-        assert.truthy(/data-nav-key="word"[^>]*onclick="switchScreen\('wordScreen'\)"/.test(html), 'the button opens wordScreen');
+    test('the bottom bar has three Book buttons, each opening the Word screen on its set', () => {
+        const keys = [...html.matchAll(/data-nav-key="([a-z0-9]+)"/g)].map(m => m[1]);
+        assert.deepEqual(keys, ['home', 'book1', 'book2', 'book3', 'farm']);
+        for (const b of [1, 2, 3]) {
+            assert.truthy(new RegExp(`data-nav-key="book${b}"[^>]*onclick="openBook\\('pr${b}'\\)"`).test(html),
+                'Book ' + b + ' opens its set');
+        }
+        assert.truthy(/function openBook\(set\)[\s\S]*?switchUnitSet\(set, \{ silent: true \}\)[\s\S]*?switchScreen\('wordScreen'\)/.test(read('js/app.js')),
+            'openBook chooses the set, then opens wordScreen');
         assert.truthy(!html.includes('id="examScreen"'), 'the Exam screen is gone');
         assert.truthy(!fs.existsSync(path.join(ROOT, 'js', 'exam-data.js')), 'the HCMC bank is gone');
     });
 
-    test('the Word screen carries the four pieces the engine draws into', () => {
+    test('the Word screen carries the header and the four pieces the engine draws into', () => {
         assert.truthy(html.includes('id="wordScreen"'));
-        for (const id of ['wordSubTabs', 'wordUnitsBar', 'wordHistory', 'wordDetail']) {
+        for (const id of ['wordTitle', 'wordSubtitle', 'wordSubTabs', 'wordUnitsBar', 'wordHistory', 'wordDetail']) {
             assert.truthy(html.includes(`id="${id}"`), 'missing #' + id);
         }
         assert.truthy(/id="wordScreen"[^>]*/.test(html) && /class="screen[^"]*grade4-screen[^"]*"\s+id="wordScreen"/.test(html),
-            'it is styled like the Grade 4 screen (css/math.css)');
+            'it carries the card-grid styling class (css/styles.css .grade4-screen rules)');
     });
 
-    test('the bank is lazy, styled, precached, and never on the startup path', () => {
-        assert.truthy(/wordScreen:\s*\[[^\]]*'css\/math\.css'[^\]]*'js\/word-data\.js'/.test(lazy), 'SCREEN_FILES.wordScreen lists the sheet and the bank');
+    test('the bank is lazy, precached, and never on the startup path', () => {
+        assert.truthy(/wordScreen:\s*\['js\/word-data\.js'\]/.test(lazy), 'SCREEN_FILES.wordScreen lists the bank (its rules live in css/styles.css)');
         assert.truthy(!/<script src="js\/word-data\.js">/.test(html), 'js/word-data.js must not be a startup <script>');
         assert.truthy(/'\/js\/word-data\.js':\s*'[0-9a-f]{16}'/.test(sw), 'sw.js PRECACHE lists /js/word-data.js');
         assert.truthy(!sw.includes('/js/exam-data.js') && !sw.includes('/js/exam-lessons.js'), 'the old bank left the precache');
@@ -362,15 +343,18 @@ suite('word tab: wired into the app', () => {
     test('js/app.js paints the Word home after the lazy bank lands and guards its practice', () => {
         const app = read('js/app.js');
         assert.truthy(/screenId === 'wordScreen' && typeof renderWordHome === 'function'\) renderWordHome\(\)/.test(app));
-        assert.truthy(/wordScreen:\s*'word'/.test(app), 'wordScreen maps to the word nav key');
+        assert.truthy(/NAV_KEY_BY_BOOK = Object\.freeze\(\{ pr1: 'book1', pr2: 'book2', pr3: 'book3' \}\)/.test(app),
+            'wordScreen maps to the nav key of the open book');
         assert.truthy(app.includes('unitPracticeScreen()'), 'the leave guard asks the engine which screen the practice is on');
         assert.truthy(!app.includes("'examScreen'"), 'no examScreen left in app.js');
     });
 
-    test('the home screen counts Word rows as their own skill, apart from Grade 4', () => {
+    test('the home screen counts each Book\'s rows as its own skill', () => {
         const home = read('js/home.js');
-        assert.truthy(/key: 'word', label: 'Word'/.test(home));
-        assert.truthy(/word: \['wordScreen', 'renderWordHome'\]/.test(home), 'the skill row deep-links to the Word tab');
+        for (const b of [1, 2, 3]) {
+            assert.truthy(new RegExp(`key: 'book${b}', set: 'pr${b}', re: /\\^pr${b}-/, label: 'Book ${b}'`).test(home), 'Book ' + b + ' skill row');
+        }
+        assert.truthy(/function goToSkillTab\(key\)[\s\S]*?openBook\(book\.set\)/.test(home), 'the skill row deep-links to its Book');
         assert.truthy(!/key: 'exam'/.test(home), 'the Exam skill is gone');
     });
 

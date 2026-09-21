@@ -282,12 +282,15 @@ suite('wrong priority: prioStore', () => {
 });
 
 suite('wrong priority: shipped with the app', () => {
-    test('index.html loads the engine before every tab that draws through it', () => {
+    test('index.html loads the engine before the tab that draws through it', () => {
+        // Match the <script> tags, not a comment that happens to name the file.
         const html = read('index.html');
-        const at = html.indexOf('js/wrong-priority.js');
+        const at = html.indexOf('<script src="js/wrong-priority.js">');
         assert.truthy(at > 0, 'wrong-priority.js is not loaded at all');
-        for (const f of ['units.js', 'wordform.js', 'phrases.js', 'collocation.js', 'rewrite.js', 'verbs.js', 'grammar-ui.js']) {
-            assert.truthy(html.indexOf('js/' + f) > at, 'js/' + f + ' loads before the engine it draws through');
+        for (const f of ['units.js']) {
+            const tab = html.indexOf('<script src="js/' + f + '">');
+            assert.truthy(tab > 0, 'js/' + f + ' is not loaded at all');
+            assert.truthy(tab > at, 'js/' + f + ' loads before the engine it draws through');
         }
     });
 

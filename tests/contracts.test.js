@@ -6,10 +6,10 @@
 // proves code was not deleted; it cannot prove code works. Two whole classes
 // of defect slipped past it in one week:
 //
-//   1. A call to a function that does not exist. js/math-fight.js called
-//      EngAuth.userIdFor(), which was never an export, so the win/loss check
-//      silently fell through to guessing from the scores — and a child who
-//      walked away while ahead was congratulated for winning.
+//   1. A call to a function that does not exist. The (since removed) Math
+//      Fight called EngAuth.userIdFor(), which was never an export, so the
+//      win/loss check silently fell through to guessing from the scores — and
+//      a child who walked away while ahead was congratulated for winning.
 //   2. An asset path that resolves somewhere else. The yard pet's sprite was
 //      handed to CSS as a custom property, where a RELATIVE url() resolves
 //      against the stylesheet, not the page: img/night-raid/x.png became
@@ -23,7 +23,7 @@ const fs = require('fs'), path = require('path');
 const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const jsFiles = fs.readdirSync(path.join(root, 'js'))
-  .filter(f => f.endsWith('.js') && f !== 'phaser.min.js');
+  .filter(f => f.endsWith('.js'));
 
 // ---------------------------------------------------------------------------
 // 1. Every Module.method() call must be something that module actually exports
@@ -35,9 +35,8 @@ const MODULES = {
   EngAuth: 'js/auth.js',
   NightRaid: 'js/night-raid.js',
   NightRaidRules: 'js/night-raid-rules.js',
-  NightRaidChoreo: 'js/night-raid-choreo.js',
-  MathFight: 'js/math-fight.js',
-  MathFightRules: 'js/math-fight-rules.js',
+  FarmRules: 'js/farm-rules.js',
+  DailyTask: 'js/daily-task.js',
 };
 
 // The export block is the last `return {...}` / `return Object.freeze({...})`
