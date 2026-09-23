@@ -1037,6 +1037,54 @@ function render(){
 }
 window.addEventListener('hashchange', render);
 
+// ── The service worker: this page must never run last release's scripts ───
+// admin.html sits inside the worker's scope (/learn-eng-pwa/), so every
+// script it loads comes from THIS generation's cache, first and only — but
+// only the app (js/app.js) ever registered the worker, checked for a new
+// one and swapped it in. An adult who opens nothing but this page therefore
+// stayed on whatever generation their browser installed once: on
+// 2026-09-23 the task picker was still offering the pre-cut lesson tree
+// (Eng 154 bài, Toán…) that no longer exists in this product.
+//
+// Nothing here is interruptible — no lesson, no half-finished round — so
+// the update is applied at once rather than waiting for an idle moment.
+const CATALOG_IS_CURRENT = () => {
+  try { return DailyTaskCatalog.all().every(e => /^word-pr[123]$/.test(e.group)); }
+  catch (e) { return false; }
+};
+(function watchForNewVersion(){
+  if (!('serviceWorker' in navigator)) return;
+  let reloading = false;
+  const reloadOnce = () => { if (reloading) return; reloading = true; location.reload(); };
+  navigator.serviceWorker.addEventListener('controllerchange', reloadOnce);
+  navigator.serviceWorker.getRegistration().then(reg => {
+    // No worker at all: the page came straight from the network, nothing to do.
+    if (!reg) { warnIfStale(false); return; }
+    const take = w => { if (w) w.postMessage({ type: 'SKIP_WAITING' }); };
+    if (reg.waiting) take(reg.waiting);
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') take(reg.waiting || w); });
+    });
+    const checked = reg.update();
+    if (checked && checked.catch) checked.catch(()=>{});
+    warnIfStale(true);
+  }).catch(()=>{});
+  // If the scripts on the page are visibly from another product, say so —
+  // an update that cannot land must not look like a working picker.
+  function warnIfStale(hasWorker){
+    if (CATALOG_IS_CURRENT()) return;
+    const bar = document.createElement('div');
+    bar.id = 'staleBanner';
+    bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:9999;padding:10px 14px;background:#fff1f0;border-bottom:2px solid #ffa39e;color:#a8071a;font-weight:700;font-size:13px;text-align:center';
+    bar.textContent = hasWorker
+      ? 'Trang đang chạy bản cũ (danh sách bài không phải của app này) — đang tải bản mới, xin đợi vài giây…'
+      : 'Trang đang chạy bản cũ — hãy tải lại trang (Ctrl/Cmd + Shift + R).';
+    document.body.appendChild(bar);
+    if (hasWorker) setTimeout(reloadOnce, 4000);
+  }
+})();
+
 // The child page's tab strip. Landing on a tab is what triggers its load.
 const CHILD_TAB_NAMES = ['tasks','history','skills'];
 function switchAdminTab(tab){

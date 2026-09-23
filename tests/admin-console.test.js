@@ -119,6 +119,25 @@ suite('admin: disabling an account', () => {
         assert.truthy(/act-delete[^>]*title="Xoá vĩnh viễn/.test(adminHtml), 'the title says it is permanent');
     });
 
+    test('the page updates its own service worker, and says so when it cannot', () => {
+        // admin.html is inside the worker's scope, so its scripts are served
+        // cache-first from whatever generation is installed — but only
+        // js/app.js ever registered, checked and swapped the worker in. An
+        // adult who opens nothing but this page was still being shown the
+        // pre-cut lesson tree (Eng/Toán) on 2026-09-23.
+        assert.truthy(/navigator\.serviceWorker\.getRegistration\(\)/.test(adminHtml), 'the page must look for the worker');
+        assert.truthy(/reg\.update\(\)/.test(adminHtml), 'and ask for a fresh sw.js on every load');
+        assert.truthy(/postMessage\(\{ type: 'SKIP_WAITING' \}\)/.test(adminHtml), 'a waiting worker must be taken at once — nothing here is interruptible');
+        assert.truthy(/addEventListener\('controllerchange'/.test(adminHtml) && /location\.reload\(\)/.test(adminHtml),
+            'the page must reload once the new worker takes over, or it keeps the old scripts it already ran');
+        assert.truthy(/staleBanner/.test(adminHtml) && /bản cũ/.test(adminHtml),
+            'an update that cannot land must not look like a working picker');
+        // The staleness test is the catalog itself: this product only ever
+        // assigns Book practice.
+        assert.truthy(/\/\^word-pr\[123\]\$\/\.test\(e\.group\)/.test(adminHtml),
+            'the page must recognise a foreign catalog by its groups');
+    });
+
     test('the disable button is hidden for admins in the UI too', () => {
         // The server refuses it anyway; offering a button that always errors is
         // a worse experience than not offering it.
