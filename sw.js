@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v641';
+const CACHE_NAME = 'flashlingo-v642';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -40,12 +40,12 @@ const PRECACHE = {
   '/css/night-raid.css': 'c896c1744da22e9b',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
   '/fonts/nunito-var-latin.woff2': '20fc9b6fc618e7c3',
-  '/js/word-data.js': 'c763481c7f37a0e0',
+  '/js/word-data.js': 'fb0664a7bc632a45',
   '/js/retrydrill.js': '9656e5079c4a99dd',
   '/js/wrong-priority.js': 'e7cca02164688287',
-  '/js/units.js': '57ce2103ea5d58fc',
-  '/js/dictionary-data.js': '92cdd9c9556ed37f',
-  '/js/hot-words.js': 'c2b66815391165c2',
+  '/js/units.js': 'd41a8c6b45027652',
+  '/js/dictionary-data.js': '8d297811dd484679',
+  '/js/hot-words.js': '292393ce1b270100',
   '/js/answer-audio.js': '0ae2dcd91e4d2af1',
   '/js/tapwords.js': '5fefbc5bafd7c3a0',
   '/js/petart.js': 'f1a57be269c6c43f',
@@ -54,7 +54,7 @@ const PRECACHE = {
   '/js/farm-art-manifest.js': '5734f86762871b2d',
   '/js/night-raid-rules.js': 'bb7abe3e1c162d0b',
   '/js/night-raid.js': '21146cd6d113b6a9',
-  '/js/daily-task-catalog.js': 'beb575f818334f5f',
+  '/js/daily-task-catalog.js': '83f2255aecbd09cc',
   '/js/daily-task.js': 'cc14da7e1a83d472',
   '/img/night-raid/isometric-home-board-skin-pad.webp': '946939c99edbd5b1',
   '/img/night-raid/isometric-home-board-unified-gate-v3.webp': '2512c26a6cc25dbb',
@@ -133,7 +133,7 @@ const PRECACHE = {
   '/js/auth.js': '98c5d7278d12cc80',
   '/js/lazy-data.js': '829bad02417cb37c',
   '/js/app.js': '1b56c9ee2123f5a5',
-  '/js/home.js': '3f7f07241e8848ff',
+  '/js/home.js': 'bb3be8efb39f05c8',
   '/js/profile.js': '99be091f5b78847d',
   '/img/sun.svg': 'bfdf1afdf99058a9',
   '/img/icon-192.svg': 'bceaad28d43b2b7e',
