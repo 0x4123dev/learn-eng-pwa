@@ -40,11 +40,59 @@ globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurre
   currentUnitSet, switchUnitSet, renderWordHome, renderUnitsBar, renderUnitSetTabsHTML,
   startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice, quitUnitPractice, isUnitPracticeActive,
   unitsRetryCount, unitsRetryKey, unitsHostHistory, unitsList, unitsBank, _unitPool, _unitParse, _unitLabel,
-  unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts,
+  unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts, _unitExampleHTML,
+  unitSentenceAudio, unitSpeakSentence,
   quiz: () => _unitQuiz, setQuiz: (q) => { _unitQuiz = q; } };`;
     vm.runInContext(src, ctx, { filename: 'word-tab-engine.js' });
     return { sb: sandbox, x: sandbox.__x, html: id => sandbox.document.__getLastInnerHTML(id) || '' };
 }
+
+suite('word tab: hear the whole example sentence (Book 1)', () => {
+    // The user asked for it on the answer screen: "khi có đáp án thì thêm cái
+    // loa ở câu này … bấm vào để nghe được nguyên câu", Book 1 only.
+    test('the 🔊 appears with the answer, never before it, and only for Book 1', () => {
+        const { x, sb } = loadEngine();
+        sb.speakSentence = () => true;   // js/app.js provides it in the app
+        const b1 = UNIT_WORDS_PR1[0], b2 = UNIT_WORDS_PR2[0];
+        assert.truthy(x.unitSentenceAudio(b1), 'Book 1 words have a sentence recording');
+        assert.falsy(x.unitSentenceAudio(b2), 'Books 2 and 3 have none — no button');
+        const hidden = x._unitExampleHTML(b1, false);
+        assert.truthy(hidden.includes('unit-ex-blank'), 'the sentence is still blanked while answering');
+        assert.falsy(hidden.includes('unit-ex-say'), 'no 🔊 before the answer: it would say the word out loud');
+        const shown = x._unitExampleHTML(b1, true);
+        assert.truthy(shown.includes('class="unit-ex-say"') && shown.includes('onclick="unitSpeakSentence()"'),
+            'the revealed sentence carries the speaker button');
+        assert.truthy(/aria-label="Nghe cả câu"/.test(shown), 'and it has an accessible name');
+        assert.falsy(x._unitExampleHTML(b2, true).includes('unit-ex-say'), 'Book 2 keeps the plain sentence');
+    });
+
+    test('the button plays the sentence of the question on screen', () => {
+        const { x, sb } = loadEngine();
+        const played = [];
+        sb.speakSentence = (word, text) => { played.push([word, text]); return true; };
+        sb.speakAnswer = () => {};
+        assert.falsy(x.unitSpeakSentence(), 'nothing on screen, nothing to play');
+        x.startUnitPractice('pr1-1');
+        const q = x.quiz().questions[x.quiz().idx];
+        assert.truthy(x.unitSpeakSentence(), 'plays for the current question');
+        assert.deepEqual(played, [[q.w.en, q.w.ex]], 'the word and its own sentence');
+        // …and the NEXT question plays its own, not the one the button was
+        // drawn with.
+        x.submitUnitAnswer();
+        x.nextUnitQuestion();
+        const q2 = x.quiz().questions[x.quiz().idx];
+        x.unitSpeakSentence();
+        assert.deepEqual(played[played.length - 1], [q2.w.en, q2.w.ex]);
+    });
+
+    test('the styles for the button exist, and the service worker caches the recordings', () => {
+        const css = read('css/styles.css');
+        assert.truthy(/\.unit-ex-say \{/.test(css), 'the button is styled');
+        assert.truthy(/\.unit-ex-say[\s\S]{0,240}width: 38px/.test(css), 'and is big enough to tap on a phone');
+        const sw = read('sw.js');
+        assert.truthy(sw.includes("includes('/audio/sentences/')"), 'sentence MP3s go to the long-lived audio cache');
+    });
+});
 
 suite('word tab: the bank is the book', () => {
     test('38 unit files: Book 1 × eight, Books 2 and 3 × fifteen, each valid', () => {

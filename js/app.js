@@ -1703,6 +1703,79 @@ function speakWord(word, onDone) {
     });
 }
 
+// ── The example sentence, read aloud ─────────────────────────────────────
+// Answering a Word question reveals the sentence with the word filled in, and
+// a 🔊 beside it plays the WHOLE sentence (js/units.js _unitExampleHTML).
+// Recorded per WORD — a word owns one example sentence — under the same slug
+// as its own recording: audio/words/<slug>.mp3 ↔ audio/sentences/<slug>.mp3
+// (scripts/generate-sentence-audio.js). Only **Book 1** has them, and the
+// button is only drawn there.
+//
+// Always a path relative to the page: these files ship inside this repo and
+// are served by whatever host serves the app, unlike the word recordings,
+// which live in their own Pages project when the app is on Cloudflare.
+const SENTENCE_AUDIO_PATH = 'audio/sentences/';
+const sentenceAudioCache = {};   // slug -> Audio element
+const sentenceAudioMissing = {}; // slug -> true (failed once this session)
+
+function sentenceAudioUrl(word) {
+    const slug = wordAudioSlug(word);
+    return slug ? SENTENCE_AUDIO_PATH + slug + '.mp3' : '';
+}
+
+// Play the recording of `word`'s example sentence. `text` (optional) is the
+// sentence itself, spoken by the device voice only if the recording cannot
+// play — better a robot reading than a button that does nothing.
+function speakSentence(word, text) {
+    const slug = wordAudioSlug(word);
+    const fallback = () => { if (text) speakWordFallback(String(text)); };
+    if (!slug || typeof Audio === 'undefined') { fallback(); return false; }
+    if (sentenceAudioMissing[slug]) { fallback(); return false; }
+
+    // One sentence at a time, and never over a word recording.
+    if (currentAudio) { resetAudio(currentAudio); currentAudio = null; }
+
+    let audio = sentenceAudioCache[slug];
+    if (!audio) {
+        audio = new Audio(SENTENCE_AUDIO_PATH + slug + '.mp3');
+        audio.preload = 'auto';
+        sentenceAudioCache[slug] = audio;
+    }
+    resetAudio(audio);
+    currentAudio = audio;
+
+    let settled = false;
+    const giveUp = () => {
+        if (settled) return;
+        settled = true;
+        // As with the words: a missing file can arrive as a 200 HTML page, so
+        // the failure shows up as an `error` event rather than a rejection.
+        sentenceAudioMissing[slug] = true;
+        delete sentenceAudioCache[slug];
+        audio.onerror = null;
+        fallback();
+    };
+    audio.onended = () => { settled = true; };
+    audio.onerror = giveUp;
+    audio.play().catch(err => {
+        if (isAutoplayBlock(err)) { settled = true; return; }
+        giveUp();
+    });
+    return true;
+}
+
+// Warm a sentence so the 🔊 answers instantly. Silent about failures: this
+// runs while the student is still typing.
+function prefetchSentenceAudio(word) {
+    try {
+        const slug = wordAudioSlug(word);
+        if (!slug || sentenceAudioMissing[slug] || sentenceAudioCache[slug] || typeof Audio === 'undefined') return;
+        const audio = new Audio(SENTENCE_AUDIO_PATH + slug + '.mp3');
+        audio.preload = 'auto';
+        sentenceAudioCache[slug] = audio;
+    } catch (e) {}
+}
+
 // A refused autoplay is a policy decision, not a broken recording.
 function isAutoplayBlock(err) {
     return !!err && (err.name === 'NotAllowedError' || err.name === 'AbortError');

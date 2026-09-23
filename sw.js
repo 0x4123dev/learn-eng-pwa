@@ -417,9 +417,11 @@ self.addEventListener('fetch', event => {
   // Storage on whatever machine an adult had used.
   if (url.origin === self.location.origin && url.pathname.startsWith(abs('/api/'))) return;
 
-  // Word recordings are immutable → cache-first, stored in their own
-  // long-lived cache so they play instantly and work offline.
-  if (event.request.url.includes('/audio/words/')) {
+  // Word recordings and the Book 1 example sentences are immutable →
+  // cache-first, stored in their own long-lived cache so they play instantly
+  // and work offline. (Sentences are keyed by the same pathname rule; they
+  // only ever come from this origin.)
+  if (event.request.url.includes('/audio/words/') || event.request.url.includes('/audio/sentences/')) {
     event.respondWith(audioWordResponse(event.request));
     return;
   }

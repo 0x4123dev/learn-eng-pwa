@@ -754,6 +754,15 @@ function _unitExampleParts(w) {
   return null;
 }
 
+// Only Book 1's example sentences are recorded (audio/sentences/, see
+// scripts/generate-sentence-audio.js) — Books 2 and 3 carry the printed
+// Vocabulary list alone. The 🔊 is therefore drawn only where there is
+// something to play, and only once the answer is revealed: before that the
+// sentence still has the blank in it, and hearing it would give the word away.
+function unitSentenceAudio(w) {
+  return !!(w && w.book === 1 && w.ex && typeof speakSentence === 'function');
+}
+
 function _unitExampleHTML(w, revealed) {
   const parts = _unitExampleParts(w);
   if (!parts) return '';
@@ -761,7 +770,21 @@ function _unitExampleHTML(w, revealed) {
     ? `<b class="unit-ex-word">${unitEsc(parts.term)}</b>`
     : '<span class="unit-ex-blank">______</span>';
   const vi = revealed && w.exVi ? `<div class="unit-q-exvi">${unitEsc(w.exVi)}</div>` : '';
-  return `<div class="unit-q-ex">${unitEsc(parts.before)}${filled}${unitEsc(parts.after)}</div>${vi}`;
+  const say = revealed && unitSentenceAudio(w)
+    ? `<button type="button" class="unit-ex-say" onclick="unitSpeakSentence()" aria-label="Nghe cả câu" title="Nghe cả câu">🔊</button>`
+    : '';
+  return `<div class="unit-q-ex">${unitEsc(parts.before)}${filled}${unitEsc(parts.after)}${say}</div>${vi}`;
+}
+
+// The button carries no word: it always plays the sentence of the question on
+// screen, so a stale onclick from a previous render can never speak the next
+// word's answer out loud.
+function unitSpeakSentence() {
+  const st = _unitQuiz;
+  const q = st && st.questions[st.idx];
+  if (!q || !unitSentenceAudio(q.w)) return false;
+  speakSentence(q.w.en, q.w.ex);
+  return true;
 }
 
 function _unitGapHTML(gap, revealed) {
@@ -785,6 +808,9 @@ function renderUnitQuestion() {
       prefetchAudio(q.w.en);
       if (st.questions[st.idx + 1]) prefetchAudio(st.questions[st.idx + 1].w.en);
     }
+    // The sentence too, while the student is still typing, so the 🔊 that
+    // appears with the answer plays at once.
+    if (typeof prefetchSentenceAudio === 'function' && unitSentenceAudio(q.w)) prefetchSentenceAudio(q.w.en);
   } catch (e) {}
   const ans = st.answers[st.idx];
   const answered = ans !== null;
@@ -979,7 +1005,7 @@ if (typeof module !== 'undefined' && module.exports) {
     _unitKey, _unitParse, _unitKeyArg,
     buildUnitGap, pickUnitGapMode, pickUnitGapModeForKey, _unitNormalize, _unitAnswerCorrect,
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
-    _unitExampleParts, _unitExampleHTML,
+    _unitExampleParts, _unitExampleHTML, unitSentenceAudio, unitSpeakSentence,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,

@@ -799,6 +799,36 @@ suite('word audio: where the recordings are served from follows the host', () =>
         }
         assert.truthy(app.WORD_AUDIO_PATH.includes('audio/words/'), 'the resolved constant too');
     });
+    test('every Book 1 example sentence is recorded, and no other book is', () => {
+        // Answering reveals the sentence with a 🔊 beside it (js/units.js
+        // _unitExampleHTML) — for Book 1 only, so Book 1 is the set that must
+        // be complete and the other two must not be recorded by accident.
+        const sent = require(path.join(__dirname, '..', 'scripts', 'generate-sentence-audio.js'));
+        const d = require(path.join(__dirname, '..', 'js', 'word-data.js'));
+        const items = sent.collectSentences();
+        assert.equal(items.length, d.UNIT_WORDS_PR1.length, 'one sentence per Book 1 word');
+        const missing = items.filter(i => !fs.existsSync(sent.sentenceFile(i.slug))).map(i => i.word);
+        assert.deepEqual(missing.slice(0, 10), [],
+            `${missing.length} Book 1 sentences have no recording — run scripts/generate-sentence-audio.js`);
+        // The files on disk are exactly that set: a leftover from a word that
+        // was replaced would ship megabytes nothing plays.
+        const onDisk = fs.readdirSync(sent.OUT_DIR).filter(f => f.endsWith('.mp3')).sort();
+        assert.deepEqual(onDisk, items.map(i => i.slug + '.mp3').sort(), 'audio/sentences/ holds exactly the Book 1 sentences');
+    });
+
+    test('the sentence player and the word player agree on the slug and stay apart', () => {
+        const appSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'app.js'), 'utf8');
+        assert.truthy(/const SENTENCE_AUDIO_PATH = 'audio\/sentences\/';/.test(appSrc),
+            'sentences are served from the app\'s own folder, relative to the page');
+        assert.truthy(/function speakSentence\(word, text\)/.test(appSrc), 'speakSentence takes the word and its text');
+        assert.truthy(/sentenceAudioCache\[slug\]/.test(appSrc) && !/\baudioCache\[slug\] = new Audio\(SENTENCE/.test(appSrc),
+            'the sentence cache is its own, so a word recording is never replaced by a sentence');
+        const sent = require(path.join(__dirname, '..', 'scripts', 'generate-sentence-audio.js'));
+        for (const i of sent.collectSentences().slice(0, 5)) {
+            assert.equal(i.slug, app.wordAudioSlug(i.word), i.word + ': the sentence file uses the word\'s slug');
+        }
+    });
+
     test('the app\'s own copy is complete: every Word-tab word has its MP3 in audio/words/', () => {
         const d = require(path.join(__dirname, '..', 'js', 'word-data.js'));
         const missing = [].concat(d.UNIT_WORDS_PR1, d.UNIT_WORDS_PR2, d.UNIT_WORDS_PR3)
