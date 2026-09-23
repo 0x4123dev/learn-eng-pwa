@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v642';
+const CACHE_NAME = 'flashlingo-v643';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -36,14 +36,14 @@ const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e', 'birthday', 'jam'];
 const PRECACHE = {
   '/': '5b544190b0402f3d',
   '/index.html': '5b544190b0402f3d',
-  '/css/styles.css': '0b3b68ffb30063ec',
+  '/css/styles.css': 'd054f71919442607',
   '/css/night-raid.css': 'c896c1744da22e9b',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
   '/fonts/nunito-var-latin.woff2': '20fc9b6fc618e7c3',
   '/js/word-data.js': 'fb0664a7bc632a45',
   '/js/retrydrill.js': '9656e5079c4a99dd',
   '/js/wrong-priority.js': 'e7cca02164688287',
-  '/js/units.js': 'd41a8c6b45027652',
+  '/js/units.js': 'e11b1acec0e352eb',
   '/js/dictionary-data.js': '8d297811dd484679',
   '/js/hot-words.js': '292393ce1b270100',
   '/js/answer-audio.js': '0ae2dcd91e4d2af1',
@@ -132,8 +132,8 @@ const PRECACHE = {
   '/js/hosting.js': 'cf4974628b379adc',
   '/js/auth.js': '98c5d7278d12cc80',
   '/js/lazy-data.js': '829bad02417cb37c',
-  '/js/app.js': '1b56c9ee2123f5a5',
-  '/js/home.js': 'bb3be8efb39f05c8',
+  '/js/app.js': '819d8cf7b342b662',
+  '/js/home.js': 'e05aa4060f62993e',
   '/js/profile.js': '99be091f5b78847d',
   '/img/sun.svg': 'bfdf1afdf99058a9',
   '/img/icon-192.svg': 'bceaad28d43b2b7e',
