@@ -523,12 +523,12 @@ suite('daily task: admin API', () => {
     assert.equal(dup.status, 409, 'same active kind twice');
   });
 
-  test('every one of the 24 catalog keys is assignable', async () => {
+  test('every one of the 25 catalog keys is assignable', async () => {
     const world = createWorld();
     const admin = await world.createUser({ username: 'boss', role: 'admin' });
     const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
     const keys = Catalog.all().map(e => e.key);
-    assert.equal(keys.length, 24);
+    assert.equal(keys.length, 25);
     // MAX_ACTIVE_TASKS caps one learner at 10, so spread them over learners.
     let kid = null, n = 0;
     for (const kind of keys) {

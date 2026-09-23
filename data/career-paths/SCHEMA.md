@@ -1,8 +1,19 @@
 # data/career-paths — Career Paths: Public Relations (Express Publishing) word bank
 
-One file per book unit: `pr<book>-u<NN>.json`, book 1..3, NN 01..15. The app
-merges them into SEVEN practice units per book (1-2, 3-4, …, 11-12, 13-15) at
-build time; the files stay one per book unit.
+One file per book unit: `pr<book>-u<NN>.json`.
+
+- **Book 1** — the book's first EIGHT units, `pr1-u01`..`pr1-u08`, about
+  THIRTY words each: the unit's printed Vocabulary list first, then the rest
+  of the new words on that unit's two pages (reading text, exercises,
+  listening, speaking and writing prompts). One practice unit per book unit
+  (re-cut 2026-09-23 — the app used to carry all fifteen units at ten words).
+- **Books 2 and 3** — all fifteen units, `pr<b>-u01`..`pr<b>-u15`, carrying
+  EXACTLY the printed Vocabulary column. The app merges them into SEVEN
+  practice units per book (1-2, 3-4, …, 11-12, 13-15) at build time.
+
+A word is taught once in the whole app: `scripts/validate-word-data.js`
+refuses one already used in the same book, and `tests/integration.test.js`
+caps how many may recur across books.
 
 ```json
 {
@@ -18,8 +29,9 @@ build time; the files stay one per book unit.
 ```
 
 - `title` — the unit title as printed in the book's Table of Contents.
-- `words` — EXACTLY the Vocabulary column of that unit on the book's Scope and
-  Sequence page, in that order. Spelling checked against the unit's reading page
+- `words` — for Books 2 and 3, EXACTLY the Vocabulary column of that unit on
+  the book's Scope and Sequence page, in that order. For Book 1, that column
+  first, then the other new words of the unit's two pages, to about thirty. Spelling checked against the unit's reading page
   and the Glossary. Lowercase, except acronyms (RFP, ROI, PSA, CD, URL).
 - `en` — letters, spaces, hyphens, apostrophes, digits; the engine blanks letters
   and grades ignoring case/spaces/hyphens.

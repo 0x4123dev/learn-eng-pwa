@@ -44,11 +44,13 @@ suite('createDefaultUserData: shape', () => {
 });
 
 suite('Books: integration with the word bank', () => {
-    test('every Book has 7 practice units and every unit has words', () => {
+    test('every Book has its practice units and every unit has words', () => {
         const env = loadWithBank();
         for (const s of env.UNIT_SETS) {
             const units = env.unitsList(s.id);
-            assert.deepEqual(units, [1, 2, 3, 4, 5, 6, 7], s.id);
+            // Book 1: eight units, one per book unit (~30 words each).
+            // Books 2 and 3: fifteen book units merged into seven.
+            assert.deepEqual(units, s.id === 'pr1' ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7], s.id);
             for (const u of units) {
                 const n = env.unitsBank(s.id).filter(w => w.unit === u).length;
                 assert.truthy(n >= 5, `${s.id} unit ${u} has only ${n} words`);
@@ -64,10 +66,10 @@ suite('Books: integration with the word bank', () => {
 });
 
 suite('Word bank: data integrity', () => {
-    test('the three Books carry 527 words between them', () => {
+    test('the three Books carry 610 words between them', () => {
         const env = loadWithBank();
         const all = env.UNIT_SETS.reduce((a, s) => a.concat(env.unitsBank(s.id)), []);
-        assert.equal(all.length, 527);
+        assert.equal(all.length, 610, 'Book 1 = 8 × 30, Books 2 and 3 = their printed Vocabulary columns');
     });
 
     test('duplicate-word count documented (a word taught in two Books)', () => {

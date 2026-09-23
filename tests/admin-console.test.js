@@ -448,15 +448,17 @@ suite('admin: the Daily task tab', () => {
 
     test('daily-task assignment copy is clear and offers every Book unit plus Mix', () => {
         const catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
-        // Three Books, 7 practice units and a Mix each: 24 assignable tasks, all of
-        // them 'lesson' activities matched on the exact title js/auth.js
-        // uploads for a finished unit practice.
+        // Three Books and a Mix each — Book 1 has eight practice units, Books
+        // 2 and 3 seven: 25 assignable tasks, all of them 'lesson' activities
+        // matched on the exact title js/auth.js uploads for a finished unit
+        // practice.
         assert.deepEqual(catalog.groups().map(g => g.id), ['word-pr1', 'word-pr2', 'word-pr3']);
+        const UNITS = { pr1: 8, pr2: 7, pr3: 7 };
         for (const set of ['pr1', 'pr2', 'pr3']) {
             const book = catalog.entries('word-' + set);
-            assert.equal(book.length, 8, set + ' should offer 7 units + Mix');
+            assert.equal(book.length, UNITS[set] + 1, set + ' should offer ' + UNITS[set] + ' units + Mix');
             assert.deepEqual(book.map(e => e.key),
-                [...Array(7).keys()].map(i => `word:${set}-${i + 1}`).concat([`word:${set}-mix`]),
+                [...Array(UNITS[set]).keys()].map(i => `word:${set}-${i + 1}`).concat([`word:${set}-mix`]),
                 set + ': units in order, Mix last');
             for (const e of book) {
                 assert.equal(e.activityType, 'lesson', e.key);

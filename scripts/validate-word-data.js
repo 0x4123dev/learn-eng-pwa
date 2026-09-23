@@ -52,8 +52,12 @@ function validateFile(file) {
   if (doc.unit !== unit) p(`unit must be ${unit} (from the file name)`);
   if (typeof doc.title !== 'string' || doc.title.trim().length < 3) p('title missing');
   if (!Array.isArray(doc.words)) { p('words must be an array'); return problems; }
-  if (doc.words.length < 8) p(`only ${doc.words.length} words — a Career Paths unit lists 10-16`);
-  if (doc.words.length > 20) p(`${doc.words.length} words — more than any unit of the book lists`);
+  // Book 1 was re-cut on 2026-09-23 to EIGHT units of about thirty words: the
+  // book's own Vocabulary list for the unit plus the rest of the new words on
+  // that unit's two pages. Books 2 and 3 still carry the printed list alone.
+  const LO = book === 1 ? 26 : 8, HI = book === 1 ? 34 : 20;
+  if (doc.words.length < LO) p(`only ${doc.words.length} words — ${book === 1 ? 'a Book 1 unit carries about thirty' : 'a Career Paths unit lists 10-16'}`);
+  if (doc.words.length > HI) p(`${doc.words.length} words — more than a unit should carry (max ${HI})`);
   const extra = Object.keys(doc).filter(k => !['book', 'unit', 'title', 'words'].includes(k));
   if (extra.length) p('unexpected keys: ' + extra.join(', '));
 

@@ -481,8 +481,8 @@ function screenPlaybook() {
         const bar = h.el('wordUnitsBar');
         must(bar && bar.innerHTML.trim().length > 0, 'the Word cards are drawn on the Word screen');
         const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
-        mustEqual(cards.length, 7, 'one card per practice unit of Book 1 (the book\'s 15 merged)');
-        must(squash(bar.textContent).includes('Bài 13-15'), 'the last card says it merges book units 13-15');
+        mustEqual(cards.length, 8, 'one card per practice unit of Book 1 (its first eight units, ~30 words each)');
+        must(squash(bar.textContent).includes('Bài 8'), 'the last card says which book unit it is');
         must(bar.querySelectorAll('.g4-mix-card').length === 1, 'and a Mix card');
         mustEqual(bar.querySelectorAll('.g4-set-tabs .grammar-subtab').length, 0, 'no set strip: the bottom bar picks the book');
         must(squash(h.el('wordTitle').textContent).includes('Book 1'), 'the header names the open book');
@@ -496,7 +496,7 @@ function screenPlaybook() {
         const active = h.el('bottomNav').querySelectorAll('.nav-item.active').map((b) => b.dataset.navKey);
         mustEqual(active.join(','), 'book3', 'the bottom bar highlights Book 3');
         h.sandbox.openBook('pr1');
-        return '7 unit cards + Mix per book, header and nav follow the button';
+        return '8 unit cards for Book 1, 7 for Book 3, Mix each; header and nav follow the button';
       },
     },
     profileScreen: {

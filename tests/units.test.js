@@ -16,12 +16,15 @@ const SETS = ['pr1', 'pr2', 'pr3'];
 const UNIT_WORDS = units.unitsAllWords();
 
 suite('units: word bank', () => {
-    test('every book covers practice units 1..7 with a non-trivial word list', () => {
+    test('every book covers its practice units with a non-trivial word list', () => {
+        // Book 1: its first eight units, one practice unit each, ~30 words.
+        // Books 2 and 3: fifteen units merged into seven.
         for (const set of SETS) {
-            assert.deepEqual(units.unitsList(set), [1, 2, 3, 4, 5, 6, 7], set);
+            const want = set === 'pr1' ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7];
+            assert.deepEqual(units.unitsList(set), want, set);
             assert.truthy(units.unitsBank(set).length >= 140, `${set}: only ${units.unitsBank(set).length} words`);
         }
-        assert.equal(UNIT_WORDS.length, 527, 'the Vocabulary columns of the three Scope and Sequence pages');
+        assert.equal(UNIT_WORDS.length, 610, 'Book 1 rebuilt at ~30 words a unit, plus the Vocabulary columns of Books 2 and 3');
     });
 
     test('every word has en, vi and an emoji/picture; en unique within its unit', () => {
@@ -53,8 +56,10 @@ suite('units: word bank', () => {
                 assert.truthy(units.unitTitle(set, u), `${set} unit ${u} has no title`);
             }
         }
-        assert.equal(units.unitTitle('pr1', 1), 'The Role of Public Relations · Departments', 'a practice unit names both merged book units');
-        assert.equal(units.unitBooksLabel('pr1', 1), 'Bài 1-2');
+        assert.equal(units.unitTitle('pr1', 1), 'The Role of Public Relations', 'a Book 1 practice unit is one book unit');
+        assert.equal(units.unitTitle('pr2', 1), 'Skills of a Public Relations Professional · Strategic Planning', 'a merged practice unit names both book units');
+        assert.equal(units.unitBooksLabel('pr1', 1), 'Bài 1');
+        assert.equal(units.unitBooksLabel('pr2', 1), 'Bài 1-2');
         assert.equal(units.unitBooksLabel('pr3', 7), 'Bài 13-15');
     });
 });

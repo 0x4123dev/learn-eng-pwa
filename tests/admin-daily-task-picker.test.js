@@ -45,9 +45,11 @@ suite('daily-task catalog: the tree', () => {
     // A deeper level would render, but it would be a menu with one entry.
     for (const book of tree.children) {
       assert.deepEqual(book.children, [], book.label + ' has sub-menus');
-      assert.equal(book.entries.length, 8, book.label + ' should list 7 units + Mix');
-      assert.truthy(/🎲 Mix$/.test(book.entries[7].label), book.label + ': Mix comes last');
-      for (let i = 0; i < 7; i++) {
+      // Book 1 is eight units, Books 2 and 3 seven; Mix always comes last.
+      const nUnits = book.label.includes('Book 1') ? 8 : 7;
+      assert.equal(book.entries.length, nUnits + 1, book.label + ' should list ' + nUnits + ' units + Mix');
+      assert.truthy(/🎲 Mix$/.test(book.entries[nUnits].label), book.label + ': Mix comes last');
+      for (let i = 0; i < nUnits; i++) {
         assert.truthy(book.entries[i].label.includes('Unit ' + (i + 1) + ' ·'),
           book.label + ': entry ' + i + ' is ' + book.entries[i].label);
       }
@@ -103,8 +105,8 @@ suite('admin page: the task search, executed', () => {
   });
 
   test('accents are ignored on both sides: "markéting" still finds Marketing and PR', () => {
-    assert.deepEqual(keys(search('markéting')), ['word:pr1-2']);
-    assert.deepEqual(keys(search('MARKETING')), ['word:pr1-2'], 'and case does not matter');
+    assert.deepEqual(keys(search('markéting')), ['word:pr1-4']);
+    assert.deepEqual(keys(search('MARKETING')), ['word:pr1-4'], 'and case does not matter');
   });
 
   test('every word must match somewhere in path or label — "unit 7" is Unit 7 of each Book', () => {

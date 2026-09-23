@@ -28,16 +28,18 @@ var DailyTaskCatalog = (function () {
   const SETS = [
     // Titles mirror js/word-data.js UNIT_PR_TITLES (the bank itself is lazy
     // and this catalog is built at startup, so they are repeated here);
-    // tests/daily-task-catalog.test.js keeps them in step. Seven practice
-    // units per book: the book's 15 merged 1-2, 3-4, …, 13-15.
-    { set: 'pr1', group: 'word-pr1', name: 'Book 1', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7], titles: {
-      1: 'The Role of Public Relations · Departments',
-      2: 'Services · Marketing and PR',
-      3: 'Spreading Information · Communication',
-      4: 'Persuasion · Attracting Clients',
-      5: 'Conducting Research · Types of Research',
-      6: 'Conducting a Survey · Evaluating Results 1',
-      7: 'Evaluating Results 2 · The Budget · Describing Change' } },
+    // tests/daily-task-catalog.test.js keeps them in step. Book 1 is EIGHT
+    // units, one per book unit (~30 words each); Books 2 and 3 are seven,
+    // the book's 15 merged 1-2, 3-4, …, 13-15.
+    { set: 'pr1', group: 'word-pr1', name: 'Book 1', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7, 8], titles: {
+      1: 'The Role of Public Relations',
+      2: 'Departments',
+      3: 'Services',
+      4: 'Marketing and PR',
+      5: 'Spreading Information',
+      6: 'Communication',
+      7: 'Persuasion',
+      8: 'Attracting Clients' } },
     { set: 'pr2', group: 'word-pr2', name: 'Book 2', screen: 'wordScreen', units: [1, 2, 3, 4, 5, 6, 7], titles: {
       1: 'Skills of a Public Relations Professional · Strategic Planning',
       2: 'Tactics · Corporations',

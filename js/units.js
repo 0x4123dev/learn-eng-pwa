@@ -7,9 +7,11 @@
 //
 // Three word sets, one per book, each with its own units and its own Mix:
 //   pr1, pr2, pr3 — Career Paths: Public Relations, Book 1/2/3 (Express
-//         Publishing). Each book's 15 units, exactly the Vocabulary column
-//         of its Scope and Sequence page, merged two-by-two into SEVEN
-//         practice units (1-2 … 11-12, 13-15) — js/word-data.js, generated
+//         Publishing). Book 1: its first EIGHT units, one practice unit
+//         each, about thirty words per unit. Books 2 and 3: all 15 units,
+//         exactly the Vocabulary column of the Scope and Sequence page,
+//         merged two-by-two into SEVEN practice units (1-2 … 11-12,
+//         13-15) — js/word-data.js, generated
 //         from data/career-paths/ by scripts/build-word-data.js; lazy-loaded
 //
 // A unit is addressed by a KEY: 'pr2-7', 'pr1-mix'. Every history row, best
