@@ -1605,6 +1605,13 @@
         }
         .unit-ex-say:hover { background: rgba(124,58,237,0.08); }
         .unit-ex-say:active { transform: scale(0.94); }
+        /* The pronunciation, under the answer word. Not tappable and not a
+           link: it is there to be read while the recording plays. */
+        .unit-ipa {
+            margin-top: 2px; font-size: 15px; letter-spacing: .2px;
+            color: var(--text-secondary); font-weight: 600;
+            font-family: "Doulos SIL", "Charis SIL", "Gentium Plus", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif;
+        }
         .unit-q-exvi {
             font-size: 14px; font-weight: 600; color: var(--text-secondary);
             margin: -4px 10px 12px; padding: 0 12px;

@@ -47,6 +47,61 @@ globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurre
     return { sb: sandbox, x: sandbox.__x, html: id => sandbox.document.__getLastInnerHTML(id) || '' };
 }
 
+suite('word tab: the pronunciation under the answer', () => {
+    test('every word of all three Books carries an IPA line', () => {
+        const all = [].concat(UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3);
+        const missing = all.filter(w => !w.ipa || !w.ipa.trim()).map(w => w.en);
+        assert.deepEqual(missing.slice(0, 10), [], `${missing.length} words have no pronunciation — run scripts/build-word-ipa.js`);
+        // IPA, not a respelling: every character is one the converter emits
+        // (its own phoneme table), plus the two stress marks and the space
+        // between the words of a phrase. That rules out "AD-vuh-kit" and the
+        // ASCII apostrophe people reach for instead of ˈ.
+        const build = require(path.join(ROOT, 'scripts', 'build-word-ipa.js'));
+        const allowed = new Set(['ˈ', 'ˌ', ' ', ...Object.values(build.PHONES).join(''), 'ə', 'ɚ', 'r']);
+        const strange = all
+            .map(w => [w.en, [...w.ipa].filter(ch => !allowed.has(ch))])
+            .filter(([, bad]) => bad.length)
+            .map(([en, bad]) => en + ': ' + bad.join(''));
+        assert.deepEqual(strange.slice(0, 5), [], 'characters outside the phoneme table');
+        // A multi-syllable word says where the stress is. Phrases are left
+        // out: "sales lead" is two one-syllable words and neither takes a
+        // mark (seɪlz lɛd), which is how a dictionary prints it too.
+        const stressless = all
+            .filter(w => !/\s/.test(w.en) && w.ipa.length > 7 && !/[ˈˌ]/.test(w.ipa))
+            .map(w => w.en + ' ' + w.ipa);
+        assert.deepEqual(stressless.slice(0, 5), [], 'a long word with no stress mark');
+    });
+
+    test('the IPA is generated from CMUdict, not written by hand', () => {
+        // A model writing IPA from memory gets vowels and stress subtly
+        // wrong and nobody notices; the mapping is mechanical on purpose.
+        const ipa = JSON.parse(read('data/career-paths/ipa.json'));
+        const bank = [].concat(UNIT_WORDS_PR1, UNIT_WORDS_PR2, UNIT_WORDS_PR3);
+        for (const w of bank) assert.equal(w.ipa, ipa[w.en], w.en + ': js/word-data.js drifted from ipa.json');
+        assert.deepEqual(Object.keys(ipa).sort(), [...new Set(bank.map(w => w.en))].sort(),
+            'ipa.json holds exactly the bank words — no strays, nothing missing');
+        const build = require(path.join(ROOT, 'scripts', 'build-word-ipa.js'));
+        // The converter itself, on the ARPABET the dictionary would hand it.
+        assert.equal(build.toIpa(['AE1', 'D', 'V', 'AH0', 'K', 'AH0', 'T']), 'ˈædvəkət');
+        assert.equal(build.toIpa(['B', 'IH0', 'D']), 'bɪd', 'one syllable needs no stress mark');
+        assert.equal(build.toIpa(['K', 'AH0', 'M', 'Y', 'UW2', 'N', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N']), 'kəˌmjunəˈkeɪʃən');
+    });
+
+    test('a revealed answer shows the pronunciation; an unanswered card does not', () => {
+        const { x, html, sb } = loadEngine();
+        sb.speakAnswer = () => {};
+        x.startUnitPractice('pr1-1');
+        const q = x.quiz().questions[x.quiz().idx];
+        assert.falsy(html('wordDetail').includes('unit-ipa'), 'no pronunciation while the word is still hidden');
+        sb.document.getElementById('unitTextInput').value = q.w.en;
+        x.submitUnitAnswer();
+        const shown = html('wordDetail');
+        assert.truthy(shown.includes('class="unit-ipa"'), 'the answer card carries the IPA line');
+        assert.truthy(shown.includes('/' + q.w.ipa + '/'), 'in slashes, as a dictionary prints it: ' + q.w.ipa);
+        assert.truthy(/\.unit-ipa \{/.test(read('css/styles.css')), 'and it is styled');
+    });
+});
+
 suite('word tab: hear the whole example sentence (Book 1)', () => {
     // The user asked for it on the answer screen: "khi có đáp án thì thêm cái
     // loa ở câu này … bấm vào để nghe được nguyên câu", Book 1 only.

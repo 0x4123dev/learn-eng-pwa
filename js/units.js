@@ -826,6 +826,7 @@ function renderUnitQuestion() {
       <div class="grammar-explanation ${ans.isCorrect ? 'correct' : 'wrong'}">
         <div class="phrases-vi">📘 <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.w.en) : unitEsc(q.w.en)}</b>
           — ${unitEsc(q.w.vi)}</div>
+        ${q.w.ipa ? `<div class="unit-ipa">/${unitEsc(q.w.ipa)}/</div>` : ''}
         <div>${ans.isCorrect ? '✅ Chính xác!' : '❌ Đáp án đúng: <b>' + unitEsc(q.w.en) + '</b>'}</div>
       </div>
       ${answerGateHTML(q.w.en, 'nextUnitQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;

@@ -29,6 +29,11 @@ const { validateFile } = require('./validate-word-data.js');
 const ROOT = path.join(__dirname, '..');
 const DIR = path.join(ROOT, 'data', 'career-paths');
 const DEFAULT_OUT = path.join(ROOT, 'js', 'word-data.js');
+// The pronunciation shown under a revealed answer. Generated from the CMU
+// Pronouncing Dictionary by scripts/build-word-ipa.js and committed, so this
+// build needs nothing but the repo. A word with no entry fails the build
+// rather than shipping a card with a missing line.
+const IPA_FILE = path.join(DIR, 'ipa.json');
 const BOOKS = [1, 2, 3];
 // Each book says how many of its own units it carries and how they land on
 // the practice units the app keys everything on.
@@ -49,6 +54,9 @@ function practiceUnitOf(bookUnit, book) { return SHAPE[book || 2].of(bookUnit); 
 function build(outFile) {
   const OUT = outFile || DEFAULT_OUT;
   const problems = [];
+  let ipa = {};
+  try { ipa = JSON.parse(fs.readFileSync(IPA_FILE, 'utf8')); }
+  catch (e) { problems.push('data/career-paths/ipa.json: ' + e.message + ' (run scripts/build-word-ipa.js)'); }
   const sets = {};
   const titles = {};   // practice unit → 'Title A · Title B'
   const books = {};    // practice unit → [book units]
@@ -66,7 +74,10 @@ function build(outFile) {
       const unit = practiceUnitOf(bookUnit, book);
       titles[set][unit] = titles[set][unit] ? titles[set][unit] + ' · ' + doc.title : doc.title;
       (books[set][unit] = books[set][unit] || []).push(bookUnit);
-      for (const w of doc.words) sets[set].push({ unit, book, bookUnit, en: w.en, vi: w.vi, emoji: w.emoji, ex: w.ex, exVi: w.exVi });
+      for (const w of doc.words) {
+        if (!ipa[w.en]) problems.push(`${path.relative(ROOT, file)}: no IPA for "${w.en}" — run scripts/build-word-ipa.js --cmudict <cmudict.dict>`);
+        sets[set].push({ unit, book, bookUnit, en: w.en, vi: w.vi, ipa: ipa[w.en] || '', emoji: w.emoji, ex: w.ex, exVi: w.exVi });
+      }
     }
   }
   if (problems.length) {
@@ -86,7 +97,7 @@ function build(outFile) {
 // per unit. Books 2 and 3: fifteen units carrying EXACTLY the Vocabulary
 // column of the book's Scope and Sequence page, merged into SEVEN practice
 // units (1-2, 3-4, …, 13-15). ${total} words in all. Shape: { unit, book,
-// bookUnit, en, vi, emoji,
+// bookUnit, en, vi, ipa, emoji,
 // ex, exVi } — emoji is the "picture", vi the Vietnamese meaning in the PR
 // sense the book's Glossary gives, ex a sentence that uses the word (shown
 // with the word blanked while answering) and exVi its translation (shown
@@ -116,7 +127,7 @@ function build(outFile) {
     let last = 0;
     for (const w of sets[set]) {
       if (w.bookUnit !== last) { out += `  // Book unit ${w.bookUnit} → practice unit ${w.unit}\n`; last = w.bookUnit; }
-      out += `  { unit: ${w.unit}, book: ${book}, bookUnit: ${w.bookUnit}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, emoji: ${lit(w.emoji)},\n    ex: ${lit(w.ex)}, exVi: ${lit(w.exVi)} },\n`;
+      out += `  { unit: ${w.unit}, book: ${book}, bookUnit: ${w.bookUnit}, en: ${lit(w.en)}, vi: ${lit(w.vi)}, ipa: ${lit(w.ipa)}, emoji: ${lit(w.emoji)},\n    ex: ${lit(w.ex)}, exVi: ${lit(w.exVi)} },\n`;
     }
     out += `];\n\n`;
   }

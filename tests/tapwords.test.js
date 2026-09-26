@@ -82,7 +82,9 @@ suite('tapwords: dictionary integrity + coverage invariant', () => {
     // bank must resolve via twLookup. Adding questions with new vocabulary
     // fails this test until the dictionary is regenerated.
     test('every bank word resolves through the dictionary', () => {
-        const SKIP = new Set(['explanation', 'vi', 'exVi', 'id', 'type', 'cat', 'topic', 'icon', 'emoji', 'n', 'correct', 'date', 'level', 'keyword', 'pos', 'section', 'book', 'unit']);
+        // `ipa` is a pronunciation, not text on screen to tap: its ASCII
+        // letters ("mjun", "fild") are phonemes, and no dictionary has them.
+        const SKIP = new Set(['explanation', 'vi', 'exVi', 'ipa', 'id', 'type', 'cat', 'topic', 'icon', 'emoji', 'n', 'correct', 'date', 'level', 'keyword', 'pos', 'section', 'book', 'unit']);
         const texts = [];
         function walk(v, key) {
             if (v == null) return;
