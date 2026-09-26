@@ -1,6 +1,6 @@
 // home.js - Home screen: the pet, the streak, the three Books' progress
 
-const APP_VERSION = 'v5.1.7';
+const APP_VERSION = 'v5.1.8';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
