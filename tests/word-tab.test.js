@@ -41,11 +41,80 @@ globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurre
   startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice, quitUnitPractice, isUnitPracticeActive,
   unitsRetryCount, unitsRetryKey, unitsHostHistory, unitsList, unitsBank, _unitPool, _unitParse, _unitLabel,
   unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts, _unitExampleHTML,
-  unitSentenceAudio, unitSpeakSentence,
+  unitSentenceAudio, unitSpeakSentence, renderUnitsVocabListHTML, unitVocabSay,
   quiz: () => _unitQuiz, setQuiz: (q) => { _unitQuiz = q; } };`;
     vm.runInContext(src, ctx, { filename: 'word-tab-engine.js' });
     return { sb: sandbox, x: sandbox.__x, html: id => sandbox.document.__getLastInnerHTML(id) || '' };
 }
+
+suite('word tab: the Từ vựng sub-tab lists the whole Book', () => {
+    test('a third sub-tab opens the vocabulary list of the open Book', () => {
+        const { x, html } = loadEngine();
+        x.renderWordHome('vocab');
+        const tabs = html('wordSubTabs');
+        assert.truthy(tabs.includes("renderWordHome('vocab')") && tabs.includes('Từ vựng'), 'the Từ vựng sub-tab is drawn');
+        const vocab = html('wordVocab');
+        assert.truthy(vocab.includes('vocab-search'), 'with a search box');
+        assert.truthy(vocab.includes(UNIT_WORDS_PR1[0].en), 'and the first word of Book 1');
+    });
+
+    test('Book 1: all 240 words, grouped by unit in order, each with meaning, sentence, translation and audio', () => {
+        const { x, sb } = loadEngine();
+        sb.speakSentence = () => {};
+        x.switchUnitSet('pr1');
+        const list = x.renderUnitsVocabListHTML('pr1', '');
+        assert.equal((list.match(/class="vocab-item"/g) || []).length, 240, 'every Book 1 word is listed');
+        assert.equal((list.match(/class="vocab-unit"/g) || []).length, 8, 'eight unit sections');
+        const at = [1, 2, 3, 4, 5, 6, 7, 8].map(u => list.indexOf('>Unit ' + u + ' · '));
+        assert.truthy(at.every((p, i) => p >= 0 && (i === 0 || p > at[i - 1])), 'units appear in order');
+        assert.equal((list.match(/unitVocabSay\('pr1', \d+, 'ex'\)/g) || []).length, 240, 'every sentence has its 🔊');
+        assert.equal((list.match(/unitVocabSay\('pr1', \d+, 'word'\)/g) || []).length, 240, 'every word can be heard');
+        const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        for (const w of UNIT_WORDS_PR1) {
+            assert.truthy(list.includes(esc(w.vi)), w.en + ': meaning');
+            assert.truthy(list.includes(esc(w.exVi)), w.en + ': sentence translation');
+        }
+    });
+
+    test('Books 2 and 3 list their words without a sentence 🔊 (none is recorded)', () => {
+        const { x, sb } = loadEngine();
+        sb.speakSentence = () => {};
+        const list = x.renderUnitsVocabListHTML('pr2', '');
+        assert.equal((list.match(/class="vocab-item"/g) || []).length, UNIT_WORDS_PR2.length);
+        assert.truthy(!/'ex'\)/.test(list), 'no sentence button for Book 2');
+    });
+
+    test('search matches English or Vietnamese, accents optional', () => {
+        const { x } = loadEngine();
+        const w = UNIT_WORDS_PR1[0];
+        const byEn = x.renderUnitsVocabListHTML('pr1', w.en.toUpperCase());
+        assert.truthy(byEn.includes(w.en));
+        assert.truthy((byEn.match(/class="vocab-item"/g) || []).length < 240, 'the list narrows');
+        const plainVi = w.vi.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').split(',')[0];
+        assert.truthy(x.renderUnitsVocabListHTML('pr1', plainVi).includes(w.en), 'Vietnamese without accents finds it');
+        assert.truthy(x.renderUnitsVocabListHTML('pr1', 'zzqqxx').includes('Không tìm thấy'), 'no match says so');
+    });
+
+    test('the buttons play by index: the word, and the recorded sentence', () => {
+        const { x, sb } = loadEngine();
+        const said = [];
+        sb.speakSentence = (en, ex) => said.push(['ex', en, ex]);
+        sb.speakWord = en => said.push(['word', en]);
+        assert.equal(x.unitVocabSay('pr1', 3, 'ex'), true);
+        assert.equal(x.unitVocabSay('pr1', 3, 'word'), true);
+        assert.equal(x.unitVocabSay('pr1', 99999, 'word'), false, 'an index past the bank does nothing');
+        const w = UNIT_WORDS_PR1[3];
+        assert.deepEqual(said, [['ex', w.en, w.ex], ['word', w.en]]);
+    });
+
+    test('starting a practice hides the vocabulary list', () => {
+        const { x, sb } = loadEngine();
+        x.renderWordHome('vocab');
+        sb.document.getElementById('wordVocab').style = {};
+        x.startUnitPractice('pr1-1');
+        assert.equal(sb.document.getElementById('wordVocab').style.display, 'none');
+    });
+});
 
 suite('word tab: the pronunciation under the answer', () => {
     test('every word of all three Books carries an IPA line', () => {

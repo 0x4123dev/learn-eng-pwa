@@ -1144,6 +1144,37 @@
         .uh-score.good { color: #16a34a; font-weight: 700; }
         .uh-date { color: var(--text-secondary); font-size: 11px; flex: 0 0 auto; }
         .uh-sync-note { text-align: center; color: var(--text-secondary); font-size: 11px; margin-top: 10px; }
+        /* Từ vựng sub-tab: the open Book's words, unit by unit (js/units.js renderUnitsVocab). */
+        .units-vocab { margin: 0 0 14px; }
+        .vocab-search {
+            width: 100%; box-sizing: border-box; padding: 11px 14px; margin-bottom: 12px;
+            border-radius: 14px; border: 1.5px solid var(--glass-border);
+            background: var(--glass-bg, #fff); color: var(--text-primary); font: inherit; font-size: 15px;
+        }
+        .vocab-unit { margin-bottom: 18px; }
+        .vocab-unit-title {
+            position: sticky; top: 0; z-index: 1; margin: 0 0 8px; padding: 8px 12px;
+            font-size: 15px; font-weight: 800; color: #6d28d9; border-radius: 12px;
+            background: rgba(237,233,254,0.95); backdrop-filter: blur(8px);
+        }
+        .vocab-unit-count { float: right; font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+        .vocab-item {
+            padding: 10px 12px; margin-bottom: 8px; border-radius: 14px;
+            background: var(--glass-bg, rgba(255,255,255,0.85)); border: 1.5px solid var(--glass-border);
+        }
+        .vocab-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
+        .vocab-emoji { font-size: 20px; }
+        .vocab-word {
+            border: none; background: none; padding: 0; cursor: pointer; font: inherit;
+            font-size: 17px; font-weight: 800; color: var(--text-primary); text-align: left;
+        }
+        .vocab-word-say { font-size: 14px; opacity: .7; }
+        .vocab-ipa { font-size: 13.5px; color: var(--text-secondary); font-weight: 600;
+            font-family: "Doulos SIL", "Charis SIL", "Gentium Plus", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif; }
+        .vocab-vi { margin-top: 2px; font-size: 14.5px; font-weight: 700; color: #b45309; }
+        .vocab-ex { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--text-primary); }
+        .vocab-ex-say { width: 32px; height: 32px; font-size: 16px; margin: -4px 0 -4px 6px; }
+        .vocab-exvi { margin-top: 2px; font-size: 13px; color: var(--text-secondary); font-style: italic; }
         .unit-reward-card {
             text-align: center; padding: 14px; margin: 10px 0 14px; border-radius: 16px;
             background: linear-gradient(135deg, rgba(251,191,36,0.16), rgba(249,115,22,0.10));

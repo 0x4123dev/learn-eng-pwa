@@ -488,7 +488,12 @@ function screenPlaybook() {
         must(squash(h.el('wordTitle').textContent).includes('Book 1'), 'the header names the open book');
         const titles = h.peek('UNIT_PR_TITLES');
         must(squash(bar.textContent).includes(titles.pr1[1]), 'the first unit is titled from the bank: ' + titles.pr1[1]);
-        must(el.querySelectorAll('#wordSubTabs .grammar-subtab').length === 2, 'practice/history tabs are drawn');
+        must(el.querySelectorAll('#wordSubTabs .grammar-subtab').length === 3, 'practice/vocab/history tabs are drawn');
+        // The Từ vựng tab: every word of Book 1, by unit, to look back at.
+        h.sandbox.renderWordHome('vocab');
+        mustEqual(h.el('wordVocab').querySelectorAll('.vocab-item').length, 240, 'Từ vựng lists all of Book 1');
+        mustEqual(h.el('wordVocab').querySelectorAll('.vocab-unit').length, 8, 'in eight unit sections');
+        h.sandbox.renderWordHome('practice');
         // The other two buttons swap the book on the same screen.
         h.sandbox.openBook('pr3');
         must(squash(h.el('wordTitle').textContent).includes('Book 3'), 'Book 3 button re-titles the screen');

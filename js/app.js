@@ -257,7 +257,7 @@ function restoreStudyCheckpoint() {
         if (s && s.unit && typeof _unitParse === 'function' && typeof switchUnitSet === 'function') {
             switchUnitSet(_unitParse(s.unit).set);
         }
-        ['wordUnitsBar','wordSubTabs','wordHistory'].forEach(id => {
+        ['wordUnitsBar','wordSubTabs','wordHistory','wordVocab'].forEach(id => {
             const el = document.getElementById(id); if (el) el.style.display = 'none';
         });
         renderUnitQuestion();

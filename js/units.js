@@ -27,7 +27,7 @@ let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[
 const UNIT_HOSTS = {
   word: {
     screen: 'wordScreen', tabs: 'wordSubTabs', bar: 'wordUnitsBar',
-    history: 'wordHistory', detail: 'wordDetail',
+    history: 'wordHistory', vocab: 'wordVocab', detail: 'wordDetail',
     title: 'wordTitle', subtitle: 'wordSubtitle',
     stateKey: 'wordSet', defaultSet: 'pr1',
     retryKey: 'word',
@@ -605,12 +605,93 @@ function renderUnitsHistory() {
     <div class="uh-sync-note">☁️ Lịch sử tự động đồng bộ với admin</div>`;
 }
 
-// Which sub-tab (Bài học / Lịch sử) each host is showing.
+// ---- Vocabulary view: every word of the open Book, unit by unit ----
+// A reference list to come back to: the word (tap to hear it), its IPA, the
+// Vietnamese meaning, and the example sentence with its translation. Book 1's
+// sentences are recorded, so they get a 🔊 of their own (unitSentenceAudio).
+// Buttons carry an index into the bank, never the text, so no word or
+// sentence has to survive being quoted into an onclick.
+let _unitVocabQuery = '';
+function _unitVocabNorm(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').trim();
+}
+function _unitVocabMatch(w, q) {
+  if (!q) return true;
+  return _unitVocabNorm(w.en).includes(q) || _unitVocabNorm(w.vi).includes(q);
+}
+function renderUnitsVocabListHTML(set, query) {
+  const s = set || currentUnitSet();
+  const bank = unitsBank(s);
+  if (!bank.length) return '<div class="uh-empty">Đang tải từ vựng…</div>';
+  const q = _unitVocabNorm(query);
+  const groups = unitsList(s).map(unit => {
+    const rows = [];
+    bank.forEach((w, i) => {
+      if (w.unit !== unit || !_unitVocabMatch(w, q)) return;
+      const say = unitSentenceAudio(w)
+        ? `<button type="button" class="unit-ex-say vocab-ex-say" onclick="unitVocabSay('${s}', ${i}, 'ex')" aria-label="Nghe cả câu" title="Nghe cả câu">🔊</button>`
+        : '';
+      const parts = _unitExampleParts(w);
+      const ex = !w.ex ? '' : parts
+        ? `${unitEsc(parts.before)}<b class="unit-ex-word">${unitEsc(parts.term)}</b>${unitEsc(parts.after)}`
+        : unitEsc(w.ex);
+      rows.push(`
+      <div class="vocab-item">
+        <div class="vocab-head">
+          <span class="vocab-emoji">${unitEsc(w.emoji || '')}</span>
+          <button type="button" class="vocab-word" onclick="unitVocabSay('${s}', ${i}, 'word')" title="Nghe từ">${unitEsc(w.en)} <span class="vocab-word-say">🔈</span></button>
+          ${w.ipa ? `<span class="vocab-ipa">/${unitEsc(w.ipa)}/</span>` : ''}
+        </div>
+        <div class="vocab-vi">${unitEsc(w.vi || '')}</div>
+        ${ex ? `<div class="vocab-ex">${ex}${say}</div>` : ''}
+        ${w.exVi ? `<div class="vocab-exvi">${unitEsc(w.exVi)}</div>` : ''}
+      </div>`);
+    });
+    if (!rows.length) return '';
+    const title = unitTitle(s, unit);
+    return `
+    <section class="vocab-unit">
+      <h3 class="vocab-unit-title">Unit ${unit}${title ? ' · ' + unitEsc(title) : ''} <span class="vocab-unit-count">${rows.length} từ</span></h3>
+      ${rows.join('')}
+    </section>`;
+  }).join('');
+  return groups || '<div class="uh-empty">Không tìm thấy từ nào.</div>';
+}
+function renderUnitsVocab() {
+  const el = _unitHostEl('vocab');
+  if (!el) return;
+  el.style.display = '';
+  const n = unitsBank().length;
+  el.innerHTML = `
+    <input type="search" class="vocab-search" placeholder="🔍 Tìm từ hoặc nghĩa… (${n} từ)"
+      value="${unitEsc(_unitVocabQuery).replace(/"/g, '&quot;')}" oninput="unitVocabFilter(this.value)" aria-label="Tìm từ vựng">
+    <div class="vocab-list" id="${_unitHost().vocab}List">${renderUnitsVocabListHTML(currentUnitSet(), _unitVocabQuery)}</div>`;
+}
+// Redraws the list only, so the search box keeps its focus and caret.
+function unitVocabFilter(query) {
+  _unitVocabQuery = String(query || '');
+  if (typeof document === 'undefined') return;
+  const list = document.getElementById(_unitHost().vocab + 'List');
+  if (list) list.innerHTML = renderUnitsVocabListHTML(currentUnitSet(), _unitVocabQuery);
+}
+function unitVocabSay(set, i, what) {
+  const w = unitsBank(set)[i];
+  if (!w) return false;
+  if (what === 'ex') {
+    if (!unitSentenceAudio(w)) return false;
+    speakSentence(w.en, w.ex);
+    return true;
+  }
+  _unitSpeak(w.en);
+  return true;
+}
+
+// Which sub-tab (Bài học / Từ vựng / Lịch sử) each host is showing.
 const _unitView = { word: 'practice' };
 function _renderUnitsHome(hostId, view) {
   _unitHostId = hostId;
   const host = _unitHost();
-  if (view === 'history' || view === 'practice') _unitView[hostId] = view;
+  if (view === 'history' || view === 'practice' || view === 'vocab') _unitView[hostId] = view;
   const cur = _unitView[hostId] || 'practice';
   const detail = _unitHostEl('detail');
   if (detail) { detail.innerHTML = ''; detail.style.display = ''; }
@@ -618,18 +699,23 @@ function _renderUnitsHome(hostId, view) {
   if (tabs) {
     tabs.style.display = '';
     tabs.innerHTML = `<button class="grammar-subtab ${cur === 'practice' ? 'active' : ''}" onclick="${host.homeFn}('practice')">${host.homeLabel}</button>
+      <button class="grammar-subtab ${cur === 'vocab' ? 'active' : ''}" onclick="${host.homeFn}('vocab')">📚 Từ vựng</button>
       <button class="grammar-subtab ${cur === 'history' ? 'active' : ''}" onclick="${host.homeFn}('history')">🕐 Lịch sử</button>`;
   }
   const bar = _unitHostEl('bar');
   const history = _unitHostEl('history');
+  const vocab = _unitHostEl('vocab');
   if (bar) bar.style.display = cur === 'practice' ? '' : 'none';
   if (history) history.style.display = cur === 'history' ? '' : 'none';
+  if (vocab) vocab.style.display = cur === 'vocab' ? '' : 'none';
   renderUnitHeader();
-  if (cur === 'history') renderUnitsHistory(); else renderUnitsBar();
+  if (cur === 'history') renderUnitsHistory();
+  else if (cur === 'vocab') renderUnitsVocab();
+  else renderUnitsBar();
 }
 function renderWordHome(view) { _renderUnitsHome('word', view); }
 function openWord(view) {
-  _unitView.word = view === 'history' ? 'history' : 'practice';
+  _unitView.word = (view === 'history' || view === 'vocab') ? view : 'practice';
   if (typeof switchScreen === 'function' && switchScreen('wordScreen') === false) return false;
   renderWordHome();
   return true;
@@ -679,7 +765,7 @@ function startUnitPractice(unit) {
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
   // Hide the host's menu pieces while practising.
-  ['bar', 'tabs', 'history'].forEach(piece => {
+  ['bar', 'tabs', 'history', 'vocab'].forEach(piece => {
     const el = _unitHostEl(piece);
     if (el) el.style.display = 'none';
   });
@@ -1009,6 +1095,7 @@ if (typeof module !== 'undefined' && module.exports) {
     _unitExampleParts, _unitExampleHTML, unitSentenceAudio, unitSpeakSentence,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
+    renderUnitsVocab, renderUnitsVocabListHTML, unitVocabFilter, unitVocabSay,
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderUnitHeader,
     _unitLabel, _unitSpeak, _unitSpeakAttr,
