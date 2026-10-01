@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v644';
+const CACHE_NAME = 'flashlingo-v645';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -34,16 +34,16 @@ const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e', 'birthday', 'jam'];
 // list is maintained by hand, as ASSETS always was: a new lazy bank or sprite
 // is added here. See docs/superpowers/specs/2026-09-11-sw-precache-manifest-design.md.
 const PRECACHE = {
-  '/': '5b544190b0402f3d',
-  '/index.html': '5b544190b0402f3d',
-  '/css/styles.css': 'c87ad1d9cca1f199',
+  '/': 'bff6401adb27cc78',
+  '/index.html': 'bff6401adb27cc78',
+  '/css/styles.css': '560d2e6ed3845774',
   '/css/night-raid.css': 'c896c1744da22e9b',
   '/fonts/nunito-var-vietnamese.woff2': 'd107f72673f443b4',
   '/fonts/nunito-var-latin.woff2': '20fc9b6fc618e7c3',
   '/js/word-data.js': '2840459365eeddad',
   '/js/retrydrill.js': '9656e5079c4a99dd',
   '/js/wrong-priority.js': 'e7cca02164688287',
-  '/js/units.js': '38e0b45cafe08d36',
+  '/js/units.js': '89d91c9f8302d8d9',
   '/js/dictionary-data.js': '8d297811dd484679',
   '/js/hot-words.js': '292393ce1b270100',
   '/js/answer-audio.js': '0ae2dcd91e4d2af1',
@@ -132,8 +132,8 @@ const PRECACHE = {
   '/js/hosting.js': 'cf4974628b379adc',
   '/js/auth.js': '98c5d7278d12cc80',
   '/js/lazy-data.js': '829bad02417cb37c',
-  '/js/app.js': '819d8cf7b342b662',
-  '/js/home.js': '8fd64a89f8069c4d',
+  '/js/app.js': '3d688cee1e3e7a0e',
+  '/js/home.js': '8b29f58910909aee',
   '/js/profile.js': '99be091f5b78847d',
   '/img/sun.svg': 'bfdf1afdf99058a9',
   '/img/icon-192.svg': 'bceaad28d43b2b7e',
