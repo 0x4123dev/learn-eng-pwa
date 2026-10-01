@@ -41,7 +41,7 @@ globalThis.__x = { UNIT_SETS, UNIT_HOSTS, unitHostSets, unitHostOfSet, unitCurre
   startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice, quitUnitPractice, isUnitPracticeActive,
   unitsRetryCount, unitsRetryKey, unitsHostHistory, unitsList, unitsBank, _unitPool, _unitParse, _unitLabel,
   unitTitle, RETRY_DRILLS, retryList, unitsForgetProfile, _unitExampleParts, _unitExampleHTML,
-  unitSentenceAudio, unitSpeakSentence, renderUnitsVocabListHTML, unitVocabSay,
+  unitSentenceAudio, unitSpeakSentence, renderUnitsVocabListHTML, unitVocabSay, unitVocabPickUnit, unitVocabCurrentUnit,
   quiz: () => _unitQuiz, setQuiz: (q) => { _unitQuiz = q; } };`;
     vm.runInContext(src, ctx, { filename: 'word-tab-engine.js' });
     return { sb: sandbox, x: sandbox.__x, html: id => sandbox.document.__getLastInnerHTML(id) || '' };
@@ -105,6 +105,28 @@ suite('word tab: the Từ vựng sub-tab lists the whole Book', () => {
         assert.equal(x.unitVocabSay('pr1', 99999, 'word'), false, 'an index past the bank does nothing');
         const w = UNIT_WORDS_PR1[3];
         assert.deepEqual(said, [['ex', w.en, w.ex], ['word', w.en]]);
+    });
+
+    test('chips: All plus one per unit; a unit chip shows only that unit', () => {
+        const { x, html } = loadEngine();
+        x.switchUnitSet('pr1');
+        x.renderWordHome('vocab');
+        let v = html('wordVocab');
+        assert.equal((v.match(/class="vocab-chip[ "]/g) || []).length, 9, 'All + Unit 1..8');
+        assert.truthy(/vocab-chip active"[^>]*>All</.test(v), 'All is on by default');
+        assert.equal((v.match(/class="vocab-item"/g) || []).length, 240);
+        x.unitVocabPickUnit(3);
+        v = html('wordVocab');
+        assert.equal(x.unitVocabCurrentUnit('pr1'), 3);
+        assert.truthy(/vocab-chip active"[^>]*>Unit 3</.test(v), 'Unit 3 chip is on');
+        const u3 = UNIT_WORDS_PR1.filter(w => w.unit === 3).length;
+        assert.equal((v.match(/class="vocab-item"/g) || []).length, u3, 'only Unit 3 words');
+        assert.equal((v.match(/class="vocab-unit"/g) || []).length, 1);
+        x.switchUnitSet('pr2');
+        x.renderWordHome('vocab');
+        assert.equal((html('wordVocab').match(/class="vocab-chip[ "]/g) || []).length, 8, 'Book 2: All + 7 units, its own choice');
+        x.unitVocabPickUnit('all');
+        assert.equal(x.unitVocabCurrentUnit('pr1'), 3, 'Book 1 keeps its chip');
     });
 
     test('starting a practice hides the vocabulary list', () => {

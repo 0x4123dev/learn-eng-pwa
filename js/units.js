@@ -612,6 +612,13 @@ function renderUnitsHistory() {
 // Buttons carry an index into the bank, never the text, so no word or
 // sentence has to survive being quoted into an onclick.
 let _unitVocabQuery = '';
+// Which unit chip is on, per Book: 'all' or a unit number.
+const _unitVocabUnit = {};
+function unitVocabCurrentUnit(set) {
+  const s = set || currentUnitSet();
+  const u = _unitVocabUnit[s];
+  return unitsList(s).includes(u) ? u : 'all';
+}
 function _unitVocabNorm(s) {
   return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').trim();
 }
@@ -619,12 +626,14 @@ function _unitVocabMatch(w, q) {
   if (!q) return true;
   return _unitVocabNorm(w.en).includes(q) || _unitVocabNorm(w.vi).includes(q);
 }
-function renderUnitsVocabListHTML(set, query) {
+function renderUnitsVocabListHTML(set, query, only) {
   const s = set || currentUnitSet();
   const bank = unitsBank(s);
   if (!bank.length) return '<div class="uh-empty">Đang tải từ vựng…</div>';
   const q = _unitVocabNorm(query);
-  const groups = unitsList(s).map(unit => {
+  const pick = only === undefined ? 'all' : only;
+  const units = unitsList(s).filter(u => pick === 'all' || u === pick);
+  const groups = units.map(unit => {
     const rows = [];
     bank.forEach((w, i) => {
       if (w.unit !== unit || !_unitVocabMatch(w, q)) return;
@@ -661,18 +670,29 @@ function renderUnitsVocab() {
   const el = _unitHostEl('vocab');
   if (!el) return;
   el.style.display = '';
-  const n = unitsBank().length;
-  el.innerHTML = `
+  const set = currentUnitSet();
+  const bank = unitsBank(set);
+  const cur = unitVocabCurrentUnit(set);
+  const n = cur === 'all' ? bank.length : bank.filter(w => w.unit === cur).length;
+  const chip = (val, label) => `<button type="button" class="vocab-chip ${cur === val ? 'active' : ''}" onclick="unitVocabPickUnit(${val === 'all' ? "'all'" : val})">${label}</button>`;
+  const chips = bank.length
+    ? `<div class="vocab-chips">${chip('all', 'All')}${unitsList(set).map(u => chip(u, 'Unit ' + u)).join('')}</div>`
+    : '';
+  el.innerHTML = `${chips}
     <input type="search" class="vocab-search" placeholder="🔍 Tìm từ hoặc nghĩa… (${n} từ)"
       value="${unitEsc(_unitVocabQuery).replace(/"/g, '&quot;')}" oninput="unitVocabFilter(this.value)" aria-label="Tìm từ vựng">
-    <div class="vocab-list" id="${_unitHost().vocab}List">${renderUnitsVocabListHTML(currentUnitSet(), _unitVocabQuery)}</div>`;
+    <div class="vocab-list" id="${_unitHost().vocab}List">${renderUnitsVocabListHTML(set, _unitVocabQuery, cur)}</div>`;
+}
+function unitVocabPickUnit(unit) {
+  _unitVocabUnit[currentUnitSet()] = unit === 'all' ? 'all' : Number(unit);
+  renderUnitsVocab();
 }
 // Redraws the list only, so the search box keeps its focus and caret.
 function unitVocabFilter(query) {
   _unitVocabQuery = String(query || '');
   if (typeof document === 'undefined') return;
   const list = document.getElementById(_unitHost().vocab + 'List');
-  if (list) list.innerHTML = renderUnitsVocabListHTML(currentUnitSet(), _unitVocabQuery);
+  if (list) list.innerHTML = renderUnitsVocabListHTML(currentUnitSet(), _unitVocabQuery, unitVocabCurrentUnit());
 }
 function unitVocabSay(set, i, what) {
   const w = unitsBank(set)[i];
@@ -1095,7 +1115,7 @@ if (typeof module !== 'undefined' && module.exports) {
     _unitExampleParts, _unitExampleHTML, unitSentenceAudio, unitSpeakSentence,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
-    renderUnitsVocab, renderUnitsVocabListHTML, unitVocabFilter, unitVocabSay,
+    renderUnitsVocab, renderUnitsVocabListHTML, unitVocabFilter, unitVocabSay, unitVocabPickUnit, unitVocabCurrentUnit,
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderUnitHeader,
     _unitLabel, _unitSpeak, _unitSpeakAttr,

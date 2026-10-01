@@ -1146,6 +1146,13 @@
         .uh-sync-note { text-align: center; color: var(--text-secondary); font-size: 11px; margin-top: 10px; }
         /* Từ vựng sub-tab: the open Book's words, unit by unit (js/units.js renderUnitsVocab). */
         .units-vocab { margin: 0 0 14px; }
+        .vocab-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .vocab-chip {
+            padding: 7px 12px; border-radius: 50px; font: inherit; font-size: 13px; font-weight: 700;
+            border: 1.5px solid var(--glass-border); background: var(--glass-bg, #fff);
+            color: var(--text-secondary); cursor: pointer;
+        }
+        .vocab-chip.active { background: linear-gradient(135deg, #2ecc71, #9b59b6); color: #fff; border-color: transparent; }
         .vocab-search {
             width: 100%; box-sizing: border-box; padding: 11px 14px; margin-bottom: 12px;
             border-radius: 14px; border: 1.5px solid var(--glass-border);
