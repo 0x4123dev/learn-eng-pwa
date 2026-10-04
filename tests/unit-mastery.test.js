@@ -1,8 +1,8 @@
 // unit-mastery.test.js — retiring a Grade 4 unit after ten perfect runs.
 //
-// The point is to stop a child grinding the one unit they already know: once
-// it is mastered the card locks, and the units they have NOT mastered become
-// the only way forward.
+// The point is to stop a child grinding the one unit they already know for
+// coins: once it is mastered only a 100% run pays. The unit stays OPEN for
+// review (v5.1.11) — locking it left a learner unable to revise.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -110,30 +110,56 @@ function masteryEnv() {
     return { ctx, api: ctx.API, el };
 }
 
-suite('unit mastery: the rule is enforced, not just displayed', () => {
-    test('a mastered card is disabled in the markup', () => {
+suite('unit mastery: open for review, pays only for 100%', () => {
+    test('a mastered card is clickable', () => {
         const { ctx, api, el } = masteryEnv();
         ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
         api.renderUnitsBar();
         const html = el('wordUnitsBar').innerHTML;
-        const card = html.slice(Math.max(0, html.indexOf('Unit 5') - 400), html.indexOf('Unit 5'));
-        assert.truthy(/disabled aria-disabled="true"/.test(card),
-            'a retired unit must not be clickable, and must say so to a screen reader');
+        const card = html.slice(html.lastIndexOf('<button', html.indexOf('Unit 5')), html.indexOf('Unit 5'));
+        assert.truthy(/mastered/.test(card), 'it is still drawn as mastered');
+        assert.falsy(/disabled/.test(card), 'but a learner must be able to open it to revise');
     });
 
-    // A disabled attribute alone is a suggestion: a stale DOM node or a queued
-    // tap could still fire the handler.
-    test('starting a mastered unit is refused in code', () => {
+    test('a mastered unit starts, and says only 100% pays', () => {
         const { ctx, api } = masteryEnv();
         ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
         api.startUnitPractice('pr1-5');
-        assert.falsy(ctx.quiz(), 'a mastered unit must not start');
-        assert.truthy(/thành thạo/.test(ctx.lastToast || ''), 'and must say why');
+        assert.truthy(ctx.quiz(), 'a mastered unit must open for review');
+        assert.truthy(/100%/.test(ctx.lastToast || ''), 'and must say what pays');
+    });
+
+    function finishPerfect(ctx, api, unit, wrongCount = 0) {
+        api.startUnitPractice(unit);
+        const q = ctx.quiz();
+        q.answers = q.questions.map((_, i) => ({ isCorrect: i >= wrongCount }));
+        q.idx = q.questions.length - 1;
+        api.finishUnitPractice();
+    }
+
+    test('a 100% review of a mastered unit pays', () => {
+        const { ctx, api } = masteryEnv();
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
+        finishPerfect(ctx, api, 'pr1-5');
+        assert.truthy(ctx.appState.coins > 0, 'a perfect review earns its coins');
+    });
+
+    test('an imperfect review of a mastered unit pays zero coins', () => {
+        const { ctx, api } = masteryEnv();
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
+        finishPerfect(ctx, api, 'pr1-5', 1);
+        assert.equal(ctx.appState.coins, 0, 'no sloppy grinding of a known unit for coins');
+        assert.equal(ctx.appState.unitsHistory.length, UNIT_MASTERY_TARGET + 1, 'the run is still recorded');
+    });
+
+    test('the run that REACHES mastery still pays', () => {
+        const { ctx, api } = masteryEnv();
+        ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET - 1);
+        finishPerfect(ctx, api, 'pr1-5');
+        assert.truthy(ctx.appState.coins > 0, 'the tenth perfect run earned its coins');
     });
 
     test('an unmastered unit still starts normally', () => {
-        // The counterweight: it is easy to "fix" the guard into refusing
-        // everything.
         const { ctx, api } = masteryEnv();
         ctx.appState.unitsHistory = perfects('pr1-5', UNIT_MASTERY_TARGET);
         api.startUnitPractice('pr1-6');

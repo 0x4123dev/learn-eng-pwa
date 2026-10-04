@@ -373,10 +373,11 @@ function startUnitRetry(hostId) { return (typeof startRetryDrill === 'function' 
 
 // ---- Book view: one card per unit, with word count + best score ----
 // ---- mastery ----
-// Ten perfect 10/10 runs retires a unit. The point is to stop a child grinding
-// the one unit they already know for easy coins: once it is mastered the card
-// locks and the remaining units are the only way forward. Mix stays open
-// forever, so there is always something to practise.
+// Ten perfect 10/10 runs masters a unit. The point is to stop a child grinding
+// the one unit they already know for easy coins — so a mastered unit pays only
+// for a 100% run, never for a sloppy one. It stays OPEN for review (v5.1.11, owner's call): locking it
+// left a learner unable to revise words they had already learnt. Mix pays
+// forever, so there is always something worth practising.
 const UNIT_MASTERY_TARGET = 10;
 
 function unitPerfectCount(unit, history) {
@@ -520,7 +521,7 @@ function renderUnitsBar() {
     const b = best[key];
     const perfect = unitPerfectCount(key);
     const mastered = isUnitMastered(key);
-    const locked = mastered || !!owed;
+    const locked = !!owed;
     const title = unitTitle(set, u);
     const books = unitBooksLabel(set, u);
     return `
@@ -536,7 +537,8 @@ function renderUnitsBar() {
       ${title ? `<div class="g4-card-title">${unitEsc(title)}</div>` : ''}
       <div class="g4-card-emojis">${pics}</div>
       ${mastered
-        ? `<div class="g4-card-meta">Đã đạt ${UNIT_MASTERY_TARGET} lần 10/10 — giỏi lắm! 🎉</div>`
+        ? `<div class="g4-card-meta">Đã đạt ${UNIT_MASTERY_TARGET} lần 10/10 — giỏi lắm! 🎉</div>
+           <div class="g4-mastery-label">🔁 Ôn tập · đúng 100% mới có xu</div>`
         : `<div class="g4-card-meta">${words.length} từ vựng${books ? ' · ' + books : ''}</div>
            <div class="g4-mastery">
              <i style="width:${Math.round(perfect / UNIT_MASTERY_TARGET * 100)}%"></i>
@@ -751,11 +753,9 @@ function startUnitPractice(unit) {
   // card: a daily-task deep link starts it before any home has been drawn.
   _unitHostId = unitHostOfSet(_unitParse(unit).set);
   if (typeof retryGate === 'function' && retryGate(unitsRetryKey())) return;
-  // The card is disabled, but a stale DOM node or a queued tap must not slip
-  // through — the rule lives here, not only in the markup.
-  if (isUnitMastered(unit)) {
-    if (typeof showToast === 'function') showToast('👑 Unit này bạn đã thành thạo rồi!');
-    return;
+  // A mastered unit opens for review; finishUnitPractice pays it only for 100%.
+  if (isUnitMastered(unit) && typeof showToast === 'function') {
+    showToast('👑 Ôn tập Unit đã thành thạo — chỉ cộng xu khi đúng 100%');
   }
   const pool = _unitPool(unit);
   if (!pool.length) return;
@@ -1010,8 +1010,13 @@ function finishUnitPractice() {
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
 
-  // Coins: +5 per correct answer, plus any 5-in-a-row combo treats.
-  const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
+  // Coins: +5 per correct answer, plus any 5-in-a-row combo treats. A review of
+  // a unit that was ALREADY mastered before this run pays only if it is 100%
+  // (see UNIT_MASTERY_TARGET). petComboBonus() is still called: it is the only
+  // thing that clears the combo, which must not carry into the next quiz.
+  const unpaidReview = isUnitMastered(st.unit) && score < total;
+  const combo = typeof petComboBonus === 'function' ? petComboBonus() : 0;
+  const coinsEarned = unpaidReview ? 0 : score * 5 + combo;
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coinsEarned;
     if (!Array.isArray(appState.unitsHistory)) appState.unitsHistory = [];

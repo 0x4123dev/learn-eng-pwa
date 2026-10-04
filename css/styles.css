@@ -1042,14 +1042,12 @@
             background: linear-gradient(90deg, #fbbf24, #f59e0b); transition: width 0.4s ease;
         }
         .g4-mastery-label { font-size: 10px; color: var(--text-secondary); font-weight: 700; }
-        /* A mastered unit stays visible — it is an achievement, not a removal —
-           but it cannot be replayed for easy coins. */
+        /* A mastered unit is an achievement: it stays open for review, but a
+           review pays only for a 100% run (js/units.js UNIT_MASTERY_TARGET). */
         .g4-card.mastered {
             background: linear-gradient(150deg, #fffbeb, #fef3c7);
             border: 1.5px solid rgba(245, 158, 11, 0.45);
-            cursor: default; opacity: 0.92;
         }
-        .g4-card.mastered:active { transform: none; }
         .g4-card-best.mastered { color: #b45309; background: rgba(245, 158, 11, 0.18); }
         .g4-mix-card {
             grid-column: 1 / -1;
